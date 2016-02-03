@@ -3,28 +3,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NiceIO;
 
 namespace RedoxExtensions.Settings
 {
     public class Main
     {
+        private static Main _activeSettings;
+
         public string UserSettingsFilePath;
+
+        public static Main Instance
+        {
+            get
+            {
+                if (_activeSettings == null)
+                    _activeSettings = JsonConvert.DeserializeObject<Main>(GetMainSettingsFilePath().ReadAllText());
+
+                return _activeSettings;
+            }
+        }
 
         public UserSettings User
         {
             get
             {
-                // TODO : Cache in singleton style
-                var mainSettings = JsonConvert.DeserializeObject<Main>(System.IO.File.ReadAllText(GetMainSettingsFilePath()));
-                var expanded = Environment.ExpandEnvironmentVariables(mainSettings.UserSettingsFilePath);
+                var expanded = Environment.ExpandEnvironmentVariables(UserSettingsFilePath);
                 return JsonConvert.DeserializeObject<UserSettings>(System.IO.File.ReadAllText(expanded));
             }
         }
 
-        private static string GetMainSettingsFilePath()
+        private static NPath GetMainSettingsFilePath()
         {
-            // TODO : Load from along side dll.  Use GetCodeBase
-            throw new NotImplementedException();
+            return new Uri(typeof (Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine("settings.json");
         }
     }
 }

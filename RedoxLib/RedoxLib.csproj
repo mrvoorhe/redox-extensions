@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="ExceptionHelpers.cs" />
     <Compile Include="GameValues\Sets.cs" />
+    <Compile Include="General\ExtensionMethods.cs" />
+    <Compile Include="General\NiceIO.cs" />
     <Compile Include="IDecalPluginProvider.cs" />
     <Compile Include="PluginProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

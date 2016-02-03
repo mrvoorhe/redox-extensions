@@ -258,8 +258,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mysettings.json" />
-    <None Include="settings.json" />
+    <None Include="mysettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
