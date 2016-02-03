@@ -1,0 +1,9 @@
+RedoxExtensions.Tests/obj
+RedoxExtensions.Tests/bin
+RedoxExtensions.Wrapper/obj
+RedoxExtensions/obj
+RedoxLib.Tests/obj
+RedoxLib/obj
+RedoxFilter/obj
+bin
+TestResult.xml
