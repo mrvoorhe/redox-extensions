@@ -8,6 +8,6 @@ namespace RedoxExtensions.Settings
 {
     public class UserSettings
     {
-        
+        public List<List<string>> CharactersGroupedByAccount;
     }
 }
