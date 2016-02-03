@@ -1,0 +1,76 @@
+
+[VTank] --------------Object dump--------------
+[VTank] [Meta] Create count: 1
+[VTank] [Meta] Create time: 3/12/2015 11:15 PM
+[VTank] [Meta] Has identify data: True
+[VTank] [Meta] Last ID time: 3/12/2015 11:15 PM
+[VTank] [Meta] Worldfilter valid: True
+[VTank] [Meta] Client valid: True
+[VTank] [Meta] Apparent slot: 7
+[VTank] ID: E3BAD99E (-474293858)
+[VTank] ObjectClass: Jewelry
+[VTank] (S) Name: Ring
+[VTank] (S) FullDescription: Ring of Acid Protection
+[VTank] (I) CreateFlags1: -2128527208
+[VTank] (I) Type: 624
+[VTank] (I) Icon: 5275
+[VTank] (I) Category: 8
+[VTank] (I) Behavior: 18
+[VTank] (I) Value: 9689
+[VTank] (I) ItemUsabilityFlags: 1
+[VTank] (I) IconOutline: 1
+[VTank] (I) Container: 1343299727
+[VTank] (I) EquipableSlots: 786432 (ring_right, ring_left)
+[VTank] (I) Burden: 30
+[VTank] (I) Material: 58
+[VTank] (I) PhysicsDataFlags: 137345
+[VTank] (I) WieldReqValue: 180
+[VTank] (I) GemSettingQty: 1
+[VTank] (I) GemSettingType: 39
+[VTank] (I) SkillLevelReq: 0
+[VTank] (I) Workmanship: 7
+[VTank] (I) Spellcraft: 370
+[VTank] (I) Rating_Vitality: 1
+[VTank] (I) CurrentMana: 2401
+[VTank] (I) DescriptionFormat: 5
+[VTank] (I) MaximumMana: 2401
+[VTank] (I) LoreRequirement: 462
+[VTank] (I) WieldReqType: 7
+[VTank] (I) RankRequirement: 0
+[VTank] (I) WieldReqAttribute: 1
+[VTank] (D) SalvageWorkmanship: 7
+[VTank] (D) ManaRateOfChange: -0.0666666666666667
+[VTank] Palette Entry 0: ID 0x000BF6, Ex Color: 000000, 0/0
+
+
+
+
+
+[VTank] --------------Object dump--------------
+[VTank] [Meta] Create count: 1
+[VTank] [Meta] Create time: 3/12/2015 11:15 PM
+[VTank] [Meta] Has identify data: False
+[VTank] [Meta] Last ID time: 1/1/0001 12:00 AM
+[VTank] [Meta] Worldfilter valid: True
+[VTank] [Meta] Client valid: True
+[VTank] [Meta] Apparent slot: 0
+[VTank] ID: CE58965A (-833055142)
+[VTank] ObjectClass: Gem
+[VTank] (S) Name: Invitation Ithaenc Cathedral
+[VTank] (I) CreateFlags1: 6844568
+[VTank] (I) Type: 14915
+[VTank] (I) Icon: 11571
+[VTank] (I) Category: 2048
+[VTank] (I) Behavior: 67108882
+[VTank] (I) CreateFlags2: 6
+[VTank] (I) Value: 10000
+[VTank] (I) ItemUsabilityFlags: 8
+[VTank] (I) UsageMask: 16
+[VTank] (I) IconOutline: 1
+[VTank] (I) StackCount: 1
+[VTank] (I) StackMax: 1
+[VTank] (I) Container: -983879754
+[VTank] (I) Burden: 5
+[VTank] (I) CooldownID: 1000
+[VTank] (I) PhysicsDataFlags: 137217
+[VTank] (L) Container: -983879754

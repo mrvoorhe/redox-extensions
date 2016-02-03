@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedoxExtensions", "RedoxExtensions\RedoxExtensions.csproj", "{1E892DD2-A5C0-4D2D-87A7-69BCF2ECFC4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedoxExtensions.Tests", "RedoxExtensions.Tests\RedoxExtensions.Tests.csproj", "{C852B825-206E-4D2D-A259-7C87FE32EFF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedoxExtensions.Wrapper", "RedoxExtensions.Wrapper\RedoxExtensions.Wrapper.csproj", "{1D0AC3CD-4AAC-40C2-AECD-351522AA1186}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedoxLib", "RedoxLib\RedoxLib.csproj", "{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedoxLib.Tests", "RedoxLib.Tests\RedoxLib.Tests.csproj", "{DD6562EF-B31B-4AF3-9935-ADFCB3D99915}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedoxFilter", "RedoxFilter\RedoxFilter.csproj", "{A3847603-ADD6-4ED0-8E4F-56F81EAA3773}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{C90080D1-CFCF-4838-A418-648B728A526B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2513A130-3553-4C59-B5BA-342A3AC8525B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FD9C854D-B68B-4964-BD12-9E697D2CFE77}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E892DD2-A5C0-4D2D-87A7-69BCF2ECFC4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E892DD2-A5C0-4D2D-87A7-69BCF2ECFC4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E892DD2-A5C0-4D2D-87A7-69BCF2ECFC4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E892DD2-A5C0-4D2D-87A7-69BCF2ECFC4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C852B825-206E-4D2D-A259-7C87FE32EFF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C852B825-206E-4D2D-A259-7C87FE32EFF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C852B825-206E-4D2D-A259-7C87FE32EFF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C852B825-206E-4D2D-A259-7C87FE32EFF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D0AC3CD-4AAC-40C2-AECD-351522AA1186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D0AC3CD-4AAC-40C2-AECD-351522AA1186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D0AC3CD-4AAC-40C2-AECD-351522AA1186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D0AC3CD-4AAC-40C2-AECD-351522AA1186}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD6562EF-B31B-4AF3-9935-ADFCB3D99915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD6562EF-B31B-4AF3-9935-ADFCB3D99915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD6562EF-B31B-4AF3-9935-ADFCB3D99915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD6562EF-B31B-4AF3-9935-ADFCB3D99915}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3847603-ADD6-4ED0-8E4F-56F81EAA3773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3847603-ADD6-4ED0-8E4F-56F81EAA3773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3847603-ADD6-4ED0-8E4F-56F81EAA3773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3847603-ADD6-4ED0-8E4F-56F81EAA3773}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1E892DD2-A5C0-4D2D-87A7-69BCF2ECFC4F} = {C90080D1-CFCF-4838-A418-648B728A526B}
+		{C852B825-206E-4D2D-A259-7C87FE32EFF4} = {2513A130-3553-4C59-B5BA-342A3AC8525B}
+		{1D0AC3CD-4AAC-40C2-AECD-351522AA1186} = {C90080D1-CFCF-4838-A418-648B728A526B}
+		{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC} = {FD9C854D-B68B-4964-BD12-9E697D2CFE77}
+		{DD6562EF-B31B-4AF3-9935-ADFCB3D99915} = {2513A130-3553-4C59-B5BA-342A3AC8525B}
+		{A3847603-ADD6-4ED0-8E4F-56F81EAA3773} = {C90080D1-CFCF-4838-A418-648B728A526B}
+	EndGlobalSection
+EndGlobal
