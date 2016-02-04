@@ -212,7 +212,7 @@ namespace RedoxExtensions
 
                 this.TryInitializeExternalPluginDependencies();
 
-                this.Chat.WriteLine("***Initialied After Reload****");
+                this.Chat.WriteLine("***Initialized After Reload****");
             }
         }
 
@@ -355,6 +355,8 @@ namespace RedoxExtensions
                 this.CoreManager.CharacterFilter.LoginComplete += CharacterFilter_LoginComplete;
                 this.CoreManager.PluginInitComplete += CoreManager_PluginInitComplete;
                 this.CoreManager.CharacterFilter.Logoff += CharacterFilter_Logoff;
+
+                Mine.MyUtilities.Init();
 
                 this._startupComplete = true;
 

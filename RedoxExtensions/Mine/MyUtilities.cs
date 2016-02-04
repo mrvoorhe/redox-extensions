@@ -15,39 +15,68 @@ namespace RedoxExtensions.Mine
     /// </summary>
     public static class MyUtilities
     {
+        public const int NpcSleepDelayInMilliseconds = 1000;
+
+        private static readonly HashSet<string> _whitelist = new HashSet<string>();
+        private static readonly Dictionary<string, int> _sleepDelayFactorByCharacter = new Dictionary<string, int>();
+
+
+        internal static void Shutdown()
+        {
+            _whitelist.Clear();
+            _sleepDelayFactorByCharacter.Clear();
+        }
+
+        public static void Init()
+        {
+            Init(Settings.Main.Instance.User);
+        }
+
+        public static void Init(Settings.UserSettings userSettings)
+        {
+            Shutdown();
+
+            int counter = 0;
+            foreach (var characters in userSettings.CharactersGroupedByAccount)
+            {
+                foreach (var character in characters)
+                {
+                    _whitelist.Add(character);
+                    _sleepDelayFactorByCharacter.Add(character, counter);
+                }
+
+                counter++;
+            }
+        }
+
         public static bool IsCharacterOnMasterWhiteList(string characterName)
         {
-            //switch(characterName.ToLower())
-            //{
-            //    // you is always okay.
-            //    case "you":
+            // you is always okay.
+            if (characterName.ToLower() == "you")
+                return true;
 
-            //    case "char0-1":
-            //    case "char0-2":
-            //    case "char0-3":
-
-            //    case "char1-1":
-            //    case "char1-2":
-            //    case "char1-3":
-
-            //    case "char2-1":
-
-            //    case "char3-1":
-
-            //    case "char4-1":
-
-            //    case "char5-1":
-            //        return true;
-            //}
-
-            //return false;
-
-            throw new NotImplementedException("TODO : Reimplement loading from settings file");
+            return _whitelist.Contains(characterName);
         }
 
         public static int GetNpcSleepDelayForCurrentAccount()
         {
             return GetNpcSleepDelayForCurrentAccount(1000);
+        }
+
+        private static int GetNpcSleepDelayFactorForCurrentAccount()
+        {
+            return GetNpcSleepDelayFactor(REPlugin.Instance.CoreManager.CharacterFilter.Name);
+        }
+
+        public static int GetNpcSleepDelayFactor(string characterName)
+        {
+            int factor;
+            if (_sleepDelayFactorByCharacter.TryGetValue(characterName, out factor))
+            {
+                return factor;
+            }
+
+            throw new InvalidOperationException(string.Format("Unknown character : {0}", characterName));
         }
 
         public static int GetNpcSleepDelayForCurrentAccount(int baseDelayBetweenAccounts)
@@ -69,34 +98,6 @@ namespace RedoxExtensions.Mine
             //}
 
             //return requestedProfile.ToString();
-
-            throw new NotImplementedException("TODO : Reimplement loading from settings file");
-        }
-
-        private static int GetNpcSleepDelayFactorForCurrentAccount()
-        {
-            //switch (REPlugin.Instance.CoreManager.CharacterFilter.Name.ToLower())
-            //{
-            //    case "char0-1":
-            //    case "char0-2":
-            //    case "char0-3":
-            //        return 0;
-            //    case "char1-1":
-            //    case "char1-2":
-            //    case "char1-3":
-            //        return 1;
-            //    case "char2-1":
-            //        return 2;
-            //    case "char3-1":
-            //        return 3;
-            //    case "char4-1":
-            //        return 4;
-            //    case "char5-1":
-            //        return 5;
-            //    default:
-            //        REPlugin.Instance.Chat.WriteLine("WARNING - Unknown delay for this character");
-            //        return 0;
-            //}
 
             throw new NotImplementedException("TODO : Reimplement loading from settings file");
         }

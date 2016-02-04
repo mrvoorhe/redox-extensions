@@ -7,3 +7,4 @@ RedoxLib/obj
 RedoxFilter/obj
 bin
 TestResult.xml
+.vs/config/applicationhost.config
