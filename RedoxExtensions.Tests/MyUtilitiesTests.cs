@@ -15,13 +15,15 @@ namespace RedoxExtensions.Tests
         [SetUp]
         public void SetUp()
         {
-            MyUtilities.Init(CreateSampleUserSettings());
+            ActiveSettings.Init(CreateSampleUserSettings());
+            MyUtilities.Init();
         }
 
         [TearDown]
         public void TearDown()
         {
             MyUtilities.Shutdown();
+            ActiveSettings.Clear();
         }
 
         [TestCase("A1-C1", 0)]
@@ -40,6 +42,37 @@ namespace RedoxExtensions.Tests
             MyUtilities.GetNpcSleepDelayFactor("Unknown Character");
         }
 
+        [TestCase("A1-C1", 10)]
+        [TestCase("A1-C2", 15)]
+        [TestCase("A2-C1", 30)]
+        [TestCase("A2-C2", 30)]
+        [TestCase("A3-C1", 20)]
+        public void TestGetFormationRange(string characterName, int expectedResult)
+        {
+            Assert.AreEqual(expectedResult, MyUtilities.GetFormationRange(characterName, "formation1"));
+        }
+
+        [Test]
+        public void TestGetFormationRangeInputIsCaseInsensitive()
+        {
+            Assert.AreEqual(10, MyUtilities.GetFormationRange("A1-C1", "FORMATION1"));
+        }
+
+        [Test]
+        public void TestGetFormationRangeUsesDefaultIfUnknownCharacter()
+        {
+            Assert.AreEqual(5, MyUtilities.GetFormationRange("Unknown Character", "formation1"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestGetFormationRangeThrowsIfUnknownFormation()
+        {
+            MyUtilities.GetFormationRange("A1-C1", "Unknown Formation");
+        }
+
+        #region Helpers
+
         private static UserSettings CreateSampleUserSettings()
         {
             var settings = new UserSettings();
@@ -47,7 +80,23 @@ namespace RedoxExtensions.Tests
             settings.CharactersGroupedByAccount.Add(new List<string>(new []{"A1-C1", "A1-C2"}));
             settings.CharactersGroupedByAccount.Add(new List<string>(new[] { "A2-C1", "A2-C2" }));
             settings.CharactersGroupedByAccount.Add(new List<string>(new[] { "A3-C1"}));
+
+            settings.Formations = new Dictionary<string, Formation>();
+            var formation1 = new Formation();
+            formation1.RangeDefault = 5;
+            formation1.RangeTable = new Dictionary<string, int>();
+            formation1.RangeTable.Add("A1-C1", 10);
+            formation1.RangeTable.Add("A1-C2", 15);
+
+            formation1.RangeTable.Add("A2-C1", 30);
+            formation1.RangeTable.Add("A2-C2", 30);
+
+            formation1.RangeTable.Add("A3-C1", 20);
+
+            settings.Formations.Add("formation1", formation1);
             return settings;
         }
+
+        #endregion
     }
 }

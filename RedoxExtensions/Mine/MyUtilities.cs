@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 
 using RedoxExtensions.MagToolsInterop;
+using RedoxExtensions.Settings;
 
 namespace RedoxExtensions.Mine
 {
@@ -28,15 +29,10 @@ namespace RedoxExtensions.Mine
 
         public static void Init()
         {
-            Init(Settings.Main.Instance.User);
-        }
-
-        public static void Init(Settings.UserSettings userSettings)
-        {
             Shutdown();
 
             int counter = 0;
-            foreach (var characters in userSettings.CharactersGroupedByAccount)
+            foreach (var characters in ActiveSettings.Instance.CharactersGroupedByAccount)
             {
                 foreach (var character in characters)
                 {
@@ -103,42 +99,24 @@ namespace RedoxExtensions.Mine
 
         public static int GetFormationRangeForCurrentCharacter(string formation)
         {
-            //var charName = REPlugin.Instance.CoreManager.CharacterFilter.Name.ToLower();
-            //switch (formation)
-            //{
-            //    case "outside":
-            //        switch (charName)
-            //        {
-            //            case "char0-1":
-            //                // char0-1 is the leader, so keep him low so that he
-            //                // doesn't get stuck wasting time trying to hit an out-of-range
-            //                // target
-            //                return 12;
-            //            case "char1-1":
-            //                // char1-1 is a looter, so keep him lower so that he has time to loot
-            //                return 20;
-            //            case "char3-1":
-            //                // char3-1 lures, so set his range high
-            //                return 60;
-            //            case "char4-1":
-            //            case "char2-1":
-            //                // Set archers higher, to get a head start.
-            //                return 40;
-            //            case "char5-1":
-            //                // Position him as a kill focused mage
-            //                return 30;
-            //            case "char1-2":
-            //            case "char0-2":
-            //                // melees, keep close by
-            //                return 10;
-            //            default:
-            //                return 15;
-            //        }
-            //    default:
-            //        throw new InvalidOperationException(string.Format("Unknown formation : {0}", formation));
-            //}
+            return GetFormationRange(REPlugin.Instance.CoreManager.CharacterFilter.Name, formation);
+        }
 
-            throw new NotImplementedException("TODO : Reimplement loading from settings file");
+        public static int GetFormationRange(string characterName, string formationName)
+        {
+            Formation formation;
+            if (ActiveSettings.Instance.Formations.TryGetValue(formationName.ToLower(), out formation))
+            {
+                int range;
+                if (formation.RangeTable.TryGetValue(characterName, out range))
+                {
+                    return range;
+                }
+
+                return formation.RangeDefault;
+            }
+
+            throw new InvalidOperationException(string.Format("Unknown formation : {0}", formationName));
         }
 
         public static bool EnableLootForFormationForCurrentCharacter(string formation)

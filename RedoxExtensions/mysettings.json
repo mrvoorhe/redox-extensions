@@ -1,6 +1,5 @@
 ﻿{
-  "CharactersGroupedByAccount":
-  [
+  "CharactersGroupedByAccount": [
     [
       "Redox",
       "Virmar"
@@ -30,5 +29,13 @@
     [
       "Context Sensitive"
     ]
-  ]
+  ],
+  "Formations": {
+    "outside": {
+        "RangeDefault": 10,
+        "RangeTable": {
+          "Redox": 12
+        }
+    }
+  }
 }

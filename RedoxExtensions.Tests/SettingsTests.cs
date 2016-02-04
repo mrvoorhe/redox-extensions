@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using RedoxExtensions.Settings;
 
 namespace RedoxExtensions.Tests
 {
@@ -13,7 +14,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void LoadAndCheckCharactersByAccount()
         {
-            var result = Settings.Main.Instance.User.CharactersGroupedByAccount;
+            var result = ActiveSettings.Instance.CharactersGroupedByAccount;
 
             Assert.IsTrue(result.Count >= 2);
 
@@ -24,6 +25,24 @@ namespace RedoxExtensions.Tests
             Assert.IsTrue(result[1].Count >= 2);
             Assert.AreEqual("Kreap", result[1][0]);
             Assert.AreEqual("Virmar Jr", result[1][1]);
+        }
+
+        // is the leader, so keep him low so that he doesn't get stuck wasting time trying to hit an out-of-range
+        [TestCase("Redox", "outside", 12)]
+        [TestCase("Kreap", "outside", 20)]  // A looter, so keep him a bit lower so he has time to loot
+        [TestCase("Rockdown Guy", "outside", 60)]  // Support / lure
+        [TestCase("Rathion", "outside", 40)]  // Set archers higher, to get a head start.
+        [TestCase("Mini Bonsai", "outside", 40)]  // Set archers higher, to get a head start.
+        [TestCase("Mrguy", "outside", 30)]  // Kill focused mage
+        [TestCase("Zikka", "outside", 60)]  // Support / lure
+        [TestCase("Context Bound", "outside", 40)]  // Archer
+        [TestCase("Context Sensitive", "outside", 30)]  // Kill mage
+        [TestCase("Virmar", "outside", 10)]  // Melee, keep close
+        [TestCase("Virmar Jr", "outside", 10)]  // Melee, keep close
+        public void LoadAndCheckFormationRanges(string characterName, string formationName, int expectedRange)
+        {
+            var formations = ActiveSettings.Instance.Formations;
+            Assert.AreEqual(expectedRange, formations[formationName].RangeTable[characterName]);
         }
     }
 }
