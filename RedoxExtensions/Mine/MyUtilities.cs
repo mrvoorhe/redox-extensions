@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 
-using RedoxExtensions.Core;
 using RedoxExtensions.MagToolsInterop;
 
 namespace RedoxExtensions.Mine
@@ -166,19 +165,10 @@ namespace RedoxExtensions.Mine
 
         public static void RecruitUsualSuspects()
         {
-            //MTActions.RecruitFellow("Char 1 Case Exact");
-
-            //MTActions.RecruitFellow("Char 2 Case Exact");
-
-            //MTActions.RecruitFellow("Char 3 Case Exact");
-
-            //MTActions.RecruitFellow("Char 4 Case Exact");
-
-            //MTActions.RecruitFellow("Char 5 Case Exact");
-
-            //MTActions.RecruitFellow("Char 6 Case Exact");
-
-            throw new NotImplementedException("TODO : Reimplement loading from settings file");
+            foreach (var character in _whitelist)
+            {
+                MTActions.RecruitFellow(character);
+            }
         }
     }
 }
