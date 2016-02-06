@@ -119,26 +119,20 @@ namespace RedoxExtensions.Mine
             throw new InvalidOperationException(string.Format("Unknown formation : {0}", formationName));
         }
 
+        public static bool EnableLootForFormation(string characterName, string formationName)
+        {
+            Formation formation;
+            if (ActiveSettings.Instance.Formations.TryGetValue(formationName.ToLower(), out formation))
+            {
+                return formation.Looters.Contains(characterName);
+            }
+
+            throw new InvalidOperationException(string.Format("Unknown formation : {0}", formationName));
+        }
+
         public static bool EnableLootForFormationForCurrentCharacter(string formation)
         {
-            //var charName = REPlugin.Instance.CoreManager.CharacterFilter.Name.ToLower();
-            //switch (formation)
-            //{
-            //    case "outside":
-            //        switch (charName)
-            //        {
-            //            case "char0-1":
-            //            case "char1-1":
-            //            case "char1-2":
-            //                return true;
-            //            default:
-            //                return false;
-            //        }
-            //    default:
-            //        throw new InvalidOperationException(string.Format("Unknown formation : {0}", formation));
-            //}
-
-            throw new NotImplementedException("TODO : Reimplement loading from settings file");
+            return EnableLootForFormation(REPlugin.Instance.CoreManager.CharacterFilter.Name, formation);
         }
 
         public static void RecruitUsualSuspects()

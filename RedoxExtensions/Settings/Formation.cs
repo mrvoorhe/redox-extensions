@@ -9,5 +9,6 @@ namespace RedoxExtensions.Settings
     {
         public Dictionary<string, int> RangeTable;
         public int RangeDefault;
+        public HashSet<string> Looters;
     }
 }

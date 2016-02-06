@@ -71,6 +71,13 @@ namespace RedoxExtensions.Tests
             MyUtilities.GetFormationRange("A1-C1", "Unknown Formation");
         }
 
+        [TestCase("A1-C1")]
+        [TestCase("A3-C1")]
+        public void TestEnableLootForFormation(string characterName)
+        {
+            Assert.IsTrue(MyUtilities.EnableLootForFormation(characterName, "formation1"));
+        }
+
         #region Helpers
 
         private static UserSettings CreateSampleUserSettings()
@@ -92,6 +99,10 @@ namespace RedoxExtensions.Tests
             formation1.RangeTable.Add("A2-C2", 30);
 
             formation1.RangeTable.Add("A3-C1", 20);
+
+            formation1.Looters = new HashSet<string>();
+            formation1.Looters.Add("A1-C1");
+            formation1.Looters.Add("A3-C1");
 
             settings.Formations.Add("formation1", formation1);
             return settings;
