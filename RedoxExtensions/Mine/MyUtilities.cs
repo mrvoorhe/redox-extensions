@@ -79,22 +79,25 @@ namespace RedoxExtensions.Mine
             return GetNpcSleepDelayFactorForCurrentAccount() * baseDelayBetweenAccounts;
         }
 
+        public static string LookupProfileName(string characterName, MyMainProfiles requestedProfile)
+        {
+            if (requestedProfile == MyMainProfiles.CharacterSpecificDefault)
+            {
+                string profileName;
+                if (ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults.TryGetValue(characterName, out profileName))
+                {
+                    return profileName;
+                }
+
+                return ActiveSettings.Instance.VTProfiles.Main.Default;
+            }
+
+            return requestedProfile.ToString();
+        }
+
         public static string LookupProfileName(MyMainProfiles requestedProfile)
         {
-            //if (requestedProfile == MyMainProfiles.CharacterSpecificDefault)
-            //{
-            //    switch (REPlugin.Instance.CoreManager.CharacterFilter.Name)
-            //    {
-            //        case "char3-1":
-            //            return MyMainProfiles.Support.ToString();
-            //        default:
-            //            return MyMainProfiles.Normal.ToString();
-            //    }
-            //}
-
-            //return requestedProfile.ToString();
-
-            throw new NotImplementedException("TODO : Reimplement loading from settings file");
+            return LookupProfileName(REPlugin.Instance.CoreManager.CharacterFilter.Name, requestedProfile);
         }
 
         public static int GetFormationRangeForCurrentCharacter(string formation)

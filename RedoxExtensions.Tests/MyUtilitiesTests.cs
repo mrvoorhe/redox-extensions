@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Server;
 using NUnit.Framework;
 using RedoxExtensions.Mine;
 using RedoxExtensions.Settings;
@@ -78,6 +79,16 @@ namespace RedoxExtensions.Tests
             Assert.IsTrue(MyUtilities.EnableLootForFormation(characterName, "formation1"));
         }
 
+        [TestCase("A1-C1", MyMainProfiles.Normal, "Normal")]
+        [TestCase("A1-C1", MyMainProfiles.CharacterSpecificDefault, "Normal")]
+        [TestCase("A3-C1", MyMainProfiles.Normal, "Normal")]
+        [TestCase("A3-C1", MyMainProfiles.CharacterSpecificDefault, "Support")]
+        public void TestLookupProfileName(string characterName, MyMainProfiles profile, string expectedResult)
+        {
+            var result = MyUtilities.LookupProfileName(characterName, profile);
+            Assert.AreEqual(expectedResult, result);
+        }
+
         #region Helpers
 
         private static UserSettings CreateSampleUserSettings()
@@ -105,6 +116,13 @@ namespace RedoxExtensions.Tests
             formation1.Looters.Add("A3-C1");
 
             settings.Formations.Add("formation1", formation1);
+
+            // Setup Profiles
+            settings.VTProfiles = new VTProfiles();
+            settings.VTProfiles.Main = new VTMain();
+            settings.VTProfiles.Main.Default = "Normal";
+            settings.VTProfiles.Main.CharacterDefaults = new Dictionary<string, string>();
+            settings.VTProfiles.Main.CharacterDefaults.Add("A3-C1", "Support");
             return settings;
         }
 

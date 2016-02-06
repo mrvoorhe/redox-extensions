@@ -74,5 +74,18 @@ namespace RedoxExtensions.Tests
         {
             Assert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.VTProfiles.Loot.Default);
         }
+
+        [Test]
+        public void LoadAndCheckDefaultMainProfile()
+        {
+            Assert.AreEqual("Normal", ActiveSettings.Instance.VTProfiles.Main.Default);
+        }
+
+        [TestCase("Rockdown Guy", "Support")]
+        [TestCase("Zikka", "Support")]
+        public void LoadAndCheckCharacterDefaultMainProfile(string characterName, string expectedResult)
+        {
+            Assert.AreEqual(expectedResult, ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults[characterName]);
+        }
     }
 }

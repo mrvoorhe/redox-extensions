@@ -5,10 +5,9 @@ using System.Text;
 
 namespace RedoxExtensions.Settings
 {
-    public class VTProfiles
+    public class VTMain
     {
-        public VTMetaProfiles Meta;
-        public VTLootProfiles Loot;
-        public VTMain Main;
+        public string Default;
+        public Dictionary<string, string> CharacterDefaults;
     }
 }

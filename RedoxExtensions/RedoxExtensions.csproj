@@ -233,6 +233,7 @@
     <Compile Include="Settings\Formation.cs" />
     <Compile Include="Settings\VTLootProfiles.cs" />
     <Compile Include="Settings\Main.cs" />
+    <Compile Include="Settings\VTMain.cs" />
     <Compile Include="Settings\VTMetaProfiles.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\VTProfiles.cs" />
