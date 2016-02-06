@@ -27,15 +27,25 @@
       "Context Bound"
     ],
     [
-      "Context Sensitive"
+      "New Riff"
     ]
   ],
   "Formations": {
     "outside": {
-        "RangeDefault": 10,
-        "RangeTable": {
-          "Redox": 12
-        }
+      "RangeDefault": 10,
+      "RangeTable": {
+        "Redox": 12,
+        "Kreap": 20,
+        "Rockdown Guy": 60,
+        "Rathion": 40,
+        "Mini Bonsai": 40,
+        "Mrguy": 30,
+        "Zikka": 60,
+        "Context Bound": 40,
+        "New Riff": 30,
+        "Virmar": 10,
+        "Virmar Jr": 10
+      }
     }
   }
 }

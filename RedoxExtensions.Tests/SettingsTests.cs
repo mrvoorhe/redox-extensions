@@ -11,6 +11,18 @@ namespace RedoxExtensions.Tests
     [TestFixture]
     public class SettingsTests
     {
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            ActiveSettings.Clear();
+        }
+
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            ActiveSettings.Clear();
+        }
+
         [Test]
         public void LoadAndCheckCharactersByAccount()
         {
@@ -36,7 +48,7 @@ namespace RedoxExtensions.Tests
         [TestCase("Mrguy", "outside", 30)]  // Kill focused mage
         [TestCase("Zikka", "outside", 60)]  // Support / lure
         [TestCase("Context Bound", "outside", 40)]  // Archer
-        [TestCase("Context Sensitive", "outside", 30)]  // Kill mage
+        [TestCase("New Riff", "outside", 30)]  // Kill mage
         [TestCase("Virmar", "outside", 10)]  // Melee, keep close
         [TestCase("Virmar Jr", "outside", 10)]  // Melee, keep close
         public void LoadAndCheckFormationRanges(string characterName, string formationName, int expectedRange)
