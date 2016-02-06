@@ -44,7 +44,7 @@ namespace RedoxExtensions.Actions
 
         public static void LoadMyDefaultLootProfile()
         {
-            VTActions.LoadLootProfile(Mine.MyLootProfiles.LegendaryChestPulls);
+            VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.LootProfiles.Default);
         }
     }
 }

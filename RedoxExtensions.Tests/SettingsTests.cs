@@ -56,5 +56,23 @@ namespace RedoxExtensions.Tests
             var formations = ActiveSettings.Instance.Formations;
             Assert.AreEqual(expectedRange, formations[formationName].RangeTable[characterName]);
         }
+
+        [Test]
+        public void LoadAndCheckPullLegendaryKeysMetaProfile()
+        {
+            Assert.AreEqual("LegendKeys", ActiveSettings.Instance.MetaProfiles.PullLegendaryKeys);
+        }
+
+        [Test]
+        public void LoadAndCheckLegendaryChestPullsLootProfile()
+        {
+            Assert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.LootProfiles.LegendaryChestPulls);
+        }
+
+        [Test]
+        public void LoadAndCheckDefaultLootProfile()
+        {
+            Assert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.LootProfiles.Default);
+        }
     }
 }

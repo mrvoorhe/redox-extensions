@@ -225,14 +225,15 @@
     <Compile Include="Macros\SnowyValley.cs" />
     <Compile Include="Macros\TouTou.cs" />
     <Compile Include="MagToolsInterop\MTActions.cs" />
-    <Compile Include="Mine\MyConstants.cs" />
     <Compile Include="Mine\MyMainProfiles.cs" />
     <Compile Include="Mine\MyUtilities.cs" />
     <Compile Include="REPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\ActiveSettings.cs" />
     <Compile Include="Settings\Formation.cs" />
+    <Compile Include="Settings\LootProfiles.cs" />
     <Compile Include="Settings\Main.cs" />
+    <Compile Include="Settings\MetaProfiles.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="VirindiInterop.Events\SpellCastAttemptingEventArgs.cs" />
     <Compile Include="VirindiInterop.Events\SpellCastCompleteEventArgs.cs" />
@@ -261,7 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mysettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

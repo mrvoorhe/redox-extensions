@@ -30,6 +30,12 @@
       "New Riff"
     ]
   ],
+  "MetaProfiles": {
+    "PullLegendaryKeys": "LegendKeys"
+  },
+  "LootProfiles": {
+    "LegendaryChestPulls" : "LootSnobV4LegChests"
+  },
   "Formations": {
     "outside": {
       "RangeDefault": 10,
