@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Reflection;
 
 using RedoxExtensions.MagToolsInterop;
 using RedoxExtensions.Settings;
+using RedoxLib;
 
 namespace RedoxExtensions.Mine
 {
@@ -60,7 +60,7 @@ namespace RedoxExtensions.Mine
 
         private static int GetNpcSleepDelayFactorForCurrentAccount()
         {
-            return GetNpcSleepDelayFactor(REPlugin.Instance.CoreManager.CharacterFilter.Name);
+            return GetNpcSleepDelayFactor(CurrentCharacter.Name);
         }
 
         public static int GetNpcSleepDelayFactor(string characterName)
@@ -97,12 +97,12 @@ namespace RedoxExtensions.Mine
 
         public static string LookupProfileName(MyMainProfiles requestedProfile)
         {
-            return LookupProfileName(REPlugin.Instance.CoreManager.CharacterFilter.Name, requestedProfile);
+            return LookupProfileName(CurrentCharacter.Name, requestedProfile);
         }
 
         public static int GetFormationRangeForCurrentCharacter(string formation)
         {
-            return GetFormationRange(REPlugin.Instance.CoreManager.CharacterFilter.Name, formation);
+            return GetFormationRange(CurrentCharacter.Name, formation);
         }
 
         public static int GetFormationRange(string characterName, string formationName)
@@ -135,7 +135,7 @@ namespace RedoxExtensions.Mine
 
         public static bool EnableLootForFormationForCurrentCharacter(string formation)
         {
-            return EnableLootForFormation(REPlugin.Instance.CoreManager.CharacterFilter.Name, formation);
+            return EnableLootForFormation(CurrentCharacter.Name, formation);
         }
 
         public static void RecruitUsualSuspects()
