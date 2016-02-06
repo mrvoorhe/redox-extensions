@@ -44,7 +44,7 @@ namespace RedoxExtensions.Actions
 
         public static void LoadMyDefaultLootProfile()
         {
-            VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.LootProfiles.Default);
+            VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.VTProfiles.Loot.Default);
         }
     }
 }

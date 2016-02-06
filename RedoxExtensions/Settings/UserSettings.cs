@@ -10,7 +10,6 @@ namespace RedoxExtensions.Settings
     {
         public List<List<string>> CharactersGroupedByAccount;
         public Dictionary<string, Formation> Formations;
-        public MetaProfiles MetaProfiles;
-        public LootProfiles LootProfiles;
+        public VTProfiles VTProfiles;
     }
 }

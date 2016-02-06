@@ -5,9 +5,9 @@ using System.Text;
 
 namespace RedoxExtensions.Settings
 {
-    public class LootProfiles
+    public class VTProfiles
     {
-        public string LegendaryChestPulls;
-        public string Default;
+        public VTMetaProfiles Meta;
+        public VTLootProfiles Loot;
     }
 }

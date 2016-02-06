@@ -17,8 +17,8 @@ namespace RedoxExtensions.Actions
             VTActions.StopVT();
             VTActions.DisableAllVTStates();
 
-            VTActions.LoadMetaProfile(Settings.ActiveSettings.Instance.MetaProfiles.PullLegendaryKeys);
-            VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.LootProfiles.LegendaryChestPulls);
+            VTActions.LoadMetaProfile(Settings.ActiveSettings.Instance.VTProfiles.Meta.PullLegendaryKeys);
+            VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.VTProfiles.Loot.LegendaryChestPulls);
 
             VTActions.SetMetaState("Check");
 

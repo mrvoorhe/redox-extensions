@@ -231,10 +231,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\ActiveSettings.cs" />
     <Compile Include="Settings\Formation.cs" />
-    <Compile Include="Settings\LootProfiles.cs" />
+    <Compile Include="Settings\VTLootProfiles.cs" />
     <Compile Include="Settings\Main.cs" />
-    <Compile Include="Settings\MetaProfiles.cs" />
+    <Compile Include="Settings\VTMetaProfiles.cs" />
     <Compile Include="Settings\UserSettings.cs" />
+    <Compile Include="Settings\VTProfiles.cs" />
     <Compile Include="VirindiInterop.Events\SpellCastAttemptingEventArgs.cs" />
     <Compile Include="VirindiInterop.Events\SpellCastCompleteEventArgs.cs" />
     <Compile Include="VirindiInterop\IVTEventsProxy.cs" />

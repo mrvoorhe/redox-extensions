@@ -30,11 +30,14 @@
       "New Riff"
     ]
   ],
-  "MetaProfiles": {
-    "PullLegendaryKeys": "LegendKeys"
-  },
-  "LootProfiles": {
-    "LegendaryChestPulls" : "LootSnobV4LegChests"
+  "VTProfiles": {
+    "Meta": {
+      "PullLegendaryKeys": "LegendKeys"
+    },
+    "Loot": {
+      "LegendaryChestPulls": "LootSnobV4LegChests",
+      "Default": "LootSnobV4LegChests"
+    }
   },
   "Formations": {
     "outside": {
