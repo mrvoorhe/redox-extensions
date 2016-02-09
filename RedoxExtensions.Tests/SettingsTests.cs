@@ -87,5 +87,11 @@ namespace RedoxExtensions.Tests
         {
             Assert.AreEqual(expectedResult, ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults[characterName]);
         }
+
+        [Test]
+        public void LoadAndCheckDebugLevel()
+        {
+            Assert.AreEqual(Diagnostics.DebugLevel.None, ActiveSettings.Instance.DebugLevel);
+        }
     }
 }

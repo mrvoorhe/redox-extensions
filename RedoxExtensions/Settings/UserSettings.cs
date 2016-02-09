@@ -11,5 +11,6 @@ namespace RedoxExtensions.Settings
         public List<List<string>> CharactersGroupedByAccount;
         public Dictionary<string, Formation> Formations;
         public VTProfiles VTProfiles;
+        public Diagnostics.DebugLevel DebugLevel;
     }
 }

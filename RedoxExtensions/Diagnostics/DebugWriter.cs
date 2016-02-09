@@ -12,6 +12,7 @@ using Decal.Adapter.Wrappers;
 using RedoxExtensions.Commands;
 using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Data.Events;
+using RedoxExtensions.Settings;
 
 namespace RedoxExtensions.Diagnostics
 {
@@ -66,6 +67,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(NetworkMessageEventArgs obj, string eventDisplayName)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -83,6 +87,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ChangeFellowshipEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -100,6 +107,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ObjectIdEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -116,6 +126,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(BeginGiveItemEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -132,6 +145,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(EndGiveItemEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -172,6 +188,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ChangeObjectEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -190,6 +209,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(EndNonZeroBusyStateEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -207,6 +229,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(BeginNonZeroBusyStateEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -224,6 +249,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(UsingObjectEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -241,6 +269,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(UsingPortalCompleteEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -272,6 +303,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ApproachVendorEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -289,6 +323,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ApproachingObjectEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -306,6 +343,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(UsingPortalEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -323,6 +363,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(StatusTextInterceptEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -339,6 +382,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ChangePortalModeEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -355,6 +401,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(SpellCastEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -373,6 +422,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(StatusMessageEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -408,6 +460,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(SpellCastAttemptingEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -426,6 +481,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ItemSelectedEventArgs obj)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -452,6 +510,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(ChatParserInterceptEventArgs obj, bool toLogFileOnly)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (_writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -468,6 +529,9 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteObject(Dictionary<string, string> obj, string title)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
@@ -500,7 +564,7 @@ namespace RedoxExtensions.Diagnostics
 
         internal void WriteLoggable(DebugLevel minimumRequiredDebugLevel, Func<string> getLoggableFormat)
         {
-            if (REPlugin.Instance.Settings.DebugLevel < minimumRequiredDebugLevel)
+            if (ActiveSettings.Instance.DebugLevel < minimumRequiredDebugLevel)
             {
                 return;
             }
@@ -517,6 +581,9 @@ namespace RedoxExtensions.Diagnostics
 
         private void WriteObject_ArgLessEventArgs(string eventArgsName)
         {
+            if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)
+                return;
+
             lock (this._writeLock)
             {
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))

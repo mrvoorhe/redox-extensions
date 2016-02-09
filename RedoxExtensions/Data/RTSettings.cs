@@ -17,8 +17,6 @@ namespace RedoxExtensions.Data
 
         private RTSettings(string rootDirectory, string characterName)
         {
-            // TODO : Implement
-            this.DebugLevel = DebugLevel.Medium;
         }
 
         public static RTSettings Resume(string characterName)
@@ -32,7 +30,5 @@ namespace RedoxExtensions.Data
             //throw new NotImplementedException();
             // TODO : Implement
         }
-
-        public DebugLevel DebugLevel { get; set; }
     }
 }
