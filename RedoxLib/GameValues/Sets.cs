@@ -11,13 +11,28 @@ namespace RedoxLib.GameValues
     {
         public const LongValueKey WorldObjectPropertyValue = LongValueKey.ArmorSet;
 
+        public const int ValueSoldier = 13;
         public const int ValueAdept = 14;
+        public const int ValueArcher = 15;
         public const int ValueDefender = 16;
+        public const int ValueTinker = 17;
+        public const int ValueCrafter = 18;
+        public const int ValueHearty = 19;
+        public const int ValueDexterous = 20;
+        public const int ValueWise = 21;
 
         public enum Armor
         {
+            Invalid = 0,
+            Soldier = ValueSoldier,
             Adept = ValueAdept,
-            Defender = ValueDefender
+            Aracher = ValueArcher,
+            Defender = ValueDefender,
+            Tinker = ValueTinker,
+            Crafter = ValueCrafter,
+            Hearty = ValueHearty,
+            Dexterous = ValueDexterous,
+            Wise = ValueWise
         }
 
         private static readonly Dictionary<string, int> _armorShortCutNameToIdTable;
@@ -35,6 +50,19 @@ namespace RedoxLib.GameValues
             {
                 return _armorShortCutNameToIdTable;
             }
+        }
+
+        public static bool TryParseArmorShortName(string shortName, out Armor armor)
+        {
+            int tmp;
+            if (_armorShortCutNameToIdTable.TryGetValue(shortName, out tmp))
+            {
+                armor = (Armor)tmp;
+                return true;
+            }
+
+            armor = Armor.Invalid;
+            return false;
         }
 
         #region IdToNameTable
@@ -143,9 +171,35 @@ namespace RedoxLib.GameValues
 
         private static void InitializeArmorShortCutTable()
         {
-            _armorShortCutNameToIdTable.Add("def", ValueDefender);
+            _armorShortCutNameToIdTable.Add("soldier", ValueSoldier);
+            _armorShortCutNameToIdTable.Add("sol", ValueSoldier);
 
             _armorShortCutNameToIdTable.Add("adept", ValueAdept);
+            _armorShortCutNameToIdTable.Add("ade", ValueAdept);
+
+            _armorShortCutNameToIdTable.Add("archer", ValueArcher);
+            _armorShortCutNameToIdTable.Add("arc", ValueArcher);
+
+            _armorShortCutNameToIdTable.Add("defender", ValueDefender);
+            _armorShortCutNameToIdTable.Add("def", ValueDefender);
+
+            _armorShortCutNameToIdTable.Add("tinker", ValueTinker);
+            _armorShortCutNameToIdTable.Add("tink", ValueTinker);
+            _armorShortCutNameToIdTable.Add("tin", ValueTinker);
+
+            _armorShortCutNameToIdTable.Add("crafter", ValueCrafter);
+            _armorShortCutNameToIdTable.Add("craft", ValueCrafter);
+            _armorShortCutNameToIdTable.Add("cra", ValueCrafter);
+
+            _armorShortCutNameToIdTable.Add("hearty", ValueHearty);
+            _armorShortCutNameToIdTable.Add("hea", ValueHearty);
+
+            _armorShortCutNameToIdTable.Add("dexterous", ValueDexterous);
+            _armorShortCutNameToIdTable.Add("dex", ValueDexterous);
+
+            _armorShortCutNameToIdTable.Add("wise", ValueWise);
+            _armorShortCutNameToIdTable.Add("wis", ValueWise);
+
         }
 
         #endregion

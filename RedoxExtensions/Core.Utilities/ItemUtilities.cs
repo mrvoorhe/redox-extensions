@@ -37,15 +37,13 @@ namespace RedoxExtensions.Core.Utilities
                         return null;
                     }
 
-                    switch (secondOption)
+                    Sets.Armor armor;
+                    if (Sets.TryParseArmorShortName(secondOption, out armor))
                     {
-                        case "def":
-                            return woCollection.GetArmorSetItems(Sets.Armor.Defender);
-                        case "adept":
-                            return woCollection.GetArmorSetItems(Sets.Armor.Adept);
-                        default:
-                            return null;
+                        return woCollection.GetArmorSetItems(armor);
                     }
+
+                    return null;
                 default:
                     // See if it's one of the material short cut keywords
                     int possibleMaterialId;
