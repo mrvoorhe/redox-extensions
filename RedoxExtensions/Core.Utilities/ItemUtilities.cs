@@ -32,6 +32,7 @@ namespace RedoxExtensions.Core.Utilities
                 case "lvl8":
                     return woCollection.GetLevel8SpellComponents();
                 case "set":
+                case "sets":
                     if (string.IsNullOrEmpty(secondOption))
                     {
                         return null;
@@ -45,8 +46,10 @@ namespace RedoxExtensions.Core.Utilities
 
                     return null;
                 case "cloak":
+                case "cloaks":
                     return woCollection.GetCloaks();
                 case "sigil":
+                case "sigils":
                     return woCollection.GetSigils();
                 case "weapon":
                 case "weapons":
