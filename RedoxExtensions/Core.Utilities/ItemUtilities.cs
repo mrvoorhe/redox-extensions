@@ -48,6 +48,24 @@ namespace RedoxExtensions.Core.Utilities
                     return woCollection.GetCloaks();
                 case "sigil":
                     return woCollection.GetSigils();
+                case "weapon":
+                case "weapons":
+                    if (string.IsNullOrEmpty(secondOption))
+                    {
+                        return null;
+                    }
+
+                    switch (secondOption)
+                    {
+                        case "missile":
+                            return woCollection.GetMissileWeapons();
+                        case "melee":
+                            return woCollection.GetMeleeWeapons();
+                        case "magic":
+                            return woCollection.GetMagicWeapons();
+                    }
+
+                    return null;
                 default:
                     // See if it's one of the material short cut keywords
                     int possibleMaterialId;

@@ -54,6 +54,26 @@ namespace RedoxExtensions.Core.Extensions
             return worldObject.ObjectClass == ObjectClass.WandStaffOrb;
         }
 
+        public static bool IsMissileWeapon(this WorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.MissileWeapon;
+        }
+
+        public static bool IsMeleeWeapon(this WorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.MeleeWeapon;
+        }
+
         public static bool IsNpc(this WorldObject worldObject)
         {
             if (worldObject == null)
@@ -409,6 +429,25 @@ namespace RedoxExtensions.Core.Extensions
         public static ReadOnlyCollection<WorldObject> GetSigils(this WorldObjectCollection collection)
         {
             return collection.Where(w => w.IsSigil()).ToList().AsReadOnly();
+        }
+
+        #endregion
+
+        #region Weapons
+
+        public static ReadOnlyCollection<WorldObject> GetMissileWeapons(this WorldObjectCollection collection)
+        {
+            return collection.Where(w => w.IsMissileWeapon()).ToList().AsReadOnly();
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetMeleeWeapons(this WorldObjectCollection collection)
+        {
+            return collection.Where(w => w.IsMeleeWeapon()).ToList().AsReadOnly();
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetMagicWeapons(this WorldObjectCollection collection)
+        {
+            return collection.Where(w => w.IsWandStaffOrb()).ToList().AsReadOnly();
         }
 
         #endregion
