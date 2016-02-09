@@ -21,6 +21,12 @@ namespace RedoxLib.GameValues
         public const int ValueDexterous = 20;
         public const int ValueWise = 21;
 
+        public const int CloakFirstSetId = 49;
+        public const int CloakLastSetId = 90;
+
+        public const int SigilFirstSetId = 35;
+        public const int SigilLastSetId = 39;
+
         public enum Armor
         {
             Invalid = 0,

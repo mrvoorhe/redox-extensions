@@ -165,6 +165,20 @@ namespace RedoxExtensions.Core.Extensions
             return woSetId == setId;
         }
 
+        public static bool IsCloak(this WorldObject wo)
+        {
+            var woSetId = wo.Values(LongValueKey.ArmorSet, 0);
+
+            return woSetId >= Sets.CloakFirstSetId && woSetId <= Sets.CloakLastSetId;
+        }
+
+        public static bool IsSigil(this WorldObject wo)
+        {
+            var woSetId = wo.Values(LongValueKey.ArmorSet, 0);
+
+            return woSetId >= Sets.SigilFirstSetId && woSetId <= Sets.SigilLastSetId;
+        }
+
         #endregion
 
         #region Other Shortcuts
@@ -385,6 +399,16 @@ namespace RedoxExtensions.Core.Extensions
         public static ReadOnlyCollection<WorldObject> GetArmorSetItems(this WorldObjectCollection collection, Sets.Armor value)
         {
             return collection.Where(w => w.IsSet((int)value)).ToList().AsReadOnly();
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetCloaks(this WorldObjectCollection collection)
+        {
+            return collection.Where(w => w.IsCloak()).ToList().AsReadOnly();
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetSigils(this WorldObjectCollection collection)
+        {
+            return collection.Where(w => w.IsSigil()).ToList().AsReadOnly();
         }
 
         #endregion

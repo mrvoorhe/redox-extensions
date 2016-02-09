@@ -44,6 +44,10 @@ namespace RedoxExtensions.Core.Utilities
                     }
 
                     return null;
+                case "cloak":
+                    return woCollection.GetCloaks();
+                case "sigil":
+                    return woCollection.GetSigils();
                 default:
                     // See if it's one of the material short cut keywords
                     int possibleMaterialId;
