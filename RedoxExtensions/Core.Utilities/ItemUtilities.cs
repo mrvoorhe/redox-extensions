@@ -69,6 +69,30 @@ namespace RedoxExtensions.Core.Utilities
                     }
 
                     return null;
+                case "jewelry":
+                case "jew":
+                    if (string.IsNullOrEmpty(secondOption))
+                    {
+                        return null;
+                    }
+
+                    switch (secondOption)
+                    {
+                        case "legendary":
+                        case "leg":
+                            return woCollection.GetJewelryWithLegendaryAndNoRatings();
+                        case "legendary+ratings":
+                        case "leg+ratings":
+                        case "leg+":
+                            return woCollection.GetJewelryWithLegendaryAndRatings();
+                        case "ratings":
+                            return woCollection.GetJewelryWithRatings();
+                        case "max":
+                            return woCollection.GetJewelryWithMaxRatings();
+                    }
+
+                    return null;
+
                 default:
                     // See if it's one of the material short cut keywords
                     int possibleMaterialId;

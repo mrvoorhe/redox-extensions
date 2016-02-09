@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using RedoxLib.GameValues;
 
 namespace RedoxExtensions.Data
 {
@@ -181,6 +182,11 @@ namespace RedoxExtensions.Data
             return this._longValues.ContainsKey((int)index);
         }
 
+        public bool Exists(IntValueKey index)
+        {
+            return this._longValues.ContainsKey((int)index);
+        }
+
         public bool Exists(StringValueKey index)
         {
             return this._stringValues.ContainsKey((int)index);
@@ -197,6 +203,11 @@ namespace RedoxExtensions.Data
         }
 
         public int Values(LongValueKey index)
+        {
+            return this.Values(index, 0);
+        }
+
+        public int Values(IntValueKey index)
         {
             return this.Values(index, 0);
         }
@@ -229,6 +240,17 @@ namespace RedoxExtensions.Data
         }
 
         public int Values(LongValueKey index, int defaultValue)
+        {
+            int value;
+            if (this._longValues.TryGetValue((int)index, out value))
+            {
+                return value;
+            }
+
+            return defaultValue;
+        }
+
+        public int Values(IntValueKey index, int defaultValue)
         {
             int value;
             if (this._longValues.TryGetValue((int)index, out value))
@@ -291,6 +313,11 @@ namespace RedoxExtensions.Data
         }
 
         public bool TryGetValue(LongValueKey index, out int value)
+        {
+            return this._longValues.TryGetValue((int)index, out value);
+        }
+
+        public bool TryGetValue(IntValueKey index, out int value)
         {
             return this._longValues.TryGetValue((int)index, out value);
         }

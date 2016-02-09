@@ -74,6 +74,16 @@ namespace RedoxExtensions.Core.Extensions
             return worldObject.ObjectClass == ObjectClass.MeleeWeapon;
         }
 
+        public static bool IsJewelry(this WorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.Jewelry;
+        }
+
         public static bool IsNpc(this WorldObject worldObject)
         {
             if (worldObject == null)
@@ -327,6 +337,30 @@ namespace RedoxExtensions.Core.Extensions
             throw new NotImplementedException();
         }
 
+        public static Ratings.Information GetRatings(this IWorldObject wo)
+        {
+            foreach (var rating in Ratings.AllRatingsIntValueKeys)
+            {
+                int value;
+                if (wo.TryGetValue(rating, out value) && value > 0)
+                {
+                    return new Ratings.Information(value, (Ratings.Type)rating);
+                }
+            }
+
+            return new Ratings.Information(0, Ratings.Type.None);
+        }
+
+        public static bool HasRatings(this IWorldObject wo)
+        {
+            return wo.GetRatings().Type != Ratings.Type.None;
+        }
+
+        public static bool IsLegendary(this IWorldObject wo)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region WorldObject Conversions
@@ -448,6 +482,35 @@ namespace RedoxExtensions.Core.Extensions
         public static ReadOnlyCollection<WorldObject> GetMagicWeapons(this WorldObjectCollection collection)
         {
             return collection.Where(w => w.IsWandStaffOrb()).ToList().AsReadOnly();
+        }
+
+        #endregion
+
+        #region Jewlery & Clothing
+
+        public static ReadOnlyCollection<WorldObject> GetJewelryWith(this WorldObjectCollection collection, Func<IWorldObject, bool> predicate)
+        {
+            return collection.Where(w => w.IsJewelry() && predicate(w.Wrap())).ToList().AsReadOnly();
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetJewelryWithRatings(this WorldObjectCollection collection)
+        {
+            return collection.GetJewelryWith(wo => wo.HasRatings());
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetJewelryWithMaxRatings(this WorldObjectCollection collection)
+        {
+            return collection.GetJewelryWith(wo => wo.GetRatings().Value == 3);
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetJewelryWithLegendaryAndRatings(this WorldObjectCollection collection)
+        {
+            return collection.GetJewelryWith(wo => wo.HasRatings() && wo.IsLegendary());
+        }
+
+        public static ReadOnlyCollection<WorldObject> GetJewelryWithLegendaryAndNoRatings(this WorldObjectCollection collection)
+        {
+            return collection.GetJewelryWith(wo => !wo.HasRatings() && wo.IsLegendary());
         }
 
         #endregion
