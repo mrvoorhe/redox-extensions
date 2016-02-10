@@ -38,6 +38,13 @@
     "Loot": {
       "LegendaryChestPulls": "LootSnobV4LegChests",
       "Default": "LootSnobV4LegChests"
+    },
+    "Main": {
+      "Default": "Normal",
+      "CharacterDefaults": {
+        "Rockdown Guy": "Support",
+        "Zikka": "Support"
+      }
     }
   },
   "Formations": {
