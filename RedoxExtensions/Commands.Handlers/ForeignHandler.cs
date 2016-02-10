@@ -103,6 +103,14 @@ namespace RedoxExtensions.Commands.Handlers
 
                 #endregion
 
+                #region List
+
+                case "list":
+                    Actions.Dispatched.ListItems.Create(command).Enqueue();
+                    break;
+
+                #endregion
+
                 #region Cram
 
                 case "cram":

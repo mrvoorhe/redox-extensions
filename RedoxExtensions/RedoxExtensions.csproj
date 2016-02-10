@@ -80,9 +80,12 @@
     <Compile Include="Actions.Dispatched\Internal\GiveItemsByKeyword.cs" />
     <Compile Include="Actions.Dispatched\Internal\GiveItemsByName.cs" />
     <Compile Include="Actions.Dispatched\Internal\GoToNearbyLocation.cs" />
+    <Compile Include="Actions.Dispatched\Internal\ListItemsByKeyword.cs" />
+    <Compile Include="Actions.Dispatched\Internal\ListItemsByName.cs" />
     <Compile Include="Actions.Dispatched\Internal\UseNpc.cs" />
     <Compile Include="Actions.Dispatched\Internal\UsePortal.cs" />
     <Compile Include="Actions.Dispatched\Jump.cs" />
+    <Compile Include="Actions.Dispatched\ListItems.cs" />
     <Compile Include="Actions.Dispatched\LootItem.cs" />
     <Compile Include="Actions.Dispatched\LootLandscapeItem.cs" />
     <Compile Include="Actions.Dispatched\SortAll.cs" />

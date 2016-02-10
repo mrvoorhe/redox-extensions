@@ -37,6 +37,10 @@ namespace RedoxExtensions.Commands.Handlers
                     Actions.Dispatched.GiveItems.Create(command).Enqueue();
                     return true;
 
+                case "list":
+                    Actions.Dispatched.ListItems.Create(command).Enqueue();
+                    return true;
+
                 case "cram":
                     Actions.Dispatched.CramItems.Create(command).Enqueue();
                     return true;
