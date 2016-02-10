@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="CurrentCharacter.cs" />
     <Compile Include="ExceptionHelpers.cs" />
+    <Compile Include="GameValues\Identification.cs" />
     <Compile Include="GameValues\IntValueKey.cs" />
     <Compile Include="GameValues\Ratings.cs" />
     <Compile Include="GameValues\Sets.cs" />

@@ -361,6 +361,11 @@ namespace RedoxExtensions.Core.Extensions
             throw new NotImplementedException();
         }
 
+        public static bool RequiresIdentification(this WorldObject wo)
+        {
+            return Identification.Required(wo);
+        }
+
         #endregion
 
         #region WorldObject Conversions
