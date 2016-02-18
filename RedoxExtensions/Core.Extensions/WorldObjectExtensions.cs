@@ -8,6 +8,7 @@ using Decal.Adapter.Wrappers;
 using RedoxLib.GameValues;
 
 using RedoxExtensions.Data;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Core.Extensions
 {

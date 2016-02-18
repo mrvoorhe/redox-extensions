@@ -4,6 +4,7 @@ using System.Text;
 using System.Web.Script.Serialization;
 
 using Decal.Adapter.Wrappers;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Data
 {
