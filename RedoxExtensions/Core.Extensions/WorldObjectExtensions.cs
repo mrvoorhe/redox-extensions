@@ -371,38 +371,19 @@ namespace RedoxExtensions.Core.Extensions
 
         #region WorldObject Conversions
 
-        public static IWorldObject Capture(this WorldObject wo)
-        {
-            if (wo == null)
-            {
-                return null;
-            }
-
-            return new CapturedWorldObject(wo);
-        }
-
         public static IWorldObject Capture(this IWorldObject wo)
         {
-            if (wo == null)
-            {
-                return null;
-            }
-
-            return wo.Id.ToWorldObject().Capture();
-        }
-
-        public static IWorldObject Wrap(this WorldObject wo)
-        {
-            return new WrappedWorldObject(wo);
+            return wo.Capture(REPlugin.Instance);
         }
 
         #endregion
+
 
         #region WorldObject as Integer
 
         public static WorldObject ToWorldObject(this int objectId)
         {
-            return REPlugin.Instance.CoreManager.WorldFilter[objectId];
+            return objectId.ToWorldObject(REPlugin.Instance);
         }
 
         public static bool IsSelf(this int objectId)

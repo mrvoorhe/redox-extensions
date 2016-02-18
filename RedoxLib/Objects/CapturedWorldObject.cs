@@ -11,7 +11,7 @@ namespace RedoxLib.Objects
     /// <summary>
     /// A copied WorldObject that is safe to use from any thread
     /// </summary>
-    public class CapturedWorldObject : IWorldObject
+    internal class CapturedWorldObject : IWorldObject
     {
         private readonly Dictionary<int, bool> _boolValues = new Dictionary<int, bool>();
         private readonly Dictionary<int, double> _doubleValues = new Dictionary<int, double>();
@@ -25,7 +25,7 @@ namespace RedoxLib.Objects
         private readonly Vector3Object _offset;
         private readonly Vector3Object _rawCoordinates;
 
-        public CapturedWorldObject(WorldObject wo)
+        internal CapturedWorldObject(WorldObject wo)
         {
             this.Id = wo.Id;
             this.Name = wo.Name;

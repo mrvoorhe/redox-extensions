@@ -10,11 +10,11 @@ namespace RedoxLib.Objects
     /// <summary>
     /// Wraps a WorldObject instance.  These objects can only be used on the main thread
     /// </summary>
-    public class WrappedWorldObject : IWorldObject
+    internal class WrappedWorldObject : IWorldObject
     {
         private readonly WorldObject _wo;
 
-        public WrappedWorldObject(WorldObject wo)
+        internal WrappedWorldObject(WorldObject wo)
         {
             this._wo = wo;
         }
