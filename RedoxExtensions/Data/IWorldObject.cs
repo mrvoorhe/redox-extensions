@@ -42,19 +42,16 @@ namespace RedoxExtensions.Data
         bool Exists(BoolValueKey index);
         bool Exists(DoubleValueKey index);
         bool Exists(LongValueKey index);
-        bool Exists(IntValueKey index);
         bool Exists(StringValueKey index);
 
         bool Values(BoolValueKey index);
         double Values(DoubleValueKey index);
         int Values(LongValueKey index);
-        int Values(IntValueKey index);
         string Values(StringValueKey index);
 
         bool Values(BoolValueKey index, bool defaultValue);
         double Values(DoubleValueKey index, double defaultValue);
         int Values(LongValueKey index, int defaultValue);
-        int Values(IntValueKey index, int defaultValue);
         string Values(StringValueKey index, string defaultValue);
 
         CoordsObject Coordinates();
@@ -68,6 +65,10 @@ namespace RedoxExtensions.Data
 
         ReadOnlyCollection<int> GetActiveSpells();
         ReadOnlyCollection<int> GetSpells();
+
+        bool Exists(IntValueKey index);
+        int Values(IntValueKey index);
+        int Values(IntValueKey index, int defaultValue);
 
         bool TryGetValue(BoolValueKey index, out bool value);
         bool TryGetValue(DoubleValueKey index, out double value);

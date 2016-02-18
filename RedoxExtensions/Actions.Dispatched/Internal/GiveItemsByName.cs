@@ -10,11 +10,11 @@ using RedoxExtensions.Actions;
 using RedoxExtensions.Commands;
 using RedoxExtensions.Core;
 using RedoxExtensions.Core.Extensions;
-using RedoxExtensions.General.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.VirindiInterop;
 using RedoxExtensions.Diagnostics;
 using RedoxExtensions.Dispatching;
+using RedoxLib.General;
 
 namespace RedoxExtensions.Actions.Dispatched.Internal
 {

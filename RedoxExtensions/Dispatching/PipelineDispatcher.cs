@@ -9,6 +9,7 @@ using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Dispatching.Legacy;
 using RedoxExtensions.VirindiInterop;
 using RedoxExtensions.Diagnostics;
+using RedoxLib.General;
 
 namespace RedoxExtensions.Dispatching
 {
@@ -96,7 +97,7 @@ namespace RedoxExtensions.Dispatching
 
         public void EnqueueNonFailableAction(string command)
         {
-            this.EnqueueNonFailableAction(General.Utilities.ListOperations.Create(command));
+            this.EnqueueNonFailableAction(ListOperations.Create(command));
         }
 
         public void EnqueueNonFailableAction(IEnumerable<string> commandSequence)

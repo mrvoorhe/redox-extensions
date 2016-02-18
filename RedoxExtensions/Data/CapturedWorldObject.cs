@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using RedoxLib.GameValues;
+using RedoxLib.General;
 
 namespace RedoxExtensions.Data
 {
@@ -54,7 +55,7 @@ namespace RedoxExtensions.Data
                 tmpIntList.Add(wo.ActiveSpell(i));
             }
 
-            this._activeSpells = General.Utilities.ListOperations.Capture(tmpIntList).AsReadOnly();
+            this._activeSpells = ListOperations.Capture(tmpIntList).AsReadOnly();
 
             tmpIntList.Clear();
             for (int i = 0; i < wo.SpellCount; i++)
@@ -62,7 +63,7 @@ namespace RedoxExtensions.Data
                 tmpIntList.Add(wo.Spell(i));
             }
 
-            this._spells = General.Utilities.ListOperations.Capture(tmpIntList).AsReadOnly();
+            this._spells = ListOperations.Capture(tmpIntList).AsReadOnly();
 
             foreach (var key in wo.BoolKeys)
                 _boolValues.Add(key, wo.Values((BoolValueKey)key));

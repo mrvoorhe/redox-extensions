@@ -97,6 +97,10 @@
       <Project>{1e892dd2-a5c0-4d2d-87a7-69bcf2ecfc4f}</Project>
       <Name>RedoxTools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RedoxLib\RedoxLib.csproj">
+      <Project>{7d32ea7a-fda9-40e5-913b-e5a1b12388fc}</Project>
+      <Name>RedoxLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

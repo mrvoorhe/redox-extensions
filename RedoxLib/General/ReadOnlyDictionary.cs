@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Collections.ObjectModel;
 
-namespace RedoxExtensions.General.Utilities
+namespace RedoxLib.General
 {
     /// <summary>
     /// Class that defines a dictionary for read-only access.

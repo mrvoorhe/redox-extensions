@@ -8,7 +8,7 @@ using Decal.Adapter;
 using Mag.Shared;
 
 using RedoxExtensions.Core.Utilities;
-using RedoxExtensions.General.Utilities;
+using RedoxLib.General;
 
 namespace RedoxExtensions.Commands
 {
@@ -270,7 +270,7 @@ namespace RedoxExtensions.Commands
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static General.Utilities.Pair<string, string> SplitCommandAndArguments(string message)
+        public static Pair<string, string> SplitCommandAndArguments(string message)
         {
 
             string commandName = string.Empty;

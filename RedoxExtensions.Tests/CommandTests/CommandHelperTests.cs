@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 
 using RedoxExtensions.Commands;
-using RedoxExtensions.General.Utilities;
+using RedoxLib.General;
 
 namespace RedoxExtensions.Tests.CommandTests
 {

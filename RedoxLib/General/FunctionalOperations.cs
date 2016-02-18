@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.General.Utilities
+namespace RedoxLib.General
 {
     #region Public Delegates
 

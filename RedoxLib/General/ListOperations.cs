@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Collections;
 
-namespace RedoxExtensions.General.Utilities
+namespace RedoxLib.General
 {
     /// <summary>
     /// Operations on lists -- ie, IEnumerables.

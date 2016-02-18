@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Decal.Adapter.Wrappers;
-
-using RedoxExtensions.General.Utilities;
+using RedoxLib.General;
 
 namespace RedoxExtensions.Data
 {

@@ -209,12 +209,6 @@
     <Compile Include="Dispatching\PipelineActionType.cs" />
     <Compile Include="Dispatching\PipelineDispatcher.cs" />
     <Compile Include="Dispatching\WaitForCompleteOutcome.cs" />
-    <Compile Include="General.Utilities\CombineHashCodes.cs" />
-    <Compile Include="General.Utilities\FunctionalOperations.cs" />
-    <Compile Include="General.Utilities\ListOperations.cs" />
-    <Compile Include="General.Utilities\Pair.cs" />
-    <Compile Include="General.Utilities\ReadOnlyDictionary.cs" />
-    <Compile Include="General.Utilities\Triple.cs" />
     <Compile Include="Listeners.Monitors\FellowshipMonitor.cs" />
     <Compile Include="Listeners.Monitors\MasterOrSlaveReactions.cs" />
     <Compile Include="Listeners.Monitors\CharacterState.cs" />

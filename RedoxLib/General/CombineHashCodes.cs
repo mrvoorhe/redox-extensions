@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.General.Utilities
+namespace RedoxLib.General
 {
     /// <summary>
     /// Static methods for combining hash codes, used during the implementation of
