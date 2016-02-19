@@ -29,6 +29,12 @@ namespace RedoxExtensions.Settings
                 {
                     var mainSettings = JsonConvert.DeserializeObject<Main>(GetMainSettingsFilePath().ReadAllText());
                     var expanded = Environment.ExpandEnvironmentVariables(mainSettings.UserSettingsFilePath);
+
+                    if (!System.IO.Path.IsPathRooted(expanded))
+                    {
+                        expanded = new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine(expanded).ToString();
+                    }
+
                     _activeSettings = JsonConvert.DeserializeObject<UserSettings>(System.IO.File.ReadAllText(expanded));
                 }
 
