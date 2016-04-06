@@ -654,7 +654,7 @@ namespace RedoxExtensions.Core
             }
             else if (e.Message.Type == 0xF7B0) // Game Events
             {
-                Debug.WriteLineToMain("[ServerDispatch] - Game Event detected!!");
+                //Debug.WriteLineToMain("[ServerDispatch] - Game Event detected!!");
                 //ObjectID - character - the object ID of the message recipient (should be you)
                 //DWORD - sequence - sequence number
                 //GameEvent - event - the (sequenced) message type
@@ -662,12 +662,12 @@ namespace RedoxExtensions.Core
                 short sequence = Convert.ToInt16(e.Message["sequence"]);
                 short gameEvent = Convert.ToInt16(e.Message["event"]);
 
-                Debug.WriteLineToMain("[ServerDispatch] - Game Event Code = {0:X4}", gameEvent);
+                //Debug.WriteLineToMain("[ServerDispatch] - Game Event Code = {0:X4}", gameEvent);
 
                 switch (gameEvent)
                 {
                     case 0x00C9: // Identify Object
-                        Debug.WriteLineToMain("[ServerDispatch] - Identify Object detected!!");
+                        //Debug.WriteLineToMain("[ServerDispatch] - Identify Object detected!!");
 
                         //the object ID of the item or creature being assessed
                         int objectId = Convert.ToInt32(e.Message["object"]);
@@ -675,7 +675,7 @@ namespace RedoxExtensions.Core
                         bool success = Convert.ToBoolean(e.Message["success"]);
 
                         // TODO : Replace with event once working
-                        Debug.WriteLineToMain("[ServerDispatch] - Identify Object Data ObjectId = {0}, Flags = {1:X8}, Success = {2}", objectId, flags, success);
+                        //Debug.WriteLineToMain("[ServerDispatch] - Identify Object Data ObjectId = {0}, Flags = {1:X8}, Success = {2}", objectId, flags, success);
                         break;
                 }
             }
