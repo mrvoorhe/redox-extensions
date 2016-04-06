@@ -266,7 +266,7 @@ namespace RedoxExtensions.Core.Utilities
 
         public static void Face(int woId)
         {
-            Face(woId.ToWorldObject().Wrap());
+            Face(woId.ToWorldObject());
         }
 
         public static void Face(IHaveCoordsObject coordsObject)

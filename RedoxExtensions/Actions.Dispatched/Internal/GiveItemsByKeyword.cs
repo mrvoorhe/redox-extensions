@@ -10,6 +10,7 @@ using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Actions.Dispatched.Internal
 {
@@ -20,7 +21,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         private readonly object _stateLock = new object();
 
-        private WorldObject _targetWorldObj;
+        private IWorldObject _targetWorldObj;
 
         private int _currentGiveIndex = 0;
         private GiveItemOutcome _lastOutcome = GiveItemOutcome.Undefined;

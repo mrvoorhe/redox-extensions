@@ -15,6 +15,7 @@ using RedoxExtensions.VirindiInterop;
 using RedoxExtensions.Diagnostics;
 using RedoxExtensions.Dispatching;
 using RedoxLib.General;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Actions.Dispatched.Internal
 {
@@ -22,7 +23,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
     {
         private readonly ReadOnlyCollection<GiveItemSearchData> _giveSearchData;
         private readonly bool _stopOnTargetFull;
-        private readonly Dictionary<int, WorldObject> _foundTargets = new Dictionary<int, WorldObject>();
+        private readonly Dictionary<int, IWorldObject> _foundTargets = new Dictionary<int, IWorldObject>();
 
         private readonly object _stateLock = new object();
 

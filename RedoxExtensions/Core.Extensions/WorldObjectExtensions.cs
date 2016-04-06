@@ -38,6 +38,11 @@ namespace RedoxExtensions.Core.Extensions
 
         public static void WriteToDebug(this WorldObject worldObject, string message)
         {
+            WriteToDebug(worldObject.Wrap(), message);
+        }
+
+        public static void WriteToDebug(this IWorldObject worldObject, string message)
+        {
             REPlugin.Instance.Debug.WriteLine(string.Format("{0} : {1}", message, worldObject.ToShortSummary()));
         }
 
@@ -46,6 +51,16 @@ namespace RedoxExtensions.Core.Extensions
         #region Basic Is and Has Shortcuts
 
         public static bool IsWandStaffOrb(this WorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.WandStaffOrb;
+        }
+
+        public static bool IsWandStaffOrb(this IWorldObject worldObject)
         {
             if (worldObject == null)
             {
@@ -65,7 +80,27 @@ namespace RedoxExtensions.Core.Extensions
             return worldObject.ObjectClass == ObjectClass.MissileWeapon;
         }
 
+        public static bool IsMissileWeapon(this IWorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.MissileWeapon;
+        }
+
         public static bool IsMeleeWeapon(this WorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.MeleeWeapon;
+        }
+
+        public static bool IsMeleeWeapon(this IWorldObject worldObject)
         {
             if (worldObject == null)
             {
@@ -85,7 +120,27 @@ namespace RedoxExtensions.Core.Extensions
             return worldObject.ObjectClass == ObjectClass.Jewelry;
         }
 
+        public static bool IsJewelry(this IWorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.Jewelry;
+        }
+
         public static bool IsNpc(this WorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.ObjectClass == ObjectClass.Npc;
+        }
+
+        public static bool IsNpc(this IWorldObject worldObject)
         {
             if (worldObject == null)
             {
@@ -105,7 +160,27 @@ namespace RedoxExtensions.Core.Extensions
             return worldObject.Id == REPlugin.Instance.CharacterFilter.Id;
         }
 
+        public static bool IsSelf(this IWorldObject worldObject)
+        {
+            if (worldObject == null)
+            {
+                return false;
+            }
+
+            return worldObject.Id == REPlugin.Instance.CharacterFilter.Id;
+        }
+
         public static bool IsKey(this WorldObject obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            return obj.Name.Contains("Key");
+        }
+
+        public static bool IsKey(this IWorldObject obj)
         {
             if (obj == null)
             {
@@ -117,6 +192,11 @@ namespace RedoxExtensions.Core.Extensions
 
         public static bool IsLegendaryKey(this WorldObject obj)
         {
+            return IsLegendaryKey(obj.Wrap());
+        }
+
+        public static bool IsLegendaryKey(this IWorldObject obj)
+        {
             if (obj == null)
             {
                 return false;
@@ -126,6 +206,11 @@ namespace RedoxExtensions.Core.Extensions
         }
 
         public static bool IsLevel8SpellComponent(this WorldObject obj)
+        {
+            return IsLevel8SpellComponent(obj.Wrap());
+        }
+
+        public static bool IsLevel8SpellComponent(this IWorldObject obj)
         {
             if (obj == null)
             {
@@ -381,9 +466,9 @@ namespace RedoxExtensions.Core.Extensions
 
         #region WorldObject as Integer
 
-        public static WorldObject ToWorldObject(this int objectId)
+        public static IWorldObject ToWorldObject(this int objectId)
         {
-            return objectId.ToWorldObject(REPlugin.Instance);
+            return objectId.ToWorldObject(REPlugin.Instance).Wrap();
         }
 
         public static bool IsSelf(this int objectId)

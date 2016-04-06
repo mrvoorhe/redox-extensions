@@ -10,8 +10,10 @@ using System.Text;
 using System.Threading;
 
 using RedoxExtensions.Commands;
+using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Dispatching;
+using RedoxLib.Utilities;
 
 namespace RedoxExtensions.Actions.Dispatched.Internal
 {
@@ -93,7 +95,11 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         protected override void DoPeform()
         {
             REPlugin.Instance.PluginHost.Actions.SelectItem(this._npcId);
-            REPlugin.Instance.PluginHost.Actions.UseItem(this._npcId, 0);
+
+            using (var mutex = WorldObjectMutex.Obtain(_npcId.ToWorldObject()))
+            {
+                REPlugin.Instance.PluginHost.Actions.UseItem(this._npcId, 0);
+            }
         }
 
         protected override void InitializeData()
