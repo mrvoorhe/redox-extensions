@@ -16,6 +16,7 @@ using RedoxExtensions.Diagnostics;
 using RedoxExtensions.Dispatching;
 using RedoxLib.General;
 using RedoxLib.Objects;
+using RedoxLib.Utilities;
 
 namespace RedoxExtensions.Actions.Dispatched.Internal
 {
@@ -142,7 +143,20 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         {
             var giveData = this._foundItemsToGive[this._currentGiveIndex][this._givenCount[this._currentGiveIndex]];
 
-            giveData.Item.Give(giveData.TargetId);
+            var woTarget = giveData.TargetId.ToWorldObject();
+            if (woTarget.IsNpc())
+            {
+                // When giving to NPC's, sync up so that we don't flood the NPC with items.  Sometimes they bug out
+                // and one character won't get credit for giving the npc an item
+                using (var mutex = WorldObjectMutex.Obtain(woTarget))
+                {
+                    giveData.Item.Give(giveData.TargetId);
+                }
+            }
+            else
+            {
+                giveData.Item.Give(giveData.TargetId);
+            }
         }
 
         protected override void InitializeData()
