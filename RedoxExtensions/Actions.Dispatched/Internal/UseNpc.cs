@@ -132,11 +132,23 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         protected override void HookEvents()
         {
             this._npcResponseListener.FilteredChatBoxMessage += _npcResponseListener_FilteredChatBoxMessage;
+            REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
+        }
+
+        private void Decal_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
+        {
+            // Sometimes the npc won't say anything, all you get is a message about needing to wait.  When this happens, we need to count this
+            // as a successful use as well.
+            if (e.Text.StartsWith("You must wait"))
+            {
+                this.Successful.Set();
+            }
         }
 
         protected override void UnhookEvents()
         {
             this._npcResponseListener.FilteredChatBoxMessage -= _npcResponseListener_FilteredChatBoxMessage;
+            REPlugin.Instance.Events.Decal.ChatBoxMessage -= Decal_ChatBoxMessage;
         }
 
         private void _npcResponseListener_FilteredChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
