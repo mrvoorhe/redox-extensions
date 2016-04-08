@@ -677,6 +677,11 @@ namespace RedoxExtensions.Core
                         // TODO : Replace with event once working
                         //Debug.WriteLineToMain("[ServerDispatch] - Identify Object Data ObjectId = {0}, Flags = {1:X8}, Success = {2}", objectId, flags, success);
                         break;
+                    case 0x01C7: // Ready. Previous Action Complete
+                        // TODO : Is this useful for anything?
+                        //Debug.WriteLineToMain("[ServerDispatch] - Ready.  Previous Action Complete");
+                        break;
+
                 }
             }
         }
