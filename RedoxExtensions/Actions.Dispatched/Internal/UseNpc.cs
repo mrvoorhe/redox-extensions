@@ -160,10 +160,13 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         {
             // Sometimes the npc won't say anything, all you get is a message about needing to wait.  When this happens, we need to count this
             // as a successful use as well.
-            if (e.Text.StartsWith("You must wait"))
-            {
-                this.Successful.Set();
-            }
+            Debug.WriteLine("UseNpc : ChatBox Message. Text = {2}, Color = {0}, Target = {1}", e.Color, e.Target, e.Text);
+
+            // NOTE : Some special NPC's don't send you a tell, they just result in a chatbox message.  Since the list of possible Text is endless,
+            // let's treat any chatbox message as success.
+            // This could potentially result in false positives. But I think the odds are low and favoring success over failed will normally give a slightly better behavior
+            // since failing means retry over and over
+            this.Successful.Set();
         }
 
         protected override void UnhookEvents()
