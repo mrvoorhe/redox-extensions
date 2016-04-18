@@ -33,6 +33,11 @@ namespace RedoxExtensions.Commands.Handlers
                     Actions.CharacterActions.PullLegendaryKeys();
                     return true;
 
+                case "use":
+                    // Can be used for anything.
+                    Actions.Dispatched.UseObject.Create(command).Enqueue();
+                    return true;
+
                 case "give":
                     Actions.Dispatched.GiveItems.Create(command).Enqueue();
                     return true;
