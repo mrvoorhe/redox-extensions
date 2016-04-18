@@ -113,11 +113,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         protected override void DoPeform()
         {
             REPlugin.Instance.PluginHost.Actions.SelectItem(this._npcId);
-
-            using (var mutex = WorldObjectMutex.Obtain(_npcId.ToWorldObject()))
-            {
-                REPlugin.Instance.PluginHost.Actions.UseItem(this._npcId, 0);
-            }
+            REPlugin.Instance.PluginHost.Actions.UseItem(this._npcId, 0);
         }
 
         protected override void InitializeData()
