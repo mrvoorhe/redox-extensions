@@ -379,6 +379,12 @@ namespace RedoxExtensions.Dispatching
                     return true;
                 }
 
+                if (!_pendingAction.Ready())
+                {
+                    // The action has said that for some reason it is not ready to be performed yet.
+                    return true;
+                }
+
                 try
                 {
                     // First begin invoke the action

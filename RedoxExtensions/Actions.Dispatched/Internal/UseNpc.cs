@@ -92,6 +92,17 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             base.Dispose(disposing);
         }
 
+        protected override bool DoReady(int attemptsThusFar)
+        {
+            //  The first couple times, let's just spam use the npc.  Some of them you can use quickly and there is no need
+            //  to get bogged down syncing up with a global lock
+            if (attemptsThusFar < 3)
+                return true;
+
+
+            throw new NotImplementedException();
+        }
+
         protected override void DoPeform()
         {
             REPlugin.Instance.PluginHost.Actions.SelectItem(this._npcId);
