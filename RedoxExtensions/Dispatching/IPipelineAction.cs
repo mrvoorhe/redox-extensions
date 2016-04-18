@@ -23,6 +23,8 @@ namespace RedoxExtensions.Dispatching
 
         VirindiInterop.VTRunState DesiredVTRunState { get; }
 
+        bool Ready();
+
         /// <summary>
         /// Called on the game thread.  Called before BeginInvoke.  Could be busy when this is called.
         /// </summary>

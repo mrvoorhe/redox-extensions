@@ -179,5 +179,148 @@ namespace RedoxExtensions.Tests
                 }
             }
         }
+
+        [Test]
+        public void VerifyReadyBehaviorWhenReadyInitially()
+        {
+            var fakeDecalEventsProxy = new Fakes.FakeDecalEventsProxy();
+            using (var fakePipelineAction = new Fakes.FakePipelineAction())
+            {
+                using (var dispatcher = new PipelineDispatcher(fakeDecalEventsProxy))
+                {
+                    dispatcher.EnqueueAction(fakePipelineAction);
+
+                    // Nothing should be called as a result of queueing
+                    Assert.AreEqual(0, fakePipelineAction.ReadyCallCount);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    // Step 1 is to Init.  Ready should not have been called yet
+                    Assert.AreEqual(0, fakePipelineAction.ReadyCallCount);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    // Step 2 is to BeginInvoke & Wait in the Background
+                    Assert.IsTrue(dispatcher.HasPendingAction);
+
+                    Assert.AreEqual(1, fakePipelineAction.ReadyCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.BeginInvokeCallCount);
+
+                    // Now tell the background wait to release.
+                    fakePipelineAction.ForTesting_SetComplete(false);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+                    Assert.IsFalse(dispatcher.HasPendingAction);
+
+                    // Now the action should have been fully processed
+                    Assert.AreEqual(1, fakePipelineAction.InitCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.BeginInvokeCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.EndInvokeCallCount);
+                    Assert.IsTrue(fakePipelineAction.IsComplete);
+
+                    Assert.AreEqual(0, dispatcher.QueueCount);
+                }
+            }
+        }
+
+        [Test]
+        public void VerifyReadyBehavior_WhenNotReady()
+        {
+            var fakeDecalEventsProxy = new Fakes.FakeDecalEventsProxy();
+            using (var fakePipelineAction = new Fakes.FakePipelineAction(false))
+            {
+                using (var dispatcher = new PipelineDispatcher(fakeDecalEventsProxy))
+                {
+                    dispatcher.EnqueueAction(fakePipelineAction);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    // Step 1 is to Init.   Ready should not have been called yet
+                    Assert.AreEqual(0, fakePipelineAction.ReadyCallCount);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    // Step 2 is to Call Ready, Perform if so, and Wait in the Background
+                    Assert.IsTrue(dispatcher.HasPendingAction);
+
+                    Assert.AreEqual(1, fakePipelineAction.ReadyCallCount);
+                    Assert.AreEqual(0, fakePipelineAction.BeginInvokeCallCount);
+                    Assert.AreEqual(0, fakePipelineAction.EndInvokeCallCount);
+                    Assert.IsFalse(fakePipelineAction.IsComplete);
+                }
+            }
+        }
+
+        [Test]
+        public void VerifyReadyBehavior_WhenNotReady_ThenBecomesReady()
+        {
+            var fakeDecalEventsProxy = new Fakes.FakeDecalEventsProxy();
+            using (var fakePipelineAction = new Fakes.FakePipelineAction(false))
+            {
+                using (var dispatcher = new PipelineDispatcher(fakeDecalEventsProxy))
+                {
+                    dispatcher.EnqueueAction(fakePipelineAction);
+
+                    Assert.AreEqual(0, fakePipelineAction.ReadyCallCount);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    // Step 1 is to Init.  Ready should not have been called yet
+                    Assert.AreEqual(0, fakePipelineAction.ReadyCallCount);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    // Step 2 is to Call Ready, Perform if so, and Wait in the Background
+                    Assert.IsTrue(dispatcher.HasPendingAction);
+
+                    Assert.AreEqual(1, fakePipelineAction.ReadyCallCount);
+                    Assert.AreEqual(0, fakePipelineAction.BeginInvokeCallCount);
+                    Assert.AreEqual(0, fakePipelineAction.EndInvokeCallCount);
+                    Assert.IsFalse(fakePipelineAction.IsComplete);
+
+                    // So set it as ready so the next time around we can perform it
+                    fakePipelineAction.ForTesting_Ready = true;
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+
+                    Assert.AreEqual(2, fakePipelineAction.ReadyCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.BeginInvokeCallCount);
+                    Assert.AreEqual(0, fakePipelineAction.EndInvokeCallCount);
+                    Assert.IsFalse(fakePipelineAction.IsComplete);
+
+                    // Now tell the background wait to release.
+                    fakePipelineAction.ForTesting_SetComplete(false);
+
+                    // The action should report complete, but the dispatcher shouldn't have processed it yet
+                    // since we haven't fired render frame yet.
+                    Assert.AreEqual(1, fakePipelineAction.InitCallCount);
+                    Assert.AreEqual(2, fakePipelineAction.ReadyCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.BeginInvokeCallCount);
+                    Assert.AreEqual(0, fakePipelineAction.EndInvokeCallCount);
+                    Assert.IsTrue(fakePipelineAction.IsComplete);
+
+                    // Fire the render event
+                    fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+                    Assert.IsFalse(dispatcher.HasPendingAction);
+
+                    // Now the action should have been fully processed
+                    Assert.AreEqual(1, fakePipelineAction.InitCallCount);
+                    Assert.AreEqual(2, fakePipelineAction.ReadyCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.BeginInvokeCallCount);
+                    Assert.AreEqual(1, fakePipelineAction.EndInvokeCallCount);
+                    Assert.IsTrue(fakePipelineAction.IsComplete);
+
+                    Assert.AreEqual(0, dispatcher.QueueCount);
+                }
+            }
+        }
     }
 }

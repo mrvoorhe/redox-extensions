@@ -151,6 +151,11 @@ namespace RedoxExtensions.Dispatching
             this.HookEvents();
         }
 
+        public virtual bool Ready()
+        {
+            return true;
+        }
+
         public void Perform()
         {
             this.DoPeform();
