@@ -12,6 +12,7 @@ using System.Threading;
 using RedoxExtensions.Commands;
 using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
+using RedoxExtensions.Diagnostics;
 using RedoxExtensions.Dispatching;
 using RedoxLib.Utilities;
 
@@ -25,6 +26,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         private string _npcName;
 
         private VTRunScope _originalVTScope;
+        private WorldObjectMutex _woMutex;
 
         private bool _disposed;
 
@@ -97,10 +99,22 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             //  The first couple times, let's just spam use the npc.  Some of them you can use quickly and there is no need
             //  to get bogged down syncing up with a global lock
             if (attemptsThusFar < 3)
+            {
+                // TODO Remove
+                Debug.WriteLineToMain("UseNpc : Quick Ready.  Attempts = {0}", attemptsThusFar);
+                return true;
+            }
+
+            if (_woMutex == null)
+                _woMutex = WorldObjectMutex.Create(_npcId.ToWorldObject());
+
+            if (_woMutex.TryObtain(0))
                 return true;
 
+            // TODO Remove For debugging only
+            Debug.WriteLineToMain("UseNpc : Not Ready");
 
-            throw new NotImplementedException();
+            return false;
         }
 
         protected override void DoPeform()
@@ -126,6 +140,9 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
         {
+            if (_woMutex != null)
+                _woMutex.Dispose();
+
             switch (finalOutcome)
             {
                 case WaitForCompleteOutcome.Success:
