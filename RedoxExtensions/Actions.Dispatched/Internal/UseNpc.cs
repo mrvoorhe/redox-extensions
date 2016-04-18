@@ -98,21 +98,14 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         {
             //  The first couple times, let's just spam use the npc.  Some of them you can use quickly and there is no need
             //  to get bogged down syncing up with a global lock
-            if (attemptsThusFar < 3)
-            {
-                // TODO Remove
-                Debug.WriteLineToMain("UseNpc : Quick Ready.  Attempts = {0}", attemptsThusFar);
+            if (attemptsThusFar < 10)
                 return true;
-            }
 
             if (_woMutex == null)
                 _woMutex = WorldObjectMutex.Create(_npcId.ToWorldObject());
 
             if (_woMutex.TryObtain(0))
                 return true;
-
-            // TODO Remove For debugging only
-            Debug.WriteLineToMain("UseNpc : Not Ready");
 
             return false;
         }
