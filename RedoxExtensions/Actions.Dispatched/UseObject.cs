@@ -20,17 +20,19 @@ namespace RedoxExtensions.Actions.Dispatched
     {
         public static IAction Create(ICommand command)
         {
+            int objectId;
             if (command.Arguments.Count == 0)
             {
-                throw new DisplayToUserException("At least 1 argument is required", command);
+                objectId = REPlugin.Instance.Actions.CurrentSelection;
             }
-
-            if (command.Arguments.Count > 1)
+            else if (command.Arguments.Count > 1)
             {
                 throw new DisplayToUserException(string.Format("Multi argument use is not currently supported : {0}", command.RebuildArgumentString()), command);
             }
-
-            var objectId = int.Parse(command.Arguments[0].Trim());
+            else
+            {
+                objectId = int.Parse(command.Arguments[0].Trim());
+            }
 
             return Create(command, objectId);
         }

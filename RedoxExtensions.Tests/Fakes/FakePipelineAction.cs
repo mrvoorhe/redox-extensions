@@ -15,12 +15,23 @@ namespace RedoxExtensions.Tests.Fakes
         private bool _postDisposeCachedCompleteValue;
         private bool _disposed;
 
+        public FakePipelineAction()
+            :this(true)
+        {
+        }
+
+        public FakePipelineAction(bool intiallyReady)
+        {
+            ForTesting_Ready = intiallyReady;
+        }
+
         public int BeginInvokeCallCount { get; private set; }
         public int EndInvokeCallCount { get; private set; }
         public int InitCallCount { get; private set; }
         public int ResetForRetryCallCount { get; private set; }
         public int RetryCallCount { get; private set; }
         public int DisposeCallCount { get; private set; }
+        public int ReadyCallCount { get; private set; }
 
         public int BeginInvokeThreadId { get; private set; }
         public int EndInvokeThreadId { get; private set; }
@@ -28,6 +39,8 @@ namespace RedoxExtensions.Tests.Fakes
         public int ResetForRetryThreadId { get; private set; }
 
         public int WaitForCompleteThreadId { get; private set; }
+
+        public bool ForTesting_Ready { get; set; }
 
         public bool IsComplete
         {
@@ -80,6 +93,12 @@ namespace RedoxExtensions.Tests.Fakes
         {
             this.InitThreadId = Thread.CurrentThread.ManagedThreadId;
             this.InitCallCount++;
+        }
+
+        public bool Ready()
+        {
+            ReadyCallCount++;
+            return ForTesting_Ready;
         }
 
         public void Perform()

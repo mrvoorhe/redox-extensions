@@ -151,6 +151,11 @@ namespace RedoxExtensions.Dispatching
             this.HookEvents();
         }
 
+        public bool Ready()
+        {
+            return this.DoReady(_retryCounter);
+        }
+
         public void Perform()
         {
             this.DoPeform();
@@ -245,6 +250,11 @@ namespace RedoxExtensions.Dispatching
         #endregion
 
         #region Virtual
+
+        protected virtual bool DoReady(int attemptsThusFar)
+        {
+            return true;
+        }
 
         protected virtual void DoResetForRetry()
         {
