@@ -17,11 +17,19 @@ namespace RedoxLib.Utilities
     {
         public readonly IWorldObject WorldObject;
         private readonly Mutex _mutex;
+        private bool _owned;
 
-        private WorldObjectMutex(IWorldObject wo, Mutex mutex)
+        private WorldObjectMutex(IWorldObject wo, Mutex mutex, bool owned)
         {
             _mutex = mutex;
             WorldObject = wo;
+            _owned = owned;
+        }
+
+        public static WorldObjectMutex Create(IWorldObject wo)
+        {
+            var mutex = new Mutex(false, string.Format("Global\\re_{0}", wo.Id));
+            return new WorldObjectMutex(wo, mutex, false);
         }
 
         public static WorldObjectMutex Obtain(IWorldObject wo)
@@ -32,7 +40,25 @@ namespace RedoxLib.Utilities
             if (!owned)
                 mutex.WaitOne();
 
-            return new WorldObjectMutex(wo, mutex);
+            return new WorldObjectMutex(wo, mutex, true);
+        }
+
+        public void Obtain()
+        {
+            if (_owned)
+                return;
+
+            _mutex.WaitOne();
+            _owned = true;
+        }
+
+        public bool TryObtain(int millisecondsTimeout)
+        {
+            if (_owned)
+                return true;
+
+            _owned = _mutex.WaitOne(millisecondsTimeout);
+            return _owned;
         }
 
         public void Dispose()
