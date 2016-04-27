@@ -72,6 +72,9 @@ namespace RedoxExtensions.Commands.Handlers
                 case "hom":
                     ACUtilities.ProcessArbitraryCommand("/hom");
                     break;
+                case "tn":
+                    ACUtilities.ProcessArbitraryCommand("/tn");
+                    break;
 
                 #endregion
 
