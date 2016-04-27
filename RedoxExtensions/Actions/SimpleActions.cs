@@ -192,7 +192,38 @@ namespace RedoxExtensions.Actions
         /// <summary>
         /// Initializes VT to a harmless, and standardized state across all fellow members
         /// </summary>
-        internal static void InitState(ISourceInformation command)
+        internal static void InitState(ICommand command)
+        {
+            if (command.Arguments.Count == 0)
+            {
+                InitDefaultState(command);
+            }
+            else
+            {
+                switch (command.Arguments[0].ToLower())
+                {
+                    case "mule":
+                        InitMuleState(command);
+                        break;
+                    default:
+                        throw new DisplayToUserException(string.Format("Unknown state : {0}", command.Arguments[0].ToLower()), command);
+                }
+            }
+        }
+
+        internal static void InitMuleState(ISourceInformation command)
+        {
+            if (command.FromSelf)
+            {
+                return;
+            }
+
+            VTActions.DisableAllVTStates();
+            VTActions.EnableAutoCram();
+            VTActions.StartVT();
+        }
+
+        internal static void InitDefaultState(ISourceInformation command)
         {
             // Init needs to put everybod into a consistent state, day in and day out.
             // So we also need to initialize our main VT profile.
