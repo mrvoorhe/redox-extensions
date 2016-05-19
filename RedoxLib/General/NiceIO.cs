@@ -10,11 +10,10 @@ namespace NiceIO
 {
     public class NPath
     {
-        private static readonly StringComparison PathStringComparison = IsLinux()
-            ? StringComparison.InvariantCulture
-            : StringComparison.InvariantCultureIgnoreCase;
+        private static readonly StringComparison PathStringComparison = IsLinux() ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
 
         private readonly string[] _elements;
+        private readonly bool _isRelative;
         private readonly string _driveLetter;
 
         #region construction
@@ -28,7 +27,7 @@ namespace NiceIO
 
             var split = path.Split('/', '\\');
 
-            IsRelative = IsRelativeFromSplitString(split);
+            _isRelative = IsRelativeFromSplitString(split);
 
             _elements = ParseSplitStringIntoElements(split.Where(s => s.Length > 0).ToArray());
         }
@@ -46,7 +45,7 @@ namespace NiceIO
                         stack.RemoveAt(stack.Count - 1);
                         continue;
                     }
-                    if (!IsRelative)
+                    if (!_isRelative)
                         throw new ArgumentException("You cannot create a path that tries to .. past the root");
                 }
                 stack.Add(input);
@@ -82,7 +81,7 @@ namespace NiceIO
         private NPath(string[] elements, bool isRelative, string driveLetter)
         {
             _elements = elements;
-            IsRelative = isRelative;
+            _isRelative = isRelative;
             _driveLetter = driveLetter;
         }
 
@@ -96,8 +95,7 @@ namespace NiceIO
             if (!append.All(p => p.IsRelative))
                 throw new ArgumentException("You cannot .Combine a non-relative path");
 
-            return new NPath(ParseSplitStringIntoElements(_elements.Concat(append.SelectMany(p => p._elements))),
-                IsRelative, _driveLetter);
+            return new NPath(ParseSplitStringIntoElements(_elements.Concat(append.SelectMany(p => p._elements))), _isRelative, _driveLetter);
         }
 
         public NPath Parent
@@ -105,37 +103,36 @@ namespace NiceIO
             get
             {
                 if (_elements.Length == 0)
-                    throw new InvalidOperationException("Parent is called on an empty path");
+                    throw new InvalidOperationException ("Parent is called on an empty path");
 
-                var newElements = _elements.Take(_elements.Length - 1).ToArray();
+                var newElements = _elements.Take (_elements.Length - 1).ToArray ();
 
-                return new NPath(newElements, IsRelative, _driveLetter);
+                return new NPath (newElements, _isRelative, _driveLetter);
             }
         }
 
         public NPath RelativeTo(NPath path)
         {
             if (!IsChildOf(path))
-                throw new ArgumentException(
-                    "Path.RelativeTo() was invoked with two paths that are unrelated. invoked on: " + ToString() +
-                    " asked to be made relative to: " + path);
+                throw new ArgumentException("Path.RelativeTo() was invoked with two paths that are unrelated. invoked on: " + ToString() + " asked to be made relative to: " + path);
 
             return new NPath(_elements.Skip(path._elements.Length).ToArray(), true, null);
         }
 
         public NPath ChangeExtension(string extension)
         {
-            var newElements = (string[]) _elements.Clone();
-            newElements[newElements.Length - 1] = Path.ChangeExtension(_elements[_elements.Length - 1],
-                WithDot(extension));
-            return new NPath(newElements, IsRelative, _driveLetter);
+            var newElements = (string[])_elements.Clone();
+            newElements[newElements.Length - 1] = Path.ChangeExtension(_elements[_elements.Length - 1], WithDot(extension));
+            return new NPath(newElements, _isRelative, _driveLetter);
         }
-
         #endregion construction
 
         #region inspection
 
-        public bool IsRelative { get; }
+        public bool IsRelative
+        {
+            get { return _isRelative; }
+        }
 
         public string FileName
         {
@@ -144,7 +141,7 @@ namespace NiceIO
 
         public string FileNameWithoutExtension
         {
-            get { return Path.GetFileNameWithoutExtension(FileName); }
+            get { return Path.GetFileNameWithoutExtension (FileName); }
         }
 
         public IEnumerable<string> Elements
@@ -188,7 +185,7 @@ namespace NiceIO
             {
                 var last = _elements.Last();
                 var index = last.LastIndexOf(".");
-                if (index < 0) return string.Empty;
+                if (index < 0) return String.Empty;
                 return last.Substring(index);
             }
         }
@@ -216,7 +213,7 @@ namespace NiceIO
                 sb.Append(_driveLetter);
                 sb.Append(":");
             }
-            if (!IsRelative)
+            if (!_isRelative)
                 sb.Append(Slash(slashMode));
             var first = true;
             foreach (var element in _elements)
@@ -230,7 +227,7 @@ namespace NiceIO
             return sb.ToString();
         }
 
-        private static char Slash(SlashMode slashMode)
+        static char Slash(SlashMode slashMode)
         {
             switch (slashMode)
             {
@@ -243,17 +240,17 @@ namespace NiceIO
             }
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(Object obj)
         {
             if (obj == null)
                 return false;
 
             // If parameter cannot be cast to Point return false.
             var p = obj as NPath;
-            if ((object) p == null)
+            if ((Object)p == null)
                 return false;
 
-            if (p.IsRelative != IsRelative)
+            if (p._isRelative != _isRelative)
                 return false;
 
             if (!string.Equals(p._driveLetter, _driveLetter, PathStringComparison))
@@ -276,7 +273,7 @@ namespace NiceIO
                 return true;
 
             // If one is null, but not both, return false.
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             // Return true if the fields match:
@@ -287,12 +284,12 @@ namespace NiceIO
         {
             unchecked
             {
-                var hash = 17;
+                int hash = 17;
                 // Suitable nullity checks etc, of course :)
-                hash = hash*23 + IsRelative.GetHashCode();
-                hash = hash*23 + _elements.GetHashCode();
+                hash = hash * 23 + _isRelative.GetHashCode();
+                hash = hash * 23 + _elements.GetHashCode();
                 if (_driveLetter != null)
-                    hash = hash*23 + _driveLetter.GetHashCode();
+                    hash = hash * 23 + _driveLetter.GetHashCode();
                 return hash;
             }
         }
@@ -317,16 +314,13 @@ namespace NiceIO
         {
             return _elements.Length == 0;
         }
-
         #endregion inspection
 
         #region directory enumeration
 
         public IEnumerable<NPath> Files(string filter, bool recurse = false)
         {
-            return
-                Directory.GetFiles(ToString(), filter,
-                    recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(s => new NPath(s));
+            return Directory.GetFiles(ToString(), filter, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(s => new NPath(s));
         }
 
         public IEnumerable<NPath> Files(bool recurse = false)
@@ -346,9 +340,7 @@ namespace NiceIO
 
         public IEnumerable<NPath> Directories(string filter, bool recurse = false)
         {
-            return
-                Directory.GetDirectories(ToString(), filter,
-                    recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(s => new NPath(s));
+            return Directory.GetDirectories(ToString(), filter, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(s => new NPath(s));
         }
 
         public IEnumerable<NPath> Directories(bool recurse = false)
@@ -359,7 +351,6 @@ namespace NiceIO
         #endregion
 
         #region filesystem writing operations
-
         public NPath CreateFile()
         {
             ThrowIfRelative();
@@ -376,8 +367,7 @@ namespace NiceIO
         public NPath CreateFile(NPath file)
         {
             if (!file.IsRelative)
-                throw new ArgumentException(
-                    "You cannot call CreateFile() on an existing path with a non relative argument");
+                throw new ArgumentException("You cannot call CreateFile() on an existing path with a non relative argument");
             return Combine(file).CreateFile();
         }
 
@@ -425,14 +415,14 @@ namespace NiceIO
             if (dest.DirectoryExists())
                 return CopyWithDeterminedDestination(dest.Combine(FileName), fileFilter);
 
-            return CopyWithDeterminedDestination(dest, fileFilter);
+            return CopyWithDeterminedDestination (dest, fileFilter);
         }
 
-        private NPath CopyWithDeterminedDestination(NPath absoluteDestination, Func<NPath, bool> fileFilter)
+        NPath CopyWithDeterminedDestination(NPath absoluteDestination, Func<NPath,bool> fileFilter)
         {
             if (absoluteDestination.IsRelative)
-                throw new ArgumentException("absoluteDestination must be absolute");
-
+                throw new ArgumentException ("absoluteDestination must be absolute");
+            
             if (FileExists())
             {
                 if (!fileFilter(absoluteDestination))
@@ -473,6 +463,28 @@ namespace NiceIO
                 }
             else
                 throw new InvalidOperationException("Trying to delete a path that does not exist: " + ToString());
+        }
+
+        public NPath MakeDirectoryEmpty()
+        {
+            ThrowIfRelative();
+            if (FileExists())
+                throw new InvalidOperationException("It is not valid to perform this operation on a file");
+
+            if (DirectoryExists())
+            {
+                try
+                {
+                    Delete();
+                }
+                catch (IOException)
+                {
+                    if (Files(true).Any())
+                        throw;
+                }
+            }
+
+            return EnsureDirectoryExists();
         }
 
         public static NPath CreateTempDirectory(string myprefix)
@@ -522,7 +534,10 @@ namespace NiceIO
 
         public static NPath CurrentDirectory
         {
-            get { return new NPath(Directory.GetCurrentDirectory()); }
+            get
+            {
+                return new NPath(Directory.GetCurrentDirectory());
+            }
         }
 
         public static NPath HomeDirectory
@@ -537,16 +552,18 @@ namespace NiceIO
 
         public static NPath SystemTemp
         {
-            get { return new NPath(Path.GetTempPath()); }
+            get
+            {
+                return new NPath(Path.GetTempPath());
+            }
         }
 
         #endregion
 
         private void ThrowIfRelative()
         {
-            if (IsRelative)
-                throw new ArgumentException(
-                    "You are attempting an operation on a Path that requires an absolute path, but the path is relative");
+            if (_isRelative)
+                throw new ArgumentException("You are attempting an operation on a Path that requires an absolute path, but the path is relative");
         }
 
         public NPath EnsureDirectoryExists(string append = "")
@@ -579,8 +596,7 @@ namespace NiceIO
         public bool IsChildOf(NPath potentialBasePath)
         {
             if ((IsRelative && !potentialBasePath.IsRelative) || !IsRelative && potentialBasePath.IsRelative)
-                throw new ArgumentException(
-                    "You can only call IsChildOf with two relative paths, or with two absolute paths");
+                throw new ArgumentException("You can only call IsChildOf with two relative paths, or with two absolute paths");
 
             if (IsEmpty())
                 return false;
@@ -603,6 +619,21 @@ namespace NiceIO
             while (true)
             {
                 if (candidate.Exists(needle))
+                    return candidate;
+
+                if (candidate.IsEmpty())
+                    return null;
+                candidate = candidate.Parent;
+            }
+        }
+
+        public NPath FirstParentMatching(Func<NPath, bool> predicate)
+        {
+            ThrowIfRelative();
+            var candidate = this;
+            while (true)
+            {
+                if (predicate(candidate))
                     return candidate;
 
                 if (candidate.IsEmpty())
@@ -642,14 +673,10 @@ namespace NiceIO
         public IEnumerable<NPath> CopyFiles(NPath destination, bool recurse, Func<NPath, bool> fileFilter = null)
         {
             destination.EnsureDirectoryExists();
-            return
-                Files(recurse)
-                    .Where(fileFilter ?? AlwaysTrue)
-                    .Select(file => file.Copy(destination.Combine(file.RelativeTo(this))))
-                    .ToArray();
+            return Files(recurse).Where(fileFilter ?? AlwaysTrue).Select(file => file.Copy(destination.Combine(file.RelativeTo(this)))).ToArray();
         }
 
-        private static bool AlwaysTrue(NPath p)
+        static bool AlwaysTrue(NPath p)
         {
             return true;
         }
@@ -698,11 +725,6 @@ namespace NiceIO
         public static IEnumerable<string> InQuotes(this IEnumerable<NPath> self, SlashMode forward = SlashMode.Native)
         {
             return self.Select(p => p.InQuotes(forward));
-        }
-
-        public static NPath ToNPath(this string path)
-        {
-            return new NPath(path);
         }
     }
 
