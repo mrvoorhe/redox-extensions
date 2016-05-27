@@ -81,6 +81,7 @@
     <Compile Include="Actions.Dispatched\Internal\GiveItemsByKeyword.cs" />
     <Compile Include="Actions.Dispatched\Internal\GiveItemsByName.cs" />
     <Compile Include="Actions.Dispatched\Internal\GoToNearbyLocation.cs" />
+    <Compile Include="Actions.Dispatched\Internal\GotoPointLimited.cs" />
     <Compile Include="Actions.Dispatched\Internal\ListItemsByKeyword.cs" />
     <Compile Include="Actions.Dispatched\Internal\ListItemsByName.cs" />
     <Compile Include="Actions.Dispatched\Internal\UseNpc.cs" />
