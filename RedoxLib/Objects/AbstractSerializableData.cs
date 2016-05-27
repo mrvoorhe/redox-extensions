@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RedoxLib.General;
 
-using RedoxExtensions.Core;
-
-namespace RedoxExtensions.Data
+namespace RedoxLib.Objects
 {
     public abstract class AbstractSerializableData : ISerializableData
     {

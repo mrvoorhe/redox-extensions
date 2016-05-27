@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using RedoxExtensions.Diagnostics;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Data.Events
 {

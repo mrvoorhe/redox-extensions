@@ -39,12 +39,17 @@
     <Reference Include="Decal.FileService">
       <HintPath>..\External\Decal\bin\Decal.FileService.dll</HintPath>
     </Reference>
+    <Reference Include="MagTools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\External\MagTools\MagTools.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Newtonsoft\bin\Net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -64,17 +69,22 @@
     <Compile Include="General\NiceIO.cs" />
     <Compile Include="General\Pair.cs" />
     <Compile Include="General\ReadOnlyDictionary.cs" />
+    <Compile Include="General\Serializer.cs" />
     <Compile Include="General\Triple.cs" />
     <Compile Include="IDecalPluginProvider.cs" />
+    <Compile Include="Objects\AbstractSerializableData.cs" />
     <Compile Include="Objects\CapturedWorldObject.cs" />
+    <Compile Include="Objects\Extensions\CoordsObjectExtensions.cs" />
     <Compile Include="Objects\IHaveCoordsObject.cs" />
+    <Compile Include="Objects\ISerializableData.cs" />
     <Compile Include="Objects\ISerializableWorldObject.cs" />
     <Compile Include="Objects\IWorldObjectEnhancements.cs" />
     <Compile Include="Objects\IWorldObjectBasics.cs" />
     <Compile Include="Objects\IWorldObjectIdentified.cs" />
     <Compile Include="Objects\IWorldObject.cs" />
+    <Compile Include="Objects\Location.cs" />
     <Compile Include="Objects\SerializedWorldObject.cs" />
-    <Compile Include="Objects\WorldObjectExtensionMethods.cs" />
+    <Compile Include="Objects\Extensions\WorldObjectExtensionMethods.cs" />
     <Compile Include="Objects\WorldObjectHelpers.cs" />
     <Compile Include="Objects\WrappedWorldObject.cs" />
     <Compile Include="PluginProvider.cs" />

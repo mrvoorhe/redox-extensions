@@ -9,6 +9,7 @@ using RedoxExtensions.Commands;
 using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching;
 using RedoxExtensions.VirindiInterop;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Actions.Dispatched.Internal
 {
@@ -16,6 +17,8 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
     {
         private readonly CoordsObject _coords;
         private readonly double _finalHeadingInDegrees;
+
+        private Location _startingLocation;
 
         public GoToNearbyLocation(ISupportFeedback requestor, CoordsObject coords, double finalHeadingInDegrees)
             : base(requestor)
@@ -100,29 +103,53 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             // 2) Hold down forward key until DoEnd called  (Or Call CoreManager.SetAutoRun(true)
             // 3) Each RenderFrame event, check current location, if destination, set successful & SetAutoRun(false)
             // 4) Set final heading once at location
-            throw new NotImplementedException();
+            //var angleToDestionation = _startingLocation.Coords.AngleToCoords(_coords);
+
+            //Requestor.GiveFeedback(FeedbackType.Information, "I'm going to face {0}", angleToDestionation);
+            //REPlugin.Instance.Actions.FaceHeading(angleToDestionation, true);
+
+            //REPlugin.Instance.CoreManager.Actions.SetAutorun(true);
+
+            throw new NotImplementedException("This logic doesn't work entirely.  Need to use chained actions");
         }
 
         protected override void InitializeData()
         {
-            throw new NotImplementedException();
+            _startingLocation = Location.CaptureCurrent();
         }
 
         protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
         {
-            throw new NotImplementedException();
+            switch (finalOutcome)
+            {
+                case WaitForCompleteOutcome.Success:
+                    if (!this.Requestor.FromSelf)
+                    {
+                        this.Requestor.GiveFeedback(FeedbackType.Successful, "{0}, I made it to my destination", this.Requestor.SourceCharacter);
+                    }
+                    break;
+                default:
+                    this.Requestor.GiveFeedback(FeedbackType.Failed, "{0}, I FAILED", this.Requestor.SourceCharacter);
+                    break;
+            }
         }
 
         protected override void HookEvents()
         {
-            throw new NotImplementedException();
+            REPlugin.Instance.CoreManager.RenderFrame += CoreManager_RenderFrame;
         }
 
         protected override void UnhookEvents()
         {
-            throw new NotImplementedException();
+            REPlugin.Instance.CoreManager.RenderFrame -= CoreManager_RenderFrame;
         }
 
         #endregion
+
+        private void CoreManager_RenderFrame(object sender, EventArgs e)
+        {
+            //var newLocation = Location.CaptureCurrent();
+            throw new NotImplementedException();
+        }
     }
 }

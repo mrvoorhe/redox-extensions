@@ -16,6 +16,8 @@ namespace RedoxExtensions.Commands
 
         Failed,
 
-        Successful
+        Successful,
+
+        Information
     }
 }

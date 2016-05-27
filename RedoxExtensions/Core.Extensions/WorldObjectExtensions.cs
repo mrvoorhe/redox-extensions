@@ -9,6 +9,7 @@ using RedoxLib.GameValues;
 
 using RedoxExtensions.Data;
 using RedoxLib.Objects;
+using RedoxLib.Objects.Extensions;
 
 namespace RedoxExtensions.Core.Extensions
 {

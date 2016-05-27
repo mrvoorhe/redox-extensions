@@ -6,6 +6,7 @@ using System.Text;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.Data.Events;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Core
 {

@@ -11,6 +11,7 @@ using RedoxExtensions.Core;
 using RedoxExtensions.Data;
 using RedoxExtensions.Data.Events;
 using RedoxExtensions.Tests.Fakes;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Tests
 {

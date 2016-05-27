@@ -9,6 +9,7 @@ using RedoxExtensions.Commands;
 using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Data;
 using RedoxLib.Objects;
+using RedoxLib.Objects.Extensions;
 
 namespace RedoxExtensions.Core.Utilities
 {

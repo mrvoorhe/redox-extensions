@@ -72,7 +72,7 @@ namespace RedoxExtensions.Commands.Handlers
                     return true;
 
                 case "face":
-                    Actions.SimpleActions.FaceObject(command);
+                    Actions.Dispatched.Face.Create(command).Enqueue();
                     return true;
 
                 case "goto":

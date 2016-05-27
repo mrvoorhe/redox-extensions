@@ -4,9 +4,8 @@ using System.Text;
 using System.Web.Script.Serialization;
 
 using Decal.Adapter.Wrappers;
-using RedoxLib.Objects;
 
-namespace RedoxExtensions.Data
+namespace RedoxLib.Objects
 {
     public class Location : AbstractSerializableData, IHaveCoordsObject
     {
@@ -32,11 +31,11 @@ namespace RedoxExtensions.Data
         public static Location CaptureCurrent()
         {
             return new Location(
-                REPlugin.Instance.Actions.LocationX,
-                REPlugin.Instance.Actions.LocationY,
-                REPlugin.Instance.Actions.LocationZ,
-                REPlugin.Instance.Actions.Landcell,
-                REPlugin.Instance.Actions.Heading);
+                PluginProvider.Instance.Actions.LocationX,
+                PluginProvider.Instance.Actions.LocationY,
+                PluginProvider.Instance.Actions.LocationZ,
+                PluginProvider.Instance.Actions.Landcell,
+                PluginProvider.Instance.Actions.Heading);
         }
 
         public bool CurrentIsSameAs(Location otherLocation, bool compareHeading)
@@ -46,30 +45,47 @@ namespace RedoxExtensions.Data
 
         public static bool CurrentDiffersFrom(Location otherLocation, bool compareHeading)
         {
-            if(otherLocation.X != REPlugin.Instance.Actions.LocationX)
+            if(otherLocation.X != PluginProvider.Instance.Actions.LocationX)
             {
                 return true;
             }
 
-            if(otherLocation.Y != REPlugin.Instance.Actions.LocationY)
+            if(otherLocation.Y != PluginProvider.Instance.Actions.LocationY)
             {
                 return true;
             }
 
-            if(otherLocation.Z != REPlugin.Instance.Actions.LocationZ)
+            if(otherLocation.Z != PluginProvider.Instance.Actions.LocationZ)
             {
                 return true;
             }
 
             if (compareHeading)
             {
-                if (otherLocation.HeadingInDegrees != REPlugin.Instance.Actions.Heading)
+                if (otherLocation.HeadingInDegrees != PluginProvider.Instance.Actions.Heading)
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public static double CurrentHeading
+        {
+            get { return PluginProvider.Instance.Actions.Heading; }
+        }
+
+        public static bool HeadingMatches(double targetHeading)
+        {
+            return HeadingMatches(CurrentHeading, targetHeading);
+        }
+
+        public static bool HeadingMatches(double heading1, double heading2)
+        {
+            var h1Rounded = Math.Round(heading1, 3);
+            var h2Rounded = Math.Round(heading2, 3);
+            return h1Rounded == h2Rounded;
         }
 
         public double X { get; set; }

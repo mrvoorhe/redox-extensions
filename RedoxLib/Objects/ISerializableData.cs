@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxLib.Tests
+namespace RedoxLib.Objects
 {
-    public class Class1
+    public interface ISerializableData
     {
+        string Serialize();
     }
 }

@@ -11,6 +11,7 @@ using RedoxExtensions.Data.Events;
 using Decal.Adapter;
 
 using RedoxExtensions.Core.Extensions;
+using RedoxLib.Objects;
 
 namespace RedoxExtensions.Diagnostics
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Decal.Adapter.Wrappers;
 
-namespace RedoxLib.Objects
+namespace RedoxLib.Objects.Extensions
 {
     public static class WorldObjectExtensionMethods
     {

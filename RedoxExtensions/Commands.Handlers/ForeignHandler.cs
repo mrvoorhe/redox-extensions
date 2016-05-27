@@ -294,6 +294,14 @@ namespace RedoxExtensions.Commands.Handlers
                     SimpleActions.SetFormation(command);
                     break;
 
+                case "stance":
+                    Actions.Dispatched.Stance.Create(command).Enqueue();
+                    break;
+
+                case "face":
+                    Actions.Dispatched.Face.Create(command).Enqueue();
+                    break;
+
                 // Pets
                 case "pets":
                     SimpleActions.ProcessPetsCommand(command);
