@@ -118,10 +118,12 @@ namespace RedoxExtensions.Wrapper.Diagnostics
 
         protected void LogRawMessage(string text, StreamWriter echoStream, bool toLogFileOnly)
         {
+#if DEBUG
             if (!toLogFileOnly)
             {
                 this._pluginServices.WriteToChat(text, DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
             }
+#endif
 
             echoStream.WriteLine((string.Format("[{0}] [{1}] [{3}] - {2}", this._messagePrefix , DateTime.Now.ToString(), text, System.Threading.Thread.CurrentThread.ManagedThreadId)));
         }
