@@ -153,8 +153,6 @@ namespace RedoxExtensions.Core
         {
             REPlugin.Instance.InvokeOperationSafely(() =>
             {
-                REPlugin.Instance.Debug.WriteLine("CharacterState.ActionComplete");
-
                 if (this.ActionComplete != null)
                 {
                     this.ActionComplete(sender, e);

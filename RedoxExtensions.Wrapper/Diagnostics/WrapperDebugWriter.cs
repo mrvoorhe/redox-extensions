@@ -82,7 +82,9 @@ namespace RedoxExtensions.Wrapper.Diagnostics
 
         public void WriteLine(string text)
         {
+#if DEBUG
             this._pluginServices.WriteToChat(this.FormatWithPrefix(text), DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
+#endif
 
             // Log to file as well
             this.LogLine(text);
@@ -93,11 +95,11 @@ namespace RedoxExtensions.Wrapper.Diagnostics
             this.WriteLine(string.Format(text, args));
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         protected void WriteCurrentStateStuff(StreamWriter echoStream, bool toLogFileOnly)
         {
@@ -139,6 +141,6 @@ namespace RedoxExtensions.Wrapper.Diagnostics
             }
         }
 
-        #endregion
+#endregion
     }
 }
