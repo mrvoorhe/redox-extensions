@@ -726,6 +726,11 @@ namespace NiceIO
         {
             return self.Select(p => p.InQuotes(forward));
         }
+
+        public static NPath ToNPath(this string path)
+        {
+            return new NPath(path);
+        }
     }
 
     public enum SlashMode
