@@ -368,6 +368,12 @@ namespace RedoxExtensions.Commands.Handlers
                     SimpleActions.ProcessPetsCommand(command);
                     break;
 
+                case "pmin":
+                case "petdensity":
+                case "petmin":
+                    VTActions.SetPetMonsterDensity(int.Parse(command.Arguments[0]));
+                    break;
+
                 // VT State short cuts
                 case "buffon":
                     VTActions.EnableBuffing();
