@@ -7,7 +7,9 @@ using RedoxExtensions.Actions;
 using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Mine;
+using RedoxExtensions.Settings;
 using RedoxExtensions.VirindiInterop;
+using RedoxLib;
 
 namespace RedoxExtensions.Commands.Handlers
 {
@@ -244,6 +246,8 @@ namespace RedoxExtensions.Commands.Handlers
                     SimpleActions.WaitNice(command);
                     break;
 
+                #region Range
+
                 case "range":
                     SimpleActions.SetAttackRange(command);
                     break;
@@ -252,6 +256,71 @@ namespace RedoxExtensions.Commands.Handlers
                 case "prange":
                     SimpleActions.SetPetRange(command);
                     break;
+
+                #region Mage
+
+                case "magerange":
+                case "mrange":
+                    if (ActiveSettings.Instance.Mage.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                case "attackmagerange":
+                case "amrange":
+                    if (ActiveSettings.Instance.AttackMage.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                case "supportmagerange":
+                case "smrange":
+                    if (ActiveSettings.Instance.SupportMage.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                #endregion
+
+                #region Support
+
+                case "supportrange":
+                case "srange":
+                    if (ActiveSettings.Instance.Support.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                #endregion
+
+                #region Archer
+
+                case "archerrange":
+                case "arange":
+                    if (ActiveSettings.Instance.Archer.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                case "attackarcherrange":
+                case "aarange":
+                    if (ActiveSettings.Instance.AttackArcher.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                case "supportarcherrange":
+                case "sarange":
+                    if (ActiveSettings.Instance.SupportArcher.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                #endregion
+
+                #region Melee
+
+                case "meleerange":
+                    if (ActiveSettings.Instance.Melee.Contains(CurrentCharacter.Name))
+                        SimpleActions.SetAttackRange(command);
+                    break;
+
+                #endregion
+
+                #endregion
 
                 case "fight":
                     SimpleActions.Fight();

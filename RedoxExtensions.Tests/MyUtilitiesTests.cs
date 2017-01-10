@@ -111,7 +111,7 @@ namespace RedoxExtensions.Tests
 
             formation1.RangeTable.Add("A3-C1", 20);
 
-            formation1.Looters = new HashSet<string>();
+            formation1.Looters = new List<string>();
             formation1.Looters.Add("A1-C1");
             formation1.Looters.Add("A3-C1");
 

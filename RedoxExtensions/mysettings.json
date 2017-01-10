@@ -64,5 +64,42 @@
         "Virmar Jr": 10
       }
     }
-  }
+  },
+  "Mage": [
+    "Redox",
+    "Kreap",
+    "Rockdown Guy",
+    "Mrguy",
+    "New Riff"
+  ],
+  "AttackMage": [
+    "Redox",
+    "Kreap",
+    "Mrguy",
+    "New Riff"
+  ],
+  "SupportMage": [
+    "Rockdown Guy"
+  ],
+  "Support": [
+    "Rockdown Guy",
+    "Zikka"
+  ],
+  "Archer": [
+    "Rathion",
+    "Mini Bonsai",
+    "Context Bound",
+    "Zikka"
+  ],
+  "AttackArcher": [
+    "Rathion",
+    "Mini Bonsai",
+    "Context Bound"
+  ],
+  "SupportArcher": [
+    "Zikka"
+  ],
+  "Melee": [
+    "Virmar Jr"
+  ]
 }
