@@ -51,6 +51,9 @@ namespace RedoxExtensions.Actions.Dispatched
                 case ObjectClass.Portal:
                     return Internal.UsePortal.Create(command, objectId);
                 case ObjectClass.Npc:
+                    if (worldObj.Name.ToLower().Contains("portal"))
+                        return Internal.UsePortal.Create(command, objectId);
+
                     return Internal.UseNpc.Create(command, objectId);
                 default:
                     throw new DisplayToUserException(string.Format("Unknown object class to use : {0}", worldObj.ObjectClass), command);

@@ -95,15 +95,25 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         protected override void HookEvents()
         {
             REPlugin.Instance.Events.RE.UsingPortalComplete += RTEvents_UsingPortalComplete;
+            REPlugin.Instance.Events.Decal.ChangePortalMode += Decal_ChangePortalMode;
+        }
+
+        private void Decal_ChangePortalMode(object sender, Decal.Adapter.Wrappers.ChangePortalModeEventArgs e)
+        {
+            //REPlugin.Instance.Debug.WriteLine("Portal mode changes to : {0}", e.Type);
+            // Consder enter or exist as successful
+            this.Successful.Set();
         }
 
         protected override void UnhookEvents()
         {
             REPlugin.Instance.Events.RE.UsingPortalComplete -= RTEvents_UsingPortalComplete;
+            REPlugin.Instance.Events.Decal.ChangePortalMode -= Decal_ChangePortalMode;
         }
 
         private void RTEvents_UsingPortalComplete(object sender, Data.Events.UsingPortalCompleteEventArgs e)
         {
+            //REPlugin.Instance.Debug.WriteLine("Using portal complete");
             if (e.Successful)
             {
                 this.Successful.Set();
