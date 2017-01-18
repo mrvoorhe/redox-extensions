@@ -26,6 +26,7 @@ namespace RedoxExtensions.Wrapper.Diagnostics
 
         public void LogError(Exception ex)
         {
+#if DEBUG
             lock (_writeLock)
             {
                 using (StreamWriter errorStream = new StreamWriter(this._currentPath, true))
@@ -50,6 +51,7 @@ namespace RedoxExtensions.Wrapper.Diagnostics
             {
                 this._pluginServices.Debug.WriteLine(ex.ToString());
             }
+#endif
         }
     }
 }
