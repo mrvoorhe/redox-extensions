@@ -14,10 +14,10 @@ using RedoxExtensions.Core;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching.Legacy;
+using RedoxExtensions.Location;
 using RedoxExtensions.Mine;
 using RedoxExtensions.PhatACInterop;
 using RedoxLib.General;
-using RedoxLib.Location;
 
 namespace RedoxExtensions.Actions
 {

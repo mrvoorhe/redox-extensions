@@ -6,7 +6,6 @@ using System.Text;
 using Decal.Adapter.Wrappers;
 
 using RedoxExtensions.Commands;
-using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching;
 using RedoxExtensions.VirindiInterop;
 
@@ -45,7 +44,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             return Create(requestor, new CoordsObject(eastWest, northSouth), headingInDegrees);
         }
 
-        public static IAction Create(ISupportFeedback requestor, Location location)
+        public static IAction Create(ISupportFeedback requestor, Location.Location location)
         {
             return new GoToNearbyLocation(requestor, location.Coords, location.HeadingInDegrees);
         }

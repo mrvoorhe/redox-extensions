@@ -19,9 +19,9 @@ namespace RedoxExtensions.Core
         private readonly IDecalEventsProxy _decalEvents;
         private readonly IREEvents _reEvents;
         private readonly Action<SelfJumpCompleteEventArgs> _fireJumpComplete;
-        private readonly Func<Location> _captureCurrentLocation;
+        private readonly Func<Location.Location> _captureCurrentLocation;
 
-        private readonly List<Location> _jumpTrajectory = new List<Location>();
+        private readonly List<Location.Location> _jumpTrajectory = new List<Location.Location>();
 
         private bool _isRecording = false;
         private JumpData _cachedJumpData;
@@ -33,7 +33,7 @@ namespace RedoxExtensions.Core
             IREEvents rtEvents,
             IDecalEventsProxy decalEvents,
             Action<SelfJumpCompleteEventArgs> fireJumpComplete,
-            Func<Location> captureLocation)
+            Func<Location.Location> captureLocation)
         {
             this._decalEvents = decalEvents;
             this._reEvents = rtEvents;
@@ -47,7 +47,7 @@ namespace RedoxExtensions.Core
             IREEvents rtEvents,
             IDecalEventsProxy decalEvents,
             Action<SelfJumpCompleteEventArgs> fireJumpComplete)
-            : this(rtEvents, decalEvents, fireJumpComplete, Location.CaptureCurrent)
+            : this(rtEvents, decalEvents, fireJumpComplete, Location.Location.CaptureCurrent)
         {
         }
 
@@ -123,7 +123,7 @@ namespace RedoxExtensions.Core
             }
         }
 
-        internal Location DetermineLandingLocation()
+        internal Location.Location DetermineLandingLocation()
         {
             // Figure out what the landing location was.  Initially keep it simple. use the last location in the trajectory,
             // Although it may require a little finesse to compensate for bouncing/lag

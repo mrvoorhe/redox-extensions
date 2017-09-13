@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace RedoxLib.Location
+namespace RedoxLib.Tests
 {
-    public struct FullLocation
+    class HereToKeepCompilerHappy
     {
     }
 }

@@ -12,8 +12,8 @@ namespace RedoxExtensions.Data.Events
     {
         public SelfJumpCompleteEventArgs(
             JumpData jumpData,
-            IEnumerable<Location> trajectory,
-            Location landingLocation,
+            IEnumerable<Location.Location> trajectory,
+            Location.Location landingLocation,
             double maxHeightInMeters,
             double distanceJumpedInMeters,
             TimeSpan airTime)
@@ -28,9 +28,9 @@ namespace RedoxExtensions.Data.Events
 
         public JumpData JumpData { get; private set; }
 
-        public ReadOnlyCollection<Location> Trajectory { get; private set; }
+        public ReadOnlyCollection<Location.Location> Trajectory { get; private set; }
 
-        public Location LandingLocation { get; private set; }
+        public Location.Location LandingLocation { get; private set; }
 
         public double MaxHeightInMeters { get; private set; }
 

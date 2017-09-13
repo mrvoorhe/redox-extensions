@@ -177,7 +177,7 @@
     <Compile Include="Data\GiveItemOutcome.cs" />
     <Compile Include="Data\ISerializableData.cs" />
     <Compile Include="Data\JumpData.cs" />
-    <Compile Include="Data\Location.cs" />
+    <Compile Include="Location\Location.cs" />
     <Compile Include="Data\RTSettings.cs" />
     <Compile Include="Data\SpellIds.cs" />
     <Compile Include="Data\StatusMessageType.cs" />
@@ -215,6 +215,13 @@
     <Compile Include="Listeners.Monitors\WorldMonitor.cs" />
     <Compile Include="Listeners.Reactors\CombatRecovery.cs" />
     <Compile Include="Listeners\TellListener.cs" />
+    <Compile Include="Location\Direction.cs" />
+    <Compile Include="Location\Dungeon.cs" />
+    <Compile Include="Location\DungeonDatabase.cs" />
+    <Compile Include="Location\FullLocation.cs" />
+    <Compile Include="Location\Town.cs" />
+    <Compile Include="Location\UserFacingCoord.cs" />
+    <Compile Include="Location\UserFacingLocation.cs" />
     <Compile Include="Macros\SnowyValley.cs" />
     <Compile Include="Macros\TouTou.cs" />
     <Compile Include="MagToolsInterop\MTActions.cs" />
@@ -264,6 +271,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

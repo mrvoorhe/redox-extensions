@@ -1,5 +1,6 @@
 ﻿using System;
-namespace RedoxLib.Location
+
+namespace RedoxExtensions.Location
 {
     public enum Direction
     {

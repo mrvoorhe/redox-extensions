@@ -68,7 +68,7 @@ namespace RedoxExtensions.Diagnostics
 
         #region Misc
 
-        public static string ToPrettyString(this ReadOnlyCollection<Location> locationCollection)
+        public static string ToPrettyString(this ReadOnlyCollection<Location.Location> locationCollection)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine();

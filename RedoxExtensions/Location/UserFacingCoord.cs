@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxLib.Location
+namespace RedoxExtensions.Location
 {
     public struct UserFacingCoord
     {

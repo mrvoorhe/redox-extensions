@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using RedoxLib.Location;
+using RedoxExtensions.Location;
 
-namespace RedoxLib.Tests
+namespace RedoxExtensions.Tests.LocationTests
 {
     [TestFixture]
     public class UserFacingCoordTests

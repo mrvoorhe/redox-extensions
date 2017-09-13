@@ -26,15 +26,15 @@ namespace RedoxExtensions.Tests
             var fakeRtEvents = new FakeRTEvents();
             var fakeDecalEvents = new FakeDecalEventsProxy();
 
-            Queue<Location> locationResults = new Queue<Location>();
-            locationResults.Enqueue(new Location(0, 0, 1, 0, 0));
-            locationResults.Enqueue(new Location(0, 0, 2, 0, 0));
-            locationResults.Enqueue(new Location(0, 0, 3, 0, 0));
-            locationResults.Enqueue(new Location(0, 0, 4, 0, 0));
+            Queue<Location.Location> locationResults = new Queue<Location.Location>();
+            locationResults.Enqueue(new Location.Location(0, 0, 1, 0, 0));
+            locationResults.Enqueue(new Location.Location(0, 0, 2, 0, 0));
+            locationResults.Enqueue(new Location.Location(0, 0, 3, 0, 0));
+            locationResults.Enqueue(new Location.Location(0, 0, 4, 0, 0));
 
             for (int i = 0; i < JumpRecorder.NumberOfConsecutiveZCoordsSameToSingleLand; i++)
             {
-                locationResults.Enqueue(new Location(0, 0, 5, 0, 0));
+                locationResults.Enqueue(new Location.Location(0, 0, 5, 0, 0));
             }
 
             List<SelfJumpCompleteEventArgs> cachedCompleteCallValues = new List<SelfJumpCompleteEventArgs>();
@@ -43,7 +43,7 @@ namespace RedoxExtensions.Tests
 
             JumpRecorder recorder = new JumpRecorder(fakeRtEvents, fakeDecalEvents, e => cachedCompleteCallValues.Add(e), () => locationResults.Dequeue());
 
-            var initialJumpData = new JumpData(new Location(0, 0, 0, 0, 0), 0.0, 0.0);
+            var initialJumpData = new JumpData(new Location.Location(0, 0, 0, 0, 0), 0.0, 0.0);
 
             Assert.IsFalse(recorder.IsRecording);
 

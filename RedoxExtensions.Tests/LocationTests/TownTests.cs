@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using RedoxLib.Location;
+using RedoxExtensions.Location;
 
-namespace RedoxLib.Tests
+namespace RedoxExtensions.Tests.LocationTests
 {
     [TestFixture]
     public class TownTests

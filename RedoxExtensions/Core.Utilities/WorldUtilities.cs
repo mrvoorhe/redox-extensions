@@ -81,7 +81,7 @@ namespace RedoxExtensions.Core.Utilities
             return REPlugin.Instance.WorldFilter.Distance(obj1.Id, obj2.Id) * 240;
         }
 
-        public static double GetDistance(Location loc1, Location loc2)
+        public static double GetDistance(Location.Location loc1, Location.Location loc2)
         {
             return GetDistance(loc1.Coords, loc2.Coords);
         }
@@ -162,14 +162,14 @@ namespace RedoxExtensions.Core.Utilities
             return REPlugin.Instance.WorldFilter.Distance(REPlugin.Instance.CharacterFilter.Id, destObj.Id) * 240;
         }
 
-        public static double GetDistanceFromSelf(Location point)
+        public static double GetDistanceFromSelf(Location.Location point)
         {
             return GetDistanceFromSelf(point.Coords);
         }
 
         public static double GetDistanceFromSelf(CoordsObject point)
         {
-            var selfLocation = Location.CaptureCurrent();
+            var selfLocation = Location.Location.CaptureCurrent();
 
             return GetDistance(selfLocation.Coords, point);
         }
@@ -242,7 +242,7 @@ namespace RedoxExtensions.Core.Utilities
             return WithinRangeOfSelf(wo.Coordinates(), maxDistance);
         }
 
-        public static bool WithinRangeOfSelf(Location location, int maxDistance)
+        public static bool WithinRangeOfSelf(Location.Location location, int maxDistance)
         {
             return WithinRangeOfSelf(location.Coords, maxDistance);
         }
@@ -287,7 +287,7 @@ namespace RedoxExtensions.Core.Utilities
                 throw new ArgumentNullException("coords");
             }
 
-            var selfCoords = Location.CaptureCurrent().Coords;
+            var selfCoords = Location.Location.CaptureCurrent().Coords;
             var angle = selfCoords.AngleToCoords(coords);
             REPlugin.Instance.Actions.FaceHeading(angle, true);
         }

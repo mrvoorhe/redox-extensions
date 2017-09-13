@@ -577,7 +577,7 @@ namespace RedoxExtensions.Core
                     return;
                 }
 
-                var jumpData = new JumpData(Location.CaptureCurrent(), heading, height);
+                var jumpData = new JumpData(Location.Location.CaptureCurrent(), heading, height);
                 var jumpEventArgs = new JumpEventArgs(characterId, jumpData, numLogins, totalJumps);
 
                 REPlugin.Instance.Debug.WriteObject(jumpEventArgs);

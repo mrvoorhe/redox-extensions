@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NiceIO;
 
-namespace RedoxLib.Location
+namespace RedoxExtensions.Location
 {
     static class DungeonDatabase
     {

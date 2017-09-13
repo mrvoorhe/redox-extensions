@@ -7,14 +7,14 @@ namespace RedoxExtensions.Data
 {
     public class JumpData
     {
-        public JumpData(Location fromLocation, double heading, double height)
+        public JumpData(Location.Location fromLocation, double heading, double height)
         {
             this.Location = fromLocation;
             this.Heading = heading;
             this.Height = height;
         }
 
-        public Location Location { get; private set; }
+        public Location.Location Location { get; private set; }
         public double Heading { get; private set; }
         public double Height { get; private set; }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RedoxExtensions.Core.Utilities;
-using RedoxLib.Location;
+using RedoxExtensions.Location;
 
 namespace RedoxExtensions.PhatACInterop
 {

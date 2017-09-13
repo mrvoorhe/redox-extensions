@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Decal.Adapter.Wrappers;
 
-namespace RedoxLib.Location
+namespace RedoxExtensions.Location
 {
     /// <summary>
     /// Coords in the format you seen in the radar

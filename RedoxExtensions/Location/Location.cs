@@ -4,9 +4,10 @@ using System.Text;
 using System.Web.Script.Serialization;
 
 using Decal.Adapter.Wrappers;
+using RedoxExtensions.Data;
 using RedoxLib.Objects;
 
-namespace RedoxExtensions.Data
+namespace RedoxExtensions.Location
 {
     public class Location : AbstractSerializableData, IHaveCoordsObject
     {
