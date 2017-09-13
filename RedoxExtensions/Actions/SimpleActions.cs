@@ -15,6 +15,9 @@ using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching.Legacy;
 using RedoxExtensions.Mine;
+using RedoxExtensions.PhatACInterop;
+using RedoxLib.General;
+using RedoxLib.Location;
 
 namespace RedoxExtensions.Actions
 {
@@ -456,6 +459,46 @@ namespace RedoxExtensions.Actions
                 },
                 MillisecondsDelayBeforeKillProcessOnExit,
                 null);
+        }
+
+        internal static bool Teleport(ICommand command)
+        {
+            return Teleport(command.Arguments.AggregateWithSpace());
+        }
+
+        internal static bool Teleport(string args)
+        {
+            UserFacingLocation location;
+            if (UserFacingLocation.TryParse(args, out location))
+            {
+                PhatACActions.TeleTo(location);
+                return true;
+            }
+
+            Town town;
+            if (Town.TryParse(args, out town))
+            {
+                PhatACActions.TeleTown(town.Name);
+                return true;
+            }
+
+            Dungeon dungeon;
+            if (Dungeon.TryParse(args, out dungeon))
+            {
+                PhatACActions.TeleTo(dungeon.Location);
+                return true;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Teleports into a named dungeon
+        /// </summary>
+        /// <param name="command"></param>
+        internal static void TeleportInto(ICommand command)
+        {
+            throw new NotImplementedException();
         }
     }
 }

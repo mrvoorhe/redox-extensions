@@ -379,6 +379,15 @@ namespace RedoxExtensions.Commands.Handlers
                     VTActions.EnableBuffing();
                     break;
 
+                // PhatAC based
+                case "tele":
+                    SimpleActions.Teleport(command);
+                    break;
+
+                case "teleinto":
+                    SimpleActions.TeleportInto(command);
+                    break;
+
                 default:
                     CommandResponseHandler.TellSource(command, "Unknown Command : {0} , with value of : {1}", command.Name, command.RebuildArgumentString());
                     break;

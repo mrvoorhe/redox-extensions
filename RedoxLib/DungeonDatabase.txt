@@ -1,0 +1,1437 @@
+
+Dungeons
+Dungeons Exemplar.jpg
+Related topics: Locations
+See also:
+Maps
+Travelling
+
+
+
+1-9
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+20.5S, 7.6E - Ancient Portal	20.5S, 7.6E	None	Lost City of Neftet	The Crystal Amulet of the A'nekshay	None Available
+20.5S, 7.6E - Catacombs	Via Ancient Portal	None	Lost City of Neftet	The Crystal Amulet of the A'nekshay	None Available
+20.7S, 7.5E - Ancient Portal	20.7S, 7.5E	None	Lost City of Neftet	The Crystal Idol of the A'nekshay	None Available
+20.7S, 7.5E - Catacombs	Via Ancient Portal	None	Lost City of Neftet	The Crystal Idol of the A'nekshay	None Available
+20.7S, 7.6E - Ancient Portal	20.7S, 7.6E	None	Lost City of Neftet	The Crystal Sword of the A'nekshay	None Available
+20.7S, 7.6E - Catacombs	Via Ancient Portal	None	Lost City of Neftet	The Crystal Sword of the A'nekshay	None Available
+21.0S, 7.5E - Ancient Portal	21.0S, 7.5E	None	Lost City of Neftet	The Crystal Staff of the A'nekshay	None Available
+A
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+A Cave	24.2N, 43.2E	None	Release	Tibri's Fire Spear	ACMaps
+A Drudge Nest	40.7S, 83.6E	None	Release	None	ACMaps
+A Drudge Nest	11.0N, 57.5E	None	Release	None	ACMaps
+A Mosswart Hideout	72.9S, 90.7E	None	Should the Stars Fall	Singularity Weapons Quest	ACMaps
+A Mosswart Nest	26.8S, 61.7E,
+36.2S, 60.3E,
+36.2S, 62.0E	None	Release	None	ACMaps
+A Rat Nest	40.2N, 32.5E	None	Release	None	ACMaps
+A Red Rat Lair	21.1S, 2.1W	None	Release	Lubziklan al-Luq's Stolen Goods	ACMaps
+A Ruin (Arwic)	33.0N, 54.9E	None	Release	None	ACMaps
+A Ruin (Mayoi)	62.6S, 81.4E	None	Release	None	ACMaps
+A Ruin (Rithwic)	11.5N, 55.0E	None	Release	None	ACMaps
+A Ruin (Samsur)	3.3S, 20.5E	None	Release	None	ACMaps
+A Ruin (Yanshi)	13.0S, 47.3E	None	Release	None	ACMaps
+A Small Cave	4.2S, 17.3E	None	Release	None	ACMaps
+A Small Ruin	53.6S, 70.9E	None	Release	None	ACMaps
+Abandoned Arena	11.3S, 37.4E	None	Release	None	ACMaps
+Abandoned Armory	83.6S, 14.7W	None	That Which Is Ours	Sanguinary Aegis Quest	ACMaps
+Abandoned Mine	34.9N, 54.4E	None	Release	None	ACMaps
+Abandoned Mines Mirror	From Water Guardian	130+	Under Cover of Night	Gateway to the Deep	None Available
+Abandoned Shops	32.4S, 12.7E	040+	Release	Abandoned Shops Quest,
+Exploration Society Letters	ACMaps
+Abandoned Tumerok Site	42.0N, 82.2W	None	Dark Majesty	Olthoi Pincers	ACMaps
+Abayar's Laboratory	92.1N, 46.3W	None	Throne of Destiny	Lunnum's Pyre,
+Fiun Spellcasting Gloves Quest	ACMaps
+Abayar's Study	From Abayar's Laboratory	90+	Throne of Destiny	Fiun Spellcasting Gloves Quest	ACMaps
+Abhorrent Vault	88.5N, 50.3W	090+	Throne of Destiny	Chasing Oswald
+Eater Jaws	ACMaps
+Abyssal Olthoi Chasm	From Cavernous Olthoi Chasm	100+	Waking from the Abyss	Olthoi Chasm Quest	ACMaps
+Abyssal Totem Temple	86.5N, 57.3E (Abyssal Totem Gateway)	150+	Shattering the Dark	Splitting Grael (High)	Wiki Map
+Accursed Halls	24.0S, 57.9W	None	Release	Altar of Bael'Zharon Quest	ACMaps
+Acidic Refuge	59.0N, 65.8E	150+, Quest Flag	Retributions	Geraine's Hosts	None Available
+Acid Guardian Lair	30.5S, 74.3W	060 - 79	Verdict	Gaerlan's Citadel	None Available
+Acid Ziggurat	17.1N, 63.0E	040 - 59	Verdict	Gaerlan's Citadel	None Available
+Acolyte Towers	88.3S, 10.7W	None	Taste of Twilight	Skull of High Acolyte Quest	ACMaps
+Acolyte's Chamber	92.6S, 53.0W	180+	Ancient Powers	High Priest of T'thuun Kill Task	None Available
+Adrenkus Cave	37.6S, 62.2W	None	The Reaping	Seed of Harvests	None Available
+Adventurer's Haven	4.4N, 35.5E	None	Release	Portal Nexus Dungeons	None Available
+Advocate Dungeon	28.6S, 78.1E (Retired)	126+	Release	Strathelar's Order of Advocates	Retired
+Aerbax Laboratory (Haven)	Inside Aerbax Laboratory (Main)	None	A Reign of Stone	None	ACMaps
+Aerbax Laboratory (Main)	10.1S, 8.1E	None	A Reign of Stone	None	ACMaps
+Aerbax's Antechamber	94.8S, 91.0W	090+	Lost in the New Horizon	Caul Recall	ACMaps
+Aerbax's Holding	62.4S, 71.1W	060+	Reign of Terror	Preparation for the Ritus	ACMaps
+Aerfalle Keep	86.4N, 45.4E	045+	To Raise a Banner of Flame	Lady Aerfalle Quest	ACMaps
+Aerfalle's Sanctum	From Aerfalle Keep	150+	Old Ghosts	Lady Aerfalle Quest	None Available
+Aerlinthe Lower Reservoir	From Aerlinthe Reservoir	045+	To Raise a Banner of Flame	Lady Aerfalle Quest	ACMaps
+Aerlinthe Reservoir	85.5N, 43.4E	045+	To Raise a Banner of Flame	Lady Aerfalle Quest	ACMaps
+Alfreth Dungeon	20.4N, 13.2E	None	Release	Sylsfear Quest	ACMaps
+Altar Nest	75.9N, 69.3E	140+, Quest Flag	From the Darkest Depths	Whispering Blade - Recall Orb	ACMaps
+Amiantos Bethel	16.3S, 35.1E	None	Thorns of the Hopeslayer	Silifi of Crimson Stars Quest	ACMaps
+Amperehelion Vault	56.5S, 72.8W (Duplicate Portal at 35.0N 20.0E)	None	Shadows of the Past	Major Sparking Stone Quest	ACMaps
+An Archive	63.5S, 36.8E	115+	That Which is Ours	Spear of the Given Heart Quest	ACMaps
+An Olthoi Soldier Nest	45.2N, 76.3W	030+	Dark Majesty	Olthoi Pincers	ACMaps
+Ancient Caves	46.1S, 87.2W	040+	Come What Follows	Composite Weapons Upgrade	ACMaps
+Ancient Cloister	82.5S, 96.1E	150+ (180+ to flag)	Ancient Powers	Knight Test	Wiki Map
+Ancient Empyrean Grotto	52.6N, 73.1W	040+	Dark Majesty	Olthoi Pincers	ACMaps
+Ancient Lighthouse	4.0N, 73.6W	018+	Release	Premonitions of the Fourth Sending of Darkness	ACMaps
+Ancient Masonry	88.1N, 47.6E	100+	Rekindling the Light	Prismatic Shadow Armor	ACMaps
+Ancient Temple	33.0S, 88.0W	080+	Reign of Terror	Living Tome	ACMaps
+Antechamber of Liazk Itzi	40.8S, 11.8E	040+	A New Threat	Blackmire 2	ACMaps
+Apostate Citadel Barracks	From Apostate Citadel Mines	150+	Who Watches the Virindi?	Uncovering the Renegades	None Available
+Apostate Citadel Headquarters	From Apostate Citadel Barracks	150+	Who Watches the Virindi?	Uncovering the Renegades	None Available
+Apostate Citadel Mines	48.7S, 68.9W	150+	Who Watches the Virindi?	Uncovering the Renegades	None Available
+Apostate Excavation	24.6S, 56.2W	150+	Reclamation	Apostate Excavation Investigation	Wiki Map
+Apostate Nexus	From Nexus	150+	Secrets of the Apostates	Nexus Crawl	Wiki Map
+Apostate Nexus (Scintillating)	10.4S, 75.2W	150+	Plans Within Plans	Apostate Finale	Wiki Map
+Apostate Nexus (Shimmering)	10.4S, 75.2W	150+	Plans Within Plans	Apostate Finale	Wiki Map
+Arcanum Furniture Shop	2.2S, 50.7E	None	The Gathering Storm	Arcanum Furniture	None Available
+Arcanum Research Facility	5.8N, 6.3E	Quest Flag	Hidden Vein	Shadowfire Stone Quest	ACMaps
+Arcanum Storehouse	54.8S, 74.4E	None	Hidden Vein	Nuhmudira's Boon Quest	ACMaps
+Arcanum Storehouse Lower Level	From Arcanum Storehouse	045+	Hidden Vein	Nuhmudira's Boon Quest	ACMaps
+Arcanum Storehouse Middle Level	From Arcanum Storehouse	030+	Hidden Vein	Nuhmudira's Boon Quest	ACMaps
+Arcanum Storehouse Upper Level	From Arcanum Storehouse	015+	Hidden Vein	Nuhmudira's Boon Quest	ACMaps
+Archive (Dungeon)	From Chaos Virindi Cave	120+	Prodigal Sons	The Archivist Quest	None Available
+Arena (NPK)	18.5S, 3.7E	None	Taste of Twilight	Player Killer	ACMaps
+Arena (PK)	17.9S, 3.9E	None	Taste of Twilight	Player Killer	ACMaps
+Arena of Kivik Lir	38.1S, 47.3W	060+	A Small Victory	Blackmire 4	ACMaps
+Arena of the Tusker Hero	Speak with Oolutanga, the Tusker King	080+	The Hall of the Tusker King	The Legend of the Tusker Paw	None Available
+Arrival Chamber	From the Reaving Facility	150+	Cogs in the Machine	Unleash the Gearknights	Wiki Map
+Artifex Collegium	91.9S, 93.7W	None	Dark Materials	Aerbax's Prodigal Harbinger
+Aerbax's Prodigal Shadow
+Delving into Claude's Mind	ACMaps
+Artifex Vault	26.5N, 45.8W (Duplicate portal at 24.5N, 8.1E)	None	Shadows of the Past	Stone Tool Quest	ACMaps
+Arwic Mines	33.8N, 56.8E	None	Release	Diemos Flagging,
+Crafter Golems,
+Fiery Weapons	ACMaps
+Asheron's Sanctum	21.2N, 69.1E	None	Ancient Enemies	None	ACMaps
+Assassins' Hideout	54.5S, 80.7W	120+	The Price of Loyalty	Lost Messenger	ACMaps
+Asuger Temple	45.0N, 30.5E	020+, Quest Flag	Paths of Destruction	Elysa's Favor	ACMaps
+Atlan's Laboratory	From Empyrean Workshop	125+, Quest Flag	A Change in Tactics	Shadowfire Stone Quest	ACMaps
+Atrium Residential Halls	49.3S, 62.4E,
+29.7N, 27.0E,
+74.1S, 19.2E	None	Repercussions	Apartments	None Available
+Augmentation Realm Lower Level	From Augmentation Realm Higher Level	125+, Quest Flag	Throne of Destiny	Aug Gem: Sir Bellas	ACMaps
+Augmentation Realm Main Level	From Augmentation Realm Lower Level	125+, Quest Flag	Throne of Destiny	Aug Gem: Sir Bellas	ACMaps
+Augmentation Realm Upper Level	95.0N, 47.1W	125+, Quest Flag	Throne of Destiny	Aug Gem: Sir Bellas	ACMaps
+Aun Papileona's Shrine to Raeta	38.9N, 76.3W	None	Dark Majesty	Raeta's Necklace Quest	ACMaps
+B
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Back Tunnels	43.9N, 73.9W	None	Under Cover of Night	Of Trust and Betrayal	ACMaps
+Balmy Font	91.5S, 89.7E	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Banderling Conquest Dungeon	29.0S, 50.4E	None	Hollow Victory	Mace of the Explorer Quest	ACMaps
+Banderling Hovel	32.0S 72.8E	010+, Quest Flag	From the Darkness Born	Bleeargh's Gratitude	ACMaps
+Banderling Ruin	36.1N, 39.5E	None	Release	None	ACMaps
+Banderling Shrine	73.0N, 6.6W	060+	Assault	Banderling Haunt	ACMaps
+Bandit Castle Prison	66.5N 49.9E	None	Release	Bandit Shield Quest	ACMaps
+Bandit Hideout	Portal Gem	Quest Flag	Waking from the Abyss	Noir Assassination Investigation	ACMaps
+Bandit Hideout Prison	From Bandit Hideout	None	Waking from the Abyss	Noir Assassination Investigation	ACMaps
+Bandit Magma Tubes	54.4S, 97.2E	180+	Ancient Powers	Defeating Bandit Mana Hunter Boss	None Available
+Banished Assembly	87.0S, 79.6W	100+	Infiltration	Withered Weapons Quest	ACMaps
+Barracks	Portal Gem	060+	Discoveries	Halls of Knorr	ACMaps
+Behind the Waterfall	8.7S, 85.7E	080+	The Hall of the Tusker King	Bobo's Medicine,
+The Legend of the Tusker Paw	ACMaps
+Bellig Tower	17.8N 16.0E	None	Release	Hammer of Lightning Quest	ACMaps
+Beyond the Mines of Despair	From the Mines of Despair	014+	Lonely in the World	Focusing Stone Quest	ACMaps
+Binding Realm	From Summoning Chamber
+and Dardante's Workshop	100+	Shining Runes and Shadowed Hands	Whispering Blade Chapterhouse Access	ACMaps
+Black Death Catacombs	59.9N, 71.2E	020+	Release	Aerbax's Citadel
+Black Death Catacombs Quiddity Seed Quest
+Aerbax's Prodigal Olthoi	ACMaps
+Black Death Catacombs Quiddity Seed	59.9N, 71.2E	130+	Recollections	Black Death Catacombs Quiddity Seed Quest	None Available
+Black Dominion	88.7S, 25.9W	025+	Paths of Destruction	Singularity Weapons Quest	ACMaps
+Black Ferah's Vault	39.1S 60.1W	151+, Quest Flag	Shattering the Dark	Mukkir Aspect of Grael	Wiki Map
+Black Spawn Den	56.6S, 86.0W,
+13.6N, 79.8W,
+60.0S, 57.7W	020+	Paths of Destruction	None	ACMaps
+Black Spear Summoning Chamber	75.8N, 70.5E	140+	From the Darkest Depths	Grael's Summoning Chamber	ACMaps
+Black Spear Temple	74.0N, 28.6W.	01 - 100	Shattering the Dark	Ruschk Aspect of Grael Quest	None Available
+Black Spear Temple Upper Levels	68.5S, 66.1W	100+	Shining Runes and Shadowed Hands	Rossu Morta Chapterhouse Access	ACMaps
+Black Totem Temple	93.2S, 94.6W	100 - 149	Shattering the Dark	Splitting Grael (Mid)	None Available
+Blackmire Temple	21.7S, 47.7E	040+	Across the Vast Divide	Blackmire 1	ACMaps
+Blessed Cave	77.9S, 96.6E	150+	Lessons from the Past	Releasing the Light	ACMaps
+Blighted Desolation Moarsman Tunnels	75.1N 49.7W	075+	Shattered Lines	Ritual of the Blight	Wiki Map
+Blighted Disgusting Moarsman Tunnels	28.9S 92.6E	035+	Shattered Lines	Ritual of the Blight	Wiki Map
+Blighted Grimy Moarsman Tunnels	60.9S 89.8W	095+	Shattered Lines	Ritual of the Blight	Wiki Map
+Blighted Putrid Moarsman Tunnels	23.4N 28.8W	055+	Shattered Lines	Ritual of the Blight	Wiki Map
+Blighted Rank Moarsman Tunnels	40.7N 86.5W	015+	Shattered Lines	Ritual of the Blight	Wiki Map
+Blighted Verdant Moarsman Tunnels	90.7N 43.0W	125+	Shattered Lines	Ritual of the Blight	Wiki Map
+Blightfinger's Warrens	56.8S 89.2W	070+	Upping the Ante	Blightfinger Quest	Wiki Map
+Bloodstone Factory	84.5N, 5.1W	200+	Blood From Stone	Bloodstone Investigation	None Available
+Bobo's Babysitter	80.0N, 45.6W	Quest Flag	Heart of Woe	Heart of Innocence Quest,
+Oswald's Dirk Quest	ACMaps
+Bone Lair	29.4S, 7.0E	None	Release	Undead Mechanic Quest	ACMaps
+Bookcase (Dungeon)	From Nuhmudira's Dungeon	120+	Dance of the Dead	Lunnum's Return	None Available
+Braid Mansion Ruin	34.2S 72.0E	None	Release	Shoushi Starter Quests	ACMaps
+Breached Hive	49.8N, 73.1W	050+	Under Cover of Night	Enrico's Betrayal	ACMaps
+Bur	67.4N 30.5E	Quest Flag	Bridging the Vast Divide	Saving Asheron	ACWarcry Map
+Burial Temple	8.5N, 6.0E	150+	Release	The Mage Academy,
+Undead Attack on Al-Jalima	ACMaps
+Burun Burrow	27.5S, 53.9E	None	Mired Hearts	Burun Burrow Quest,
+First Contact	ACMaps
+Burun Cathedral	42.3S, 52.6W	None	The Paths of Destruction	Renegade Herbal Kits	ACMaps
+Burun Cavern	12.0S, 50.0E	None	Pillars Made of Sand	Carved Gemstone Lockpicks Quest	ACMaps
+Burun Fortress: Central Mound	25.5S 46.4E	060+, Quest Flag	A Small Victory	Noble Weapons	ACMaps
+Burun Fortress: NE Mound	25.5S 46.4E	060+, Quest Flag	A Small Victory	Noble Weapons	ACMaps
+Burun Fortress: NW Mound	25.5S 46.4E	060+, Quest Flag	A Small Victory	Noble Weapons	ACMaps
+Burun Fortress: SE Mound	25.5S 46.4E	060+, Quest Flag	A Small Victory	Noble Weapons	ACMaps
+Burun Fortress: SW Mound	25.5S 46.4E	060+, Quest Flag	A Small Victory	Noble Weapons	ACMaps
+Burun Hold	24.2S, 46.3E	040+	From the Darkness Born	Hidden Entrance Quest	ACMaps
+C
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Caliginous Bethel	Kill a Dark Vapor	035+	Waking From the Abyss	The Caliginous Bethel	ACMaps
+Camp Entemarre	63.0S, 82.6W	080+, Quest Flag	Reprisals	Head of Baron Entemarre	ACMaps
+Cannibal Caverns	88.0N, 58.5W	050+, Quest Flag	Throne of Destiny	Red Bull of Sanamar Quest	ACMaps
+Carved Cave	7.4N, 0.6E	None	Release	Into the Darkness	ACMaps
+Catacombs of Ithaenc	82.4S, 93.4E	None	Should the Stars Fall	The Healer's Heart Quest	ACMaps
+Catacombs of Opposition	From Deeper Catacombs	None	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Catacombs of Tar'Kelyn	55.7S, 97.7E	180+, Quest Flag	Ancient Powers	Master Test	No Map Available
+Catacombs of the Forgotten	17.3N, 32.8E	015+	To Raise a Banner of Flame	Mi Krau-Li's Jitte Quest	ACMaps
+Caul Asylum	94.8S, 91.0W	090+	Lost in the New Horizon	Caul Recall	ACMaps
+Caul Athenaeum	From Caul Asylum	090+	Lost in the New Horizon	Caul Recall	ACMaps
+Caul Sanatorium	From Caul Athenaeum	090+	Lost in the New Horizon	Caul Recall	ACMaps
+Caulnalain Chamber	Portal Gem	040+	Twilight's Gleaming	Caulnalain Vestibule Quest	ACMaps
+Caulnalain Vestibule	68.5N, 5.5E	040+	Twilight's Gleaming	Caulnalain Vestibule Quest	ACMaps
+Cave	18.4N, 62.1E,
+18.4N, 58.1E	None	Release	None	ACMaps
+Cave (47.8S 83.7W)	47.8S, 83.7W	020+	Release	Overlord's Sword Quest	ACMaps
+Cave of Alabree	41.8N, 32.1E	01 - 20	Release	Brogord's Demise,
+Blood Shreth Kill Task	ACMaps
+Cave of the Escaped Thief	71.1N, 50.2W	None	Down Twisting Paths	Sword of Bellenesse	ACMaps
+Cavern	29.2N, 27.2E	Specialised in Fletching	Lost City of Neftet	None	No Map Available
+Cavernous Olthoi Chasm	From Deep Olthoi Chasm	080+	Waking From the Abyss	Olthoi Chasm Quest	ACMaps
+Cavernous Refuge	7.3S, 13.4E	150+, Quest Flag	Retributions	Geraine's Hosts	None Available
+Celestial Hand Stronghold	39.7S, 83.6E	180+	Ancient Powers	Society Quests	Wiki Map
+Cells of the Black Book	10.3S, 50.3E	060+, Quest Flag	A Change in Tactics	Water of Stasis
+Black Pages of Salt and Ash	ACMaps
+Center of Hizk Ri's Temple	From Hizk Ri's Temple	060+	On Bended Knee	Clutch of Kings (Keerik)	ACMaps
+Center of Ixir Zi's Temple	From Ixir Zi's Temple	060+	On Bended Knee	Clutch of Kings (Kiree)	ACMaps
+Center of Izji Qo's Temple	From Izji Qo's Temple	060+	On Bended Knee	Clutch of Kings (Reeshan)	ACMaps
+Center of Kivik Lir's Temple	From Kivik Lir's Temple	060+	On Bended Knee	Clutch of Kings (Rehir)	ACMaps
+Center of Liazk Itzi's Temple	From Liazk Itzi's Temple	060+	On Bended Knee	Clutch of Kings (Broodu)	ACMaps
+Chakron Gate	52.9S, 62.7W	036+	The Child of Daralet	Virindi Servant's Amulet Quest,
+Sword of Lost Hope Quest	ACMaps
+Chamber of Air	From Chamber of Scrolls	100+	Unfinished Business	Tanada House of Fire Quest	No Map Available
+Chamber of Earth	From Chamber of Air	100+	Unfinished Business	Tanada House of Fire Quest	No Map Available
+Chamber of Scrolls	52.2S, 63.2E	100+	Unfinished Business	Tanada House of Fire Quest	No Map Available
+Chamber of Water	From Chamber of Earth	100+	Unfinished Business	Tanada House of Fire Quest	No Map Available
+Chamber of the High Priest's First	93.0S, 52.6W	180+	Ancient Powers	High Priest of T'thuun Kill Task	No Map Available
+Chamber of the High Priest's Second	93.0S, 53.0W	180+	Ancient Powers	High Priest of T'thuun Kill Task	No Map Available
+Chamber of the High Priest's Third	92.6S, 52.6W	180+	Ancient Powers	High Priest of T'thuun Kill Task	No Map Available
+Chambers Beneath Linvak Tukal	77.6S, 28.0E	Quest Flag	Children of the Prodigal Lord	Aerbax's Prodigal Lugian	No Map Available
+Chaos Virindi Cave	58.6S, 81.5W	None	Prodigal Sons	The Archivist Quest	No Map Available
+Chapel of Mowen	3.1N. 93.6E	050+	The Iron Coast	None	ACMaps
+Charged Refuge	86.8S, 10.5E	150+, Quest Flag	Retributions	Geraine's Hosts	None Available
+Citadel Library	17.1N, 63.0E	020+, Quest Flag	Verdict	Gaerlan's Citadel	ACMaps
+Colier Mine	56.8N, 38.3E	None	Release	Baron's Amulet of Life Giving Quest,
+Diemos Flagging,
+Crafter Golems,
+Impious Staff Quest	ACMaps
+Collegium Occultus	Portal Gem	130+, Quest Flag	Ashes and Dust	Collegium Occultus Ring Quest	ACMaps
+Collegium Occultus Anteroom	Portal Gem	130+	Ashes and Dust	Collegium Occultus Ring Quest	No Map Available
+Collegium Planar Abstraction	From Knorr Lyceum	130+	Recollections	Knorr Quiddity Seed Quest	Wiki Map
+Colosseum	11.3S, 37.6E	None	Rekindling the Light	Advanced Colosseum Arena,
+Colosseum Arena,
+Colosseum Bosses	No Map Available
+Colossus Foundary	60.0S, 87.9W,
+1.6N, 72.1W,
+83.3S, 47.1E,
+62.0S, 51.3W	None	On Bended Knee	Arcane Pedestal,
+Bronze Statues Quest	ACMaps
+Colton Reeyan's Sanctuary	22.9N, 37.0W	150+, Quest Flag	A Growing Twilight	On Strike	None Available
+Commander's Quarters	31.8N, 25.5E	100+	Ashes and Dust	The Death of Antius Blackmoor (Live Event)	ACMaps
+Convergent Median	87.0S, 40.3W	040+	Persuasion	Quiddity Weapons Quest	ACMaps
+Copper Legion Keep	12.1N, 0.6E	050+	Throne of Destiny	Defense of Zaikhal	ACMaps
+Coral Caves	90.5N, 42.4W	None	Friend and Foe	Water of Stasis Quest	ACMaps
+Coral Tunnels	84.1N 46.9E; 84.2N 46.0E	045+	From the Darkness Born	None	ACMaps
+Corrupted Catacombs	23.9S, 54.1E	180+	Ancient Powers	Celestial Hand Initiation,
+Eldrytch Web Initiation,
+Radiant Blood Initiation	Wiki Map
+Corrupted Falatacot Temple	87.3N 41.6E	130+, Quest Flag	Under Cover of Night	Gateway to the Deep	Wiki Map
+Count Phainor's Tomb	65.0S, 44.1W	180+, Quest Flag	Balance of Power	Count Phainor's Amulet	No Map Available
+Cragstone Advance Camp	25.0N, 43.5E (Retired)	012 - 25	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Cragstone Middle Guard Camp	25.5N, 39.9E (Retired)	024 - 40	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Cragstone Reinforcements Camp	26.6N, 37.8E (Retired)	036+	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Crater Caves Dungeon	66.7N, 12.5E	None	Release	Undead Mechanic,
+Machinist's Gloves Quest,
+Lady Aerfalle Quest	ACMaps
+Crater Lair	70.6N, 12.7E	015+	Release	Olthoi Weapons Quest	ACMaps
+Crater Pathway	60.6N, 15.7E,
+64.8N, 13.7E	None	Release	None	ACMaps
+Creepy Canyons	4.6N, 89.5W	180+, Quest Flag	Friend and Foe	Lost Pet	ACMaps
+Creepy Chambers	80.6S 60.0W	None	Down Twisting Paths	Bandits of the Creepy Chambers	ACMaps
+Crumbling Empyrean Mansion	46.8N, 67.8W	None	Dark Majesty	Olthoi Pincers	ACMaps
+Crypt of Adhorix	42.7S, 46.6W	080+	Friend and Foe	His Master's Voice	ACMaps
+Crypt of Ashen Tears	14.6N, 3.5E	None	Release	Undead Mechanic Quest	ACMaps
+Crypt of Crimson Night	12.4N, 8.2E	070+, Quest Flag	Come What Follows	Silifi of Crimson Night Quest	ACMaps
+Crypt of Kivik Lir	From the Temple of Kivik Lir Entrance	060+	A Small Victory	Blackmire 4	ACMaps
+Crypt of Kixkti Xri	From Hall of the Arbiter	040 - 69,
+70 - 99,
+100+	Across the Vast Divide	Blackmire 1	ACMaps
+Crystal Core	66.6S, 25.9E	50+	A Growing Twilight	Crystal Core Quest	None Available
+Crystal Mine	49.3S, 17.9E	Quest Flag	Visions in the Darkness	Olthoi Shield Quest	ACMaps
+Crystal Mine Extreme	49.3S, 17.9E	080+, Quest Flag	Shattering the Dark	Gift Box Quest	ACMaps
+Crystal Mine High	49.3S, 17.9E	060 - 79	Shattering the Dark	Gift Box Quest	ACMaps
+Crystal Mine Low	49.3S, 17.9E	020 - 39	Shattering the Dark	Gift Box Quest	ACMaps
+Crystal Mine Mid	49.3S, 17.9E	040 - 59	Shattering the Dark	Gift Box Quest	ACMaps
+Crystal Mine New Isparians	49.3S, 17.9E	01 - 19	Shattering the Dark	Gift Box Quest	ACMaps
+Crystalline Portal	17.0S, 61.2W	070+, 90+, 110+, 130+	Unfinished Business	Crystalline Adventurer,
+Crystalline Markers,
+Crystalline Killer,
+Progenitors' Lair	Wiki Map
+Cursed Swamp	27.3S, 69.0E	None	The Paths of Destruction	None	ACMaps
+D
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Daiklos Dungeon	33.7N 29.2E	01 - 12	Release	Daiklos Legend	ACMaps
+Damp Caverns	31.7S, 96.1E	05+	Release	None	ACMaps
+Dardante's Keep	91.3N 38.4W	100+	Reprisals	Necklace of the Elemental Adepts Quest	ACMaps
+Dardante's Workshop	69.6N, 62.7W	100+	Shining Runes and Shadowed Hands	Whispering Blade Chapterhouse Access	ACMaps
+Dark Cavern	87.9N, 9.3W	180+	Blood From Stone	Deewain's Dark Cavern	Retrospek's Map
+Dark Design	93.8N 44.9W	140+	Throne of Destiny	Mosswart Worshipper Kill Task	ACMaps
+Dark Monolith Caverns	Portal Gem	100+	Shining Runes and Shadowed Hands	Dark Monolith	ACMaps
+Dark Mosswart Halls	74.2S 83.6E	030+	From the Darkness Born	Bleeargh's Gratitude	ACMaps
+Dark Tree Crystal Mine	24.8N, 31.2W	100+	The Slumbering Giant	Crystal Minds and Shattered Souls	ACMaps
+Darkened Halls	20.7S 0.7E	020+, Quest Flag	Flesh and Blood	Elysa's Favor Quest	ACMaps
+Decrepit Tower	23.8N 12.2W	040+	The Madness of Men	Decrepit Tower	ACMaps
+Deep Caves	20.7S, 8.2E	Quest Flag	Wayward Prince	Sealing Away the Book of Eibhil	None Available
+Deep Guruk Caverns	67.4N, 30.5E	120+	Bridging the Vast Divide	Falacatot Medaillon,
+Killing Bosh Bosh	ACWarcry Map
+Deep Mukkir Nest	81.0N, 59.3E	150+	Toward Ancient Shores	Dark Isle Flagging	Wiki Map
+Deep Olthoi Chasm	From Shallow Olthoi Chasm	060+	Waking From the Abyss	Olthoi Chasm Quest	ACMaps
+Deeper Catacombs (Black Death Catacombs)	From Lower Corridor in BDC	040+	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Crater Lair)	70.6N, 12.7E	030+	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Lair of Death)	42.0N, 58.1E	015+	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Bandit Castle OHN)	64.3N, 52.8E	030+	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Colier OHN)	55.8N, 43.5E	020+	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Mountain Retreat OHN)	48.9N, 12.9W	None	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Olthoi Tunnels)	48.1N, 53.0E	040+	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Deeper Catacombs (Paradox)	From Black Death Catacombs	060+	Corrupted Sovereigns	Aerbax's Prodigal Olthoi	ACMaps
+Deeper Caves	46.1S, 87.2W	040+	Come What Follows	Composite Weapons Upgrade	ACMaps
+Deepest Caves	From Deeper Caves	040+	Come What Follows	Composite Weapons Upgrade	ACMaps
+Defiled Temple Asylum	77.8N, 32.8E	100+	Assault	Assault Quest	ACMaps
+Defiled Temple Lower Wing	77.6N, 32.8E	040+	Assault	Assault Quest	ACMaps
+Defiled Temple Middle Wing	77.7N, 32.7E	060+	Assault	Assault Quest	ACMaps
+Defiled Temple Upper Wing	77.7N, 32.9E	080+	Assault	Assault Quest	ACMaps
+Depth's of Hizk Ri's Temple	51.4S, 67.9W	060+	On Bended Knee	Clutch of Kings (Keerik)	ACMaps
+Depth's of Ixir Zi's Temple	21.7S, 47.6E	060+	On Bended Knee	Clutch of Kings (Kiree)	ACMaps
+Depth's of Izji Qo's Temple	12.8S, 58.9W	060+	All That They Survey	Clutch of Kings (Reeshan)	ACMaps
+Depth's of Kivik Lir's Temple	38.1S, 47.3W	060+	On Bended Knee	Clutch of Kings (Rehir)	ACMaps
+Depth's of Liazk Itzi's Temple	40.8S, 11.7E	060+	On Bended Knee	Clutch of Kings (Broodu)	ACMaps
+Derethian Combat Arena	49.5S, 62.6E	150+	Secrets of the Apostates	Derethian Combat Arena Quest	None Available
+Dericost Ruin	74.2N, 74.2W	None	Throne of Destiny	Dericost Ruin Quest	ACMaps
+Dericost Vault	74.7N, 24.6W	01 - 100	Shattering the Dark	Ruschk Aspect of Grael Quest	None Available
+Desert Citadel	84.8S, 59.7W	None	Groundswell	None	ACMaps
+Desert Dwelling	21.0S, 7.6E	180+	Balance of Power	Janthef's Release	None Available
+Desert March	6.4N, 3.9W,
+22.6N, 28.8W	None	A Small Victory	None	ACMaps
+Desert Mine	4.5S, 26.6E	None	Release	None	ACMaps
+Desert Ruin	31.8S, 15.8E	None	Release	None	ACMaps
+Deserted Ruin	16.0S, 47.2E	040+	Release	The Writings of Jhong Mi,
+Exploration Society Letters	ACMaps
+Devastated Falatacot Temple	87.3N 51.2E	130+, Quest Flag	Under Cover of Night	Gateway to the Deep	Wiki Map
+Director's Private Chambers	86.1S, 2.5W	032+	Chains of Command	Quiddity Orb Quest	ACMaps
+Direlands Gear Knight Dungeon	10.4S, 75.2W	None	Reforging the Past	Gear Knight Construction,
+Atamarr Tasks,
+Aetherium Raid (High),
+Apostate Finale	Wiki Map
+Direlands Subway	18.6S 84.4W	None	From the Darkness Born	None	ACMaps
+Disaster Maze	61.3S, 50.9W	020+	Release	Premonitions of the Fourth Sending of Darkness	ACMaps
+Dragon's Power	82.3S, 41.4E	035+	Mirror, Mirror	Path of the Jojii Adherent	ACMaps
+Drudge Fight	Portal Gem	None	Mired Hearts	Drudge Fight	ACMaps
+Drudge Fort Cave	25.4N, 45.9E	None	Prodigal Sons	Aerbax's Prodigal Drudge	Wiki Map
+Drudge Hideout	41.3N, 33.3E	None	Release	Alfrin's Stolen Supplies	ACMaps
+Drudge Hovel	23.7S, 0.2W	None	Throne of Destiny	Trade Alliance Quest,
+Sanamar Starter Quests	ACMaps
+Dry Well	5.0S, 20.9E	01 - 20	Release	The Old Dry Well,
+Samsur Starter Quests	ACMaps
+Dungeon Binar	6.2S, 20.1E	None	Release	None	ACMaps
+Dungeon Fern	43.3N, 37.2E	05+	Release	None	ACMaps
+Dungeon Gallery Tower	10.7N, 56.8E	None	Release	None	ACMaps
+Dungeon Maggreth	3.7N, 52.6E	None	Release	None	ACMaps
+Dungeon Manor	1.9S, 19.8E	None	Release	Sword of Lost Light	ACMaps
+Dungeon Mei	36.9S, 70.3E	None	Release	None	ACMaps
+Dungeon Muddy	27.1S, 71.0E	05+	Release	None	ACMaps
+Dungeon Nye	6.2N, 34.4E	None	Release	Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Dungeon of Corpses	56.1S, 49.6W	025+	The Paths of Destruction	None	ACMaps
+Dungeon of Shadows	21.5N, 44.1E	None	Release	None	ACMaps
+Dungeon of Tatters	62.2S, 40.1E	None	Release	Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+E
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Eagle's Sight	80.0N, 45.6W	None	Heart of Woe	Heart of Innocence Quest,
+Oswald's Dirk Quest	ACMaps
+East Fork Dam Hive	48.5N, 76.4W	050+	Dark Majesty	Olthoi Queen Quest	ACMaps
+Eastern Catacombs	67.4N, 30.5E	None	Bridging the Vast Divide	Guruk Kill Tasks, Bur Mushroom Collection	ACWarcry Map
+Eastern Pedestal Dungeon	67.4N, 30.5E	080 - 119	Bridging the Vast Divide	Bur Portal Summoning	None Available
+Eastern Temple Catacombs	80.0N 54.6E	100+	From the Darkest Depths	Helm of Isin Dule	ACMaps
+Eastham Sewer	18.7N, 63.4E	050+	Release	Eastham Sewer Quest	ACMaps
+Eater Pit	88.8N 72.6W	40+, Quest Flag	Throne of Destiny	Knights of Karlun Quest	ACMaps
+Effigy Foundry	See Here	None	Hidden Vein	Arcane Pedestal
+Bronze Statues Quest	ACMaps
+Egg Orchard	96.2N, 48.1W	140+	Throne of Destiny	Olthoi Ripper Kill Task,
+Nanjou Shou-jen Armor,
+Dereth Exploration	ACMaps
+Eldrytch Web Stronghold	26.3N, 49.6E	180+	Ancient Powers	Society Quests	Wiki Map
+Elemental Caverns	82.6S, 47.5W	None	Visions in the Darkness	Elemental Weeping Weapons	ACMaps
+Elemental Sanctum	12.6S, 46.5W (Retired)	None	Repercussions	2002/07 - Gaerlan's Generals (Live Event)	Retired - ACMaps
+Empty Paradox Olthoi Cave	43.4N, 55.4E	None	Corrupted Sovereigns	Aerbax's Prodigal Olthoi,
+Dereth Exploration	None Available
+Empyrean Acid Propylaeum	31.6S, 74.2W	050+	Fever Dreams	Empyrean Propylaeum	ACMaps
+Empyrean Cloister	23.4S, 5.8E	015+	The Child of Daralet	Empyrean Cloister Quest	ACMaps
+Empyrean Facility Lower Level	46.2S, 71.8W	225+	Shedding Skin	Aetheria Quest	Wiki Map
+Empyrean Facility Middle Level	46.2S, 71.8W	150+	Shedding Skin	Aetheria Quest	Wiki Map
+Empyrean Facility Upper Level	46.2S, 71.8W	075+	Shedding Skin	Aetheria Quest	Wiki Map
+Empyrean Fire Propylaeum	73.5N, 2.7W	025+	Fever Dreams	Empyrean Propylaeum	ACMaps
+Empyrean Foundry	25.2S, 54.2E	None	Shadows of the Past	Hamud's Demise	ACMaps
+Empyrean Garrison	54.2S, 81.8E	None	Release	Undead Mechanic Quest	ACMaps
+Empyrean Ice Propylaeum	53.3N, 62.5E	025+	Fever Dreams	Empyrean Propylaeum	ACMaps
+Empyrean Lightning Propylaeum	87.1S, 9.6E	050+	Fever Dreams	Empyrean Propylaeum	ACMaps
+Empyrean Rescue Dungeon	54.0S, 97.6E	180+	Hopes and Fears	Empyrean Rescue Quest	Wiki Map
+Empyrean Workshop	66.9N, 15.9E	125+, Quest Flag	A Change in Tactics	Shadowfire Stone Quest	ACMaps
+Enkindled Souls	49.4S, 26.9E	None	Release	Undead Mechanic Quest	ACMaps
+Enlightened Master's Chambers	From Tanada House of Breath	80+	Remembering the Past	Tanada House of Storms Quest	None Available
+Entrance to Portal Space	82.8N, 21.2E	070+	Fever Dreams	Buadren Quest,
+Invoker Quest	ACMaps
+Essence Chambers	From Tunnels to the Harbinger	060+	Price of Loyalty	Harbinger Quest,
+Prismatic Shadow Armor Quest	None Available
+F
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Facility	15.7S, 65.3W	None	Old Ghosts	Crystalline Markers,
+Crystalline Adventurer	None Available
+Facility Hub	Teleportation Device	010+	Reforging the Past	Facility Hub Quests	None Available
+Falatacot Depot	75.4S, 29.3E	150+	The Reaping	Falatacot Depot Quest	None Available
+Falatacot Temple	74.7S, 98.2E	200+	The Risen Princess	Hoshino Fortress Infiltration	None Available
+Falatacot Vault	78.1N, 48.2W	101 - 150	Shattering the Dark	Shadow Aspect of Grael Quest	None Available
+Falatacot Visitor's Alcove	67.4N, 30.5E	180+	Dispatch	Harlune's Diplomacy	None Available
+Falcon Clan Training Camp	2.0N, 75.0E	None	A Gathering of Colors	Tumerok Banners Quest	ACMaps
+Farmer's Basement	37.4S, 75.5E	020+, Quest Flag	Flesh and Blood	Elysa's Favor	ACMaps
+Fathomless Chasm	36.9S, 63.4E	020+	Hidden Vein	Isparian Weapons Quest	ACMaps
+Fathomless Chasm Abyss	From Fathomless Chasm	080+	Hidden Vein	Isparian Weapons Quest	ACMaps
+Fathomless Chasm Clough	From Fathomless Chasm	040 - 49	Hidden Vein	Isparian Weapons Quest	ACMaps
+Fathomless Chasm Descent	From Fathomless Chasm	060 - 79	Hidden Vein	Isparian Weapons Quest	ACMaps
+Fathomless Chasm Devex	From Fathomless Chasm	020 - 39	Hidden Vein	Isparian Weapons Quest	ACMaps
+Fathomless Chasm Plummet	From Fathomless Chasm	050 - 59	Hidden Vein	Isparian Weapons Quest	ACMaps
+Feeding Tubes	96.7N, 42.4W	130+	Throne of Destiny	Hunter Quests (Grievver Violators)	ACMaps
+Fenmalain Chamber	Portal Gem	020+	Twilight's Gleaming	Fenmalain Vestibule Quest	ACMaps
+Fenmalain Vestibule	46.9S, 55.2E	020+	Twilight's Gleaming	Fenmalain Vestibule Quest	ACMaps
+Fiery Refuge	95.3S, 94.1W	150+, Quest Flag	Retributions	Geraine's Hosts	None Available
+Filos' Doom	12.0N, 62.2E	None	Release	Undead Mechanic	Wiki Map
+Fir Tree	80.0N 45.6W	Quest Flag	Heart of Woe	Oswald's Dagger
+Weeping Weapons	ACMaps
+Fire Guardian Lair	73.5N, 3.2W	040 - 59	Verdict	Gaerlan's Citadel	ACMaps
+Fire Ziggurat	17.1N, 63.0E	060 - 79	Verdict	Gaerlan's Citadel	None Available
+Firebird's Splendor	53.6S, 66.7E	035+	Mirror, Mirror	Path of the Jojii Adherent	ACMaps
+Folthid Cellar	8.6S, 52.9E	010+	Release	Dagger of Tikola Quest,
+Asheron's Departure Lower	ACMaps
+Font of the Eternal Harvester	42.7S, 46.6W	080+	Friend and Foe	His Master's Voice	ACMaps
+Forbidden Catacombs	Guardian of the Forbidden	050+, Player Killer	Mired Hearts	The Forbidden Catacombs	Wiki Map
+Forbidden Crypts	6.5N, 3.0E	015+	Release	The Forbidden Crypts	ACMaps
+Forge	Portal Gem	060+	Discoveries	Halls of Knorr	ACMaps
+Forgotten Chasm	94.5N, 39.1W	130+	Throne of Destiny	Naughty Skeleton Kill Task,
+Wicked Skeleton Kill Task	ACMaps
+Forgotten Temple	0.9N, 55.8E	None	Release	Ercel's Lost Book	ACMaps
+Forgotten Tunnels	92.9S, 56.4W,
+93.1S, 56.9W,
+93.6S, 56.6W	180+, Quest Flag	Quiet Before the Storm	Forgotten Tunnels of Nyr'leha	Wiki Map
+Forking Trail	65.6S, 16.7E	None	Release	None	ACMaps
+Fortified Royal Vault	From Fortified Vault Sewers	100+	Assault	Assault Quest	ACMaps
+Fortified Vault Sewers	From Defiled Temple Asylum	100+	Assault	Assault Quest	ACMaps
+Foundry of Izexi	19.4S, 6.7E	None	The Reaping	Foundry of Izexi Quest	None Available
+Freebooter Keep Black Market	64.0S 97.5E	180+	Ancient Powers	Land Control	Wiki Map
+Freebooter Phyntos Wasp Hive	63.1S, 97.5E	180+	Gaining Ground	Killer Phyntos Wasp Kill Task,
+Phyntos Larva Kill Task,
+Phyntos Honey Collector,
+Phyntos Queen Quest	Wiki Map
+Frest Greelving's Dungeon	6.5N, 43.9E	None	Festivus	Frest Greelving's Haunted Mansion	ACMaps
+Frigid Grotto	97.1N, 51.8W	150+	Soulless Sisters	Rescuing Mouf P	None Available
+Frost Guardian Lair	52.8N, 62.4E	020 - 39	Verdict	Gaerlan's Citadel	ACMaps
+Frost Ziggurat	57.1N, 47.8E,
+17.1N, 63.0E	080+	Verdict	Gaerlan's Citadel	ACMaps
+Frozen Cave	93.5N, 60.5W	None	Winter's Knight	Gear Crossbow Quest	Wiki Map
+Frozen Cenotaph	90.6N, 66.7W	040+	Friend and Foe	Grael's Rage	ACMaps
+Frozen Library	90.7N, 56.4W	None	Throne of Destiny	Fiun Healing Machine Quest	ACMaps
+Frozen Refuge	93.9N, 45.4W	150+, Quest Flag	Retributions	Geraine's Hosts	None Available
+Frozen Tomb	84.9N, 7.1W	200+	From Darkness, Light	Nalicana's Test,
+Bloodstone Investigation	None Available
+Frozen Wight Lair	85.3N, 7.5W	180+	Master of Design	Wardley and the Wights	None Available
+G
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Gaerlan's Inner Sanctum	From Citadel Library	None	Verdict	Gaerlan's Citadel	ACMaps
+Gallery of Kivik Lir	From Triumph Against the Trials	060+	A Small Victory	Blackmire 4	ACMaps
+Gardens of Menilesh	64.7S, 43.8W	150+	Dispatch	Disturbance in the Ley Lines	Wiki Map
+Gateway of Dmesne	See Gateway to the Deep	130+	Under Cover of Night	Gateway to the Deep	ACMaps
+Gateway of Lurza	See Gateway to the Deep	130+	Under Cover of Night	Gateway to the Deep	ACMaps
+Gateway of Shemza	See Gateway to the Deep	130+	Under Cover of Night	Gateway to the Deep	ACMaps
+Gear Hunter Dungeon	7.2S, 75.0W	None	Lay of the Land	Atamarr Tasks,
+Apostate Finale	Wiki Map
+Gear Knight Excavation	36.0S, 7.2E	None	Lay of the Land	Aetherium Raid (Low)	None Available
+Gearknight Lord's Tower	36.7S, 7.1E	None	Gears of Change	Gearknight Lesser Lords	None Available
+Gelidite Library	69.2N, 17.2W	None	Betrayal	Gelidite Library Quest	ACMaps
+Gelidite Library: Labyrinth	From Gelidite Library	None	Betrayal	Gelidite Library Quest	ACMaps
+Gelidite Library: Oubliette	From Gelidite Library: Labyrinth	None	Betrayal	Gelidite Library Quest	ACMaps
+Geraine's Study	82.9N, 6.4W	150+	Road to Revenge	Mhoire Infiltration	None Available
+Gerent's Compound	87.2S 17.5W	040+	Reign of Terror	Preparation for the Ritus	ACMaps
+Glenden Wood Dungeon	29.9N, 26.4E	None	Release	Glenden Wood Dungeon Quest,
+Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Gold Legion Keep	13.8N, 2.0E	080 - 99	Throne of Destiny	Defense of Zaikhal	ACMaps
+Golem Burial Ground	50.9S, 67.3E	010+	Release	None	ACMaps
+Golem Sanctum	Random Portal	025+	Hollow Victory	Golem Construction	ACMaps
+Grael's Chamber	From: Black Spear Temple,
+Shadow-Infested Black Spear Temple,
+Mukkir Infested Black Spear Temple	01 - 100,
+101 - 150,
+151+	Shattering the Dark	Ruschk Aspect of Grael Quest,
+Shadow Aspect of Grael Quest,
+Mukkir Aspect of Grael Quest	None Available,
+None Available,
+Wiki Map
+Granite Quarry	11.8S, 39.0E	None	Through Sacrifice, Strength	Shield of Yanshi Quest	None Available
+Greater Battle Dungeon	Use a Small Creepy Statue	050+, Player Killer	The Madness of Men	The Forbidden Catacombs	None Available
+Greater K'nath Lair	From K'nath Lair	None	Throne of Destiny	Fiun Healing Machine Quest,
+House Plants	ACMaps
+Gredaline Consulate	61.6S, 29.3E	025+	A Reign of Stone	Virindi Spells Quest	ACMaps
+Green Mire Grave	27.8S, 71.6E	None	Release	Green Mire Grave Quest	ACMaps
+Grievous Vault	25.8S, 27.3E	010+	Release	Silifi of Crimson Stars Quest	ACMaps
+Grievver Caves	75.9N, 19.0W	None	Castling	Flags	ACMaps
+Gromnie Clan Training Camp	16.0S, 70.0E	None	A Gathering of Colors	Tumerok Banners Quest	ACMaps
+Gurog Ice Cave	84.9N, 7.1W	None	From Darkness, Light	Nalicana's Test,
+Bloodstone Investigation	None Available
+H
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Habitat	Portal Gem	070+	Dark Majesty	Virindi Scalpel	ACMaps
+Hagra's Holdfast	48.2N, 88.5W	035+	Friend and Foe	Hea Bone and Hide Shirt Quest	ACMaps
+Hall of Hollows	25.0N, 37.8E (Trap Door)	020+, Quest Flag	Flesh and Blood	Elysa's Favor Quest	ACMaps
+Hall of Karlun	88.9N, 67.8W	040+	Throne of Destiny	Knights of Karlun Quest	ACMaps
+Hall of the Arbiter	From Hall of the Temple Guardians	040 - 69,
+70 - 99,
+100+	Across the Vast Divide	Blackmire 1	ACMaps
+Hall of the Temple Guardians	From Blackmire Temple	040 - 69,
+70 - 99,
+100+	Across the Vast Divide	Blackmire 1	ACMaps
+Halls	24.2S, 46.3E	080+	From the Darkness Born	Hidden Entrance Quest	ACMaps
+Halls of Liazk Itzi	From Liazk Itzi's Offering Room	040 - 59,
+60 - 79,
+80 - 99,
+100+	A New Threat	Blackmire 2	ACMaps
+Halls of Metos	56.0S, 89.2W,
+61.4S, 46.6W,
+4.4S, 0.6W	015+	The Paths of Destruction	Crafting Golems,
+Asheron's Departure Lower,
+Metos Motes	ACMaps
+Halls of the Helm	18.7N, 1.6E	010+	Release	Superior Helmet & Fiery Shield	ACMaps
+Halls of the Lost Light	76.5S, 74.9W	None	Release	Sword of Lost Light Quest	ACMaps
+Harbinger's Lair	From Tunnels to the Harbinger	060+	Verdict	Harbinger Quest,
+Prismatic Shadow Armor Quest	None Available
+Harraag's Hideout	60.2S, 80.2W	120+	Strange Sightings	Aerbax's Prodigal Banderling	Wiki Map
+Harraag's Lair	From Harraag's Hideout	120+	Strange Sightings	Aerbax's Prodigal Banderling	Wiki Map
+Haven Residential Halls	0.6N, 51.6E,
+28.2S, 95.6E,
+24.9S, 28.3E	None	Verdict	Housing	None Available
+Haven of Kivik Lir	From Lyceum of Kivik Lir	060+	On Bended Knee	Blackmire 4	ACMaps
+Heart of Innocence	33.8N, 38.9E	None	Heart of Woe	Heart of Innocence Quest	ACMaps
+Heart of Madness	84.8N, 68.6W	040+	Throne of Destiny	Knights of Karlun Quest	ACMaps
+Heart of the Apostate Nexi	10.4S, 75.2W	150+	Plans Within Plans	Apostate Finale	Wiki Map
+Hebian-To Advance Camp	42.6S, 77.9E (Retired)	012 - 25	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Hebian-To Middle Guard Camp	43.9S, 74.7E (Retired)	024 - 40	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Hebian-To Reinforcements Camp	44.9S, 71.5E (Retired)	036+	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Hebian-to Sewers	38.8S, 83.8E	04+	Release	None	ACMaps
+Hidden Cavern	37.9S, 65.5W	080+	Visions in the Darkness	Aerbax's Prodigal Banderling,
+Hidden Cavern Quest,,
+Missing Persons Investigation	ACMaps
+Hidden Chamber	Portal Gem	None	A Small Victory	Noble Weapons Quest	None Available
+Hidden City	94.4N, 70.0W	050+	Throne of Destiny	Fiun Healing Machine Quest	ACMaps
+Hidden Dungeon	From Underground City	None	Betrayal	Thorsten Cragstone's Armor & Axe	ACMaps
+Hidden Entrance	24.2S, 46.3E	040+, Quest Flag	From the Darkness Born	Hidden Entrance	ACMaps
+Hidden Laboratory	67.2N, 27.1W	150+	Children of the Prodigal Lord	Aerbax's Prodigal Human	None Available
+Hieromancers' Halls	4.4S, 82.8W	None	Lonely in the World	Hieromancer's Armor	ACMaps
+Hills Citadel	56.6S, 66.9E	None	The Paths of Destruction	None	ACMaps
+Hizk Ri's Crypt	From Patriarch Zixki	060 - 80,
+80 - 100,
+100+	Treaties in Stone	Blackmire 3	ACMaps
+Hizk Ri's Sewers	From Hizk Ri's Test	060 - 80,
+80 - 100,
+100+	Treaties in Stone	Blackmire 3	ACMaps
+Hizk Ri's Temple	From Secrets of Hizk Ri's Temple	060+	On Bended Knee	Clutch of Kings (Keerik)	ACMaps
+Hizk Ri's Temple Entrance	51.5S, 67.9W	060+	Treaties in Stone	Blackmire 3	ACMaps
+Hizk Ri's Test	From Hizk Ri's Well of Tears	060 - 80,
+80 - 100,
+100+	Treaties in Stone	Blackmire 3	ACMaps
+Hizk Ri's Well of Tears	From Hizk Ri's Temple Entrance	060 - 80,
+80 - 100,
+100+	Treaties in Stone	Blackmire 3	ACMaps
+Hollow Lair near Lytelthorpe	2.2S, 50.7E	020+	The Gathering Storm	Arcanum Furniture	ACMaps
+Holtburg Dungeon	43.6N, 33.0E	None	Release	Sword of Lost Light Quest	ACMaps
+Holtburg Redoubt	40.4N, 34.4E	01 - 20	Release	Worcer's Missing Heirlooms	ACMaps
+Hoshino Tower	79.2N, 40.3W	200+, Quest Flag	The Risen Princess	Hoshino Fortress Infiltration	None Available
+Humid Font	91.3S, 89.8E	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Humid Guruk Caverns	From Northern Catacombs	041 - 80	Bridging the Vast Divide	Falacatot Medaillon	ACWarcry Map
+Humid Hovel	73.6N, 59.2W	01 - 20	Throne of Destiny	Thrungus Hovels,
+Sanamar Starter Quests	ACMaps
+Hunter's Leap	35.7N, 32.6E	None	Release	Lilitha's Lost Bow	ACMaps
+I
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Icy Demise	From Citadel Library	20 - 39	Verdict	Gaerlan's Citadel	ACMaps
+Icy Hideout	89.5N, 56.3W	None	Friend and Foe	The Hunt for Muldaveus	ACMaps
+Idol Spawning Grounds	72.3S, 87.5E	None	Should the Stars Fall	None	ACMaps
+Idol of Wishes	From Throne of the Tusker King	080+	The Hall of the Tusker King	The Legend of the Tusker Paw	ACMaps
+Ikzisik Tika Ri Zikma	70.6N, 14.5W	90+, Quest Flag	Remembering the Past	Messenger's Collar Quest	None Available
+Impious Temple	12.2N, 2.4E	020+	Shadows of the Past	Impious Staff Quest	ACMaps
+Inculcation Cells	68.8S, 62.5W	040+	Chains of Command	None	ACMaps
+Incunabula Vault	23.0S, 60.0E,
+35.9S, 47.2W	None	Shadows of the Past	Major Stinging Stone Quest	ACMaps
+Inner Burial Chamber	91.5N, 69.0W	060+, Quest Flag	Down Twisting Paths	Loyalty Reset Quest	ACMaps
+Inner Dungeon	43.5N, 43.4W	None	Release	Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Inner Stronghold	From Shadow Lugian Stronghold	080+	Infiltration	Balor's Rescue	ACMaps
+Insatiable Vault	97.4N, 48.0W	125+	Throne of Destiny	Chasing Oswald
+Eater Jaws
+Aug Gem: Sir Bellas	ACMaps
+Ishaq's Cellar	66.1S, 86.6W	080+	The Calm	Ishaq's Lost Key Quest	ACMaps
+Ithaenc Quiddity Seed	82.7S, 93.4E	130+	Recollections	Ithaenc Quiddity Seed Quest	None Available
+Ixir Zi's Temple	21.7S, 47.6E	060+	On Bended Knee	Clutch of Kings (Kiree)	ACMaps
+Izji Qo's Crypt	From Izji Qo's Defenders	060 - 79,
+80 - 99,
+100+	All That They Survey	Blackmire 5	ACMaps
+Izji Qo's Defenders	From Izji Qo's Trials	060 - 79,
+80 - 99,
+100+	All That They Survey	Blackmire 5	ACMaps
+Izji Qo's Temple	12.8S, 58.9W	060+	On Bended Knee	Clutch of Kings (Reeshan)	ACMaps
+Izji Qo's Temple Entrance	12.8S, 58.9W	060+	All That They Survey	Blackmire 5	ACMaps
+Izji Qo's Trials	From Izji Qo's Temple	060 - 79,
+80 - 99,
+100+	All That They Survey	Blackmire 5	ACMaps
+J
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Jahannan Vault	67.0N, 15.0E,
+49.8S, 15.0E	None	Shadows of the Past	Major Smoldering Stone Quest	ACMaps
+Jester's Prison	64.9S, 44.1W (Hidden portal)	160+	Foolish Ambition	The Jester	Wiki Map
+Jungle Shadows	69.4S, 94.5E	None	Should the Stars Fall	None	ACMaps
+K
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+King 1 Reeshan Part 1	12.8S 58.9W	60+	On Bended Knee	Burun Kings	ACMaps
+King 1 Reeshan Part 2	From King 1 Reeshan Part 1	60+	On Bended Knee	Burun Kings	ACMaps
+King 1 Reeshan Part 3	From King 1 Reeshan Part 2	60+	On Bended Knee	Burun Kings	ACMaps
+King 1 Reeshan Part 4	From King 1 Reeshan Part 3	60+	On Bended Knee	Burun Kings	ACMaps
+King 2 Kiree Part 1	21.7S 47.6E	60+	On Bended Knee	Burun Kings	ACMaps
+King 2 Kiree Part 2	From King 2 Kiree Part 1	60+	On Bended Knee	Burun Kings	ACMaps
+King 2 Kiree Part 3	From King 2 Kiree Part 2	60+	On Bended Knee	Burun Kings	ACMaps
+King 2 Kiree Part 4	From King 2 Kiree Part 3	60+	On Bended Knee	Burun Kings	ACMaps
+King 3 Broodu Part 1	40.8S 11.7E	60+	On Bended Knee	Burun Kings	ACMaps
+King 3 Broodu Part 2	From King 3 Broodu Part 1	60+	On Bended Knee	Burun Kings	ACMaps
+King 3 Broodu Part 3	From King 3 Broodu Part 2	60+	On Bended Knee	Burun Kings	ACMaps
+King 3 Broodu Part 4	From King 3 Broodu Part 3	60+	On Bended Knee	Burun Kings	ACMaps
+King 4 Keerik Part 1	51.4S 67.9W	60+	On Bended Knee	Burun Kings	ACMaps
+King 4 Keerik Part 2	From King 4 Keerik Part 1	60+	On Bended Knee	Burun Kings	ACMaps
+King 4 Keerik Part 3	From King 4 Keerik Part 2	60+	On Bended Knee	Burun Kings	ACMaps
+King 4 Keerik Part 4	From King 4 Keerik Part 3	60+	On Bended Knee	Burun Kings	ACMaps
+King 5 Rehir Part 1	38.1S 47.3W	60+	On Bended Knee	Burun Kings	ACMaps
+King 5 Rehir Part 2	From King 5 Rehir Part 1	60+	On Bended Knee	Burun Kings	ACMaps
+King 5 Rehir Part 3	From King 5 Rehir Part 2	60+	On Bended Knee	Burun Kings	ACMaps
+King 5 Rehir Part 4	From King 5 Rehir Part 3	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 1A	91.2S 89.6E	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 1B	91.3S 89.8E	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 1C	91.5S 89.7E	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 1D	91.5S 89.4E	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 2	91.4S 89.5E	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 3	From King 6 Browerk Part 2	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 4	From King 6 Browerk Part 3	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Part 5	From King 6 Browerk Part 4	60+	On Bended Knee	Burun Kings	ACMaps
+King 6 Browerk Parts 6 & 7	From King 6 Browerk Part 5	60+	On Bended Knee	Burun Kings	ACMaps
+K'nath Lair	49.7S, 56.3W	None	Release	Fiun Healing Machine Quest,
+House Plants	ACMaps
+King Toad Idol	39.3S, 51.1W	040+	From the Darkness Born	King Toad Idol Quest	ACMaps
+Kivik Lir's Temple	From Secrets of Kivik Lir's Temple	060+	On Bended Knee	Clutch of Kings (Rehir)	ACMaps
+Knorr Trials	Portal Gem	060+	Discoveries	Halls of Knorr,
+Collegium Occultus Ring Quest	ACMaps
+Kor-Gursha	From Bur	Quest Flag	Bridging the Vast Divide	See Here for list of quests.	ACWarcry Map
+Krau Li's Labyrinth	35.2S, 23.8E	025+	To Raise a Banner of Flame	Mi Krau-Li's Jitte Quest	ACMaps
+L
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Lair of Death	42.0N 58.1E	015+	Release	Olthoi Weapons Quest	ACMaps
+Lair of Liazk Itzi	From Liazk Itzi Guardians	040 - 59,
+60 - 79,
+80 - 99,
+100+	A New Threat	Blackmire 2	ACMaps
+Lair of The Homunculus	Portal Gem	None	Pillars Made of Sand	The Homunculus	Wiki Map
+Lair of the Ancient Queen	13.2N, 0.8E	Quest Flag	Visions in the Darkness	Ancient Olthoi Queen	ACMaps
+Lair of the Eviscerators	53.7N, 76.6W	050+	Dark Majesty	Enrico's Betrayal,
+Olthoi Pincers	ACMaps
+Lakeside Lair	18.9N, 48.4E	None	Release	None	ACMaps
+Land Bridge Staging Complex	86.1S, 2.5W	032+	Chains of Command	Quiddity Orb Quest	ACMaps
+Large Mnemosyne Collection Site	From Mnemosyne Collection Site	030+	Spring's Sorrows	Mnemosynes	ACMaps
+Larry's Garden	1.9E, 41.6N	Quest Flag	The Madness of Men	Bunny Master Title	ACMaps
+Legend of the Tusker King	From Tusker Food Storage	080+	The Hall of the Tusker King	Bobo's Medicine,
+The Legend of the Tusker Paw	ACMaps
+Lesser Battle Dungeon	From Small Creepy Statue	Player Killers 1 - 50, All Player Killer Lite	The Madness of Men	None	None Available
+Ley Line Cavern	67.4N, 30.5E	Quest Flag	Rekindling the Light	Enhancing Mucor,
+Saving Asheron	None Available
+Liazk Itzi Guardians	From Antechamber of Liazk Itzi	040 - 59,
+60 - 79,
+80 - 99,
+100+	A New Threat	Blackmire 2	ACMaps
+Liazk Itzi's Crypt	From Halls of Liazk Itzi	040 - 59,
+60 - 79,
+80 - 99,
+100+	A New Threat	Blackmire 2	ACMaps
+Liazk Itzi's Offering Room	From Lair of Liazk Itzi	040 - 59,
+60 - 79,
+80 - 99,
+100+	A New Threat	Blackmire 2	ACMaps
+Liazk Itzi's Temple	From Secrets of Liazk Itzi's Temple	40 - 59,
+60 - 79,
+80 - 99,
+100+	A New Threat	Clutch of Kings (Broodu)	ACMaps
+Lightless Catacombs	82.2S, 35.2W	014+	Release	Premonitions of the Fourth Sending of Darkness,
+Staff of the Nomads Quest	ACMaps
+Lightless Tunnels	41.9S, 16.2E	01 - 25	Hollow Victory	Gem of Impulse Quest	ACMaps
+Lightning Guardian Lair	86.7S, 10.4E	080+	Verdict	Gaerlan's Citadel	None Available
+Lightning Ziggurat	17.1N, 63.0E	020 - 39	Verdict	Gaerlan's Citadel	ACMaps
+Linvak Tukal Entryway	76.6S, 28.1E	None	A Reign of Stone	Arm, Mind, Heart Quest	ACMaps
+Lola's Den	91.9N, 69.7W	None	Throne of Destiny	Brewmaster Quest	ACMaps
+Lonely Fortress	56.7S, 88.5W	080+, Quest Flag	Children of the Prodigal Lord	Aerbax's Prodigal Tumerok	Wiki Map
+Lord Kastellar's Lab	84.9N, 7.1W	200+	Blood From Stone	Bloodstone Investigation	None Available
+Lord Mhoire's Tomb	64.6S, 44.1W	050+, (Key)	Strange Sightings	Lord Mhoire Quest	
+Lord Rytheran's Private Sanctum	74.7N, 18.5E	Quest Flag	Foolish Ambition	Lord Rytheran's Journal	Wiki Map
+Lost City of Frore	From Mountain Cavern	020+	Sudden Season	The Madness of Men,
+Reforging the Past	ACMaps
+Lost Coastal Archive	37.4N, 67.0E	040+	Friend and Foe	Grael's Rage	ACMaps
+Lost Desert Archive	3.9N, 2.4W	040+	Friend and Foe	Grael's Rage	ACMaps
+Lost Distillery	0.7S, 51.2E	040+	Release	Lost Distillery Quest,
+Exploration Society Letters	ACMaps
+Lost Garden Ruins	65.8S, 59.3E	None	Release	Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Lost Ruins	82.6S, 94.8E	180+, Quest Flag	Soulless Sisters	Lost Lore	None Available
+Lower Catacomb	From Upper Catacombs	080+	Rekindling the Light	Burun Liberator	Wiki Map
+Lower Chakron Flux	From Chakron Gate	036+	The Child of Daralet	Virindi Servant's Amulet Quest,
+Sword of Lost Hope Quest	ACMaps
+Lower Corridor	59.9N, 71.2E	None	Heart of Woe	Olthoi Weapons Quest	ACMaps
+Lower Empyrean Lightning Cistern	87.1S, 9.6E	050+	Fever Dreams	Empyrean Propylaeum	ACMaps
+Lower Empyrean Mausoleum	23.4S, 5.8E	015+	The Child of Daralet	Empyrean Cloister Quest,
+Sword of Lost Hope Quest	ACMaps
+Lower Heart of Darkness	From Shade Stronghold	031+	The Child of Daralet	Shadow Captain's Heaume Quest,
+Sword of Lost Hope Quest	ACMaps
+Lugian Excavations	77.0S, 64.3E	None	To Raise a Banner of Flame	Ravenous Weapons Quest,
+Sepulcher of Nightmares,
+Sanguinary Aegis Quest	ACMaps
+Lugian Ice Tunnels	93.3N, 50.1W	080+, Quest Flag	Throne of Destiny	Chasing Oswald	ACMaps
+Lugian Mines	73.9S, 39.0E	None	To Raise a Banner of Flame	Hollow Weapons Quest	ACMaps
+Lugian Outpost	80.6S, 18.1E	None	Release	None	ACMaps
+Lugian Post	71.3S, 19.0E	None	Release	None	ACMaps
+Lugian Quarry	64.5S, 55.6E	None	To Raise a Banner of Flame	Chorizite Ammunition,
+Chorizite Dispel Potions	ACMaps
+Lyceum Training Grounds	From Ishilai Lyceum	Quest Flag	Lonely in the World	Hieromancer's Armor	ACMaps
+Lytaway Dungeon	52.6S, 86.7E	01 - 20	Release	Magical Lights	ACMaps
+M
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Mage Academy	74.7N, 18.5E	150+	Release	The Mage Academy	ACMaps
+Malignant Tabernacle	23.2S, 46.0W	040+	Persuasion	Quiddity Weapons Quest	ACMaps
+Mammet Foundry	See Here	None	Hidden Vein	Arcane Pedestal,
+Bronze Statues Quest	ACMaps
+Mannikin Foundry	See Here	None	Hidden Vein	Arcane Pedestal,
+Bronze Statues Quest	ACMaps
+Mar'uun	Resonant Portal	None	Unfinished Business	Portal Space Research	None Available
+Marauder's Lair	83.9N, 66.4W	None	Throne of Destiny	Marauder's Lair Quest	ACMaps
+Marketplace	From Town Network, or type /mp	None	The Slumbering Giant	None	None Available
+Martinate Holding	59.6N, 77.0W	None	Dark Majesty	Singularity Weapons Quest	ACMaps
+Martine's Retreat	10.6N, 58.3E	None	Repercussions	Sunstone & Opal Gauntlets,
+Major Prismatic Stone Quest,
+Sepulcher of Nightmares,
+Sanguinary Aegis Quest	ACMaps
+Mask Clan Training Camp	16.0S, 75.0E	None	A Gathering of Colors	Tumerok Banners Quest	ACMaps
+Massilor's Crypt	65.4S, 43.6W	180+	Ancient Powers	Graveyard Delivery	Wiki Map
+Master Alizari's Dig	19.4N, 43.2W	040 - 59	Tricks and Treats	Faces of the Mukkir	ACMaps
+Master Vaserio's Dig	54.2S 78.6W	100+, Quest Flag	Tricks and Treats	Faces of the Mukkir	ACMaps
+Matron Hive East	49.8S, 62.0E	120+	A Swelling Tide	Asheron's Raiment Quest	ACMaps
+Matron Hive North	47.5S, 24.9E	060+	A Swelling Tide	Asheron's Raiment Quest	ACMaps
+Matron Hive South	52.5S, 81.9E	040+	A Swelling Tide	Asheron's Raiment Quest	ACMaps
+Matron Hive West	25.0S, 28.1E	090+	A Swelling Tide	Asheron's Raiment Quest	ACMaps
+Mattekar Cave	65.4N, 16.7E	None	Release	None	ACMaps
+Meeting Hall	Towns	None	Release	None	None Available
+Messenger's Sanctuary	From Upper Catacombs	080+, Quest Flag	Upping the Ante	Kaurik's Ghost Messenger	Wiki Map
+Mhoire Armory	64.8S, 44.3W	160+, Quest Flag	Introductions	Jester's Lost Marbles,
+Spectral Weapons	Wiki Map
+Mhoire Castle	64.7S, 45.2W	None, Quest Flag	Gaining Ground	Castle of Lord Mhoire Quest,
+Noble Remains Kill Task,
+Guardian Statue Kill Task,
+Spectral Fountain Quest	Wiki Map
+Mhoire Castle Courtyard	64.7S, 45.2W	None, Quest Flag	Gaining Ground	Castle of Lord Mhoire Quest	Wiki Map
+Mhoire Castle Great Hall	From Mhoire Castle Northeast Tower	None, Quest Flag	Gaining Ground	Castle of Lord Mhoire Quest	Wiki Map
+Mines of Despair	75.4S, 57.2E	014+	Release	Focusing Stone Quest,
+Diemos Flagging,
+Crafter Golems	ACMaps
+Mistress Gabille's Dig	8.5N, 88.9W	080 - 99, Quest Flag	Tricks and Treats	Faces of the Mukkir	ACMaps
+Mistress Halmera's Dig	8.6N, 58.6W	060 - 79	Tricks and Treats	Faces of the Mukkir	ACMaps
+Misty Mine	From Warehouse	040+	The Slumbering Giant	Crystal Minds and Shattered Souls	ACMaps
+Mite Maze	41.1N, 57.3E	None	Release	Harlune's Diplomacy,
+Branith's Stolen Possessions,
+Water of Mount Lethe,
+Facility Hub Quests	ACMaps
+Mite Tunnels	38.7N, 50.0E	None	Release	None	ACMaps
+Mnemosyne Collection Site	2.5S, 16.4E	None	Spring's Sorrows	Mnemosynes	None Available
+Moars (Dungeon)	70.2S, 93.1E	None	Should the Stars Fall	None	ACMaps
+Moars Laboratory	68.3S, 94.4E	None	Should the Stars Fall	The Moars	ACMaps
+Moarsman Prison	56.4S, 96.9E	180+, Quest Flag	Reclamation	Moarsmen Jailbreak	None Available
+Moarsmen Hideout	69.9S, 89.9E	None	Should the Stars Fall	The Moars	ACMaps
+Moarsmen Muck	77.0S, 90.9E	None	Should the Stars Fall	The Moars	ACMaps
+Moarsmen Priory	From Blighted Verdant Moarsman Tunnels	180+, Quest Flag	Ancient Powers	Lord Test	Wiki Map
+Moarsmen Spawning Grounds	69.5S, 96.5E	None	Should the Stars Fall	The Moars	ACMaps
+Moist Hovel	73.0N, 63.0W	01 - 20	Throne of Destiny	Thrungus Hovels,
+Sanamar Starter Quests	ACMaps
+Monouga Feeding Pits	9.8S, 81.0W	None	Intelligent Designs	Monouga Feeding Pits Quest,
+Monouga Laboratory	Wiki Map
+Monouga Laboratory (120+)	From Monouga Feeding Pits	120+	Intelligent Designs	Monouga Laboratory	Wiki Map
+Monouga Laboratory (150+)	From Monouga Feeding Pits	150+	Intelligent Designs	Monouga Laboratory	Wiki Map
+Monouga Laboratory (80+)	From Monouga Feeding Pits	080+	Intelligent Designs	Monouga Laboratory	Wiki Map
+Moss Chamber	14.1N, 0.7W	None	Release	Singularity Weapons Quest	ACMaps
+Moss Chamber (NPC Room)	From Moss Chamber	None	Release	Singularity Weapons Quest	ACMaps
+Mosswart Holding	78.2S, 86.7E	None	Prodigal Sons	Aerbax's Prodigal Mosswart,
+Mosswart Townsfolk Kill Task	Wiki Map
+Mosswart Maze	25.2S, 19.4E	None	Hollow Victory	Mace of the Explorer Quest	ACMaps
+Mosswart Nest	77.6S, 87.9E	None	Should the Stars Fall	None	ACMaps
+Mosswart Worship Cavern	41.1S, 48.8W	080+, Quest Flag	Prodigal Sons	Aerbax's Prodigal Mosswart	None Available
+Mossy Cave (Shoushi)	34.1S, 74.9E	None	Throne of Destiny	Trade Alliance Quest	ACMaps
+Mossy Cave (Yanshi)	14.2S, 46.0E	20+, Quest Flag	From the Darkness Born	Bleeargh's Gratitude	ACMaps
+Mount Elyrii Hive	48.5N, 81.7W	070+	Dark Majesty	Olthoi Queen Quest	ACMaps
+Mount Ingot	67.7S, 25.5E	None	Waking From the Abyss	Snowman Village	ACMaps
+Mount Lethe Magma Tubes	33.8S, 85.3W	020+	Release	Water of Mount Lethe	ACMaps
+Mount Naipenset Caverns	5.6N, 56.2W	None	Release	Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Mountain Cavern	63.2N, 5.5E	020+	Sudden Season	Frore	ACMaps
+Mountain Citadel	5.4N, 71.7W	None	Groundswell	None	ACMaps
+Mountain Fortress	82.4S, 19.9E	None	Shadows of the Past	Hamud's Demise	ACMaps
+Mountain Halls	10.1N, 56.7W	015+	Release	None	ACMaps
+Mountain Keep	54.7N, 32.9E	None	Release	Undead Mechanic,
+Machinist's Gloves Quest	ACMaps
+Mountain Sewer	60.9S, 82.0E	015+	Release	Asheron's Departure Lower,
+Mountain Sewer Quest,
+Kilif Zefir Kill Task	ACMaps
+Mud Cave	73.1S, 81.3E,
+79.0S, 84.1E	None	Should the Stars Fall	The Moars	ACMaps
+Muggy Font	91.3S, 89.8E	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Muggy Guruk Caverns	From Kor-Gursha	01 - 40	Bridging the Vast Divide	Falatacot Medallion	ACWarcry Map
+Mukkir Infested Black Spear Temple	37.2S, 67.0W	151+, Quest Flag	Shattering the Dark	Mukkir Aspect of Grael	Wiki Map
+Mukkir Nest	Portal Gem	150+	Shining Runes and Shadowed Hands	Mukkir Nest Quest	Wiki Map
+Murk Warrens (Baishi)	43.2S, 67.1E	None	The Paths of Destruction	None	ACMaps
+Murk Warrens (Stonehold)	67.4N, 29.3W	None	The Paths of Destruction	None	ACMaps
+Murk Warrens (Zaikhal)	26.3N, 1.9E	None	The Paths of Destruction	None	ACMaps
+Musansayn's Vaults	1.0S, 18.6E	040+	Release	Musansayn's Library,
+Exploration Society Letters	ACMaps
+Mutilator Tunnels	52.8N, 78.1W	080+	Pillars Made of Sand	Olthoi Pincers	ACMaps
+Mysterious Cave	7.7N, 6.6E	015+	Release	A Small Victory	ACMaps
+Mysterious Portal	7.2S, 75.0W	150+, Quest Flag	Plans Within Plans	Apostate Finale	Wiki Map
+Mysterious Tunnels	52.9S, 82.9E	01 - 20	The Paths of Destruction	Miyako's Moonstone Quest	ACMaps
+N
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Nanjou Shou-jen Academy	78.1N, 42.2W	200+	The Risen Princess	Ninja Academy	Wiki Map
+Nanto Rat Lair	54.2S, 79.5E	None	Release	None	ACMaps
+Nevius Passage	45.6S, 21.6E	08+	Release	None	ACMaps
+New Hive	49.9N, 72.5W (Random Portal, Rough Coords)	070+	Dark Majesty	Hea Totem Quest	ACMaps
+Nexus	40.1S, 79.2W	100+	Thorns of the Hopeslayer	Nexus Shadow Armor Quest (Retired),
+Nexus Commander's Helm Quest,
+Nexus Crawl	ACMaps
+Niffis Fighting Pits	Portal Gem	080+	The Calm	Niffis Fighting Pits	ACMaps
+Night Club	See Here	Seasonal	Dance of the Dead	Night Club Shirt	None Available
+Nightmare Gate	89.7S, 93.3W	150+, Quest Flag	Friend and Foe	Sepulcher of Nightmares	ACMaps
+Nor's Folly	32.5S, 11.9E	None	The Paths of Destruction	None	ACMaps
+North Fork Dam Hive	51.4N, 76.0W	070+	Dark Majesty	Olthoi Queen Quest	ACMaps
+North Glenden Prison	31.8N, 25.5E	080+	Release	The Death of Antius Blackmoor (Live Event)	ACMaps
+North Tumerok Vanguard Outpost	7.5S, 0.0W	050+	Lonely In The World	Tumerok Vanguard Outposts	ACMaps
+Northern Black Claw Dungeon	Find and kill a Northern Black Claw Raider	020+	Chains of Command	Quiddity Orb Quest	ACMaps
+Northern Catacombs	From Kor-Gursha	Quest Flag	Bridging the Vast Divide	Guruk Kill Tasks,
+Bur Mushroom Collection	ACWarcry Map
+Northern Infiltrator Keep	15.4N, 5.0E	025+	Keep Your Enemies Closer	Simulacra Infiltrators	ACMaps
+Northern Pedestal Dungeon	67.4N, 30.5E	040 - 79, Item Skill 260+	Bridging the Vast Divide	Bur Portal Summoning	None Available
+Northern Power Forge	18.4N, 22.8W	040+	The Calm	Power Forges	ACMaps
+Northern Resonating Crystal	51.5N, 32.6E	Quest Flag	The Beast With Many Heads	Northern Shroud Cabal	None Available
+Northern Temple Catacombs	80.2N, 54.4E	100+, Quest Flag	From the Darkest Depths	Helm of Isin Dule	ACMaps
+Northwatch Castle Black Market	81.5N, 25.0E	180+, Quest Flag	Ancient Powers	Land Control	Wiki Map
+Not a Dungeon Filled With Monsters	39.2S, 83.3E Retired	None	Who Watches the Virindi?	3/16/09 - Leafcull - Not a Dungeon Filled With Monsters (Live Event)	Retired
+Nuhmudira's Dungeon	4.0S, 35.9E	None	Persuasion	Nuhmudira's Journal Quest,
+Olthoi Shield Quest,
+Lunnum's Return	ACMaps
+O
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Old Mine	79.2S, 27.0E	None	Release	Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Old Scratchy's Cave	29.0S, 26.6E	None	Come What Follows	Mi Krau-Li's Jitte Quest	None Available
+Old Talisman	2.3S, 85.6W	None	Release	Altar of Bael'Zharon Quest	ACMaps
+Old Warehouse	8.7N, 58.1E	040+	Release	The Old Warehouse,
+Exploration Society Letters	ACMaps
+Olthoi Arcade (North)	39.1N, 81.2W	None	Festivus	None	ACMaps
+Olthoi Arcade (South)	From Olthoi Arcade (North) and Olthoi Arcade Central	None	A Perfect Paradox	None	ACMaps
+Olthoi Arcade Central	From Olthoi Arcade (North) and Olthoi Arcade (South)	030+	The Iron Coast	None	ACMaps
+Olthoi Brood Hive (20+)	44.2N, 66.2E,
+51.2N, 48.2E	020+	Groundswell	Lesser Olthoi Armor	ACMaps
+Olthoi Brood Hive (40+)	71.2N, 60.3E	040+	Groundswell	Good Olthoi Armor	ACMaps
+Olthoi Brood Hive (60+)	51.8N, 59.8E	060+	Groundswell	Fine Olthoi Armor	ACMaps
+Olthoi Brood Hive (80+)	64.6N, 56.1E,
+57.4N, 67.4E	080+	Groundswell	Greater Olthoi Armor	ACMaps
+Olthoi Chasm	0.7N, 44.7E	020+	Waking From the Abyss	Olthoi Chasm Quest	ACMaps
+Olthoi Horde Nest (Bandit Castle)	64.3N, 52.8E	030+	Paths of Destruction	Olthoi Weapons Quest	ACMaps
+Olthoi Horde Nest (Colier)	55.8N, 43.5E	020+	Paths of Destruction	Olthoi Weapons Quest	ACMaps
+Olthoi Horde Nest (Mountain Retreat)	48.9N, 12.9W	030+	Paths of Destruction	Olthoi Weapons Quest	ACMaps
+Olthoi Sanctuary	44.2N, 62.8E	None	The Beast With Many Heads	Black Death Catacombs Quiddity Seed Ingot Purification	None Available
+Olthoi Tunnels	48.1N, 53.0E	015+	Release	Olthoi Weapons Quest	ACMaps
+Olthoi Warrior Nest	46.9N, 81.2W	070+	Pillars Made of Sand	Olthoi Pincers	ACMaps
+Oriel Residential Halls	61.8S, 81.6E,
+47.4S, 25.1E,
+44.0N, 43.1W	None	Atonement	Housing	None Available
+Orphanage Wing	From The Orphanage	090+	Dark Materials	Aerbax's Prodigal Shadow	Wiki Map
+Oswald's Room	From Bobo's Babysitter Trial Room	Quest Flag	Heart of Woe	Heart of Innocence Quest,
+Oswald's Dirk Quest	ACMaps
+Oubliette	Portal Gem	None	Mired Hearts	Oubliette Quest	None Available
+Oubliette of Mhoire Castle	64.6S, 44.1W	125+	Depths of the Dead	Oubliette of Mhoire Castle Quest,
+Red Veined Grub Collection Task	None Available
+P
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+PK Arena	Type /pkarena or pklarena	Player Killer, Player Killer Lite	Reprisals	None	None Available
+Palenqual's Cavern	48.9N, 72.5W	Quest Flag	Dark Majesty	Palenqual's Living Weapons	ACMaps
+Panopticon	59.2S, 84.0W	032+	Spring's Sorrows	03/31/01 - Virindi Invade Ayan Baqur (Live Event)	ACMaps
+Paradox Olthoi Refuge	43.5N, 55.2E	None	Corrupted Sovereigns	Aerbax's Prodigal Olthoi	None Available
+Paradox-touched Olthoi Queen's Lair	From Black Death Catacombs and Empty Paradox Olthoi Cave (Reentry Portal)	120+	Corrupted Sovereigns	Aerbax's Prodigal Olthoi	None Available
+Path of the Blind	91.1N, 48.0W	140+	Throne of Destiny	Tukora Lieutenant Kill Task	ACMaps
+Patriarch Zixki	51.5S, 67.9W	100+	Treaties in Stone	Blackmire 3	ACMaps
+Penguin Cave Hatchery	94.2N, 51.7W	090+	Throne of Destiny	Penguin Eggs	ACMaps
+Penguin Den	71.7N, 60.4W	None	Throne of Destiny	The Missing Necklace,
+Sanamar Starter Quests	ACMaps
+Pheraion's Sanctum	59.8S, 75.1W	120+, Quest Flag	The Price of Loyalty	Pheraion's Sanctum Quest	ACMaps
+Phyntos Menace	68.1N, 20.0W	None	Release	Undead Mechanic Quest	ACMaps
+Plated Rifts	1.0S, 85.8E	075+	The Iron Coast	None	ACMaps
+Platinum Legion Keep	16.5N, 0.6E	100+, Quest Flag	Throne of Destiny	Defense of Zaikhal	ACMaps
+Prismatic Devastation	From Citadel Library	150+	Seeds of Hope	Gaerlan's Citadel	None Available
+Prismatic Guardian Lair	10.9N, 81.2W	150+	Seeds of Hope	Gaerlan's Citadel	None Available
+Prismatic Ziggurat	57.1N, 47.8E,
+17.1N, 63.0E	150+	Seeds of Hope	Gaerlan's Citadel	None Available
+Prodigal Harbinger's Antechamber	From Essence Chambers	Need an Elemental Talisman	Dark Materials	Aerbax's Prodigal Harbinger	None Available
+Proving Grounds Uber	From Prismatic Ziggurat	150+, Quest Flag	Seeds of Hope	Gaerlan's Citadel	None Available
+Proving Grounds Extreme	From Frost Ziggurat	080+, Quest Flag	Verdict	Gaerlan's Citadel	ACMaps
+Proving Grounds High	From Fire Ziggurat	060 - 79, Quest Flag	Verdict	Gaerlan's Citadel	ACMaps
+Proving Grounds Low	From Lightning Ziggurat	020 - 39, Quest Flag	Verdict	Gaerlan's Citadel	ACMaps
+Proving Grounds Mid	From Acid Ziggurat	040 - 59, Quest Flag	Verdict	Gaerlan's Citadel	None Available
+Pyramid	58.4N, 11.2W,
+58.4N, 9.5W,
+60.2N, 10.3W	125+	Unfinished Business	Summoning T'thuun,
+T'Thuun's Marauders	Wiki Map
+Q
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Qin Xikit's Antechamber	42.4S, 91.1W	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Qin Xikit's Hidden Crown	91.4S, 89.5E	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Qin Xikit's Receiving Chamber	From Qin Xikit's Temple	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Qin Xikit's Temple	From Secrets of Qin Xikit's Temple	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+R
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Radiant Blood Stronghold	12.8N, 0.7E	180+, Quest Flag	Ancient Powers	Society Quests	Wiki Map
+Rampage Bluff	1.3S, 85.0E	080+	The Iron Coast	None	ACMaps
+Ravaged Cathedral	86.2S, 79.0W	100+	Assault	Withered Weapons Quest	ACMaps
+Ravenous Vault	92.8N, 48.9W	110+	Throne of Destiny	Chasing Oswald
+Eater Jaws	ACMaps
+Realaidain Eastern Vault	52.5N, 39.1E	080+	Cold Tracks	Asheron's Departure	Wiki Map
+Realaidain Northern Vault	75.8N, 4.3E	080+	Cold Tracks	Asheron's Departure	Wiki Map
+Realaidain Western Vault	58.0N, 20.8W	080+	Cold Tracks	Asheron's Departure	Wiki Map
+Reaving Facility	40.1 N, 50.9 W	150+, Quest Flag	Cogs in the Machine	Unleash the Gearknights	Wiki Map
+Recovered Temple	6.4N, 1.7W	None	Release	None	ACMaps
+ReedShark Lair	12.2S, 48.3E	04+	Release	The Writings of Jhong Mi	ACMaps
+Reedshark Clan Training Camp	13.0S, 68.0E	None	A Gathering of Colors	Tumerok Banners Quest	ACMaps
+Reinforced Royal Vault	From Reinforced Vault Sewers	080+	Assault	Assault Quest	ACMaps
+Reinforced Vault Sewers	From Defiled Temple Upper Wing	080+	Assault	Assault Quest	ACMaps
+Remote Empyrean Vault	81.6N, 71.2W	040+	Throne of Destiny	Brewmaster Quest,
+Eater Jaws,
+Fiun Healing Machine Quest	ACMaps
+Renegade Fortress (120+)	29.5S, 65.6W	120+	Who Watches the Virindi?	Renegade Living Weapons	None Available
+Renegade Fortress (60+)	29.5S, 65.5W	060+	Mired Hearts	First Contact	ACMaps
+Renegade Garrison	44.1N, 51.8E	040+, Quest Flag	Reign of Terror	Renegade Mace Quest	ACMaps
+Renegade Incursion	0.5N, 73.3W	050+	Friend and Foe	Fort Tethana Tug of War	ACMaps
+Renegade Stronghold (Lytelthorpe)	2.3S, 64.0E	None	Pillars Made of Sand	Ornate Tumerok Breastplate and Horned Lugian Helm	ACMaps
+Renegade Stronghold (Shoushi)	34.4S, 64.8E	None	Pillars Made of Sand	Chorizite Veined Shield Quest	ACMaps
+Renegade Stronghold (Stonehold)	71.4N, 28.6W	None	Pillars Made of Sand	Coarse Hide Shirt and Distilled Mana Potions	ACMaps
+Renegade Stronghold (Tufa)	17.0S, 5.9E	None	Pillars Made of Sand	Renegade Bone Charm Quest	ACMaps
+Repository	89.3S, 93.5W	125+, Quest Flag	Reprisals	Shadow Stone,
+Shadowfire Stone Quest	ACMaps
+Research Chamber	Portal Gem	060+	Discoveries	Halls of Knorr	ACMaps
+Resting Place	Portal Gem	None	Treaties in Stone	Resting Place	ACMaps
+Ridge Citadel	70.2S, 24.2E	None	Paths of Destruction	None	ACMaps
+Ringleader's Chambers	From Sawato Bandit's Hideout	Quest Flag	Shattering the Dark	Sawato Extortion	ACMaps
+Rithwic Crypt	14.0N, 59.1E	None	Release	Sword of Lost Light Quest,
+Menhir Research	Wiki Map
+Rocky Crypt	50.9S, 69.3E	010+	Release	None	ACMaps
+Rogue Delvings	74.8N, 18.4E	180+, Quest Flag	Ancient Powers	Adept Test	None Available
+Roost Dungeon	Skipping Stone	Quest Flag	What Once was Lost	Assassin's Roost Quest	None Available
+Roots of Skuld, Urd and Verdandi	51.9N, 73.0W	150+, Quest Flag	Seeds of Corruption	Guardian of the Deru Trees of Marae Lassel	Wiki Map
+Roots of the Deru Tree	90.3S, 87.3E	None	The Beast With Many Heads	Knorr Quiddity Ingot Purification	None Available
+Rossu Morta Chapterhouse	69.7N, 62.3W	Quest Flag	Shining Runes and Shadowed Hands	Rossu Morta Chapterhouse Access,
+Grael's Summoning Chamber	ACMaps
+Royal Hive	48.5N, 81.7W	070+, Quest Flag	Dark Majesty	Olthoi Queen Quest	ACMaps
+Ruined Cave Outpost	2.3N, 48.3E	01 - 20	Release	Beltslora's Pretty Shirt Quest	ACMaps
+Ruined Empyrean Vault	85.9N, 59.0W	070+	Throne of Destiny	Eater Jaws	ACMaps
+Rumuba's Hidey-Hole	75.9S, 89.2E	None	Should the Stars Fall	Rumuba's Jade Spear Quest	ACMaps
+Ruschk Burial Mound	91.5N, 69.0W	060+	Down Twisting Paths	Loyalty Reset Quest	ACMaps
+Ruschk Iceberg	87.3N, 70.8W	070+	Throne of Destiny	Fiun Healing Machine Quest	ACMaps
+Ruschk Icehold	87.3N, 51.8W	080+, Quest Flag	Throne of Destiny	Chasing Oswald	ACMaps
+S
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Saadia's Retreat	53.6S, 76.6E	None	Release	Undead Mechanic Quest	ACMaps
+Sanctum Residential Halls	25.5N, 48.7E,
+39.6S, 83.5E,
+13.4N, 0.6E	None	Betrayal	Housing	None Available
+Sanctum of Xik Minru	73.3N, 69.5E	130+	Under Cover of Night	The Temple of Xik Minru	ACMaps
+Sand Caves	20.7S, 07.8E,
+20.9S, 6.2E	Quest Flag	Lost City of Neftet	Slave Master Quest	Rhesus' Map
+Sand Shallow	11.5S, 0.7E	None	Release	None	ACMaps
+Sawato Bandit's Hideout	25.3S, 56.6E	Quest Flag	Shattering the Dark	Sawato Extortion	ACMaps
+Sclavus Cathedral (Ayan Baqur)	33.5S, 80.1W	None	The Paths of Destruction	None	ACMaps
+Sclavus Cathedral (West Dires)	17.9S, 89.6W	None	The Paths of Destruction	None	ACMaps
+Sclavus Keep	38.9S, 48.4W	015+	Release	None	ACMaps
+Sclavus Santa's House	69.8S, 25.6E	None	Present Dilemma	Sclavus Santa's House Quest	None Available
+Sclavus Temple	82.5S, 75.2S	060+	Visions In The Darkness	Search for Gareth Dain	ACMaps
+Sclavus Tunnels	92.3N, 55.5E	150+, Quest Flag	Unfinished Business	Radiant Mana Infusion Quest	Wiki Map
+Sclavus Umbral Forge	34.1N, 50.6W	060+, Quest Flag	Down Twisting Paths	Loyalty Reset Quest	ACMaps
+Sea Temple Catacombs	20.2S, 4.4W	01 - 20	Release	Lubziklan al-Luq's Stolen Goods	ACMaps
+Sealed Olthoi Passage	From Deeper Catacombs (Paradox)	120+, Quest Flag	Corrupted Sovereigns	Aerbax's Prodigal Olthoi	ACMaps
+Seaside Lair	17.2N, 65.9E	None	Release	None	ACMaps
+Seat of Knorr	Portal Gem	060+	Discoveries	Halls of Knorr,
+Collegium Occultus Ring Quest	ACMaps
+Seat of the New Singularity	Summoned by Ecorto the Lost Director	055+, Quest Flag	The Widening Gyre	New Singular Repositories	ACMaps
+Secret Chamber of Kresovus	77.6S, 28.0E	150+, Quest Flag	Strange Sightings	Bur Recall Quest	None Available
+Secret Putiputi Place	46.3N, 82.1W	Quest Flag	Heart of Woe	Putiputipuh's Onga	ACMaps (Parts 1 & 2),
+ACMaps (Part 3),
+ACMaps (Part 4)
+Secrets of Hizk Ri's Temple	From Depth's of Hizk Ri's Temple	060+	On Bended Knee	Clutch of Kings (Keerik)	ACMaps
+Secrets of Ixir Zi's Temple	From Depth's of Ixir Zi's Temple	060+	On Bended Knee	Clutch of Kings (Kiree)	ACMaps
+Secrets of Izji Qo's Temple	From Depth's of Izji Qo's Temple	060+	On Bended Knee	Clutch of Kings (Reeshan)	ACMaps
+Secrets of Kivik Lir's Temple	From Depth's of Kivik Lir's Temple	060+	On Bended Knee	Clutch of Kings (Rehir)	ACMaps
+Secrets of Liazk Itzi's Temple	From Depth's of Liazk Itzi's Temple	060+	On Bended Knee	Clutch of Kings (Broodu)	ACMaps
+Secrets of Qin Xikit's Temple	From Qin Xikit's Antechamber	060+	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Secured Royal Vault	From Secured Vault Sewers	060+	Assault	Assault Quest	ACMaps
+Secured Vault Sewers	From Defiled Temple Middle Wing	060+	Assault	Assault Quest	ACMaps
+Sepulcher of the Hopeslayer	Portal Gem	036+	The Child of Daralet	Sword of Lost Hope Quest	ACMaps
+Serac Vault	75.9S, 29.0E,
+59.9S, 55.0E	None	Shadows of the Past	Major Shivering Stone Quest	ACMaps
+Serpent Burial Grounds	67.6N, 25.3W	150+	Soulless Sisters	Serpent Burial Grounds Quest	None Available
+Serpent Clan Training Camp	1.0S, 70.0E	None	A Gathering of Colors	Tumerok Banners Quest	ACMaps
+Setab's Barracks	2.7N, 53.5E	None	The Paths of Destruction	None	ACMaps
+Sezzherei's Lair	Portal Gem	100+	Infiltration	Gateway to the Deep	ACMaps
+Shade Iron Mine	65.0S, 87.6W	080+, Quest Flag	A Change in Tactics	Shade Iron	ACMaps
+Shade Stronghold	73.5N, 0.2W	036+	The Child of Daralet	Shadow Captain's Heaume Quest,
+Sword of Lost Hope Quest	ACMaps
+Shadow Breach	33.6N, 56.8E	100+, Quest Flag	From the Darkest Depths	Grael's Claw	ACMaps
+Shadow Lugian Stronghold	12.2N, 81.1W	None	Infiltration	Balor's Rescue	ACMaps
+Shadow Vortex Dungeon	28.1S, 95.5E	180+, Quest Flag	Loss	Tou-Tou Blockade	Wiki Map
+Shadow-Infested Black Spear Temple	76.9S, 93.8E	101 - 150, Quest Flag	Shattering the Dark	Shadow Aspect of Grael Quest	None Available
+Shadowy Refuge	26.8S, 96.0E	150+, Quest Flag	Retributions	Geraine's Hosts	Wiki Map
+Shallow Hive	Random Location on Marescent Plateau	060+	Dark Majesty	Hea Totem Quest	ACMaps
+Shallow Olthoi Chasm	From Olthoi Chasm	040+	Waking From the Abyss	Olthoi Chasm Quest	ACMaps
+Shendolain Chamber	Portal Gem	060+	Twilight's Gleaming	Shendolain Vestibule Quest	ACMaps
+Shendolain Vestibule	53.8S, 59.6W,
+61.3S, 39.5W	060+	Twilight's Gleaming	Shendolain Vestibule Quest	ACMaps
+Shoushi Grotto	34.5S, 72.8E	None	Release	Sword of Lost Light	ACMaps
+Shield of Isin Dule Spire	91.8S, 92.7W	55+, Quest Flag	The Price of Loyalty	Shield of Isin Dule Quest	None Available
+Shreth Clan Training Camp	5.0S, 68.0E	None	A Gathering of Colors	Tumerok Banners Quest	ACMaps
+Shreth Hive	32.5S, 71.0E	01 - 20	Release	Four Stones of Jojii	ACMaps
+Silver Legion Keep	13.8N, 0.5E	065 - 79, Quest Flag	Throne of Destiny	Defense of Zaikhal	ACMaps
+Silyun Chapterhouse	85.4N, 70.4W	080+, Quest Flag	A Change in Tactics	Whispering Blade Infiltration	ACMaps
+Simple Hive	Random Location on Marescent Plateau	050+	Dark Majesty	Hea Totem Quest	ACMaps
+Simple Tower Portal	17.4N, 62.5E	None	Release	None	ACMaps
+Singular Chorizite Repository	77.3S, 51.6E	035+	The Widening Gyre	New Singular Repositories	ACMaps
+Singular Obsidian Repository	55.9S, 64.8W	045+	The Widening Gyre	New Singular Repositories	ACMaps
+Singular Pyreal Repository	4.2S, 8.9E	024+	The Widening Gyre	New Singular Repositories	ACMaps
+Singularity Bore	64.1S, 63.8W	050+	Lost in the New Horizon	Caul Flagging,
+Singularity Recall	Wiki Map
+Slithis Pit	70.2S, 94.3E	None	Should the Stars Fall	None	ACMaps
+Small Complex	39.1S, 53.4W	040+	Pillars Made of Sand	Renegade Herbal Kits	ACMaps
+Small Empyrean Vault	80.4N, 74.0W	030+	Throne of Destiny	Fiun Healing Machine Quest	ACMaps
+Small Fledgling Mukkir Nest	43.5N 36.1E,
+31.3S 74.8E,
+20.3S 0.2W	None	Shattering the Dark	Small Fledgling Mukkir Kill Task	ACMaps
+Small Hive	Random Location on Marescent Plateau	040+	Dark Majesty	Hea Totem Quest,
+Enrico's Betrayal	ACMaps
+Small Icecave	67.5N, 50.3E	None	Release	Undead Mechanic Quest,
+Machinist's Gloves Quest,
+Premonitions of the Fourth Sending of Darkness	ACMaps
+Small Mnemosyne Collection Site	From Mnemosyne Collection Site	015+	Spring's Sorrows	Mnemosynes	ACMaps
+Small Ruin	70.1S, 91.1E	None	Should the Stars Fall	None	ACMaps
+Small Temple	69.3S, 93.7E,
+75.0S, 97.5E	None	Should the Stars Fall	None	ACMaps
+Smugglers Hideaway	29.5S, 91.4E	None	Release	Undead Mechanic Quest	ACMaps
+Son of Pooky's Den	Portal Gem	100+	Shining Runes and Shadowed Hands	Son of Pooky	ACMaps
+Sotiris Dungeon	68.0S, 69.2W	030+	Hollow Victory	None	ACMaps
+Soul Hunter's Lair	27.7S, 55.8E	060+, Quest Flag	Remembering the Past	Soul Hunter Quest	None Available
+South Gate	65.0S, 63.8W	None	The Beast With Many Heads	Aerbax's Citadel	Wiki Map
+South Tumerok Vanguard Outpost	45.9S, 14.2E	050+	Lonely In The World	Tumerok Vanguard Outposts	ACMaps
+Southern Black Claw Dungeon	Kill a Southern Black Claw Raider	020+	Chains of Command	Quiddity Orb Quest	ACMaps
+Southern Catacombs	From Kor-Gursha	Quest Flag	Bridging the Vast Divide	Guruk Kill Tasks,
+Bur Mushroom Collection	ACWarcry Map
+Southern Infiltrator Keep	52.3S, 24.9E	025+	Keep Your Enemies Closer	Simulacra Infiltrators	ACMaps
+Southern Power Forge	82.2S, 3.9W	070+	The Calm	Power Forges	ACMaps
+Southern Resonating Crystal	52.6S, 46.7E	Quest Flag	The Beast With Many Heads	Southern Shroud Cabal	None Available
+Spirit Cell	26.5N, 28.5W	Quest Flag	Shattering the Dark	Gift Box Quest	ACMaps
+Stable Rift	8.0N, 50.4E	020+, Quest Flag	Lost in the New Horizon	Shackles of Obedience Quest	ACMaps
+Steaming Hovel	73.1N, 65.6W	01 - 20	Throne of Destiny	Thrungus Hovels,
+Sanamar Starter Quests	ACMaps
+Steamy Font	91.3S, 89.8E	060+, Quest Flag	On Bended Knee	Clutch of Kings (Browerk)	ACMaps
+Steamy Guruk Caverns	From Kor-Gursha	081 - 120, Quest Flag	Bridging the Vast Divide	Falatacot Medallion	ACWarcry Map
+Stone Cathedral	34.7S, 71.2E	1 - 20	Release	Nen Ai's Pet Drudge	ACMaps
+Strange Swamp Temple	41.7S, 49.2W	None	Remembering the Past	Messenger's Collar Quest	None Available
+Subterannean Farm	From Martine's Retreat	020+	A Swelling Tide	Sunstone & Opal Gauntlets	ACMaps
+Sultry Hovel	74.0N, 61.5W	01 - 20	Throne of Destiny	Thrungus Hovels,
+Sanamar Starter Quests	ACMaps
+Summoning Cave	29.2S, 95.8E	180+, Quest Flag	Stirrings in the Dark	Fate of Bael'Zharon	None Available
+Summoning Chamber	From Dardante's Workshop	100+, Quest Flag	Shining Runes and Shadowed Hands	Whispering Blade Chapterhouse Access	ACMaps
+Sunken Mere	See Here	01+,
+20+,
+40+,
+60+,
+80+	Treaties in Stone	The Moars	ACMaps
+Swamp Cavern	From Eastern Catacombs	Quest Flag	Ancient Enemies	Putrid Moar Kill Task,
+Slaying Spiketooth	ACWarcry Map
+Swamp Gardens	22.5S, 45.8E	None	Lost in the New Horizon	Little Green Seeds,
+Dyeing	ACMaps
+Swamp Ruin	25.1S, 52.1E	06+	Release	None	ACMaps
+Swamp Temple (Wai Jhou)	37.6S, 46.1W	015+	Release	None	ACMaps
+Swamp Temple (Yanshi)	23.4S, 47.9E	010+	Release	None	ACMaps
+Syliph Tower	12.3N, 11.5E	None	Release	None	ACMaps
+Sylsfear Dungeon	11.1N, 14.7E	010+	Release	Sylsfear Quest,
+Silifi of Crimson Stars Quest	ACMaps
+T
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Tactical Arena	From Faction Strongholds	180+, Quest Flag	Shifting Tactics	Tactical Defense Game	None Available
+Tainted Grotto	17.8S, 50.6E	None	Treaties in Stone	None	ACMaps
+Tanada Battle Burrows	Portal Gem	None	The Beast With Many Heads	Tanada Battle Burrows Quest	None Available
+Tanada House of Breath	From Tanada House of Wind	080+, Quest Flag	Remembering the Past	Tanada House of Storms Quest	None Available
+Tanada House of Earth	66.3N, 7.6E	080+, Quest Flag	Cold Tracks	Tanada House of Earth Quest	None Available
+Tanada House of Metal	From Tanada House of Stone	080+, Quest Flag	Cold Tracks	Tanada House of Earth Quest	None Available
+Tanada House of Pancakes	33.3S, 73.1E	Quest Flag	Ancient Enemies	Tanada House of Pancakes Quest	Wiki Map
+Tanada House of Stone	From Tanada House of Earth	080+, Quest Flag	Cold Tracks	Tanada House of Earth Quest	None Available
+Tanada House of Storms	68.1S, 45.5E	080+, Quest Flag	Remembering the Past	Tanada House of Storms Quest	None Available
+Tanada House of Water	85.3S, 5.8W	080+, Quest Flag	Ancient Enemies	Tanada House of Water Quest	None Available
+Tanada House of Wind	From Tanada House of Storms	080+, Quest Flag	Remembering the Past	Tanada House of Storms Quest	None Available
+Tanada Temple of Black Water	24.2S, 57.1E	Quest Flag	Intelligent Designs	Tanada Temple of Black Water Quest	None Available
+Tanada Toresen Temple	42.5S, 72.3E	200+, Quest Flag	Lessons from the Past	Tanada Intercept and Slaughter	None Available
+Targor's Cave	68.2N, 66.5E	None	The Price of Loyalty	Necklace of the Golden Flame Quest	None Available
+Temple	20.7S, 07.8E	Quest Flag	Lost City of Neftet	Slave Master Quest	None Available
+Temple Door	87.9S, 55.2W	180+, Quest Flag	Ancient Powers	Lord Test	Wiki Map
+Temple Entrance	84.3N 24.7E	120+, Quest Flag	Dance of the Dead	Lunnum's Return	Wiki Map
+Temple of Enlightenment	84.5S, 0.0E	025+, One Herb	The Iron Coast	Attribute and Skill Redistribution	ACMaps
+Temple of Forgetfulness	88.8N, 0.0E	025+, One Herb	The Iron Coast	Attribute and Skill Redistribution	ACMaps
+Temple of Kivik Lir Entrance	38.1S, 47.3W	060+	A Small Victory	Blackmire 4	ACMaps
+Temple of Mornings	22.1S, 8.6E	150+	Seeds of Hope	Harvesting the Bulb of Mornings	None Available
+Temple of Stirring Shadows	70.2N, 65.5E	80+, Quest Flag	Through Sacrifice Strength	Shadowfire Weapons	ACMaps
+Temple of Tthuun	92.8S, 52.6W	180+, Quest Flag	Ancient Powers	High Priest of T'thuun Kill Task	Wiki Map
+Temple of Xik Minru	73.3N, 69.0E	130+	Under Cover of Night	The Temple of Xik Minru	ACMaps
+Temple of the Black Spear	95.3N, 52.2W	130+, Quest Flag	Dance of the Dead	The Black Spear Ice Totem	None Available
+Temple of the Three	From Upper Catacombs	Quest Flag	Rekindling the Light	Saving Asheron	None Available
+Temple of the Three, Ritual Chambers	From Temple of the Three	Quest Flag	Rekindling the Light	Saving Asheron	None Available
+Temple Trial	From Deep Caves	Quest Flag	Wayward Prince	Sealing Away the Book of Eibhil	None Available
+Temple of Twilight	34.5S, 8.4E	Quest Flag	A Growing Twilight	Harvesting the Bulb of Twilight	None Available
+Tenkarrdun Foundry	88.8N, 42.8E	045+	To Raise a Banner of Flame	Lady Aerfalle Quest	ACMaps
+Thasali	29.3S, 24.6E	05+	Release	None	ACMaps
+The Asteliary	10.2S, 17.5E	080+	Keep Your Enemies Closer	Simulacra Infiltrators	ACMaps
+The Callous Heart	Portal Gem	015+	Hidden Vein	The Callous Heart Quest	ACMaps
+The Dark Lair	43.8N, 68.4W	None	Dark Majesty	Olthoi Pincers	ACMaps
+The Dark Spiral	15.9N, 68.7W	126+	Down Twisting Paths	The Dark Spiral Quest	ACMaps
+The Envoy's Chamber	From Gredaline Consulate	025+	A Reign of Stone	Virindi Spells Quest	ACMaps
+The Fazenda Caves	49.8N, 7.7E	040+	Friend and Foe	Farmer Kao's Plea for Help	Wiki Map
+The Floating City	Portal is a Random Spawn. Fixed Portal in the Golem Sanctum	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Banderling Area)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Bar)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Construction Area)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Lost Chamber)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Museum)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Skyway)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Floating City (Tunnels)	From The Floating City	150+	Hollow Victory	Floating City Quest	ACMaps
+The Orphanage	Random portal on Caul or Portal Gem	090+	Pillars Made of Sand	Aerbax's Prodigal Shadow
+Yaja's Reach	ACMaps
+The Pit	64.3N, 23.4W	060+	Release	Suzuhara Baijin's Care Package	ACMaps
+The Shadows	29.5S, 94.2E	200+	Hidden In Shadows	Shadow Invasion Quest Chain	Wiki Map
+Thief Trail	39.8S, 81.7E	07+	Release	None	ACMaps
+Thieves' Den	17.7N, 65E	None	Release	Gertarh's Dagger (Retired),
+Machinist's Gloves Quest,
+Undead Mechanic Quest	ACMaps
+Thieves' Galleries	57.7S, 74.1E	05+	Release	None	ACMaps
+Throne of the Tusker King	From Legend of the Tusker King	080+	The Hall of the Tusker King	Bobo's Medicine,
+The Legend of the Tusker Paw	ACMaps
+Thrungal Den	79.4N, 71.6W	100+, Quest Flag	Reprisals	Lunnum's Disappearance	ACMaps
+Thrungus Hole	94.2N, 43.0W	126+	Throne of Destiny	Death's Allure	ACMaps
+Thug Hideout	49.5S, 62.8E	05+	Old Ghosts	Ries Woron and the Thugs,
+Ries Woron's Story,
+Rescue Fiona Woron,
+Gear Knight Parts	None Available
+Tiny Hive	Random Location on Marescent Plateau	035+	Dark Majesty	Hea Totem Quest	ACMaps
+Tomb of the Dead	18.4S, 9.3E	None	The Child of Daralet	Undead Mechanic Quest	ACMaps
+Tower Base Dungeon	34.7S, 33.6E	115+	That Which is Ours	Spear of the Given Heart Quest	ACMaps
+Town Network	All Towns	None	Shifting Gears	Contracts	Wiki Map
+Training Academy	Character Creation	None	The First Strike	Training Academy Quest	ACMaps
+Training Halls (Retired)	From Starter Outposts	None	Release	Training Halls Quest	Retired
+Treacherous Tunnels	70.2S, 93.1E, 75.0S, 90.3E	None	Should the Stars Fall	None	ACMaps
+Trial of the Arm	From Trials of the Arm, Mind and Heart	None	Children of the Prodigal Lord	Aerbax's Prodigal Lugian	None Available
+Trial of the Deep	85.4N, 57.2E	150+	The Beast With Many Heads	Ithaenc Quiddity Ingot Purification	None Available
+Trial of the Heart	From Trial of the Mind	None	Children of the Prodigal Lord	Aerbax's Prodigal Lugian	None Available
+Trial of the Mind	From Trial of the Arm	None	Children of the Prodigal Lord	Aerbax's Prodigal Lugian	None Available
+Trial of the Vagabond	From Fir Tree	Quest Flag	Heart of Woe	Heart of Innocence Quest,
+Oswald's Dirk Quest	ACMaps
+Trialos	58.7S, 55.3E	None	Release	None	ACMaps
+Trials Graduation	From Trial of the Heart	None	Children of the Prodigal Lord	Aerbax's Prodigal Lugian	None Available
+Trials of Kivik Lir	From Haven of Kivik Lir	060 - 80,
+80 - 100,
+100+	A Small Victory	Blackmire 4	ACMaps
+Trials of the Arm, Mind and Heart	From Chambers Beneath Linvak Tukal	None	Children of the Prodigal Lord	Aerbax's Prodigal Lugian	None Available
+Triumph Against the Trials	From Trials of Kivik Lir	060 - 80,
+80 - 100,
+100+	A Small Victory	Blackmire 4	ACMaps
+Trothyr's Rest	10.3N, 54.9E	None	Release	Trothyr's Rest Quest	Wiki Map
+Tumerok Base	9.0N, 65.7W	None	Release	None	ACMaps
+Tumerok Cave	41.7N, 82.5W	None	Dark Majesty	Aun Tanua's War Taiaha Quest	ACMaps
+Tumerok Cavern	40.2N, 84.7W	None	Dark Majesty	Aun Tanua's War Taiaha Quest	ACMaps
+Tumerok Chamber	81.6S, 36.6W	None	Release	None	ACMaps
+Tumerok Dungeon	9.6S, 62.9W	None	Release	None	ACMaps
+Tumerok Fortress	12.3N, 73.7W	020+	Release	Overlord's Sword Quest	ACMaps
+Tumerok Mine	7.9N, 61.3W	015+	Release	Overlord's Sword Quest	ACMaps
+Tumerok Outpost	23.7N, 36.5W	015+	Release	None	ACMaps
+Tumerok Post	12.2N, 68.1W	None	Release	None	ACMaps
+Tumideon Fortress	56.0S, 60.7W	030+	Hollow Victory	None	ACMaps
+Tunnel of Love	94.4S, 96.6W	120+, Quest Flag	Friend and Foe	Tunnel of Love Quest	None Available
+Tunnels	24.2S, 46.3E	060+, Quest Flag	From the Darkness Born	Hidden Entrance Quest	ACMaps
+Tunnels to the Harbinger (Issk)	12.9S, 46.5E	060+, Quest Flag	Verdict	Harbinger	ACMaps
+Tunnels to the Harbinger (Vincadi)	12.6S, 46.7E	060+, Quest Flag	Verdict	Harbinger	ACMaps
+Tursh Dungeon	92.4N, 47.5W	 ??	Throne of Destiny	Ruschk Challenger	ACMaps
+Tusker Abode	3.2S, 95.0E	020+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Armory	0.0N, 89.4E	050+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Assault	3.9S, 84.2E	085+	The Iron Coast	The Painbringer Quest	ACMaps
+Tusker Barracks	0.3S, 90.8E	040+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Burrow	2.0N, 98.0E	None	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Cave	0.4N, 97.4E	012+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Cavern	1.0N, 96.9E	015+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Emporium	4.3N, 95.8E	None	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Encampments	4.0S, 93.5E	030+	The Iron Coast	None	ACMaps
+Tusker Food Storage	From Tusker Warrior's Lair	080+	The Hall of the Tusker King	Bobo's Medicine,
+The Legend of the Tusker Paw	ACMaps
+Tusker Freehold	1.6S, 95.5E	025+	The Iron Coast	None	ACMaps
+Tusker Gauntlet	10.0S, 86.5E	100+	The Iron Coast	None	ACMaps
+Tusker Grotto	0.9S, 98.4E	012+	The Iron Coast	None	ACMaps
+Tusker Habitat	0.5S, 95.9E	025+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Holding	3.5S, 85.3E	060+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Honeycombs	1.2S, 86.9E	080+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Lacuna	9.9S, 90.7E	100+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Lodge	0.2N, 98.1E	05+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Pits	1.2N, 91.8E	045+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Quarters	2.3S, 95.6E	030+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Retreat	0.7S, 97.9E	05+	The Iron Coast	None	ACMaps
+Tusker Temple	0.7N, 68.1W	040+	The Iron Coast	Access to Aphus Lassel	ACMaps
+Tusker Temple	10.5S, 65.6E	01 - 20	The Iron Coast	Access to Aphus Lassel	ACMaps
+Tusker Temple	59.8N, 28.4E	020 - 40	The Iron Coast	Access to Aphus Lassel	ACMaps
+Tusker Tunnels	0.3N, 86.4E	060+	The Iron Coast	Tusker Tusks	ACMaps
+Tusker Warrior's Lair	From Behind the Waterfall	080+	The Hall of the Tusker King	Bobo's Medicine,
+The Legend of the Tusker Paw	ACMaps
+Twisted Refuge	62.7S, 64.9W	150+, Quest Flag	Retributions	Geraine's Hosts	None Available
+U
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Ulgrim's Basement	From Ulgrim's Island	None	A Gathering of Colors	Ulgrim's Casting Stein	ACMaps
+Ulgrim's Bookcase	41.9S, 16.1E	None	Down Twisting Paths	Ulgrim's Hatch	ACMaps
+Ulgrim's Mysterious Hatch	94.1S, 11.2W	Quest Flag	Down Twisting Paths	Ulgrim's Hatch	ACMaps
+Umbral Hall	75.8S, 83.1E	030+	From the Darkness Born	Bleeargh's Gratitude	ACMaps
+Undead Temple	90.9N, 43.2W	None	Throne of Destiny	Fiun Healing Machine Quest	ACMaps
+Under Cove Crypt	21.4S, 4.1W	None	Release	Search for Abmim ibn Ibsar & Mad Star Investigation	ACMaps
+Under Drudge Fort	From Drudge Fort Cave	Quest Flag	Prodigal Sons	Aerbax's Prodigal Drudge	Wiki Map
+Underground Forest	31.5N, 20.8E	None	Release	None	ACMaps
+Underway	24.2S, 46.3E	040+, Quest Flag	From the Darkness Born	Hidden Entrance Quest	ACMaps
+Unfinished Temple	30.1S, 9.1E	01 - 20	Release	Rusted Knife Quest	ACMaps
+Unicorn's Grace	38.0S, 60.2E	035+, Quest Flag	Mirror, Mirror	Path of the Jojii Adherent	ACMaps
+Uninhabited Area	41.9S, 16.2E	01 - 25	Hollow Victory	Gem of Impulse Quest	ACMaps
+Upper Catacombs	From Southern Catacombs	Quest Flag	Rekindling the Light	Kaurik's Ghost Messenger	Wiki Map
+Upper Chakron Flux	From Chakron Gate	041+	The Child of Daralet	Virindi Servant's Amulet Quest,
+Sword of Lost Hope Quest	ACMaps
+Upper Empyrean Lightning Cistern	87.1S, 9.6E	050+	Fever Dreams	Empyrean Propylaeum	ACMaps
+Upper Empyrean Mausoleum	From Empyrean Cloister	021+	The Child of Daralet	Empyrean Cloister Quest,
+Sword of Lost Hope Quest	ACMaps
+Upper Heart of Darkness	From Upper Shade Stronghold	026+	The Child of Daralet	Shadow Captain's Heaume Quest,
+Sword of Lost Hope Quest	ACMaps
+Upper Shade Stronghold	73.5N, 0.2W	026+	The Child of Daralet	Shadow Captain's Heaume Quest,
+Sword of Lost Hope Quest	ACMaps
+V
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Vagabond Passed	From Fir Tree	Quest Flag	Heart of Woe	Heart of Innocence Quest,
+Oswald's Dirk Quest	ACMaps
+Vault of Eternal Slumber	79.9N, 54.4E	100+	From the Darkest Depths	Raising Grael's Island	ACMaps
+Venemous Nidus	13.1S, 91.8W	040+	Persuasion	Quiddity Weapons Quest	ACMaps
+Venerable Mausoleum	78.1N, 48.2W	200+	The Risen Princess	Hoshino Fortress Infiltration	Wiki Map
+Vengeance Caverns	1.9N, 93.7E	045+	The Iron Coast	Tusker Guard Kill Task	ACMaps
+Viamont Staging Portal (High)	27.2N, 27.9E	130+, Quest Flag	Through Sacrifice Strength	Glenden Wood Invasion	ACMaps
+Viamont Staging Portal (Low)	32.3N, 29.5E	080 - 99, Quest Flag	Through Sacrifice Strength	Glenden Wood Invasion	ACMaps
+Viamont Staging Portal (Mid)	31.4N, 25.8E	100 - 129, Quest Flag	Through Sacrifice Strength	Glenden Wood Invasion	ACMaps
+Viamontian Direlands Mine	8.6N, 76.4W	100+, Quest Flag	Reprisals	Necklace of the Elemental Adepts Quest	ACMaps
+Viamontian Esper Mine	72.2N, 3.0E	100+, Quest Flag	Reprisals	Necklace of the Elemental Adepts Quest	ACMaps
+Viamontian Garrison	75.3N, 73.8W	None	Throne of Destiny	Brewmaster Quest	ACMaps
+Viamontian Laboratory	39.4N, 75.3W	030+	A Change in Tactics	Plateau Village Transit	ACMaps
+Viamontian Royal Prison	90.3N, 43.3W	080+, Quest Flag	Throne of Destiny	Chasing Oswald	ACMaps
+Viamontian Torture Chamber	69.6N, 62.6W	Quest Flag	Throne of Destiny	Eleonora's Heart Quest	ACMaps
+Victory Residential Halls	48.0S, 24.5E,
+54.3S, 73.1E,
+3.2S, 19.1E	None	Festivus	Housing	None Available
+Vile Sanctuary	86.7S, 78.2W	100+	Assault	Withered Weapons Quest	ACMaps
+Virindi Complex	73.8N, 25.1E	Quest Flag	Discoveries	Frozen Fury	ACMaps
+Virindi Fort	61.6S, 54.1W	015+	Release	None	ACMaps
+Virindi Research Facility	43.3N, 43.7W	150+	Noble Sacrifice	Virindi Rescue	None Available
+W
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+War Room	12.1S, 92.7W	080+, Quest Flag	Assault	Drudge Aviator	ACMaps
+Ward Guardian Cave	48.3N, 57.4E	None	Corrupted Sovereigns	Aerbax's Prodigal Olthoi	ACMaps
+Warded Cavern Passage	21.9S, 9.3E	200+, Quest Flag	Dark Deliveries	Halt Dericost Ritual Quest	None Available
+Warded Dungeon Passage	From Warded Cavern Passage	200+, Quest Flag	Dark Deliveries	Halt Dericost Ritual Quest	None Available
+Warded Portal, Into the Darkness	From Burial Temple	Quest Flag	Masked Memories	Undead Attack on Al-Jalima	Wiki Map
+Warehouse	Speak to Lartorus at 42.6N, 62.4E	Quest Flag	The Slumbering Giant	Crystal Minds and Shattered Souls	ACMaps
+Warehouse (ransacked)	From Warehouse Annex Mine	040+, Quest Flag	The Slumbering Giant	Crystal Minds and Shattered Souls	ACMaps
+Warehouse Annex Mine	From Warehouse	040+, Quest Flag	The Slumbering Giant	Crystal Minds and Shattered Souls	ACMaps
+Wasteland Hive	50.8N, 79.1W	070+	Dark Majesty	Olthoi Queen Quest	ACMaps
+Water Temple	52.1S, 80.3E	040+	Release	Water for Ji Ra Ping,
+Exploration Society Letters	ACMaps
+Waterfall Cave	84.0N, 75.4W	None	Throne of Destiny	Brewmaster Quest	ACMaps
+Watery Grotto	23.8S, 47.2E	040+	From the Darkness Born	Bleeargh's Gratitude	ACMaps
+Weakened Royal Vault	From Weakened Vault Sewers	040+	Pillars Made of Sand	Assault Quest	ACMaps
+Weakened Vault Sewers	From Defiled Temple Lower Wing	040+	Pillars Made of Sand	Assault Quest	ACMaps
+Web Maze	49.4S, 65.4E	None	Release	None	ACMaps
+Wedding Hall	Portal Gem	None	Darkness Ascendant	Wedding Ceremony	None Available
+Wedding Trials Dungeon	32.8N, 55.3E	None	Betrayal	Wedding Trials	ACMaps
+Western Pedestal Dungeon	67.4N, 30.5E	120+, Item Enchantment 360+	Bridging the Vast Divide	Bur Portal Summoning	None Available
+Western Power Forge	21.9S, 43.8W	100+	The Calm	Power Forges	ACMaps
+Western Temple Catacombs	80.0N, 54.2E	100+, Quest Flag	From the Darkest Depths	Helm of Isin Dule	ACMaps
+Whispering Blade Chapterhouse	59.9S, 87.2W	Quest Flag	Shining Runes and Shadowed Hands	See Whispering Blade	ACMaps
+Whispering Caverns	14.9S, 86.0E	130+	Corrupted Sovereigns	Aerbax's Prodigal Tusker	Wiki Map
+White Totem Temple	87.5N, 48.8W	01 - 99	Shattering the Dark	Splitting Grael (Low)	None Available
+Wight Barrow	65.3S, 44.6W	None	Ancient Powers	Tracing The Stone	Wiki Map
+Wilderness Citadel	67.9S, 62.5E	None	Paths of Destruction	None	ACMaps
+Winthura's Garden	43.2S, 24.7E	08+	Release	None	ACMaps
+Withered Atoll Lugian Mine	89.7S, 76.1W	None	Celebration	Chunky Ore Collection,
+Well-Balanced Lugian Greataxe Quest	Wiki Map
+Witshire Dungeon	25.0N, 37.8E	020+, Quest Flag	Flesh and Blood	Elysa's Favor Quest	ACMaps
+X
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Xarabydun Lifestone	From Xarabydun	01 - 25	Hollow Victory	None	ACMaps
+Xi Ru's Chapel	90.6S, 87.5E	Quest Flag	On Bended Knee	Noble Weapons	ACMaps
+Xi Ru's Crypt	From Xi Ru's Chapel	Quest Flag	On Bended Knee	Noble Weapons	ACMaps
+Xi Ru's Library	From Xi Ru's Chapel	Quest Flag	On Bended Knee	Noble Weapons	ACMaps
+Xi Ru's Remembrance	From Xi Ru's Chapel	Quest Flag	On Bended Knee	Noble Weapons	ACMaps
+Y
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Yanshi Lower Undermine	From Yanshi Upper Undermine	100+, Quest Flag	Through Sacrifice, Strength	Shield of Yanshi Quest	None Available
+Yanshi Tunnels	12.2S, 45.5E	None	Release	Sword of Lost Light Quest,
+The Writings of Jhong Mi	ACMaps
+Yanshi Upper Undermine	From Granite Quarry	100+, Quest Flag	Through Sacrifice, Strength	Shield of Yanshi Quest	None Available
+Yaraq Tunnels	24.7S, 1.4W	None	Release	Sword of Lost Light Quest	ACMaps
+Z
+
+#, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+
+Name	Location	Restrictions	Introduced In	Related Quests	Map
+Zabool Tower Base	21.7N 19.4E (Base),
+21.1N, 18.5E (Top)	None	Release	Sylsfear Quest	ACMaps
+Zaikhal Advance Camp (Retired)	18.5N, 1.1W	012 - 25	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Zaikhal Middle Guard Camp (Retired)	22.1N, 1.0W	024 - 40	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Zaikhal Reinforcements Camp (Retired)	27.1N, 5.3W	036+	Crests of a Turbulent Sea	2001/08 - Virindi and Tumerok Invasion (Live Event)	Retired
+Notes
+
+There are 987 Dungeon entries on this page.
+There are currently Expression error: Unrecognised punctuation character ",". pages categorized as Dungeon in addition to this page.
+Categories: LocationDungeon
+Log inPageDiscussionReadView sourceView history
+
+	 Go	 Search
+Navigation
+ACCWiki››
+Patches››
+Quests››
+Items››
+Game Info››
+Lore››
+Help››
+Recent Changes
+Random Page
+What links here
+Upload file
+Toolbox
+What links here
+Related changes
+Special pages
+Printable version
+Permanent link
+This page was last modified on 10 May 2013, at 13:26.
+Privacy policyAbout AC Community WikiDisclaimersPowered by MediaWiki

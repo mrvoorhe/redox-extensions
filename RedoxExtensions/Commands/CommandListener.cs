@@ -41,6 +41,14 @@ namespace RedoxExtensions.Commands
 
         void _decalEventsProxy_CommandLineText(object sender, Decal.Adapter.ChatParserInterceptEventArgs e)
         {
+            if (e.Text.StartsWith("/tele"))
+            {
+                // Our teleport is smarter and it's nice to reuse this short /tele command
+                e.Eat = Actions.SimpleActions.Teleport(e.Text.Substring(6));
+                if (e.Eat)
+                    return;
+            }
+
             ICommand command;
             if (CommandHelpers.TryParse(e, out command))
             {

@@ -87,6 +87,15 @@ namespace RedoxExtensions.Commands.Handlers
                     Actions.TestingActions.ProcessTestCommand(command);
                     return true;
 
+                // PhatAC Based
+                case "tele":
+                    Actions.SimpleActions.Teleport(command);
+                    return true;
+
+                case "teleinto":
+                    Actions.SimpleActions.TeleportInto(command);
+                    return true;
+
                 default:
                     REPlugin.Instance.Chat.WriteLine("Unknown Command : {0} ", command.RawValue);
                     return false;

@@ -52,6 +52,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurrentCharacter.cs" />
+    <Compile Include="General\EnumerableExtensions.cs" />
+    <Compile Include="Location\Direction.cs" />
+    <Compile Include="Location\Dungeon.cs" />
+    <Compile Include="Location\DungeonDatabase.cs" />
+    <Compile Include="Location\FullLocation.cs" />
+    <Compile Include="Location\Town.cs" />
+    <Compile Include="Location\UserFacingCoord.cs" />
+    <Compile Include="Location\UserFacingLocation.cs" />
     <Compile Include="ExceptionHelpers.cs" />
     <Compile Include="GameValues\Identification.cs" />
     <Compile Include="GameValues\IntValueKey.cs" />
@@ -82,7 +90,11 @@
     <Compile Include="SpellUtilities.cs" />
     <Compile Include="Utilities\WorldObjectMutex.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DungeonDatabase.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

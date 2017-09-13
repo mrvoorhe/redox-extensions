@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxLib.Tests
+namespace RedoxLib.Location
 {
-    public class Class1
+    public struct FullLocation
     {
     }
 }
