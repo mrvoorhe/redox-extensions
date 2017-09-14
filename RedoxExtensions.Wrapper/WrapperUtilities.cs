@@ -169,6 +169,7 @@ namespace RedoxExtensions.Wrapper
             CopyLibraryDependency(tmpDllDirectory, "Newtonsoft.Json");
             CopyFileDependency(tmpDllDirectory, "mysettings.json");
             CopyFileDependency(tmpDllDirectory, "settings.json");
+            CopyDirectoryDependency(tmpDllDirectory, "Databases");
         }
 
         private static void CopyLibraryDependency(string tmpDllDirectory, string assemblyName)
@@ -196,6 +197,20 @@ namespace RedoxExtensions.Wrapper
             var destFilePath = Path.Combine(tmpDllDirectory, Path.GetFileName(filename));
 
             File.Copy(fullSourcePath, destFilePath);
+        }
+
+        private static void CopyDirectoryDependency(string tmpDllDirectory, string directoryName)
+        {
+            var sourcePath = Path.Combine(RedoxExtensionsBinDirectory, directoryName);
+
+            var destPath = Path.Combine(tmpDllDirectory, Path.GetFileName(directoryName));
+
+            Directory.CreateDirectory(destPath);
+
+            foreach (var sourceFile in Directory.GetFiles(sourcePath))
+            {
+                File.Copy(sourceFile, Path.Combine(destPath, Path.GetFileName(sourceFile)));
+            }
         }
     }
 }

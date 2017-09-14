@@ -1,0 +1,38 @@
+Landblock Hex	Landblock Dec	Destination	Drop Coordinates	Wiki link	Notes
+0904	2308	Singularity Caul	0x09040008 11.39999962 188.6000061 87.52166748 -0.99634528 0 0 -0.08541692		verified -sy
+0E34	3636	Darktide Festival Stone	0x0E34003F 175.500000 146.800003 34.005001 0.913545 0.000000 0.000000 -0.406737	http://asheron.wikia.com/wiki/Festival_Stone_of_Darktide	portal from direlands subway
+1286	4742	Northwest Direlands	0x12860003 10.000000 68.000000 50.005001 0.979925 0.000000 0.000000 -0.199368	http://asheron.wikia.com/wiki/Northwest_Direlands_Portal	
+1B7F	7039	Slaughterhouse	0x1B7F0018 64.925003 186.860001 80.005005 -0.292372 0.000000 0.000000 -0.956305	http://asheron.wikia.com/wiki/Slaughterhouse	portal from direlands subway
+2264	8804	Walled Portals	0x2264000D 36.299999 96.900002 120.005005 0.026177 0.000000 0.000000 -0.999657	http://asheron.wikia.com/wiki/Walled_Portals	portal from direlands subway -sy
+231D	8989	Direlands Desert Edge	0x231D0029 125.000000 20.000000 56.005001 0.707107 0.000000 0.000000 -0.707107	http://asheron.wikia.com/wiki/Direlands_Desert_Edge_Portal	
+2B12	11026	Candeth Tree	0x2B120019 89.800003 6.200000 72.936104 -0.923880 0.000000 0.000000 -0.382683		
+2D2F	11567	Obsidian Plains	0x2D2F0034 147.500000 78.599998 47.130005 0.446198 0.000000 0.000000 -0.894934	http://asheron.wikia.com/wiki/Obsidian_Plains	portal from direlands subway
+2E43	11843	Obsidian Rim	0x2E43000C 33.000000 80.000000 7.338334 0.707107 0.000000 0.000000 -0.707107		
+2F2E	12078	Aerbax's Platform (South)	0x2F2E002A 132.000000 36.000000 125.580460 1.000000 0.000000 0.000000 0.000000		
+2F2F	12079	Dangerous Portal Device (Obsidian Plains)	0x2F2F0038 154.490005 190.557007 5.884751 -0.009477 0.000000 0.000000 -0.999955		
+3694	13972	Direlands North Landbridge	0x36940026 96.300003 140.000000 86.696671 -0.819152 0.000000 0.000000 -0.573576	http://asheron.wikia.com/wiki/Direlands_North_Landbridge	portal from direlands subway
+3761	14177	Outside Accursed Halls	0x3761000C 37.310001 80.169998 40.005001 0.000000 0.000000 0.000000 -1.000000		
+3E31	15921	Black Hill	0x3E310004 11.800000 93.099998 238.554993 -0.515038 0.000000 0.000000 -0.857167	http://asheron.wikia.com/wiki/Black_Hill_Portal	
+4031	16433	Small Hill Base	0x40310040 174.800003 179.100006 11.438333 -0.241922 0.000000 0.000000 -0.970296	http://asheron.wikia.com/wiki/Small_Hill_Base_Portal	
+43F7	17399	Egg Orchard Surface Portal	0x43F70016 60.851002 125.442001 102.007454 0.100518 0.000000 0.000000 -0.994935		
+5226	21030	Direlands Southeast Shore	 0x52260007 5.600000 155.000000 -0.095000 0.819152 0.000000 0.000000 -0.573576	http://asheron.wikia.com/wiki/Direlands_Southeast_Shore_Portal	portal from direlands subway
+5ED2	24274	Stonehold Valley	0x5ED20005 12.000000 108.000000 20.405096 1.000000 0.000000 0.000000 0.000000	http://asheron.wikia.com/wiki/Stonehold_Valley	portal from direlands subway
+6717	26391	Direlands South Landbridge	0x6717001B 81.099998 48.799999 2.621667 0.939693 0.000000 0.000000 -0.342020	http://asheron.wikia.com/wiki/Direlands_South_Landbridge	portal from direlands subway
+72C8	29384	Patriarch's Valley	0x72C80025 108.000000 107.000000 170.088333 1.000000 0.000000 0.000000 0.000000		this drops up on the cliff, but I thought the drop was inside valley -sy
+9AEB	39659	Master Celdiseth the Archmage	0x9AEB001E 76.000000 141.000000 20.004999 0.382683 0.000000 0.000000 -0.923880		
+AAA8	43688	Hilltop	0xAAA80034 152.399994 82.300003 171.146652 -0.999391 0.000000 0.000000 -0.034899	http://asheron.wikia.com/wiki/Hilltop_Portal	
+AD9B	44443	Heartland	0xAD9B003E 186.100006 126.300003 62.005001 0.594823 0.000000 0.000000 -0.803857	http://asheron.wikia.com/wiki/Heartland_Portal	
+B013	45075	South Shore Heights	0xB013003E 181.000000 134.300003 182.788330 0.147809 0.000000 0.000000 -0.989016	http://asheron.wikia.com/wiki/South_Shore_Heights	portal from direlands subway
+B4AA	46250	Obsidian Span	0xB4AA0005 5.800000 112.599998 51.255001 -0.707107 0.000000 0.000000 -0.707107	http://asheron.wikia.com/wiki/Obsidian_Span	portal from direlands subway -sy
+BAE8	47848	Aerlinthe (Main)	0xBAE8001D 84 105 26.00499916 0 0 0 -1		
+BBC8	48072	Gaerlan's Citadel	0xBBC80003 23.079571 60.700657 160.588882 0.043619 0.000000 0.000000 -0.999048		this drops in the right area, but I thought the drop was on ground level -sy
+C09B	49307	Isle of Tears	0xC09B0015 64.199997 119.300003 1.905000 0.829038 0.000000 0.000000 -0.559193	http://asheron.wikia.com/wiki/Isle_of_Tears	portal from direlands subway
+C8E2	51426	Vissidal Island	0xC8E2002A 136.000000 42.000000 0.005000 0.707107 0.000000 0.000000 -0.707107		
+CA2D	51757	High Mountain Valley	0xCA2D0038 160.300003 180.600006 167.363327 -0.284015 0.000000 0.000000 -0.958820	http://asheron.wikia.com/wiki/High_Mountain_Valley_Portal	
+D59A	54682	Asheron's Castle	0xD59A0039 177.000000 1.210000 373.500824 -0.024997 0.000000 0.000000 -0.999687		
+D693	54931	Asheron's Island	0xD6930005 18.43499947 113.64399719 -0.09500003 1 0 0 0		verified -sy
+E524	58660	Vesayen Isles	0xE5240007 11.900000 153.500000 -0.095000 0.707107 0.000000 0.000000 -0.707107	http://asheron.wikia.com/wiki/Vesayen_Isles	portal from direlands subway
+F36D	62317	Western Aphus Lassel	0xF36D0030 131.500000 168.889999 12.004999 0.584129 0.000000 0.000000 -0.811661		
+		Small Black Hill		http://asheron.wikia.com/wiki/Small_Black_Hill_Portal	broken -- landscape portals from 62.2S, 52.3W and 62.0S, 50.0W drop you back at 62.0S, 50.0W, not small black hill -sy
+3B4D		East Direlands Swamp	0x3B4D0037 163.768997 144.451996 34.909584 0.488804 0.000000 0.000000 -0.872394	http://asheron.wikia.com/wiki/East_Direlands_Swamp_Portal	Dryreach portal DC750023 98.26 60.17 38.99 -0.63 0.00 -0.00 -0.77
+F222	61986	MacNiall's Freehold (Treasure Room Quest Drop)	0xf2220127 109.75 89.806800842285 18.004999160767 0.48627099394798 0 0 0.87380802631378		

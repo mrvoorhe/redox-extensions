@@ -463,10 +463,10 @@ namespace RedoxExtensions.Actions
 
         internal static bool Teleport(ICommand command)
         {
-            return Teleport(command.Arguments.AggregateWithSpace());
+            return Teleport(command.Arguments.AggregateWithSpace(), command);
         }
 
-        internal static bool Teleport(string args)
+        internal static bool Teleport(string args, ISupportFeedback requestor)
         {
             UserFacingLocation location;
             if (UserFacingLocation.TryParse(args, out location))
@@ -485,11 +485,11 @@ namespace RedoxExtensions.Actions
             Dungeon dungeon;
             if (Dungeon.TryParse(args, out dungeon))
             {
-                PhatACActions.TeleTo(dungeon.Location);
+                PhatACActions.TeleTo(dungeon.Locations[0]);
                 return true;
             }
 
-            throw new NotImplementedException();
+            throw new DisplayToUserException($"No location matching `{args}`.  Will treat as player name", requestor);
         }
 
         /// <summary>

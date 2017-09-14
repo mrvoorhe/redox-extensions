@@ -217,7 +217,7 @@
     <Compile Include="Listeners\TellListener.cs" />
     <Compile Include="Location\Direction.cs" />
     <Compile Include="Location\Dungeon.cs" />
-    <Compile Include="Location\DungeonDatabase.cs" />
+    <Compile Include="Location\LocationDatabase.cs" />
     <Compile Include="Location\FullLocation.cs" />
     <Compile Include="Location\Town.cs" />
     <Compile Include="Location\UserFacingCoord.cs" />
@@ -250,6 +250,7 @@
     <Compile Include="VirindiInterop\VTStateScope.cs" />
     <Compile Include="VirindiInterop\VTUtilities.cs" />
     <Compile Include="VirindiInterop\VTConnector.cs" />
+    <Compile Include="VirindiInterop\VWTActions.cs" />
     <Compile Include="Waiters\PortalSpaceWaiter.cs" />
     <Compile Include="Waiters\IWaiter.cs" />
   </ItemGroup>
@@ -264,6 +265,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Databases\Landblocks-Caves.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Databases\Landblocks-Dungeons.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Databases\Landblocks-Town Drops.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Databases\Landblocks-World Drops.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="mysettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -271,7 +284,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Databases\DungeonsDatabase.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Databases\TownDatabase.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

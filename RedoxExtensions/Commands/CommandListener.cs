@@ -44,7 +44,7 @@ namespace RedoxExtensions.Commands
             if (e.Text.StartsWith("/tele"))
             {
                 // Our teleport is smarter and it's nice to reuse this short /tele command
-                e.Eat = Actions.SimpleActions.Teleport(e.Text.Substring(6));
+                e.Eat = Actions.SimpleActions.Teleport(e.Text.Substring(6), CommandHelpers.Self);
                 if (e.Eat)
                     return;
             }

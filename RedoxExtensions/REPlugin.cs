@@ -14,6 +14,7 @@ using System.Threading;
 
 using RedoxLib;
 using RedoxExtensions.Core.Utilities;
+using RedoxExtensions.Location;
 using RedoxExtensions.Settings;
 
 namespace RedoxExtensions
@@ -49,6 +50,7 @@ namespace RedoxExtensions
         private DispatchManager _dispatchManager;
         private MonitorManager _monitorManager;
         private CommandListenerManager _commandListenerManager;
+        private Location.LocationDatabase _locationDatabase;
 
         private RTSettings _settings;
 
@@ -125,6 +127,8 @@ namespace RedoxExtensions
                 return this._monitorManager;
             }
         }
+
+        internal Location.LocationDatabase LocationDatabase => _locationDatabase;
 
         internal IPluginBaseEvents PluginBaseEvents
         {
@@ -413,6 +417,8 @@ namespace RedoxExtensions
                     this._monitorManager = new MonitorManager((IREEventsFireCallbacks)this.Events.RE);
 
                     this._commandListenerManager = new CommandListenerManager(this.Events.Decal);
+
+                    _locationDatabase = new LocationDatabase();
 
                     if (!string.IsNullOrEmpty(ActiveSettings.Instance.DefaultVTWindowProfile))
                     {

@@ -701,7 +701,7 @@ Olthoi Pincers	ACMaps
 Lakeside Lair	18.9N, 48.4E	None	Release	None	ACMaps
 Land Bridge Staging Complex	86.1S, 2.5W	032+	Chains of Command	Quiddity Orb Quest	ACMaps
 Large Mnemosyne Collection Site	From Mnemosyne Collection Site	030+	Spring's Sorrows	Mnemosynes	ACMaps
-Larry's Garden	1.9E, 41.6N	Quest Flag	The Madness of Men	Bunny Master Title	ACMaps
+Larry's Garden	41.6N, 1.9E	Quest Flag	The Madness of Men	Bunny Master Title	ACMaps
 Legend of the Tusker King	From Tusker Food Storage	080+	The Hall of the Tusker King	Bobo's Medicine,
 The Legend of the Tusker Paw	ACMaps
 Lesser Battle Dungeon	From Small Creepy Statue	Player Killers 1 - 50, All Player Killer Lite	The Madness of Men	None	None Available
@@ -1045,7 +1045,7 @@ Sclavus Cathedral (Ayan Baqur)	33.5S, 80.1W	None	The Paths of Destruction	None	A
 Sclavus Cathedral (West Dires)	17.9S, 89.6W	None	The Paths of Destruction	None	ACMaps
 Sclavus Keep	38.9S, 48.4W	015+	Release	None	ACMaps
 Sclavus Santa's House	69.8S, 25.6E	None	Present Dilemma	Sclavus Santa's House Quest	None Available
-Sclavus Temple	82.5S, 75.2S	060+	Visions In The Darkness	Search for Gareth Dain	ACMaps
+Sclavus Temple	82.5S, 75.2W	060+	Visions In The Darkness	Search for Gareth Dain	ACMaps
 Sclavus Tunnels	92.3N, 55.5E	150+, Quest Flag	Unfinished Business	Radiant Mana Infusion Quest	Wiki Map
 Sclavus Umbral Forge	34.1N, 50.6W	060+, Quest Flag	Down Twisting Paths	Loyalty Reset Quest	ACMaps
 Sea Temple Catacombs	20.2S, 4.4W	01 - 20	Release	Lubziklan al-Luq's Stolen Goods	ACMaps

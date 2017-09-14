@@ -7,11 +7,21 @@ namespace RedoxExtensions.Location
 {
     public struct Dungeon
     {
-        public readonly string Name;
+        public readonly string KeyName;
 
-        public readonly UserFacingLocation Location;
+        public readonly string PrettyName;
 
-        public readonly FullLocation DropLocation;
+        public readonly UserFacingLocation[] Locations;
+
+        public readonly FullLocation[] DropLocations;
+
+        public Dungeon(string keyName, string prettyName, UserFacingLocation[] locations, FullLocation[] dropLocations)
+        {
+            KeyName = keyName;
+            PrettyName = prettyName;
+            Locations = locations;
+            DropLocations = dropLocations;
+        }
 
         public static bool TryParse(string value, out Dungeon dungeon)
         {
@@ -19,7 +29,7 @@ namespace RedoxExtensions.Location
             if (string.IsNullOrEmpty(value))
                 return false;
 
-            return DungeonDatabase.TryFind(value, out dungeon);
+            return REPlugin.Instance.LocationDatabase.Dungeons.TryGetValue(value.Trim().ToLower(), out dungeon);
         }
     }
 }
