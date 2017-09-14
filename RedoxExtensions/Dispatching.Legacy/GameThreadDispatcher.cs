@@ -91,7 +91,11 @@ namespace RedoxExtensions.Dispatching.Legacy
 
         public void QueueDelayedAction(IDispatchedAction action, int millisecondsDelay)
         {
-            throw new NotImplementedException();
+            REPlugin.Instance.Dispatch.Background.QueueAction(() =>
+            {
+                Thread.Sleep(millisecondsDelay);
+                QueueAction(action);
+            });
         }
 
         public IActionAsyncResult<TResult> QueueCompletableAction<TResult>(DispatchedFuncDelegate<TResult> func, AutoResetEvent reusedCompletionEvent)
