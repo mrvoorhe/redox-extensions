@@ -12,6 +12,7 @@ namespace RedoxExtensions.Settings
         public Dictionary<string, Formation> Formations;
         public VTProfiles VTProfiles;
         public Diagnostics.DebugLevel DebugLevel;
+        public string DefaultVTWindowProfile;
 
         public List<string> Mage;
         public List<string> AttackMage;

@@ -14,6 +14,7 @@ using System.Threading;
 
 using RedoxLib;
 using RedoxExtensions.Core.Utilities;
+using RedoxExtensions.Settings;
 
 namespace RedoxExtensions
 {
@@ -412,6 +413,11 @@ namespace RedoxExtensions
                     this._monitorManager = new MonitorManager((IREEventsFireCallbacks)this.Events.RE);
 
                     this._commandListenerManager = new CommandListenerManager(this.Events.Decal);
+
+                    if (!string.IsNullOrEmpty(ActiveSettings.Instance.DefaultVTWindowProfile))
+                    {
+                        Dispatch.LegacyGameThread.QueueDelayedAction(() => VirindiInterop.VWTActions.Apply(ActiveSettings.Instance.DefaultVTWindowProfile), 5000);
+                    }
 
                     this.Chat.WriteLine("***Initialization Complete****");
                 }
