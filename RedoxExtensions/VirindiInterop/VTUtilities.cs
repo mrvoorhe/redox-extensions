@@ -12,7 +12,7 @@ namespace RedoxExtensions.VirindiInterop
 {
     public static class VTUtilities
     {
-        private static readonly string MyDefaultVTankDirectory = Path.Combine(Path.Combine(WrapperUtilities.RedoxExtensionsBinDirectory, "..\\.."), "VirindiPlugins\\VirindiTank");
+        private static readonly string MyDefaultVTankDirectory = Path.Combine(Path.Combine(WrapperUtilities.RedoxExtensionsBinDirectory, ".."), "VirindiPlugins\\VirindiTank");
 
         private const string VTOptionPrefix = "[VTank] Option";
 

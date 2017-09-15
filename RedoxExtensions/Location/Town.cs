@@ -196,7 +196,9 @@ namespace RedoxExtensions.Location
                     return "Merwart Village";
                 case "neydisa castle": // official name
                 case "neydisa":
-                    return "Neydisa Castle";
+                    // This is the pretty name, but for now we need to return the name phatac teletown wants
+                    //return "Neydisa Castle";
+                    return "neydisa";
                 case "oolatanga's refuge": // official name
                     return "Oolatanga's Refuge";
                 case "timaru": // official name

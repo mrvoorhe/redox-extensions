@@ -4,6 +4,7 @@ set CONFIGURATION=Release
 
 if exist "%REDOX_EXTENSIONS_INSTALL%" (
     xcopy /EYI bin\%CONFIGURATION%\Databases "%REDOX_EXTENSIONS_INSTALL%\Databases"
+    xcopy /EYI bin\%CONFIGURATION%\mysettings.json "%REDOX_EXTENSIONS_INSTALL%\mysettings.json"
     xcopy /EYI bin\%CONFIGURATION%\RedoxExtensions.* "%REDOX_EXTENSIONS_INSTALL%"
     xcopy /EYI bin\%CONFIGURATION%\RedoxLib.* "%REDOX_EXTENSIONS_INSTALL%"
     xcopy /EYI bin\%CONFIGURATION%\RedoxFilter.* "%REDOX_EXTENSIONS_INSTALL%"
