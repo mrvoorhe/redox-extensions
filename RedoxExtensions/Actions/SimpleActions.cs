@@ -489,7 +489,8 @@ namespace RedoxExtensions.Actions
                 return true;
             }
 
-            throw new DisplayToUserException($"No location matching `{args}`.  Will treat as player name", requestor);
+            PhatACActions.TeleToPlayer(args);
+            return true;
         }
 
         /// <summary>

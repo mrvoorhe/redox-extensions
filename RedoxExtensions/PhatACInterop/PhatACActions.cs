@@ -23,5 +23,10 @@ namespace RedoxExtensions.PhatACInterop
         {
             ACUtilities.ProcessNativeCommand($"/teletown {name}");
         }
+
+        public static void TeleToPlayer(string name)
+        {
+            ACUtilities.ProcessNativeCommand($"/tele {name}");
+        }
     }
 }
