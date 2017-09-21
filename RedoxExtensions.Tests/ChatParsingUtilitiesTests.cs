@@ -50,6 +50,34 @@ namespace RedoxExtensions.Tests
         }
 
         [Test]
+        public void GetSourceOfChatCanHandleFellowshopMessage()
+        {
+            var text = "Cowhead says to your fellowship, \"!come\"";
+
+            var result = ChatParsingUtilities.GetSourceOfChat(text);
+
+            Assert.AreEqual("Cowhead", result);
+        }
+
+        [Test]
+        public void GetSourceOfChatCanHandleFellowshopMessage_SpaceInName()
+        {
+            var text = "Rockdown Guy says to your fellowship, \"!come\"";
+
+            var result = ChatParsingUtilities.GetSourceOfChat(text);
+
+            Assert.AreEqual("Rockdown Guy", result);
+        }
+
+        [Test]
+        public void GetSourceOfChatCanHandleFellowshopMessage_FromSelf()
+        {
+            var result = ChatParsingUtilities.GetSourceOfChat("You say to your fellowship, \"!come\"");
+
+            Assert.AreEqual("You", result);
+        }
+
+        [Test]
         public void TestIsFellowshipCreated()
         {
             var text = "You have created the Fellowship of My Fellow.";
@@ -198,6 +226,36 @@ namespace RedoxExtensions.Tests
             Assert.IsNull(channel);
             Assert.IsNull(source);
             Assert.IsNull(message);
+        }
+
+        [Test]
+        public void IsChatTextFromFellowship_PhatACStyle()
+        {
+            bool fromSelf;
+            var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says to your fellowship, \"!come\"", out fromSelf);
+
+            Assert.IsTrue(result);
+            Assert.IsFalse(fromSelf);
+        }
+
+        [Test]
+        public void IsChatTestFromFellowship_PhatACStyle_FromSelf()
+        {
+            bool fromSelf;
+            var result = ChatParsingUtilities.IsChatTextFromFellowship("You say to your fellowship, \"!come\"", out fromSelf);
+
+            Assert.IsTrue(result);
+            Assert.IsTrue(fromSelf);
+        }
+
+        [Test]
+        public void IsChatTestFromFellowship_GeneralChatMessage()
+        {
+            bool fromSelf;
+            var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says, \"hey\"", out fromSelf);
+
+            Assert.IsFalse(result);
+            Assert.IsFalse(fromSelf);
         }
     }
 }

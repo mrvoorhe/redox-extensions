@@ -9,6 +9,7 @@ namespace RedoxExtensions.Core.Utilities
     public static class ChatParsingUtilities
     {
         public const string FellowshipMessagePrefix = "[Fellowship] ";
+        public const string FellowshipMessagePostfix = " to your fellowship";
         public const string FellowshipFromSelfMessagePrefix = "[Fellowship] You say,";
 
         private const string YouHaveCreatedFellowship = "You have created the Fellowship of";
@@ -41,6 +42,21 @@ namespace RedoxExtensions.Core.Utilities
                 fromSelf = text.StartsWith(FellowshipFromSelfMessagePrefix);
             }
 
+            // PhatAC messages are missing [Fellowship] at the beginning.
+            var firstCommaIndex = text.IndexOf(", ");
+            if (firstCommaIndex < 0)
+            {
+                fromSelf = false;
+                return false;
+            }
+
+            var firstPart = text.Substring(0, firstCommaIndex);
+            if (firstPart.EndsWith(FellowshipMessagePostfix))
+            {
+                fromSelf = firstPart.StartsWith("You ");
+                return true;
+            }
+
             return isFellowshipText;
         }
 
@@ -65,6 +81,22 @@ namespace RedoxExtensions.Core.Utilities
                     var realName = text.Substring(0, indexOfTellsYou).Trim();
                     workAroundText = text.Substring(text.IndexOf(',') + 1).Trim();
                     return realName;
+                }
+
+                // With PhatAC, the fellowship case is bugged also
+                bool fromSelf;
+                var isFellowship = IsChatTextFromFellowship(text, out fromSelf);
+                if (isFellowship)
+                {
+                    bugged = true;
+                    // There is no work around text for this case.
+                    workAroundText = text;
+
+                    if (fromSelf)
+                        return "You";
+
+                    var indexOfFellowshipPart = text.IndexOf(" says to your fellowship");
+                    return text.Substring(0, indexOfFellowshipPart);
                 }
 
                 // MagTools fails to parse another case.
