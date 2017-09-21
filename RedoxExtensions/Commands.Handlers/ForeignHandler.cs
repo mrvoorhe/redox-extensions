@@ -381,6 +381,17 @@ namespace RedoxExtensions.Commands.Handlers
 
                 // PhatAC based
                 case "tele":
+
+                    // When no args, assume that means teleport to the requesting character
+                    if (command.Arguments.Count == 0)
+                    {
+                        if (command.FromSelf)
+                            break;
+
+                        SimpleActions.Teleport(command.SourceCharacter, command);
+                        break;
+                    }
+
                     SimpleActions.Teleport(command);
                     break;
 
