@@ -19,6 +19,10 @@ if exist "%REDOX_EXTENSIONS_INSTALL%" (
     xcopy /EYI bin\%CONFIGURATION%\RedoxExtensions.* "C:\Games\Decal Plugins\RedoxExtensions\"
     xcopy /EYI bin\%CONFIGURATION%\RedoxLib.* "C:\Games\Decal Plugins\RedoxExtensions\"
     xcopy /EYI bin\%CONFIGURATION%\RedoxFilter.* "C:\Games\Decal Plugins\RedoxExtensions\"
+) else if exist "E:\ac\Games\RedoxExtensions" (
+    xcopy /EYI bin\%CONFIGURATION%\RedoxExtensions.* "E:\ac\Games\RedoxExtensions\"
+    xcopy /EYI bin\%CONFIGURATION%\RedoxLib.* "E:\ac\Games\RedoxExtensions\"
+    xcopy /EYI bin\%CONFIGURATION%\RedoxFilter.* "E:\ac\Games\RedoxExtensions\"
 ) else (
     echo.
     echo No Redox Extensions Install Directory Found
