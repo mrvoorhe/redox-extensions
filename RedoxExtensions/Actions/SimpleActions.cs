@@ -11,6 +11,7 @@ using Decal.Adapter.Wrappers;
 
 using RedoxExtensions.Commands;
 using RedoxExtensions.Core;
+using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching.Legacy;
@@ -407,34 +408,15 @@ namespace RedoxExtensions.Actions
 
         internal static void CastSelfSpell(string spellName)
         {
-            var spellId = RedoxLib.SpellUtilities.LookUpSpellIdByName(spellName);
-
-            if (spellId == 0)
+            // The CastSpell action handles wielding a wand, entering magic mode and stopping VT for the cast,
+            // so it works regardless of the combat mode we start in.
+            try
             {
-                REPlugin.Instance.Chat.WriteLine(string.Format("Unable to lookup spell id for : {0}", spellName));
-                return;
+                RedoxExtensions.Actions.Dispatched.CastSpell.Create(CommandHelpers.Self, spellName, REPlugin.Instance.CharacterFilter.Id).Enqueue();
             }
-
-            // Turn off VT while we do this so that it doesn't mess with our cast.
-            using (var scope = VTRunScope.EnterStopped())
+            catch (DisplayToUserException ex)
             {
-
-                var currentCombatMode = REPlugin.Instance.Actions.CombatMode;
-
-                if (currentCombatMode == Decal.Adapter.Wrappers.CombatState.Peace)
-                {
-                    // TODO : Need to equip a wand and enter combat mode.
-                    REPlugin.Instance.Chat.WriteLine("TODO : Need to implement casting from peace mode.");
-                    return;
-                }
-                else if(currentCombatMode == Decal.Adapter.Wrappers.CombatState.Missile || currentCombatMode == Decal.Adapter.Wrappers.CombatState.Melee)
-                {
-                    // TODO : Need to equip a wand and enter combat mode.
-                    REPlugin.Instance.Chat.WriteLine("TODO : Need to implement casting from melee or missile mode.");
-                    return;
-                }
-
-                REPlugin.Instance.Actions.CastSpell(spellId, REPlugin.Instance.CharacterFilter.Id);
+                REPlugin.Instance.Chat.WriteLine(ex.Message);
             }
         }
 
