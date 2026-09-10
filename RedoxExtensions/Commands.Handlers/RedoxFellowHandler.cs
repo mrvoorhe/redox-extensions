@@ -58,9 +58,19 @@ namespace RedoxExtensions.Commands.Handlers
 
         private static void DisplayHelp()
         {
-            REPlugin.Instance.Chat.WriteLine("********************");
-            REPlugin.Instance.Chat.WriteLine("This will become the help!");
-            REPlugin.Instance.Chat.WriteLine("********************");
+            var chat = REPlugin.Instance.Chat;
+
+            chat.WriteLine("**** RedoxFellow Commands (prefix with /rf) ****");
+            chat.WriteLine("Sends commands to your fellowship as foreign (!) commands.");
+
+            chat.WriteLine("  help                    - Displays this help.");
+            chat.WriteLine("  use [target]            - Tells the fellow to use the target (or your current selection).");
+            chat.WriteLine("  give <item>             - Tells the fellow to give the item to your current selection.");
+            chat.WriteLine("  goto [target]           - Tells the fellow to travel to the target (or your current selection).");
+
+            chat.WriteLine("  <other> <args>          - Forwarded to the fellowship as \"!<other> <args>\".");
+
+            chat.WriteLine("************************************************");
         }
     }
 }
