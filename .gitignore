@@ -11,3 +11,5 @@ TestResult.xml
 .vs/RedoxExtensions/v14/.suo
 .vs/RedoxExtensions/v15/sqlite3/storage.ide
 *.suo
+.idea
+.DS_Store
