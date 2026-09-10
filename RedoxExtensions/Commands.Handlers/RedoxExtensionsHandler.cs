@@ -104,9 +104,33 @@ namespace RedoxExtensions.Commands.Handlers
 
         private static void DisplayHelp()
         {
-            REPlugin.Instance.Chat.WriteLine("********************");
-            REPlugin.Instance.Chat.WriteLine("This will become the help!");
-            REPlugin.Instance.Chat.WriteLine("********************");
+            var chat = REPlugin.Instance.Chat;
+
+            chat.WriteLine("**** RedoxExtensions Commands (prefix with /re) ****");
+
+            chat.WriteLine("  help                    - Displays this help.");
+            chat.WriteLine("  exit                    - Exits the game.");
+
+            chat.WriteLine("  fellowup                - Fellows the usual suspects.");
+            chat.WriteLine("  fellowupb               - Fellows the usual suspects (break existing fellowship first).");
+            chat.WriteLine("  pullkeys                - Pulls legendary keys.");
+
+            chat.WriteLine("  use <target>            - Uses the given object.");
+            chat.WriteLine("  give <items>            - Gives items to the current selection.");
+            chat.WriteLine("  list <items>            - Lists matching items.");
+            chat.WriteLine("  cram <items>            - Crams items into a container.");
+
+            chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
+            chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
+            chat.WriteLine("  face <target>           - Faces the given object.");
+            chat.WriteLine("  goto <target>           - Travels to the given object.");
+            chat.WriteLine("  pets <args>             - Processes a pets command.");
+            chat.WriteLine("  test <args>             - Runs a testing command.");
+
+            chat.WriteLine("  tele [target]           - Teleports to the target (or the requestor).");
+            chat.WriteLine("  teleinto <target>      - Teleports into the given target.");
+
+            chat.WriteLine("****************************************************");
         }
     }
 }
