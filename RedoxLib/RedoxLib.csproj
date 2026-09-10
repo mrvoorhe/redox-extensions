@@ -1,96 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7D32EA7A-FDA9-40E5-913B-E5A1B12388FC}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RedoxLib</RootNamespace>
-    <AssemblyName>RedoxLib</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>net35</TargetFramework>
     <PlatformTarget>x86</PlatformTarget>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
     <Reference Include="Decal.Adapter">
       <HintPath>..\External\Decal\bin\Decal.Adapter.dll</HintPath>
     </Reference>
     <Reference Include="Decal.FileService">
       <HintPath>..\External\Decal\bin\Decal.FileService.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Newtonsoft\bin\Net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CurrentCharacter.cs" />
-    <Compile Include="General\EnumerableExtensions.cs" />
-    <Compile Include="ExceptionHelpers.cs" />
-    <Compile Include="GameValues\Identification.cs" />
-    <Compile Include="GameValues\IntValueKey.cs" />
-    <Compile Include="GameValues\Ratings.cs" />
-    <Compile Include="GameValues\Sets.cs" />
-    <Compile Include="General\CombineHashCodes.cs" />
-    <Compile Include="General\ExtensionMethods.cs" />
-    <Compile Include="General\FunctionalOperations.cs" />
-    <Compile Include="General\ListOperations.cs" />
-    <Compile Include="General\NiceIO.cs" />
-    <Compile Include="General\Pair.cs" />
-    <Compile Include="General\ReadOnlyDictionary.cs" />
-    <Compile Include="General\Triple.cs" />
-    <Compile Include="IDecalPluginProvider.cs" />
-    <Compile Include="Objects\CapturedWorldObject.cs" />
-    <Compile Include="Objects\IHaveCoordsObject.cs" />
-    <Compile Include="Objects\ISerializableWorldObject.cs" />
-    <Compile Include="Objects\IWorldObjectEnhancements.cs" />
-    <Compile Include="Objects\IWorldObjectBasics.cs" />
-    <Compile Include="Objects\IWorldObjectIdentified.cs" />
-    <Compile Include="Objects\IWorldObject.cs" />
-    <Compile Include="Objects\SerializedWorldObject.cs" />
-    <Compile Include="Objects\WorldObjectExtensionMethods.cs" />
-    <Compile Include="Objects\WorldObjectHelpers.cs" />
-    <Compile Include="Objects\WrappedWorldObject.cs" />
-    <Compile Include="PluginProvider.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpellUtilities.cs" />
-    <Compile Include="Utilities\WorldObjectMutex.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
