@@ -28,6 +28,7 @@ namespace RedoxExtensions.Listeners.Monitors
             REPlugin.Instance.Events.RE.UsingPortal += RTEvents_UsingPortal;
             REPlugin.Instance.Events.RE.ApproachingObject += RTEvents_ApproachingObject;
             REPlugin.Instance.Events.RE.EndGiveItem += RT_EndGiveItem;
+            REPlugin.Instance.Events.Decal.SpellCast += RTEvents_SpellCast;
         }
 
         public void Enable()
@@ -53,6 +54,15 @@ namespace RedoxExtensions.Listeners.Monitors
             REPlugin.Instance.Events.RE.UsingPortal -= RTEvents_UsingPortal;
             REPlugin.Instance.Events.RE.ApproachingObject -= RTEvents_ApproachingObject;
             REPlugin.Instance.Events.RE.EndGiveItem -= RT_EndGiveItem;
+            REPlugin.Instance.Events.Decal.SpellCast -= RTEvents_SpellCast;
+        }
+
+        void RTEvents_SpellCast(object sender, SpellCastEventArgs e)
+        {
+            if (this._enabled && e.SpellId == Data.SpellIds.LifestoneRecall)
+            {
+                TellActions.TellFellow("#rls");
+            }
         }
 
         void RTEvents_ApproachingObject(object sender, Data.Events.ApproachingObjectEventArgs e)

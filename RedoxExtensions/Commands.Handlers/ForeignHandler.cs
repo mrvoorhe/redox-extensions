@@ -186,8 +186,8 @@ namespace RedoxExtensions.Commands.Handlers
 
                 case "rls":
                 case "rl":
-                    // TODO
-                    throw new NotImplementedException();
+                    SimpleActions.CastSelfSpell("Lifestone Recall");
+                    break;
 
                 case "regroup":
                     // TODO : Will regroup the fellow at a known location.  So, probably just do portal recall.
