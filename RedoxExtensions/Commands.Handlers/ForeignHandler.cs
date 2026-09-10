@@ -176,17 +176,28 @@ namespace RedoxExtensions.Commands.Handlers
                     break;
                 case "rprimary":
                 case "rp":
-                    // TODO
-                    throw new NotImplementedException();
+                    SimpleActions.CastSelfSpell("Primary Portal Recall");
+                    break;
 
                 case "rsecondary":
                 case "rs":
-                    // TODO
-                    throw new NotImplementedException();
+                    SimpleActions.CastSelfSpell("Secondary Portal Recall");
+                    break;
 
                 case "rls":
-                case "rl":
                     SimpleActions.CastSelfSpell("Lifestone Recall");
+                    break;
+                
+                case "rlss":
+                    SimpleActions.CastSelfSpell("Lifestone Sending");
+                    break;
+                
+                case "rnef":
+                    SimpleActions.CastSelfSpell("Lost City of Neftet Recall");
+                    break;
+                
+                case "rpara":
+                    SimpleActions.CastSelfSpell("Paradox-touched Olthoi Infested Area Recall");
                     break;
 
                 case "regroup":
