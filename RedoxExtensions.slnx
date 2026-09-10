@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Libraries/">
+    <Project Path="RedoxLib/RedoxLib.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/">
+    <Project Path="RedoxExtensions.Wrapper/RedoxExtensions.Wrapper.csproj" />
+    <Project Path="RedoxExtensions/RedoxExtensions.csproj" />
+    <Project Path="RedoxFilter/RedoxFilter.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="RedoxExtensions.Tests/RedoxExtensions.Tests.csproj" />
+    <Project Path="RedoxLib.Tests/RedoxLib.Tests.csproj" />
+  </Folder>
+</Solution>
