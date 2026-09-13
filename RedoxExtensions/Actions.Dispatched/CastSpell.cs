@@ -137,6 +137,7 @@ namespace RedoxExtensions.Actions.Dispatched
             // Wand is not equipped yet.  Kick off a wield (once per attempt) and wait for it to complete.
             if (attemptsThusFar != this._lastWieldAttempt)
             {
+                REPlugin.Instance.Debug.WriteLineDiagnostic($"{attemptsThusFar} Attempt to wield {_wandId.ToWorldObject().ToShortSummary()}");
                 REPlugin.Instance.Actions.AutoWield(this._wandId);
                 this._lastWieldAttempt = attemptsThusFar;
                 this._wieldIssuedAt = DateTime.Now;
@@ -146,6 +147,7 @@ namespace RedoxExtensions.Actions.Dispatched
             // If the wield never lands, don't hang forever.  Let DoPeform fail the action.
             if (DateTime.Now - this._wieldIssuedAt > EquipTimeout)
             {
+                REPlugin.Instance.Debug.WriteLineDiagnostic("Failed to equip magic item");
                 return true;
             }
 
