@@ -17,6 +17,8 @@ namespace RedoxExtensions.Wrapper.Diagnostics
         protected readonly object _writeLock = new object();
         private readonly string _messagePrefix;
         private readonly IPluginServices _pluginServices;
+        
+        public bool EnableDiagnosticsLogging { get; set; }
 
         public WrapperDebugWriter(IPluginServices pluginServices, string logNamePrefix, string logNamePostFix, string messagePrefix)
         {
@@ -79,6 +81,14 @@ namespace RedoxExtensions.Wrapper.Diagnostics
         #endregion
 
         #region WriteLines
+
+        public void WriteLineDiagnostic(string text)
+        {
+            if (!EnableDiagnosticsLogging)
+                return;
+            
+            WriteLine($"[DEBUG]{text}");
+        }
 
         public void WriteLine(string text)
         {
