@@ -24,8 +24,6 @@ namespace RedoxExtensions.Location
         public LocationDatabase(NPath dataDirectory)
         {
             _dataDirectory = dataDirectory;
-
-            Dungeons = LoadDungeonInfo(dataDirectory);
         }
 
         public bool TryGetDungeon(string dungeonName, out Dungeon result)

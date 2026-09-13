@@ -207,7 +207,8 @@ namespace RedoxExtensions.Wrapper
 
         private void CloseDown()
         {
-            this.Chat.WriteLine("***Closing Down****");
+            if (this.Chat != null)
+                this.Chat.WriteLine("***Closing Down****");
 
             if (this._wrapperCommandListener != null)
             {
