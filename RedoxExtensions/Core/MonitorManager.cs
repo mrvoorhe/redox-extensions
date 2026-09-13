@@ -12,6 +12,7 @@ namespace RedoxExtensions.Core
         private CopyCatMaster _copyCatMaster;
         private FellowshipMonitor _fellowshipMonitor;
         private WorldMonitor _worldMonitor;
+        private BankStatsTracker _bankStatsTracker;
 
         public MonitorManager(IREEventsFireCallbacks rtEventsFireCallbacks)
         {
@@ -19,6 +20,7 @@ namespace RedoxExtensions.Core
             this._copyCatMaster = new CopyCatMaster();
             this._fellowshipMonitor = new FellowshipMonitor();
             this._worldMonitor = new WorldMonitor();
+            this._bankStatsTracker = new BankStatsTracker();
         }
 
         public CopyCatMaster CopyCatMaster
@@ -53,6 +55,14 @@ namespace RedoxExtensions.Core
             }
         }
 
+        public BankStatsTracker BankStats
+        {
+            get
+            {
+                return this._bankStatsTracker;
+            }
+        }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -60,6 +70,7 @@ namespace RedoxExtensions.Core
             this._characterState.Dispose();
             this._copyCatMaster.Dispose();
             this._fellowshipMonitor.Dispose();
+            this._bankStatsTracker.Dispose();
         }
 
         #endregion

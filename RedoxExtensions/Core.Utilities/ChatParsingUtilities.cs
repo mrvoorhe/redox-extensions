@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 using Mag.Shared;
@@ -436,6 +437,58 @@ namespace RedoxExtensions.Core.Utilities
             fellowshipName = null;
             leader = null;
             return false;
+        }
+
+        #endregion
+
+        #region Bank Parsing
+
+        public const string BankMessagePrefix = "[BANK] ";
+
+        /// <summary>
+        /// Parses a single line of the server's /b response.
+        /// Ex: "[BANK] Pyreals: 47,584,323" -> itemName="Pyreals", amount=47584323
+        /// The header line "[BANK] Your balances are:" returns false (no numeric value).
+        /// </summary>
+        public static bool TryParseBankBalanceLine(string text, out string itemName, out long amount)
+        {
+            itemName = null;
+            amount = 0;
+
+            if (text == null)
+            {
+                return false;
+            }
+
+            text = text.Trim();
+            if (!text.StartsWith(BankMessagePrefix))
+            {
+                return false;
+            }
+
+            var body = text.Substring(BankMessagePrefix.Length);
+            var separatorIndex = body.LastIndexOf(": ", StringComparison.Ordinal);
+            if (separatorIndex < 0)
+            {
+                return false;
+            }
+
+            var name = body.Substring(0, separatorIndex).Trim();
+            var value = body.Substring(separatorIndex + 2).Trim();
+            if (name.Length == 0 || value.Length == 0)
+            {
+                return false;
+            }
+
+            long parsed;
+            if (!long.TryParse(value, NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out parsed))
+            {
+                return false;
+            }
+
+            itemName = name;
+            amount = parsed;
+            return true;
         }
 
         #endregion

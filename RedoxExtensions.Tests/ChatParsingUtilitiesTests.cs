@@ -257,5 +257,65 @@ namespace RedoxExtensions.Tests
             Assert.IsFalse(result);
             Assert.IsFalse(fromSelf);
         }
+
+        [Test]
+        public void TryParseBankBalanceLine_ParsesCommaSeparatedAmount()
+        {
+            string name;
+            long amount;
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Pyreals: 47,584,323", out name, out amount);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual("Pyreals", name);
+            Assert.AreEqual(47584323L, amount);
+        }
+
+        [Test]
+        public void TryParseBankBalanceLine_HandlesNameWithSpace()
+        {
+            string name;
+            long amount;
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Legendary Keys: 246", out name, out amount);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual("Legendary Keys", name);
+            Assert.AreEqual(246L, amount);
+        }
+
+        [Test]
+        public void TryParseBankBalanceLine_HandlesZero()
+        {
+            string name;
+            long amount;
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Mythical Keys: 0", out name, out amount);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual("Mythical Keys", name);
+            Assert.AreEqual(0L, amount);
+        }
+
+        [Test]
+        public void TryParseBankBalanceLine_ReturnsFalseForHeader()
+        {
+            string name;
+            long amount;
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Your balances are:", out name, out amount);
+
+            Assert.IsFalse(result);
+            Assert.IsNull(name);
+            Assert.AreEqual(0L, amount);
+        }
+
+        [Test]
+        public void TryParseBankBalanceLine_ReturnsFalseForNonBankLine()
+        {
+            string name;
+            long amount;
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("Cowhead says, \"hey\"", out name, out amount);
+
+            Assert.IsFalse(result);
+            Assert.IsNull(name);
+            Assert.AreEqual(0L, amount);
+        }
     }
 }

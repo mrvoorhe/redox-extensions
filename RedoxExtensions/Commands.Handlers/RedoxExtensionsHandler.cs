@@ -66,6 +66,14 @@ namespace RedoxExtensions.Commands.Handlers
                     }
                     return true;
 
+                case "track":
+                    REPlugin.Instance.MonitorManager.BankStats.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
+                    return true;
+
+                case "report":
+                    REPlugin.Instance.MonitorManager.BankStats.Report(s => REPlugin.Instance.Chat.WriteLine(s));
+                    return true;
+
                 case "clearqueue":
                     // Clears the dispatch pipeline queue
                     REPlugin.Instance.Dispatch.Pipeline.Clear();
@@ -121,6 +129,8 @@ namespace RedoxExtensions.Commands.Handlers
             chat.WriteLine("  cram <items>            - Crams items into a container.");
 
             chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
+            chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
+            chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
             chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
             chat.WriteLine("  face <target>           - Faces the given object.");
             chat.WriteLine("  goto <target>           - Travels to the given object.");
