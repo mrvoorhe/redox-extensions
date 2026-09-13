@@ -29,7 +29,7 @@ namespace RedoxExtensions.Location
             if (string.IsNullOrEmpty(value))
                 return false;
 
-            return REPlugin.Instance.LocationDatabase.Dungeons.TryGetValue(value.Trim().ToLower(), out dungeon);
+            return REPlugin.Instance.LocationDatabase.TryGetDungeon(value.Trim().ToLower(), out dungeon);
         }
     }
 }

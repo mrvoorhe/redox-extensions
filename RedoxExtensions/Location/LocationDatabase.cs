@@ -11,7 +11,8 @@ namespace RedoxExtensions.Location
     {
         private readonly NPath _dataDirectory;
 
-        public readonly Dictionary<string, Dungeon> Dungeons;
+        private Dictionary<string, Dungeon> Dungeons;
+        private bool _initialized;
 
         public LocationDatabase()
             : this(DefaultDataLocation)
@@ -25,6 +26,17 @@ namespace RedoxExtensions.Location
             _dataDirectory = dataDirectory;
 
             Dungeons = LoadDungeonInfo(dataDirectory);
+        }
+
+        public bool TryGetDungeon(string dungeonName, out Dungeon result)
+        {
+            if (!_initialized)
+            {
+                Dungeons = LoadDungeonInfo(_dataDirectory);
+                _initialized = true;
+            }
+
+            return Dungeons.TryGetValue(dungeonName, out result);
         }
 
         public static Dictionary<string, Dungeon> LoadDungeonInfo(NPath dataDirectory)
