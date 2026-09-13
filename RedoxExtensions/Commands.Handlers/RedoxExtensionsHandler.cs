@@ -65,6 +65,24 @@ namespace RedoxExtensions.Commands.Handlers
                             break;
                     }
                     return true;
+                
+                // Enable diagnostic log lines
+                case "diag":
+                    switch (command.Arguments[0].ToLower().Trim())
+                    {
+                        case "on":
+                            REPlugin.Instance.Debug.EnableDiagnosticsLogging = true;
+                            REPlugin.Instance.Chat.WriteLine("[RE] Diagnostic logging on");
+                            break;
+                        case "off":
+                            REPlugin.Instance.Debug.EnableDiagnosticsLogging = false;
+                            REPlugin.Instance.Chat.WriteLine("[RE] Diagnostic logging off");
+                            break;
+                        default:
+                            REPlugin.Instance.Chat.WriteLine("Unknown diag option : {0} ", command.Arguments[0]);
+                            break;
+                    }
+                    return true;
 
                 case "track":
                     REPlugin.Instance.MonitorManager.BankStats.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
