@@ -9,7 +9,7 @@ namespace RedoxExtensions.Data.Events
 {
     public class JumpEventArgs : EventArgs, ILoggableObject
     {
-        public JumpEventArgs(int characterId, JumpData jumpData, short numLogins, short totalJumps)
+        public JumpEventArgs(int characterId, JumpData jumpData, int numLogins, int totalJumps)
         {
             this.CharacterId = characterId;
             this.Data = jumpData;
@@ -19,8 +19,8 @@ namespace RedoxExtensions.Data.Events
 
         public int CharacterId { get; private set; }
         public JumpData Data { get; private set; }
-        public short NumLogins { get; private set; }
-        public short TotalJumps { get; private set; }
+        public int NumLogins { get; private set; }
+        public int TotalJumps { get; private set; }
 
         DebugLevel ILoggableObject.MinimumRequiredDebugLevel
         {

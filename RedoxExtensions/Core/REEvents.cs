@@ -563,8 +563,8 @@ namespace RedoxExtensions.Core
                 int characterId = Convert.ToInt32(e.Message["object"]);
                 double heading = Convert.ToDouble(e.Message["heading"]);
                 double height = Convert.ToDouble(e.Message["height"]);
-                short numLogins = Convert.ToInt16(e.Message["logins"]);
-                short totalJumps = Convert.ToInt16(e.Message["sequence"]);
+                int numLogins = Convert.ToInt32(e.Message["logins"]);
+                int totalJumps = Convert.ToInt32(e.Message["sequence"]);
 
                 // I don't know if this could ever happen, so if check for it until I know.
                 // TODO : Remove or support once I know if it happens for other characters
@@ -659,8 +659,8 @@ namespace RedoxExtensions.Core
                 //DWORD - sequence - sequence number
                 //GameEvent - event - the (sequenced) message type
                 int characterId = Convert.ToInt32(e.Message["character"]);
-                short sequence = Convert.ToInt16(e.Message["sequence"]);
-                short gameEvent = Convert.ToInt16(e.Message["event"]);
+                int sequence = Convert.ToInt32(e.Message["sequence"]);
+                int gameEvent = Convert.ToInt32(e.Message["event"]);
 
                 //Debug.WriteLineToMain("[ServerDispatch] - Game Event Code = {0:X4}", gameEvent);
 
@@ -671,7 +671,7 @@ namespace RedoxExtensions.Core
 
                         //the object ID of the item or creature being assessed
                         int objectId = Convert.ToInt32(e.Message["object"]);
-                        short flags = Convert.ToInt16(e.Message["flags"]);
+                        int flags = Convert.ToInt32(e.Message["flags"]);
                         bool success = Convert.ToBoolean(e.Message["success"]);
 
                         // TODO : Replace with event once working
