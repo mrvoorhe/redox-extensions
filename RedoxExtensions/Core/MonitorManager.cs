@@ -12,7 +12,7 @@ namespace RedoxExtensions.Core
         private CopyCatMaster _copyCatMaster;
         private FellowshipMonitor _fellowshipMonitor;
         private WorldMonitor _worldMonitor;
-        private BankStatsTracker _bankStatsTracker;
+        private BankingTracker _bankingTracker;
 
         public MonitorManager(IREEventsFireCallbacks rtEventsFireCallbacks)
         {
@@ -20,7 +20,7 @@ namespace RedoxExtensions.Core
             this._copyCatMaster = new CopyCatMaster();
             this._fellowshipMonitor = new FellowshipMonitor();
             this._worldMonitor = new WorldMonitor();
-            this._bankStatsTracker = new BankStatsTracker();
+            this._bankingTracker = new BankingTracker();
         }
 
         public CopyCatMaster CopyCatMaster
@@ -55,11 +55,11 @@ namespace RedoxExtensions.Core
             }
         }
 
-        public BankStatsTracker BankStats
+        public BankingTracker Banking
         {
             get
             {
-                return this._bankStatsTracker;
+                return this._bankingTracker;
             }
         }
 
@@ -70,7 +70,7 @@ namespace RedoxExtensions.Core
             this._characterState.Dispose();
             this._copyCatMaster.Dispose();
             this._fellowshipMonitor.Dispose();
-            this._bankStatsTracker.Dispose();
+            this._bankingTracker.Dispose();
         }
 
         #endregion

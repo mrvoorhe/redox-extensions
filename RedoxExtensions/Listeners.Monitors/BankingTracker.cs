@@ -16,7 +16,7 @@ namespace RedoxExtensions.Listeners.Monitors
     /// current time.  A later report re-queries the bank and shows, for each changed balance, the
     /// current value, the total gained, and the rate of increase per hour.
     /// </summary>
-    public class BankStatsTracker : IDisposable
+    public class BankingTracker : IDisposable
     {
         // The /b response arrives as several chatbox lines with no terminator, so we collect for a
         // short window after issuing the query and then finalize.
@@ -30,7 +30,7 @@ namespace RedoxExtensions.Listeners.Monitors
         private List<KeyValuePair<string, long>> _captureBuffer;
         private Action<IList<KeyValuePair<string, long>>> _onCaptureComplete;
 
-        public BankStatsTracker()
+        public BankingTracker()
         {
             REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
         }

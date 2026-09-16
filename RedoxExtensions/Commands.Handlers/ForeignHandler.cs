@@ -222,15 +222,15 @@ namespace RedoxExtensions.Commands.Handlers
                 #region Bank Stats
 
                 case "track":
-                    REPlugin.Instance.MonitorManager.BankStats.StartTracking(null);
+                    REPlugin.Instance.MonitorManager.Banking.StartTracking(null);
                     break;
 
                 case "report":
                     // Only report if we're actually tracking so non-farming fellows (e.g. the main
                     // account issuing the command) don't spam the fellowship.
-                    if (REPlugin.Instance.MonitorManager.BankStats.IsTracking)
+                    if (REPlugin.Instance.MonitorManager.Banking.IsTracking)
                     {
-                        REPlugin.Instance.MonitorManager.BankStats.Report(s => TellActions.TellFellow(s));
+                        REPlugin.Instance.MonitorManager.Banking.Report(s => TellActions.TellFellow(s));
                     }
                     break;
 

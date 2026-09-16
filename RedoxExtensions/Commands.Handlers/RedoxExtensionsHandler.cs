@@ -85,11 +85,11 @@ namespace RedoxExtensions.Commands.Handlers
                     return true;
 
                 case "track":
-                    REPlugin.Instance.MonitorManager.BankStats.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
+                    REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                     return true;
 
                 case "report":
-                    REPlugin.Instance.MonitorManager.BankStats.Report(s => REPlugin.Instance.Chat.WriteLine(s));
+                    REPlugin.Instance.MonitorManager.Banking.Report(s => REPlugin.Instance.Chat.WriteLine(s));
                     return true;
 
                 case "clearqueue":
