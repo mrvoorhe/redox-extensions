@@ -1,0 +1,5 @@
+Atm tells you, "@ We're now trading!"
+Atm tells you, "@ Coins: 453,817 | Weakly Coins: 323,139 | Lum: 20,997B | Mythical Keys: 43,180 | Legendary Keys: 3,978 | MMDs: 1,328,424"
+Atm tells you, "@ I'm selling coins for 79M Lum, 10 Weakly Coins, 8 Mythical Keys, 19 Legendary Keys or 15 MMDs"
+Atm tells you, "@ I'm buying coins for 78M Lum, 9 Weakly Coins, 7 Mythical Keys, 18 Legendary Keys or 14 MMDs"
+Atm tells you, "@ Commands: 1-Coins, 2-Lum, 3-MMDs, 4-Weakly Coins, 5-Mythical Keys, 6-Legendary Keys, 7-Cancel @ What would you like to buy?"
