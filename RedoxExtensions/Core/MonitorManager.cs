@@ -13,6 +13,7 @@ namespace RedoxExtensions.Core
         private FellowshipMonitor _fellowshipMonitor;
         private WorldMonitor _worldMonitor;
         private BankingTracker _bankingTracker;
+        private AutoMule _autoMule;
 
         public MonitorManager(IREEventsFireCallbacks rtEventsFireCallbacks)
         {
@@ -21,6 +22,7 @@ namespace RedoxExtensions.Core
             this._fellowshipMonitor = new FellowshipMonitor();
             this._worldMonitor = new WorldMonitor();
             this._bankingTracker = new BankingTracker();
+            this._autoMule = new AutoMule();
         }
 
         public CopyCatMaster CopyCatMaster
@@ -63,6 +65,14 @@ namespace RedoxExtensions.Core
             }
         }
 
+        public AutoMule AutoMule
+        {
+            get
+            {
+                return this._autoMule;
+            }
+        }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -71,6 +81,7 @@ namespace RedoxExtensions.Core
             this._copyCatMaster.Dispose();
             this._fellowshipMonitor.Dispose();
             this._bankingTracker.Dispose();
+            this._autoMule.Dispose();
         }
 
         #endregion

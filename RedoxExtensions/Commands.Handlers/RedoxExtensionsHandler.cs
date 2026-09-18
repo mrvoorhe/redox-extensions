@@ -109,6 +109,51 @@ namespace RedoxExtensions.Commands.Handlers
                         return true;
                     }
 
+                case "automule":
+                    {
+                        var arg = command.Arguments.Count > 0 ? command.Arguments[0].ToLower().Trim() : null;
+                        bool newState;
+                        switch (arg)
+                        {
+                            case "on":
+                                newState = true;
+                                break;
+                            case "off":
+                                newState = false;
+                                break;
+                            case null:
+                                newState = !REPlugin.Instance.MonitorManager.AutoMule.Enabled;
+                                break;
+                            default:
+                                REPlugin.Instance.Chat.WriteLine("Unknown automule option : {0}", command.Arguments[0]);
+                                return true;
+                        }
+
+                        if (newState)
+                        {
+                            REPlugin.Instance.MonitorManager.AutoMule.Enable();
+                        }
+                        else
+                        {
+                            REPlugin.Instance.MonitorManager.AutoMule.Disable();
+                        }
+                        return true;
+                    }
+
+                case "automulerange":
+                    {
+                        double range;
+                        if (command.Arguments.Count == 0 || !double.TryParse(command.Arguments[0], out range))
+                        {
+                            REPlugin.Instance.Chat.WriteLine("Usage : /re automulerange <value>  (current : {0}m)", REPlugin.Instance.MonitorManager.AutoMule.Range);
+                            return true;
+                        }
+
+                        REPlugin.Instance.MonitorManager.AutoMule.Range = range;
+                        REPlugin.Instance.Chat.WriteLine("[RE] AutoMule range : {0}m", REPlugin.Instance.MonitorManager.AutoMule.Range);
+                        return true;
+                    }
+
                 case "track":
                     REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                     return true;
@@ -173,6 +218,8 @@ namespace RedoxExtensions.Commands.Handlers
 
             chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
             chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
+            chat.WriteLine("  automule [on|off]       - Auto-gives configured items to a nearby mule (no arg = flip).");
+            chat.WriteLine("  automulerange <value>   - Sets the automule proximity range in meters.");
             chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
             chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
             chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");

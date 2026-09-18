@@ -369,6 +369,24 @@ namespace RedoxExtensions.Commands.Handlers
                     SimpleActions.Peace();
                     break;
 
+                case "automule":
+                    switch (command.Arguments.Count > 0 ? command.Arguments[0].ToLower().Trim() : null)
+                    {
+                        case "on":
+                            REPlugin.Instance.MonitorManager.AutoMule.Enable();
+                            break;
+                        case "off":
+                            REPlugin.Instance.MonitorManager.AutoMule.Disable();
+                            break;
+                        default:
+                            if (REPlugin.Instance.MonitorManager.AutoMule.Enabled)
+                                REPlugin.Instance.MonitorManager.AutoMule.Disable();
+                            else
+                                REPlugin.Instance.MonitorManager.AutoMule.Enable();
+                            break;
+                    }
+                    break;
+
                 case "camp":
                     SimpleActions.Camp(command);
                     break;
