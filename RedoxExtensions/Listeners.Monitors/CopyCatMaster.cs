@@ -70,7 +70,10 @@ namespace RedoxExtensions.Listeners.Monitors
             if (this._enabled)
             {
                 // TODO : Improve this to check if it's an NPC?  Or, make 'use' smart enough to figure out how to use anything
-                TellActions.TellFellow("#use {0}", e.ObjectId);
+                // I've noticed that with ILT, or maybe it's ACE, which it is, this didn't happen at retail.  What's happening is
+                // that the master will use an NPC, tell the fellow to use the npc and the fellow will use the NPC and cause the master's use
+                // to not be recognized.  Let's see if delaying a few moments before telling the fellow to use helps about this.
+                TellActions.TellFellowDelayed($"#use {e.ObjectId}", 100);
             }
         }
 

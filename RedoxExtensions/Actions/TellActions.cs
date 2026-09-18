@@ -28,6 +28,18 @@ namespace RedoxExtensions.Actions
             //    TellVirindiFellow(MyVirindiFellowName, text);
             //}
         }
+        
+        public static void TellFellowDelayed(string text, int delayInMilliseconds)
+        {
+            Continuations.DelayedContinuation.ContinueAfterDelayOnGameThread(
+                (stateObj) =>
+                {
+                    TellFellow(text);
+                },
+                delayInMilliseconds,
+                null);
+
+        }
 
         public static void TellFellow(string text, params object[] args)
         {
