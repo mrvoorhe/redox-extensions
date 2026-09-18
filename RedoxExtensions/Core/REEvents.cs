@@ -2,6 +2,7 @@
 using RedoxExtensions.Data.Events;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -9,6 +10,7 @@ using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Data;
 using RedoxExtensions.Diagnostics;
+using RedoxLib.GameValues;
 using RedoxLib.Objects;
 
 namespace RedoxExtensions.Core
@@ -676,6 +678,11 @@ namespace RedoxExtensions.Core
 
                         // TODO : Replace with event once working
                         //Debug.WriteLineToMain("[ServerDispatch] - Identify Object Data ObjectId = {0}, Flags = {1:X8}, Success = {2}", objectId, flags, success);
+
+                        if (REPlugin.Instance.ShowColors && success)
+                        {
+                            WriteIdentifyColors(e, objectId, flags);
+                        }
                         break;
                     case 0x01C7: // Ready. Previous Action Complete
                         // TODO : Is this useful for anything?
@@ -684,6 +691,75 @@ namespace RedoxExtensions.Core
 
                 }
             }
+        }
+
+        private void WriteIdentifyColors(Decal.Adapter.NetworkMessageEventArgs e, int objectId, int flags)
+        {
+            try
+            {
+                var sections = new List<string>();
+
+                if ((flags & 0x00000200) != 0) // armor protection highlights
+                {
+                    var enable = Convert.ToUInt16(e.Message["protHighlight"]);
+                    var color = Convert.ToUInt16(e.Message["protColor"]);
+                    AppendSection(sections, "Armor", ColorHighlights.Decode<ArmorHighlightMask>(enable, color));
+                }
+
+                if ((flags & 0x00000800) != 0) // weapon highlights
+                {
+                    var enable = Convert.ToUInt16(e.Message["weapHighlight"]);
+                    var color = Convert.ToUInt16(e.Message["weapColor"]);
+                    AppendSection(sections, "Weapon", ColorHighlights.Decode<WeaponHighlightMask>(enable, color));
+                }
+
+                if ((flags & 0x00000400) != 0) // wand highlights
+                {
+                    var enable = Convert.ToUInt16(e.Message["wandHighlight"]);
+                    var color = Convert.ToUInt16(e.Message["wandColor"]);
+                    AppendSection(sections, "Wand", ColorHighlights.Decode<WandHighlightMask>(enable, color));
+                }
+
+                if ((flags & 0x00000100) != 0) // creature block, may carry attribute highlights
+                {
+                    int flags1 = Convert.ToInt32(e.Message["flags1"]);
+                    if ((flags1 & 0x00000001) != 0)
+                    {
+                        var enable = Convert.ToUInt16(e.Message["attrHighlight"]);
+                        var color = Convert.ToUInt16(e.Message["attrColor"]);
+                        AppendSection(sections, "Attributes", ColorHighlights.Decode<AttributeHighlightMask>(enable, color));
+                    }
+                }
+
+                var header = string.Format("[RE] Color highlights for {0} (0x{1:X8}):", objectId.ToWorldObject().Name, objectId);
+
+                if (sections.Count == 0)
+                {
+                    REPlugin.Instance.Chat.WriteLine("{0} none", header);
+                    return;
+                }
+
+                REPlugin.Instance.Chat.WriteLine(header);
+                foreach (var section in sections)
+                {
+                    REPlugin.Instance.Chat.WriteLine("  {0}", section);
+                }
+            }
+            catch (Exception ex)
+            {
+                REPlugin.Instance.Debug.WriteLine("[RE] Failed to read identify colors: {0}", ex);
+                REPlugin.Instance.Debug.WriteObject(e, "Identify Object");
+            }
+        }
+
+        private static void AppendSection(List<string> sections, string label, IList<ColorHighlight> highlights)
+        {
+            if (highlights.Count == 0)
+            {
+                return;
+            }
+
+            sections.Add($"{label}: {string.Join(", ", highlights.Select(h => h.ToString()).ToArray())}");
         }
     }
 }

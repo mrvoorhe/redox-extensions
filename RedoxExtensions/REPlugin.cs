@@ -80,6 +80,8 @@ namespace RedoxExtensions
             }
         }
 
+        public bool ShowColors { get; set; }
+
         public DebugWriter Debug
         {
             get

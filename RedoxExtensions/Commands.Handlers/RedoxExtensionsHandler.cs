@@ -84,6 +84,31 @@ namespace RedoxExtensions.Commands.Handlers
                     }
                     return true;
 
+                case "showcolors":
+                    {
+                        var arg = command.Arguments.Count > 0 ? command.Arguments[0].ToLower().Trim() : null;
+                        bool newState;
+                        switch (arg)
+                        {
+                            case "on":
+                                newState = true;
+                                break;
+                            case "off":
+                                newState = false;
+                                break;
+                            case null:
+                                newState = !REPlugin.Instance.ShowColors;
+                                break;
+                            default:
+                                REPlugin.Instance.Chat.WriteLine("Unknown showcolors option : {0}", command.Arguments[0]);
+                                return true;
+                        }
+
+                        REPlugin.Instance.ShowColors = newState;
+                        REPlugin.Instance.Chat.WriteLine("[RE] Show colors on ID: {0}", newState ? "on" : "off");
+                        return true;
+                    }
+
                 case "track":
                     REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                     return true;
@@ -147,6 +172,7 @@ namespace RedoxExtensions.Commands.Handlers
             chat.WriteLine("  cram <items>            - Crams items into a container.");
 
             chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
+            chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
             chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
             chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
             chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
