@@ -25,33 +25,33 @@ namespace RedoxExtensions.Commands.Handlers
                     // Can be used for anything.
                     if (command.Arguments.Count == 0)
                     {
-                        TellActions.TellFellow("!use {0}", REPlugin.Instance.PluginHost.Actions.CurrentSelection);
+                        TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}use {REPlugin.Instance.PluginHost.Actions.CurrentSelection}");
                     }
                     else
                     {
                         var argsConvertedToForgeinForm = CommandHelpers.CollapseForeignCommandArguments(command.Arguments);
-                        TellActions.TellFellow("!use {0}|{1}", REPlugin.Instance.PluginHost.Actions.CurrentSelection, argsConvertedToForgeinForm);
+                        TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}use {REPlugin.Instance.PluginHost.Actions.CurrentSelection}|{argsConvertedToForgeinForm}");
                     }
                     return true;
                 case "give":
-                    TellActions.TellFellow("!give {0}|{1}", command.Arguments[0], REPlugin.Instance.PluginHost.Actions.CurrentSelection);
+                    TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}give {command.Arguments[0]}|{REPlugin.Instance.PluginHost.Actions.CurrentSelection}");
                     return true;
 
                 case "goto":
 
                     if (command.Arguments.Count > 0)
                     {
-                        TellActions.TellFellow("!goto {0}", CommandHelpers.CollapseForeignCommandArguments(command.Arguments));
+                        TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}goto {CommandHelpers.CollapseForeignCommandArguments(command.Arguments)}");
                         return true;
                     }
 
                     // If there are no arguments, use the current selection
-                    TellActions.TellFellow("!goto {0}", REPlugin.Instance.PluginHost.Actions.CurrentSelection);
+                    TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}goto {REPlugin.Instance.PluginHost.Actions.CurrentSelection}");
                     return true;
 
                 default:
                     // By default, pass along the arguments as is
-                    TellActions.TellFellow("!{0} {1}", command.Name, CommandHelpers.CollapseForeignCommandArguments(command.Arguments));
+                    TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}{command.Name} {CommandHelpers.CollapseForeignCommandArguments(command.Arguments)}");
                     return true;
             }
         }
@@ -61,14 +61,14 @@ namespace RedoxExtensions.Commands.Handlers
             var chat = REPlugin.Instance.Chat;
 
             chat.WriteLine("**** RedoxFellow Commands (prefix with /rf) ****");
-            chat.WriteLine("Sends commands to your fellowship as foreign (!) commands.");
+            chat.WriteLine($"Sends commands to your fellowship as foreign ({CommandHelpers.ForeignCommandAllPrefix}) commands.");
 
             chat.WriteLine("  help                    - Displays this help.");
             chat.WriteLine("  use [target]            - Tells the fellow to use the target (or your current selection).");
             chat.WriteLine("  give <item>             - Tells the fellow to give the item to your current selection.");
             chat.WriteLine("  goto [target]           - Tells the fellow to travel to the target (or your current selection).");
 
-            chat.WriteLine("  <other> <args>          - Forwarded to the fellowship as \"!<other> <args>\".");
+            chat.WriteLine($"  <other> <args>          - Forwarded to the fellowship as \"{CommandHelpers.ForeignCommandAllPrefix}<other> <args>\".");
 
             chat.WriteLine("************************************************");
         }

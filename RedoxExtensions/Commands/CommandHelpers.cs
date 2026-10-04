@@ -18,7 +18,7 @@ namespace RedoxExtensions.Commands
 
         public const string DefaultYouValue = "You";
 
-        public const string ForeignCommandAllPrefix = "!";
+        public const string ForeignCommandAllPrefix = "^";
         public const string ForeignCommandSlavesOnlyPrefix = "#";
         public const string ForeignCommandMasterOnlyPrefix = "$";
 

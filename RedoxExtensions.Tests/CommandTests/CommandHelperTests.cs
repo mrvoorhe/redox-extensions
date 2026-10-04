@@ -72,21 +72,21 @@ namespace RedoxExtensions.Tests.CommandTests
         public void CreateForeignCommandText_NoArgs()
         {
             var result = CommandHelpers.CreateForeignCommandText("test");
-            Assert.AreEqual("!test", result);
+            Assert.AreEqual("^test", result);
         }
 
         [Test]
         public void CreateForeignCommandText_WithSingleArg()
         {
             var result = CommandHelpers.CreateForeignCommandText("test", "one");
-            Assert.AreEqual("!test one", result);
+            Assert.AreEqual("^test one", result);
         }
 
         [Test]
         public void CreateForeignCommandText_WithManyArgs()
         {
             var result = CommandHelpers.CreateForeignCommandText("test", "one", "two", "three");
-            Assert.AreEqual("!test one|two|three", result);
+            Assert.AreEqual("^test one|two|three", result);
         }
 
         #endregion
