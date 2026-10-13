@@ -66,7 +66,10 @@ namespace RedoxExtensions.Actions
                 return;
             }
 
-            VTActions.FollowCharacter(command.SourceCharacter, true, 3);
+            VTActions.FollowCharacter(command.SourceCharacter, true,
+                // Was '3' previously, Disable for now, I don't know why I was fiddling with this. Having it too tight might be messing with the normal follow behavior and making it worse.
+                // Let's see if leaving the default is fine
+                -1);
         }
         
         internal static void NavTo(ICommand command)

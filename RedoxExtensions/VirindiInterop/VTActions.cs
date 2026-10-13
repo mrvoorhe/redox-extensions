@@ -168,7 +168,8 @@ namespace RedoxExtensions.VirindiInterop
 
             SetBoostNavPriority(boostNav);
 
-            SetNavDistance(followDistance);
+            if (followDistance >= 0)
+                SetNavDistance(followDistance);
 
             EnableNav();
 
