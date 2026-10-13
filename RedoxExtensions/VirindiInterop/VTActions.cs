@@ -174,6 +174,27 @@ namespace RedoxExtensions.VirindiInterop
 
             StartVT();
         }
+        
+        internal static void NavTo(string location)
+        {
+            // Just in case, disable nav while we are busy changing the nav file
+            using (var scope = VTStateScope.EnterNavDisabled())
+            {
+                string navFile = $"aGoto{location}.nav";
+
+                if (!File.Exists(Path.Combine(VTUtilities.VTankDirectory, navFile)))
+                {
+                    REPlugin.Instance.Debug.WriteLine($"Could not locate nav file named `{navFile}` to go to location `{location}`");
+                    return;
+                }
+
+                LoadNav(navFile);
+            }
+
+            EnableNav();
+
+            StartVT();
+        }
 
         /// <summary>
         /// Attempts to figure out if a profile is name character specific or global.  Character specific will be picked first

@@ -273,6 +273,10 @@ namespace RedoxExtensions.Commands.Handlers
                 case "waitn":
                     SimpleActions.WaitNice(command);
                     break;
+                
+                case "navto":
+                    SimpleActions.NavTo(command);
+                    break;
 
                 #region Range
 

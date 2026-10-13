@@ -36,6 +36,10 @@ namespace RedoxExtensions.Commands.Handlers
                 case "give":
                     TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}give {command.Arguments[0]}|{REPlugin.Instance.PluginHost.Actions.CurrentSelection}");
                     return true;
+                
+                case "navto":
+                    TellActions.TellFellow($"{CommandHelpers.ForeignCommandAllPrefix}navto {CommandHelpers.CollapseForeignCommandArguments(command.Arguments)}");
+                    return true;
 
                 case "goto":
 

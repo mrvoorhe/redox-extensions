@@ -68,6 +68,11 @@ namespace RedoxExtensions.Actions
 
             VTActions.FollowCharacter(command.SourceCharacter, true, 3);
         }
+        
+        internal static void NavTo(ICommand command)
+        {
+            VTActions.NavTo(command.Arguments[0]);
+        }
 
         internal static void NavDistanceTight(ISourceInformation command)
         {

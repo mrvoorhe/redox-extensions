@@ -125,6 +125,10 @@ namespace RedoxExtensions.Commands.Handlers
                 case "face":
                     Actions.SimpleActions.FaceObject(command);
                     return true;
+                
+                case "navto":
+                    Actions.SimpleActions.NavTo(command);
+                    return true;
 
                 case "goto":
                     Actions.Dispatched.GoTo.Create(command).Enqueue();
