@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Settings;
 
 namespace RedoxExtensions.Tests
@@ -11,13 +12,13 @@ namespace RedoxExtensions.Tests
     [TestFixture]
     public class SettingsTests
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
             ActiveSettings.Clear();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
             ActiveSettings.Clear();
@@ -28,15 +29,15 @@ namespace RedoxExtensions.Tests
         {
             var result = ActiveSettings.Instance.CharactersGroupedByAccount;
 
-            Assert.IsTrue(result.Count >= 2);
+            ClassicAssert.IsTrue(result.Count >= 2);
 
-            Assert.IsTrue(result[0].Count >= 2);
-            Assert.AreEqual("Redox", result[0][0]);
-            Assert.AreEqual("Virmar", result[0][1]);
+            ClassicAssert.IsTrue(result[0].Count >= 2);
+            ClassicAssert.AreEqual("Redox", result[0][0]);
+            ClassicAssert.AreEqual("Virmar", result[0][1]);
 
-            Assert.IsTrue(result[1].Count >= 2);
-            Assert.AreEqual("Kreap", result[1][0]);
-            Assert.AreEqual("Virmar Jr", result[1][1]);
+            ClassicAssert.IsTrue(result[1].Count >= 2);
+            ClassicAssert.AreEqual("Kreap", result[1][0]);
+            ClassicAssert.AreEqual("Virmar Jr", result[1][1]);
         }
 
         // is the leader, so keep him low so that he doesn't get stuck wasting time trying to hit an out-of-range
@@ -54,44 +55,44 @@ namespace RedoxExtensions.Tests
         public void LoadAndCheckFormationRanges(string characterName, string formationName, int expectedRange)
         {
             var formations = ActiveSettings.Instance.Formations;
-            Assert.AreEqual(expectedRange, formations[formationName].RangeTable[characterName]);
+            ClassicAssert.AreEqual(expectedRange, formations[formationName].RangeTable[characterName]);
         }
 
         [Test]
         public void LoadAndCheckPullLegendaryKeysMetaProfile()
         {
-            Assert.AreEqual("LegendKeys", ActiveSettings.Instance.VTProfiles.Meta.PullLegendaryKeys);
+            ClassicAssert.AreEqual("LegendKeys", ActiveSettings.Instance.VTProfiles.Meta.PullLegendaryKeys);
         }
 
         [Test]
         public void LoadAndCheckLegendaryChestPullsLootProfile()
         {
-            Assert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.VTProfiles.Loot.LegendaryChestPulls);
+            ClassicAssert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.VTProfiles.Loot.LegendaryChestPulls);
         }
 
         [Test]
         public void LoadAndCheckDefaultLootProfile()
         {
-            Assert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.VTProfiles.Loot.Default);
+            ClassicAssert.AreEqual("LootSnobV4LegChests", ActiveSettings.Instance.VTProfiles.Loot.Default);
         }
 
         [Test]
         public void LoadAndCheckDefaultMainProfile()
         {
-            Assert.AreEqual("Normal", ActiveSettings.Instance.VTProfiles.Main.Default);
+            ClassicAssert.AreEqual("Normal", ActiveSettings.Instance.VTProfiles.Main.Default);
         }
 
         [TestCase("Rockdown Guy", "Support")]
         [TestCase("Zikka", "Support")]
         public void LoadAndCheckCharacterDefaultMainProfile(string characterName, string expectedResult)
         {
-            Assert.AreEqual(expectedResult, ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults[characterName]);
+            ClassicAssert.AreEqual(expectedResult, ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults[characterName]);
         }
 
         [Test]
         public void LoadAndCheckDebugLevel()
         {
-            Assert.AreEqual(Diagnostics.DebugLevel.None, ActiveSettings.Instance.DebugLevel);
+            ClassicAssert.AreEqual(Diagnostics.DebugLevel.None, ActiveSettings.Instance.DebugLevel);
         }
     }
 }

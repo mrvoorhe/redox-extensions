@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Commands;
 
@@ -22,11 +23,11 @@ namespace RedoxExtensions.Tests.CommandTests
             ICommand result;
             bool isCommand = CommandHelpers.TryParse(text, out result);
 
-            Assert.IsTrue(isCommand);
+            ClassicAssert.IsTrue(isCommand);
 
-            Assert.AreEqual("test", result.Name);
-            Assert.AreEqual(0, result.Arguments.Count);
-            Assert.AreEqual(text, result.RawValue);
+            ClassicAssert.AreEqual("test", result.Name);
+            ClassicAssert.AreEqual(0, result.Arguments.Count);
+            ClassicAssert.AreEqual(text, result.RawValue);
 
             this.CommonCommandAsserts(result);
         }
@@ -39,12 +40,12 @@ namespace RedoxExtensions.Tests.CommandTests
             ICommand result;
             bool isCommand = CommandHelpers.TryParse(text, out result);
 
-            Assert.IsTrue(isCommand);
+            ClassicAssert.IsTrue(isCommand);
 
-            Assert.AreEqual("test", result.Name);
-            Assert.AreEqual(1, result.Arguments.Count);
-            Assert.AreEqual("one", result.Arguments[0]);
-            Assert.AreEqual(text, result.RawValue);
+            ClassicAssert.AreEqual("test", result.Name);
+            ClassicAssert.AreEqual(1, result.Arguments.Count);
+            ClassicAssert.AreEqual("one", result.Arguments[0]);
+            ClassicAssert.AreEqual(text, result.RawValue);
 
             this.CommonCommandAsserts(result);
         }
@@ -57,14 +58,14 @@ namespace RedoxExtensions.Tests.CommandTests
             ICommand result;
             bool isCommand = CommandHelpers.TryParse(text, out result);
 
-            Assert.IsTrue(isCommand);
+            ClassicAssert.IsTrue(isCommand);
 
-            Assert.AreEqual("test", result.Name);
-            Assert.AreEqual(3, result.Arguments.Count);
-            Assert.AreEqual("one", result.Arguments[0]);
-            Assert.AreEqual("two", result.Arguments[1]);
-            Assert.AreEqual("three", result.Arguments[2]);
-            Assert.AreEqual(text, result.RawValue);
+            ClassicAssert.AreEqual("test", result.Name);
+            ClassicAssert.AreEqual(3, result.Arguments.Count);
+            ClassicAssert.AreEqual("one", result.Arguments[0]);
+            ClassicAssert.AreEqual("two", result.Arguments[1]);
+            ClassicAssert.AreEqual("three", result.Arguments[2]);
+            ClassicAssert.AreEqual(text, result.RawValue);
 
             this.CommonCommandAsserts(result);
         }
@@ -78,14 +79,14 @@ namespace RedoxExtensions.Tests.CommandTests
         /// <param name="result"></param>
         private void CommonCommandAsserts(ICommand result)
         {
-            Assert.AreEqual(CommandHelpers.DefaultYouValue, result.SourceCharacter);
-            Assert.IsTrue(result.FromSelf);
-            Assert.AreEqual(CommandChannel.DirectEntry, result.Channel);
-            Assert.IsFalse(result.UsesChannelTag);
+            ClassicAssert.AreEqual(CommandHelpers.DefaultYouValue, result.SourceCharacter);
+            ClassicAssert.IsTrue(result.FromSelf);
+            ClassicAssert.AreEqual(CommandChannel.DirectEntry, result.Channel);
+            ClassicAssert.IsFalse(result.UsesChannelTag);
 
-            Assert.AreEqual(this.ExpectedCommandType, result.CommandType);
-            Assert.AreEqual(TargetType.SelfOnly, result.CommandTargetType);
-            Assert.IsFalse(result.UsesExplicitTargettingTag);
+            ClassicAssert.AreEqual(this.ExpectedCommandType, result.CommandType);
+            ClassicAssert.AreEqual(TargetType.SelfOnly, result.CommandTargetType);
+            ClassicAssert.IsFalse(result.UsesExplicitTargettingTag);
         }
     }
 }

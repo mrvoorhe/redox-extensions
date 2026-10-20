@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Location;
 
 namespace RedoxExtensions.Tests.LocationTests
@@ -15,7 +16,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public static void ParseShoushi()
         {
             Town result;
-            Assert.IsTrue(Town.TryParse("shoushi", out result));
+            ClassicAssert.IsTrue(Town.TryParse("shoushi", out result));
             Assert.That(result.ToString(), Is.EqualTo("Shoushi"));
         }
 
@@ -23,7 +24,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public static void ParseAyan()
         {
             Town result;
-            Assert.IsTrue(Town.TryParse("ayan", out result));
+            ClassicAssert.IsTrue(Town.TryParse("ayan", out result));
             Assert.That(result.ToString(), Is.EqualTo("Ayan Baqur"));
         }
 
@@ -31,7 +32,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public static void ParseAyanBaqur()
         {
             Town result;
-            Assert.IsTrue(Town.TryParse("Ayan Baqur", out result));
+            ClassicAssert.IsTrue(Town.TryParse("Ayan Baqur", out result));
             Assert.That(result.ToString(), Is.EqualTo("Ayan Baqur"));
         }
 
@@ -39,7 +40,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public static void ParseNonTown()
         {
             Town result;
-            Assert.IsFalse(Town.TryParse("Some Location", out result));
+            ClassicAssert.IsFalse(Town.TryParse("Some Location", out result));
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Location;
 
 namespace RedoxExtensions.Tests.LocationTests
@@ -22,7 +23,7 @@ namespace RedoxExtensions.Tests.LocationTests
         {
             var dungeons = LocationDatabase.LoadDungeonInfo(LocationDatabase.DefaultDataLocation);
 
-            Assert.Contains("green mire grave", dungeons.Keys);
+            ClassicAssert.Contains("green mire grave", dungeons.Keys);
 
             var greenMire = dungeons["green mire grave"];
             Assert.That(
@@ -38,7 +39,7 @@ namespace RedoxExtensions.Tests.LocationTests
         {
             var dungeons = LocationDatabase.LoadDungeonInfo(LocationDatabase.DefaultDataLocation);
 
-            Assert.Contains("green mire grave", dungeons.Keys);
+            ClassicAssert.Contains("green mire grave", dungeons.Keys);
 
             var greenMire = dungeons["green mire grave"];
             Assert.That(

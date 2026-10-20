@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Location;
 
 namespace RedoxExtensions.Tests.LocationTests
@@ -14,7 +15,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public void ParseTwoDigit()
         {
             UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("1.5N", out result));
+            ClassicAssert.IsTrue(UserFacingCoord.TryParse("1.5N", out result));
             Assert.That(result.Value, Is.EqualTo(1.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("1.5N"));
@@ -24,7 +25,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public void ParseThreeDigit()
         {
             UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("10.5N", out result));
+            ClassicAssert.IsTrue(UserFacingCoord.TryParse("10.5N", out result));
             Assert.That(result.Value, Is.EqualTo(10.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("10.5N"));
@@ -38,7 +39,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public void ParseWithTrailingDotAndWhitespace()
         {
             UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("1.5N.  ", out result));
+            ClassicAssert.IsTrue(UserFacingCoord.TryParse("1.5N.  ", out result));
             Assert.That(result.Value, Is.EqualTo(1.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("1.5N"));
@@ -52,7 +53,7 @@ namespace RedoxExtensions.Tests.LocationTests
         public void ParseWithTrailingComma()
         {
             UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("1.5N,", out result));
+            ClassicAssert.IsTrue(UserFacingCoord.TryParse("1.5N,", out result));
             Assert.That(result.Value, Is.EqualTo(1.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("1.5N"));

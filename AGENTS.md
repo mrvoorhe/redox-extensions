@@ -9,7 +9,10 @@ Decal Plugin for the game Asheron's Call
 
 ## Testing
 
-* TODO : Need to update, fix, and document
+* Tests use NUnit 5 and run with `dotnet test RedoxExtensions.slnx` (or `test.pl`).
+* Test projects target net48 (the minimum for modern NUnit / Microsoft.NET.Test.Sdk) and x86.  Plugin assemblies stay on net35 and must not be retargeted.
+* Tests must run on Windows; .NET Framework x86 test hosts can't run on macOS/Linux.  On other platforms, `dotnet build` is the only verification.
+* Existing tests use `ClassicAssert` (NUnit.Framework.Legacy).  Prefer `Assert.That` for new tests.
 
 
 ## Other Plugins we can assume are available at runtime.

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Commands;
 
@@ -21,7 +22,7 @@ namespace RedoxExtensions.Tests.CommandTests
             ICommand result;
             bool isCommand = CommandHelpers.TryParse(text, out result);
 
-            Assert.IsFalse(isCommand);
+            ClassicAssert.IsFalse(isCommand);
         }
 
         [Test]
@@ -32,7 +33,7 @@ namespace RedoxExtensions.Tests.CommandTests
             ICommand result;
             bool isCommand = CommandHelpers.TryParse(text, out result);
 
-            Assert.IsFalse(isCommand);
+            ClassicAssert.IsFalse(isCommand);
         }
     }
 }
