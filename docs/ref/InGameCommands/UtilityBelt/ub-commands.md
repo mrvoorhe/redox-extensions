@@ -29,7 +29,7 @@ Chat commands accepted by the UtilityBelt plugin. Type them in the in-game chat 
 | `/ub opt toggle <option>` | Toggles a boolean setting. |
 | `/ub date[utc] [format]` | Prints the current local (or UTC) date/time, optionally formatted with a [.NET custom date and time format string](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). Examples: `/ub date hh:mm:ss tt` → `06:09:01 PM`; `/ub dateutc dddd dd MMMM` → `Friday 29 August`. |
 | `/ub delay <millisecondDelay> <command>` | Runs `command` after the given delay. Example: `/ub delay 5000 /say hello` runs `/say hello` after 5 seconds. |
-| `/ub mexec <expression>` | Evaluates a meta [expression](https://utilitybelt.gitlab.io/docs/expressions/). |
+| `/ub mexec <expression>` | Evaluates a meta expression. See [ub-expressions.md](ub-expressions.md). Example: `/ub mexec getcharvital_current[1]`. |
 | `/ub printcolors` | Prints all available chat colors. |
 | `/ub playsound [volume] <filepath>` | Plays a sound file. Relative paths resolve against the UB plugin storage directory. Examples: `/ub playsound 100 C:\test.wav`, `/ub playsound 50 test.wav`. |
 | `/ub vitae` | Thinks to yourself with your current vitae percentage. |
@@ -178,5 +178,5 @@ The upstream page has a few copy/paste errors; this document uses the evident in
 
 - [Overview](https://utilitybelt.gitlab.io/docs/overview/)
 - [Plugin Settings](https://utilitybelt.gitlab.io/docs/plugin-settings/) — settings controlled by `/ub opt`.
-- [Expressions](https://utilitybelt.gitlab.io/docs/expressions/) — used by `/ub mexec` and VTank metas.
+- [ub-expressions.md](ub-expressions.md) ([upstream](https://utilitybelt.gitlab.io/docs/expressions/)) — used by `/ub mexec` and VTank metas.
 - [Config Files](https://utilitybelt.gitlab.io/docs/config-files/)
