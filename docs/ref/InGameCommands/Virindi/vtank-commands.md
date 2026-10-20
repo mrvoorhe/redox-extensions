@@ -18,7 +18,7 @@ Chat commands accepted by the Virindi Tank (VTank) plugin. Type them in the in-g
 | `/vt nav [save/load] [filename]` | Saves or loads a navigation profile. |
 | `/vt loot [save/load] [filename]` | Saves or loads a loot profile. |
 | `/vt meta [save/load] [filename]` | Saves or loads a meta profile. |
-| `/vt opt [list/get/set/setinall]` | Lists, gets, or sets an advanced option. `setinall` affects ALL profiles. See [Options List](http://www.virindi.net/wiki/index.php/Options_List). |
+| `/vt opt [list/get/set/setinall]` | Lists, gets, or sets an advanced option. `setinall` affects ALL profiles. See [vtank-advanced-options.md](vtank-advanced-options.md) and the wiki [Options List](http://www.virindi.net/wiki/index.php/Options_List). |
 | `/vt testitem` | Checks the currently selected item against the current loot rules and reports what the action would be if the item were found on a corpse. |
 | `/vt propertydump` | Displays the raw game properties for the currently selected item. |
 | `/vt refresh` | Refreshes the UI. Also updates the list of profile files in the profile dropdowns. |
@@ -78,5 +78,5 @@ Chat commands accepted by the Virindi Tank (VTank) plugin. Type them in the in-g
 
 ## Related wiki pages
 
-- [Virindi Tank Advanced Options](http://www.virindi.net/wiki/index.php/Virindi_Tank_Advanced_Options) / [Options List](http://www.virindi.net/wiki/index.php/Options_List) — option names for `/vt opt`.
+- [Virindi Tank Advanced Options](http://www.virindi.net/wiki/index.php/Virindi_Tank_Advanced_Options) (local: [vtank-advanced-options.md](vtank-advanced-options.md)) / [Options List](http://www.virindi.net/wiki/index.php/Options_List) — option names for `/vt opt`.
 - [Meta Functions](http://www.virindi.net/wiki/index.php/Meta_Functions) — functions usable in `/vt mexec` and listed by `/vt listmetafunctions`.
