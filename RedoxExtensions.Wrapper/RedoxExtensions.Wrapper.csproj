@@ -3,10 +3,9 @@
   <PropertyGroup>
     <ProjectGuid>{1D0AC3CD-4AAC-40C2-AECD-351522AA1186}</ProjectGuid>
     <TargetFramework>net35</TargetFramework>
-    <PlatformTarget>x86</PlatformTarget>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>..\bin\$(Configuration)\</OutputPath>
+    <OutputPath>..\bin\$(RedoxPlatformDir)$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
