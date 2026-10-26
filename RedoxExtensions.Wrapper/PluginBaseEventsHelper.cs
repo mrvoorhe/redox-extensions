@@ -5,22 +5,21 @@ using System.Text;
 
 using Decal.Adapter;
 
-namespace RedoxExtensions.Wrapper
+namespace RedoxExtensions.Wrapper;
+
+public class PluginBaseEventsHelper : IPluginBaseEvents
 {
-    public class PluginBaseEventsHelper : IPluginBaseEvents
+    public event EventHandler<Decal.Adapter.NetworkMessageEventArgs> ClientDispatch;
+
+    public event EventHandler<Decal.Adapter.NetworkMessageEventArgs> ServerDispatch;
+
+    public void FireClientDispatch(object sender, NetworkMessageEventArgs eventArgs)
     {
-        public event EventHandler<Decal.Adapter.NetworkMessageEventArgs> ClientDispatch;
+        this.ClientDispatch?.Invoke(sender, eventArgs);
+    }
 
-        public event EventHandler<Decal.Adapter.NetworkMessageEventArgs> ServerDispatch;
-
-        public void FireClientDispatch(object sender, NetworkMessageEventArgs eventArgs)
-        {
-            this.ClientDispatch?.Invoke(sender, eventArgs);
-        }
-
-        public void FireServerDispatch(object sender, NetworkMessageEventArgs eventArgs)
-        {
-            this.ServerDispatch?.Invoke(sender, eventArgs);
-        }
+    public void FireServerDispatch(object sender, NetworkMessageEventArgs eventArgs)
+    {
+        this.ServerDispatch?.Invoke(sender, eventArgs);
     }
 }

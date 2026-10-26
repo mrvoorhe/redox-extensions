@@ -6,245 +6,244 @@ using System.Text;
 
 using RedoxExtensions.Core.Extensions;
 
-namespace RedoxExtensions.Commands.Handlers
+namespace RedoxExtensions.Commands.Handlers;
+
+internal static class RedoxExtensionsHandler
 {
-    internal static class RedoxExtensionsHandler
+    internal static bool HandleCommand(ICommand command)
     {
-        internal static bool HandleCommand(ICommand command)
+        REPlugin.Instance.Debug.WriteObject(command);
+
+        switch (command.Name.ToLower())
         {
-            REPlugin.Instance.Debug.WriteObject(command);
+            case "help":
+                DisplayHelp();
+                return true;
 
-            switch (command.Name.ToLower())
-            {
-                case "help":
-                    DisplayHelp();
-                    return true;
+            case "exit":
+                Actions.SimpleActions.ExitGame();
+                return true;
 
-                case "exit":
-                    Actions.SimpleActions.ExitGame();
-                    return true;
+            case "fellowup":
+                Actions.MyActions.FellowUsualSuspects(false);
+                return true;
+            case "fellowupb":
+                Actions.MyActions.FellowUsualSuspects(true);
+                return true;
+            case "pullkeys":
+                Actions.CharacterActions.PullLegendaryKeys();
+                return true;
 
-                case "fellowup":
-                    Actions.MyActions.FellowUsualSuspects(false);
-                    return true;
-                case "fellowupb":
-                    Actions.MyActions.FellowUsualSuspects(true);
-                    return true;
-                case "pullkeys":
-                    Actions.CharacterActions.PullLegendaryKeys();
-                    return true;
+            case "use":
+                // Can be used for anything.
+                Actions.Dispatched.UseObject.Create(command).Enqueue();
+                return true;
 
-                case "use":
-                    // Can be used for anything.
-                    Actions.Dispatched.UseObject.Create(command).Enqueue();
-                    return true;
+            case "give":
+                Actions.Dispatched.GiveItems.Create(command).Enqueue();
+                return true;
 
-                case "give":
-                    Actions.Dispatched.GiveItems.Create(command).Enqueue();
-                    return true;
+            case "list":
+                Actions.Dispatched.ListItems.Create(command).Enqueue();
+                return true;
 
-                case "list":
-                    Actions.Dispatched.ListItems.Create(command).Enqueue();
-                    return true;
+            case "cram":
+                Actions.Dispatched.CramItems.Create(command).Enqueue();
+                return true;
 
-                case "cram":
-                    Actions.Dispatched.CramItems.Create(command).Enqueue();
-                    return true;
+            case "copycat":
+            case "cc":
+                switch (command.Arguments[0].ToLower().Trim())
+                {
+                    case "on":
+                        REPlugin.Instance.MonitorManager.CopyCatMaster.Enable();
+                        break;
+                    case "off":
+                        REPlugin.Instance.MonitorManager.CopyCatMaster.Disable();
+                        break;
+                    default:
+                        REPlugin.Instance.Chat.WriteLine("Unknown copycay option : {0} ", command.Arguments[0]);
+                        break;
+                }
+                return true;
+            
+            // Enable diagnostic log lines
+            case "diag":
+                switch (command.Arguments[0].ToLower().Trim())
+                {
+                    case "on":
+                        REPlugin.Instance.Debug.EnableDiagnosticsLogging = true;
+                        REPlugin.Instance.Chat.WriteLine("[RE] Diagnostic logging on");
+                        break;
+                    case "off":
+                        REPlugin.Instance.Debug.EnableDiagnosticsLogging = false;
+                        REPlugin.Instance.Chat.WriteLine("[RE] Diagnostic logging off");
+                        break;
+                    default:
+                        REPlugin.Instance.Chat.WriteLine("Unknown diag option : {0} ", command.Arguments[0]);
+                        break;
+                }
+                return true;
 
-                case "copycat":
-                case "cc":
-                    switch (command.Arguments[0].ToLower().Trim())
+            case "showcolors":
+                {
+                    var arg = command.Arguments.Count > 0 ? command.Arguments[0].ToLower().Trim() : null;
+                    bool newState;
+                    switch (arg)
                     {
                         case "on":
-                            REPlugin.Instance.MonitorManager.CopyCatMaster.Enable();
+                            newState = true;
                             break;
                         case "off":
-                            REPlugin.Instance.MonitorManager.CopyCatMaster.Disable();
+                            newState = false;
+                            break;
+                        case null:
+                            newState = !REPlugin.Instance.ShowColors;
                             break;
                         default:
-                            REPlugin.Instance.Chat.WriteLine("Unknown copycay option : {0} ", command.Arguments[0]);
-                            break;
-                    }
-                    return true;
-                
-                // Enable diagnostic log lines
-                case "diag":
-                    switch (command.Arguments[0].ToLower().Trim())
-                    {
-                        case "on":
-                            REPlugin.Instance.Debug.EnableDiagnosticsLogging = true;
-                            REPlugin.Instance.Chat.WriteLine("[RE] Diagnostic logging on");
-                            break;
-                        case "off":
-                            REPlugin.Instance.Debug.EnableDiagnosticsLogging = false;
-                            REPlugin.Instance.Chat.WriteLine("[RE] Diagnostic logging off");
-                            break;
-                        default:
-                            REPlugin.Instance.Chat.WriteLine("Unknown diag option : {0} ", command.Arguments[0]);
-                            break;
-                    }
-                    return true;
-
-                case "showcolors":
-                    {
-                        var arg = command.Arguments.Count > 0 ? command.Arguments[0].ToLower().Trim() : null;
-                        bool newState;
-                        switch (arg)
-                        {
-                            case "on":
-                                newState = true;
-                                break;
-                            case "off":
-                                newState = false;
-                                break;
-                            case null:
-                                newState = !REPlugin.Instance.ShowColors;
-                                break;
-                            default:
-                                REPlugin.Instance.Chat.WriteLine("Unknown showcolors option : {0}", command.Arguments[0]);
-                                return true;
-                        }
-
-                        REPlugin.Instance.ShowColors = newState;
-                        REPlugin.Instance.Chat.WriteLine("[RE] Show colors on ID: {0}", newState ? "on" : "off");
-                        return true;
+                            REPlugin.Instance.Chat.WriteLine("Unknown showcolors option : {0}", command.Arguments[0]);
+                            return true;
                     }
 
-                case "unstuck":
-                case "us":
-                    Actions.UnstuckActions.Unstuck();
+                    REPlugin.Instance.ShowColors = newState;
+                    REPlugin.Instance.Chat.WriteLine("[RE] Show colors on ID: {0}", newState ? "on" : "off");
                     return true;
+                }
 
-                case "unstuckdetect":
-                case "usdetect":
-                    ProcessUnstuckDetect(command);
-                    return true;
+            case "unstuck":
+            case "us":
+                Actions.UnstuckActions.Unstuck();
+                return true;
 
-                case "track":
-                    REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
-                    return true;
+            case "unstuckdetect":
+            case "usdetect":
+                ProcessUnstuckDetect(command);
+                return true;
 
-                case "report":
-                    REPlugin.Instance.MonitorManager.Banking.Report(s => REPlugin.Instance.Chat.WriteLine(s));
-                    return true;
+            case "track":
+                REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
+                return true;
 
-                case "clearqueue":
-                    // Clears the dispatch pipeline queue
-                    REPlugin.Instance.Dispatch.Pipeline.Clear();
-                    return true;
+            case "report":
+                REPlugin.Instance.MonitorManager.Banking.Report(s => REPlugin.Instance.Chat.WriteLine(s));
+                return true;
 
-                case "face":
-                    Actions.SimpleActions.FaceObject(command);
-                    return true;
-                
-                case "navto":
-                    Actions.SimpleActions.NavTo(command);
-                    return true;
+            case "clearqueue":
+                // Clears the dispatch pipeline queue
+                REPlugin.Instance.Dispatch.Pipeline.Clear();
+                return true;
 
-                case "goto":
-                    Actions.Dispatched.GoTo.Create(command).Enqueue();
-                    return true;
+            case "face":
+                Actions.SimpleActions.FaceObject(command);
+                return true;
+            
+            case "navto":
+                Actions.SimpleActions.NavTo(command);
+                return true;
 
-                case "pets":
-                    Actions.SimpleActions.ProcessPetsCommand(command);
-                    return true;
+            case "goto":
+                Actions.Dispatched.GoTo.Create(command).Enqueue();
+                return true;
 
-                case "test":
-                    Actions.TestingActions.ProcessTestCommand(command);
-                    return true;
+            case "pets":
+                Actions.SimpleActions.ProcessPetsCommand(command);
+                return true;
 
-                // PhatAC Based
-                case "tele":
-                    Actions.SimpleActions.Teleport(command);
-                    return true;
+            case "test":
+                Actions.TestingActions.ProcessTestCommand(command);
+                return true;
 
-                case "teleinto":
-                    Actions.SimpleActions.TeleportInto(command);
-                    return true;
+            // PhatAC Based
+            case "tele":
+                Actions.SimpleActions.Teleport(command);
+                return true;
 
-                default:
-                    REPlugin.Instance.Chat.WriteLine("Unknown Command : {0} ", command.RawValue);
-                    return false;
-            }
+            case "teleinto":
+                Actions.SimpleActions.TeleportInto(command);
+                return true;
+
+            default:
+                REPlugin.Instance.Chat.WriteLine("Unknown Command : {0} ", command.RawValue);
+                return false;
         }
+    }
 
-        private static void ProcessUnstuckDetect(ICommand command)
+    private static void ProcessUnstuckDetect(ICommand command)
+    {
+        var detector = REPlugin.Instance.MonitorManager.StuckDetector;
+        bool? requestedState = null;
+        double? minutes = null;
+
+        foreach (var rawArg in command.Arguments)
         {
-            var detector = REPlugin.Instance.MonitorManager.StuckDetector;
-            bool? requestedState = null;
-            double? minutes = null;
+            var arg = rawArg.ToLower().Trim();
 
-            foreach (var rawArg in command.Arguments)
+            if (arg == "on")
             {
-                var arg = rawArg.ToLower().Trim();
-
-                if (arg == "on")
-                {
-                    requestedState = true;
-                }
-                else if (arg == "off")
-                {
-                    requestedState = false;
-                }
-                else if (double.TryParse(arg, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedMinutes) && parsedMinutes > 0)
-                {
-                    minutes = parsedMinutes;
-                }
-                else
-                {
-                    REPlugin.Instance.Chat.WriteLine("Unknown unstuckdetect option : {0}", rawArg);
-                    return;
-                }
+                requestedState = true;
             }
-
-            bool newState = requestedState ?? (minutes.HasValue || !detector.Enabled);
-
-            if (newState)
+            else if (arg == "off")
             {
-                detector.Enable(minutes);
-                REPlugin.Instance.Chat.WriteLine("[RE] Unstuck detect: on ({0} min)", detector.ThresholdMinutes.ToString(CultureInfo.InvariantCulture));
+                requestedState = false;
+            }
+            else if (double.TryParse(arg, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedMinutes) && parsedMinutes > 0)
+            {
+                minutes = parsedMinutes;
             }
             else
             {
-                detector.Disable();
-                REPlugin.Instance.Chat.WriteLine("[RE] Unstuck detect: off");
+                REPlugin.Instance.Chat.WriteLine("Unknown unstuckdetect option : {0}", rawArg);
+                return;
             }
         }
 
-        private static void DisplayHelp()
+        bool newState = requestedState ?? (minutes.HasValue || !detector.Enabled);
+
+        if (newState)
         {
-            var chat = REPlugin.Instance.Chat;
-
-            chat.WriteLine("**** RedoxExtensions Commands (prefix with /re) ****");
-
-            chat.WriteLine("  help                    - Displays this help.");
-            chat.WriteLine("  exit                    - Exits the game.");
-
-            chat.WriteLine("  fellowup                - Fellows the usual suspects.");
-            chat.WriteLine("  fellowupb               - Fellows the usual suspects (break existing fellowship first).");
-            chat.WriteLine("  pullkeys                - Pulls legendary keys.");
-
-            chat.WriteLine("  use <target>            - Uses the given object.");
-            chat.WriteLine("  give <items>            - Gives items to the current selection.");
-            chat.WriteLine("  list <items>            - Lists matching items.");
-            chat.WriteLine("  cram <items>            - Crams items into a container.");
-
-            chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
-            chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
-            chat.WriteLine("  unstuck|us              - Tries to get a stuck VT meta moving again.");
-            chat.WriteLine("  unstuckdetect|usdetect [on|off] [min] - Toggles automatic unstuck after [min] idle minutes (default 1).");
-            chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
-            chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
-            chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
-            chat.WriteLine("  face <target>           - Faces the given object.");
-            chat.WriteLine("  goto <target>           - Travels to the given object.");
-            chat.WriteLine("  pets <args>             - Processes a pets command.");
-            chat.WriteLine("  test <args>             - Runs a testing command.");
-
-            chat.WriteLine("  tele [target]           - Teleports to the target (or the requestor).");
-            chat.WriteLine("  teleinto <target>      - Teleports into the given target.");
-
-            chat.WriteLine("****************************************************");
+            detector.Enable(minutes);
+            REPlugin.Instance.Chat.WriteLine("[RE] Unstuck detect: on ({0} min)", detector.ThresholdMinutes.ToString(CultureInfo.InvariantCulture));
         }
+        else
+        {
+            detector.Disable();
+            REPlugin.Instance.Chat.WriteLine("[RE] Unstuck detect: off");
+        }
+    }
+
+    private static void DisplayHelp()
+    {
+        var chat = REPlugin.Instance.Chat;
+
+        chat.WriteLine("**** RedoxExtensions Commands (prefix with /re) ****");
+
+        chat.WriteLine("  help                    - Displays this help.");
+        chat.WriteLine("  exit                    - Exits the game.");
+
+        chat.WriteLine("  fellowup                - Fellows the usual suspects.");
+        chat.WriteLine("  fellowupb               - Fellows the usual suspects (break existing fellowship first).");
+        chat.WriteLine("  pullkeys                - Pulls legendary keys.");
+
+        chat.WriteLine("  use <target>            - Uses the given object.");
+        chat.WriteLine("  give <items>            - Gives items to the current selection.");
+        chat.WriteLine("  list <items>            - Lists matching items.");
+        chat.WriteLine("  cram <items>            - Crams items into a container.");
+
+        chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
+        chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
+        chat.WriteLine("  unstuck|us              - Tries to get a stuck VT meta moving again.");
+        chat.WriteLine("  unstuckdetect|usdetect [on|off] [min] - Toggles automatic unstuck after [min] idle minutes (default 1).");
+        chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
+        chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
+        chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
+        chat.WriteLine("  face <target>           - Faces the given object.");
+        chat.WriteLine("  goto <target>           - Travels to the given object.");
+        chat.WriteLine("  pets <args>             - Processes a pets command.");
+        chat.WriteLine("  test <args>             - Runs a testing command.");
+
+        chat.WriteLine("  tele [target]           - Teleports to the target (or the requestor).");
+        chat.WriteLine("  teleinto <target>      - Teleports into the given target.");
+
+        chat.WriteLine("****************************************************");
     }
 }

@@ -6,25 +6,23 @@ using System.Text;
 
 using RedoxExtensions.Diagnostics;
 
-namespace RedoxExtensions.Commands
+namespace RedoxExtensions.Commands;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public interface ICommand : ISourceInformation, IExecutionData, ITargettingData, ISupportFeedback, ILoggableObject
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public interface ICommand : ISourceInformation, IExecutionData, ITargettingData, ISupportFeedback, ILoggableObject
-    {
-    }
 }

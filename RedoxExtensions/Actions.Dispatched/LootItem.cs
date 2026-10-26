@@ -6,53 +6,52 @@ using System.Text;
 using RedoxExtensions.Commands;
 using RedoxExtensions.Dispatching;
 
-namespace RedoxExtensions.Actions.Dispatched
+namespace RedoxExtensions.Actions.Dispatched;
+
+public class LootItem : AbstractPipelineAction
 {
-    public class LootItem : AbstractPipelineAction
+    public LootItem(ISupportFeedback requestor, int containerId, string itemName)
+        : base(requestor)
     {
-        public LootItem(ISupportFeedback requestor, int containerId, string itemName)
-            : base(requestor)
-        {
-            // TODO
-        }
+        // TODO
+    }
 
-        public override bool RequireIdleToPerform
-        {
-            get { throw new NotImplementedException(); }
-        }
+    public override bool RequireIdleToPerform
+    {
+        get { throw new NotImplementedException(); }
+    }
 
-        public override VirindiInterop.VTRunState DesiredVTRunState
-        {
-            get { throw new NotImplementedException(); }
-        }
+    public override VirindiInterop.VTRunState DesiredVTRunState
+    {
+        get { throw new NotImplementedException(); }
+    }
 
-        protected override int MaxTries => 3;
+    protected override int MaxTries => 3;
 
-        protected override int WaitTimeoutInMilliseconds => 500;
+    protected override int WaitTimeoutInMilliseconds => 500;
 
-        protected override void DoPeform()
-        {
-            throw new NotImplementedException();
-        }
+    protected override void DoPeform()
+    {
+        throw new NotImplementedException();
+    }
 
-        protected override void InitializeData()
-        {
-            // Disable auto loot by changing loot profile
-        }
+    protected override void InitializeData()
+    {
+        // Disable auto loot by changing loot profile
+    }
 
-        protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
-        {
-            throw new NotImplementedException();
-        }
+    protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
+    {
+        throw new NotImplementedException();
+    }
 
-        protected override void HookEvents()
-        {
-            throw new NotImplementedException();
-        }
+    protected override void HookEvents()
+    {
+        throw new NotImplementedException();
+    }
 
-        protected override void UnhookEvents()
-        {
-            throw new NotImplementedException();
-        }
+    protected override void UnhookEvents()
+    {
+        throw new NotImplementedException();
     }
 }

@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Wrapper
+namespace RedoxExtensions.Wrapper;
+
+public interface IWrappedPlugin
 {
-    public interface IWrappedPlugin
-    {
-        void WrappedStartup(IRealPluginBase realPlugin, IPluginBaseEvents realPluginBaseEvents);
+    void WrappedStartup(IRealPluginBase realPlugin, IPluginBaseEvents realPluginBaseEvents);
 
-        void WrappedShutdown();
+    void WrappedShutdown();
 
-        void WrappedPluginInitComplete();
-    }
+    void WrappedPluginInitComplete();
 }

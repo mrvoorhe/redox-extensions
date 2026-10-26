@@ -14,37 +14,36 @@ using System.Text;
 
 using NUnit.Framework;
 
-namespace RedoxExtensions.Tests.TestUtilities
+namespace RedoxExtensions.Tests.TestUtilities;
+
+public abstract class TemporaryDirectoryPerTestTestSuite
 {
-    public abstract class TemporaryDirectoryPerTestTestSuite
+    private string _testTemporaryDirectory;
+
+    protected string TestTemporaryDirectory => this._testTemporaryDirectory;
+
+    [SetUp]
+    public virtual void TestSetup()
     {
-        private string _testTemporaryDirectory;
+        this._testTemporaryDirectory = Path.Combine(Path.GetTempPath(), "RedoxExtensions-" + Path.GetRandomFileName());
+        Directory.CreateDirectory(this._testTemporaryDirectory);
+    }
 
-        protected string TestTemporaryDirectory => this._testTemporaryDirectory;
-
-        [SetUp]
-        public virtual void TestSetup()
+    [TearDown]
+    public virtual void TestTeardown()
+    {
+        if (Directory.Exists(this._testTemporaryDirectory))
         {
-            this._testTemporaryDirectory = Path.Combine(Path.GetTempPath(), "RedoxExtensions-" + Path.GetRandomFileName());
-            Directory.CreateDirectory(this._testTemporaryDirectory);
+            Directory.Delete(this._testTemporaryDirectory, true);
         }
 
-        [TearDown]
-        public virtual void TestTeardown()
-        {
-            if (Directory.Exists(this._testTemporaryDirectory))
-            {
-                Directory.Delete(this._testTemporaryDirectory, true);
-            }
+        this._testTemporaryDirectory = string.Empty;
+    }
 
-            this._testTemporaryDirectory = string.Empty;
-        }
-
-        protected string CreateFile(string fileName)
-        {
-            var fullFileName = Path.Combine(this._testTemporaryDirectory, fileName);
-            File.Create(fullFileName).Close();
-            return fullFileName;
-        }
+    protected string CreateFile(string fileName)
+    {
+        var fullFileName = Path.Combine(this._testTemporaryDirectory, fileName);
+        File.Create(fullFileName).Close();
+        return fullFileName;
     }
 }

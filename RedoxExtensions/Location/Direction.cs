@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace RedoxExtensions.Location
+namespace RedoxExtensions.Location;
+
+public enum Direction
 {
-    public enum Direction
-    {
-        N,
-        S,
-        E,
-        W
-    }
+    N,
+    S,
+    E,
+    W
 }

@@ -25,138 +25,137 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-namespace VTankFreeMethodsTest
+namespace VTankFreeMethodsTest;
+
+public enum VT_eDamageElement
 {
-    public enum VT_eDamageElement
+    Pierce = 0,
+    Bludgeon = 1,
+    Slash = 2,
+    Acid = 3,
+    Lightning = 4,
+    Cold = 5,
+    Fire = 6,
+    Harm = 7,
+    Auto = 8,
+    Void = 9,
+    DrainAuto = 10,
+    Prismatic = 11,
+    Random = 12,
+    Fists = 13,
+
+    LISTEDTYPES_END = 14,
+
+    None = 98,
+    Physical = 99,
+    PrismaticDatabaseEntryOld = 100,
+}
+
+/// <summary>
+/// SELF : I derived this class from 
+/// DecalProjects/OthersExampleProjects/Virindi/Examples/VTankFreeMethodsTest/VTankFreeMethodsTest/VirindiTank_FreeConnector.cs
+/// 
+/// Note : I Removed the minimum version checking that the original had
+/// </summary>
+static class VTConnector
+{
+    public static uTank2.PluginCore pc;
+    static bool Cached_VTAssemblyLoaded = false;
+
+    public static bool IsVTankPresent()
     {
-        Pierce = 0,
-        Bludgeon = 1,
-        Slash = 2,
-        Acid = 3,
-        Lightning = 4,
-        Cold = 5,
-        Fire = 6,
-        Harm = 7,
-        Auto = 8,
-        Void = 9,
-        DrainAuto = 10,
-        Prismatic = 11,
-        Random = 12,
-        Fists = 13,
-
-        LISTEDTYPES_END = 14,
-
-        None = 98,
-        Physical = 99,
-        PrismaticDatabaseEntryOld = 100,
-    }
-
-    /// <summary>
-    /// SELF : I derived this class from 
-    /// DecalProjects/OthersExampleProjects/Virindi/Examples/VTankFreeMethodsTest/VTankFreeMethodsTest/VirindiTank_FreeConnector.cs
-    /// 
-    /// Note : I Removed the minimum version checking that the original had
-    /// </summary>
-    static class VTConnector
-    {
-        public static uTank2.PluginCore pc;
-        static bool Cached_VTAssemblyLoaded = false;
-
-        public static bool IsVTankPresent()
+        if (Cached_VTAssemblyLoaded)
         {
-            if (Cached_VTAssemblyLoaded)
+            try
             {
-                try
-                {
-                    //The assembly is loaded, but that doesn't mean the plugin is running.
-                    return Curtain_IsVTankPresent();
-                }
-                catch
-                {
-                    return false;
-                }
+                //The assembly is loaded, but that doesn't mean the plugin is running.
+                return Curtain_IsVTankPresent();
             }
-            else
+            catch
             {
-                System.Reflection.Assembly[] asms = AppDomain.CurrentDomain.GetAssemblies();
+                return false;
+            }
+        }
+        else
+        {
+            System.Reflection.Assembly[] asms = AppDomain.CurrentDomain.GetAssemblies();
 
-                foreach (System.Reflection.Assembly a in asms)
+            foreach (System.Reflection.Assembly a in asms)
+            {
+                AssemblyName nmm = a.GetName();
+                if ((nmm.Name == "uTank2"))
                 {
-                    AssemblyName nmm = a.GetName();
-                    if ((nmm.Name == "uTank2"))
+                    Cached_VTAssemblyLoaded = true;
+                    try
                     {
-                        Cached_VTAssemblyLoaded = true;
-                        try
-                        {
-                            //The assembly is loaded, but that doesn't mean the plugin is running.
-                            return Curtain_IsVTankPresent();
-                        }
-                        catch
-                        {
-                            return false;
-                        }
+                        //The assembly is loaded, but that doesn't mean the plugin is running.
+                        return Curtain_IsVTankPresent();
+                    }
+                    catch
+                    {
+                        return false;
                     }
                 }
             }
-
-            return false;
         }
 
-        private static bool Curtain_IsVTankPresent() => uTank2.PluginCore.PC != null;
-
-        //Safe methods. These can be called directly from plugin code without bothering to check if VT is running.
-
-        #region FMonsterList_QueryFinalDamageType
-
-        /// <summary>
-        /// Query the damage type the macro would use on a target, taking into account the player's monster list settings.
-        /// Returns VT_eDamageElement.None on failure.
-        /// </summary>
-        /// <param name="monsterid"></param>
-        /// <returns></returns>
-        public static VT_eDamageElement FMonsterList_QueryFinalDamageType(int monsterid)
-        {
-            if (!IsVTankPresent()) return VT_eDamageElement.None;
-            return Curtain_FMonsterList_QueryFinalDamageType(monsterid);
-        }
-
-        private static VT_eDamageElement Curtain_FMonsterList_QueryFinalDamageType(int monsterid)
-        {
-            //VTank is running.
-            uTank2.LootPlugins.GameItemInfo mon = uTank2.PluginCore.PC.FWorldTracker_GetWithID(monsterid);
-            if (mon == null) return VT_eDamageElement.None;
-            return (VT_eDamageElement)(int)uTank2.PluginCore.PC.FMonsterList_QueryFinalDamageType(mon);
-        }
-
-        #endregion FMonsterList_QueryFinalDamageType
-
-        #region FGameInfo_QueryAutoDamageElementList
-
-        /// <summary>
-        /// Query the auto-damage element list for a particular monster name.
-        /// Returns null on failure.
-        /// </summary>
-        /// <param name="monstername"></param>
-        /// <returns></returns>
-        public static VT_eDamageElement[] FGameInfo_QueryAutoDamageElementList(string monstername)
-        {
-            if (!IsVTankPresent()) return null;
-            return Curtain_FGameInfo_QueryAutoDamageElementList(monstername);
-        }
-
-        private static VT_eDamageElement[] Curtain_FGameInfo_QueryAutoDamageElementList(string monstername)
-        {
-            System.Collections.ObjectModel.ReadOnlyCollection<uTank2.eDamageElement> elist = uTank2.PluginCore.PC.FGameInfo_QueryAutoDamageElementList(monstername);
-            if (elist == null) return null;
-            VT_eDamageElement[] ret = new VT_eDamageElement[elist.Count];
-            for (int i = 0; i < elist.Count; ++i)
-            {
-                ret[i] = (VT_eDamageElement)(int)elist[i];
-            }
-            return ret;
-        }
-
-        #endregion FGameInfo_QueryAutoDamageElementList
-
+        return false;
     }
+
+    private static bool Curtain_IsVTankPresent() => uTank2.PluginCore.PC != null;
+
+    //Safe methods. These can be called directly from plugin code without bothering to check if VT is running.
+
+    #region FMonsterList_QueryFinalDamageType
+
+    /// <summary>
+    /// Query the damage type the macro would use on a target, taking into account the player's monster list settings.
+    /// Returns VT_eDamageElement.None on failure.
+    /// </summary>
+    /// <param name="monsterid"></param>
+    /// <returns></returns>
+    public static VT_eDamageElement FMonsterList_QueryFinalDamageType(int monsterid)
+    {
+        if (!IsVTankPresent()) return VT_eDamageElement.None;
+        return Curtain_FMonsterList_QueryFinalDamageType(monsterid);
+    }
+
+    private static VT_eDamageElement Curtain_FMonsterList_QueryFinalDamageType(int monsterid)
+    {
+        //VTank is running.
+        uTank2.LootPlugins.GameItemInfo mon = uTank2.PluginCore.PC.FWorldTracker_GetWithID(monsterid);
+        if (mon == null) return VT_eDamageElement.None;
+        return (VT_eDamageElement)(int)uTank2.PluginCore.PC.FMonsterList_QueryFinalDamageType(mon);
+    }
+
+    #endregion FMonsterList_QueryFinalDamageType
+
+    #region FGameInfo_QueryAutoDamageElementList
+
+    /// <summary>
+    /// Query the auto-damage element list for a particular monster name.
+    /// Returns null on failure.
+    /// </summary>
+    /// <param name="monstername"></param>
+    /// <returns></returns>
+    public static VT_eDamageElement[] FGameInfo_QueryAutoDamageElementList(string monstername)
+    {
+        if (!IsVTankPresent()) return null;
+        return Curtain_FGameInfo_QueryAutoDamageElementList(monstername);
+    }
+
+    private static VT_eDamageElement[] Curtain_FGameInfo_QueryAutoDamageElementList(string monstername)
+    {
+        System.Collections.ObjectModel.ReadOnlyCollection<uTank2.eDamageElement> elist = uTank2.PluginCore.PC.FGameInfo_QueryAutoDamageElementList(monstername);
+        if (elist == null) return null;
+        VT_eDamageElement[] ret = new VT_eDamageElement[elist.Count];
+        for (int i = 0; i < elist.Count; ++i)
+        {
+            ret[i] = (VT_eDamageElement)(int)elist[i];
+        }
+        return ret;
+    }
+
+    #endregion FGameInfo_QueryAutoDamageElementList
+
 }

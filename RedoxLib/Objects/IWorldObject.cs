@@ -6,73 +6,72 @@ using System.Text;
 using Decal.Adapter.Wrappers;
 using RedoxLib.GameValues;
 
-namespace RedoxLib.Objects
+namespace RedoxLib.Objects;
+
+public interface IWorldObject : IWorldObjectBasics, IHaveCoordsObject
 {
-    public interface IWorldObject : IWorldObjectBasics, IHaveCoordsObject
-    {
-        #region Standard Decal Members
+    #region Standard Decal Members
 
-        ObjectClass ObjectClass { get; }
+    ObjectClass ObjectClass { get; }
 
-        int ActiveSpellCount { get; }
-        int SpellCount { get; }
+    int ActiveSpellCount { get; }
+    int SpellCount { get; }
 
-        int Behavior { get; }
-        int Category { get; }
-        int Container { get; }
-        int GameDataFlags1 { get; }
-        int Icon { get; }
-        int LastIdTime { get; }
-        int PhysicsDataFlags { get; }
-        int Type { get; }
+    int Behavior { get; }
+    int Category { get; }
+    int Container { get; }
+    int GameDataFlags1 { get; }
+    int Icon { get; }
+    int LastIdTime { get; }
+    int PhysicsDataFlags { get; }
+    int Type { get; }
 
-        bool HasIdData { get; }
+    bool HasIdData { get; }
 
-        ReadOnlyCollection<int> BoolKeys { get; }
-        ReadOnlyCollection<int> LongKeys { get; }
-        ReadOnlyCollection<int> DoubleKeys { get; }
-        ReadOnlyCollection<int> StringKeys { get; }
+    ReadOnlyCollection<int> BoolKeys { get; }
+    ReadOnlyCollection<int> LongKeys { get; }
+    ReadOnlyCollection<int> DoubleKeys { get; }
+    ReadOnlyCollection<int> StringKeys { get; }
 
-        int ActiveSpell(int index);
-        int Spell(int index);
+    int ActiveSpell(int index);
+    int Spell(int index);
 
-        bool Exists(BoolValueKey index);
-        bool Exists(DoubleValueKey index);
-        bool Exists(LongValueKey index);
-        bool Exists(StringValueKey index);
+    bool Exists(BoolValueKey index);
+    bool Exists(DoubleValueKey index);
+    bool Exists(LongValueKey index);
+    bool Exists(StringValueKey index);
 
-        bool Values(BoolValueKey index);
-        double Values(DoubleValueKey index);
-        int Values(LongValueKey index);
-        string Values(StringValueKey index);
+    bool Values(BoolValueKey index);
+    double Values(DoubleValueKey index);
+    int Values(LongValueKey index);
+    string Values(StringValueKey index);
 
-        bool Values(BoolValueKey index, bool defaultValue);
-        double Values(DoubleValueKey index, double defaultValue);
-        int Values(LongValueKey index, int defaultValue);
-        string Values(StringValueKey index, string defaultValue);
+    bool Values(BoolValueKey index, bool defaultValue);
+    double Values(DoubleValueKey index, double defaultValue);
+    int Values(LongValueKey index, int defaultValue);
+    string Values(StringValueKey index, string defaultValue);
 
-        CoordsObject Coordinates();
-        Vector3Object Offset();
-        Vector4Object Orientation();
-        Vector3Object RawCoordinates();
+    CoordsObject Coordinates();
+    Vector3Object Offset();
+    Vector4Object Orientation();
+    Vector3Object RawCoordinates();
 
-        #endregion
+    #endregion
 
-        #region Additional Members
+    #region Additional Members
 
-        ReadOnlyCollection<int> GetActiveSpells();
-        ReadOnlyCollection<int> GetSpells();
+    ReadOnlyCollection<int> GetActiveSpells();
+    ReadOnlyCollection<int> GetSpells();
 
-        bool Exists(IntValueKey index);
-        int Values(IntValueKey index);
-        int Values(IntValueKey index, int defaultValue);
+    bool Exists(IntValueKey index);
+    int Values(IntValueKey index);
+    int Values(IntValueKey index, int defaultValue);
 
-        bool TryGetValue(BoolValueKey index, out bool value);
-        bool TryGetValue(DoubleValueKey index, out double value);
-        bool TryGetValue(LongValueKey index, out int value);
-        bool TryGetValue(IntValueKey index, out int value);
-        bool TryGetValue(StringValueKey index, out string value);
+    bool TryGetValue(BoolValueKey index, out bool value);
+    bool TryGetValue(DoubleValueKey index, out double value);
+    bool TryGetValue(LongValueKey index, out int value);
+    bool TryGetValue(IntValueKey index, out int value);
+    bool TryGetValue(StringValueKey index, out string value);
 
-        #endregion
-    }
+    #endregion
 }

@@ -11,436 +11,435 @@ using RedoxExtensions.Settings;
 using RedoxExtensions.VirindiInterop;
 using RedoxLib;
 
-namespace RedoxExtensions.Commands.Handlers
+namespace RedoxExtensions.Commands.Handlers;
+
+internal static class ForeignHandler
 {
-    internal static class ForeignHandler
+    internal static void HandleCommand(ICommand command)
     {
-        internal static void HandleCommand(ICommand command)
+        REPlugin.Instance.Debug.WriteObject(command);
+
+        // If a command is for slaves only and the command is from ourself,
+        // then we must be the Master and therefore we should ignore slave only commands
+        if (command.IsSlaveOnlyAndFromSelf())
         {
-            REPlugin.Instance.Debug.WriteObject(command);
+            return;
+        }
 
-            // If a command is for slaves only and the command is from ourself,
-            // then we must be the Master and therefore we should ignore slave only commands
-            if (command.IsSlaveOnlyAndFromSelf())
-            {
-                return;
-            }
+        // make sure someone isn't trying to pull a fast one on my guys
+        if (!MyUtilities.IsCharacterOnMasterWhiteList(command.SourceCharacter))
+        {
+            return;
+        }
 
-            // make sure someone isn't trying to pull a fast one on my guys
-            if (!MyUtilities.IsCharacterOnMasterWhiteList(command.SourceCharacter))
-            {
-                return;
-            }
+        switch (command.Name.ToLower())
+        {
+            #region Generic Stuff & Shortcuts to Plugin Commands
 
-            switch (command.Name.ToLower())
-            {
-                #region Generic Stuff & Shortcuts to Plugin Commands
+            case "cmd":
+            case "c":
+                ACUtilities.ProcessArbitraryCommand(command.RebuildArgumentsWithSpaceSeparator());
+                break;
 
-                case "cmd":
-                case "c":
-                    ACUtilities.ProcessArbitraryCommand(command.RebuildArgumentsWithSpaceSeparator());
-                    break;
+            // short cut for running vt commands
+            case "vt":
+                ACUtilities.ProcessArbitraryCommand($"/vt {command.RebuildArgumentsWithSpaceSeparator()}");
+                break;
 
-                // short cut for running vt commands
-                case "vt":
-                    ACUtilities.ProcessArbitraryCommand($"/vt {command.RebuildArgumentsWithSpaceSeparator()}");
-                    break;
+            // Shortcut for running mt commands
+            case "mt":
+                ACUtilities.ProcessArbitraryCommand($"/mt {command.RebuildArgumentsWithSpaceSeparator()}");
+                break;
 
-                // Shortcut for running mt commands
-                case "mt":
-                    ACUtilities.ProcessArbitraryCommand($"/mt {command.RebuildArgumentsWithSpaceSeparator()}");
-                    break;
+            // Shortcut for local redox extensions commands
+            case "re":
+                ACUtilities.ProcessArbitraryCommand($"/re {command.RebuildArgumentsWithSpaceSeparator()}");
+                break;
 
-                // Shortcut for local redox extensions commands
-                case "re":
-                    ACUtilities.ProcessArbitraryCommand($"/re {command.RebuildArgumentsWithSpaceSeparator()}");
-                    break;
+            case "rew":
+                ACUtilities.ProcessArbitraryCommand($"/rew {command.RebuildArgumentsWithSpaceSeparator()}");
+                break;
 
-                case "rew":
-                    ACUtilities.ProcessArbitraryCommand($"/rew {command.RebuildArgumentsWithSpaceSeparator()}");
-                    break;
+            #endregion
 
-                #endregion
+            #region Simple Shortcuts to built in commands
 
-                #region Simple Shortcuts to built in commands
+            // Shortcuts for simple commands.
+            case "ls":
+                ACUtilities.ProcessArbitraryCommand("/ls");
+                break;
+            case "ah":
+                ACUtilities.ProcessArbitraryCommand("/ah");
+                break;
+            case "hom":
+                ACUtilities.ProcessArbitraryCommand("/hom");
+                break;
+            case "tn":
+                ACUtilities.ProcessArbitraryCommand("/tn");
+                break;
 
-                // Shortcuts for simple commands.
-                case "ls":
-                    ACUtilities.ProcessArbitraryCommand("/ls");
-                    break;
-                case "ah":
-                    ACUtilities.ProcessArbitraryCommand("/ah");
-                    break;
-                case "hom":
-                    ACUtilities.ProcessArbitraryCommand("/hom");
-                    break;
-                case "tn":
-                    ACUtilities.ProcessArbitraryCommand("/tn");
-                    break;
+            #endregion
 
-                #endregion
+            #region Login & Exit
 
-                #region Login & Exit
+            case "logout":
+            case "logoff":
+                SimpleActions.Logout();
+                break;
+            case "exit":
+                SimpleActions.ExitGame();
+                break;
 
-                case "logout":
-                case "logoff":
-                    SimpleActions.Logout();
-                    break;
-                case "exit":
-                    SimpleActions.ExitGame();
-                    break;
+            #endregion
 
-                #endregion
+            #region Using
 
-                #region Using
+            case "use":
+                Actions.Dispatched.UseObject.Create(command).Enqueue();
+                break;
 
-                case "use":
-                    Actions.Dispatched.UseObject.Create(command).Enqueue();
-                    break;
+            #endregion
 
-                #endregion
+            #region Give
 
-                #region Give
+            case "give":
+                Actions.Dispatched.GiveItems.Create(command).Enqueue();
+                break;
 
-                case "give":
-                    Actions.Dispatched.GiveItems.Create(command).Enqueue();
-                    break;
+            #endregion
 
-                #endregion
+            #region List
 
-                #region List
+            case "list":
+                Actions.Dispatched.ListItems.Create(command).Enqueue();
+                break;
 
-                case "list":
-                    Actions.Dispatched.ListItems.Create(command).Enqueue();
-                    break;
+            #endregion
 
-                #endregion
+            #region Cram
 
-                #region Cram
+            case "cram":
+                Actions.Dispatched.CramItems.Create(command).Enqueue();
+                break;
 
-                case "cram":
-                    Actions.Dispatched.CramItems.Create(command).Enqueue();
-                    break;
+            #endregion
 
-                #endregion
+            #region Jumping
 
-                #region Jumping
+            case "hop":
+                if(!SourceIsWithinJumpRange(command))
+                {
+                    command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
+                    return;
+                }
 
-                case "hop":
-                    if(!SourceIsWithinJumpRange(command))
-                    {
-                        command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
-                        return;
-                    }
+                Actions.Dispatched.Jump.CreateHop(command).Enqueue();
+                break;
+            case "shifthop":
+            case "shop":
+                if (!SourceIsWithinJumpRange(command))
+                {
+                    command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
+                    return;
+                }
 
-                    Actions.Dispatched.Jump.CreateHop(command).Enqueue();
-                    break;
-                case "shifthop":
-                case "shop":
-                    if (!SourceIsWithinJumpRange(command))
-                    {
-                        command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
-                        return;
-                    }
+                Actions.Dispatched.Jump.CreateShiftHop(command).Enqueue();
+                break;
+            case "hopfull":
+            case "hopf":
+                if (!SourceIsWithinJumpRange(command))
+                {
+                    command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
+                    return;
+                }
 
-                    Actions.Dispatched.Jump.CreateShiftHop(command).Enqueue();
-                    break;
-                case "hopfull":
-                case "hopf":
-                    if (!SourceIsWithinJumpRange(command))
-                    {
-                        command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
-                        return;
-                    }
+                Actions.Dispatched.Jump.CreateHopFull(command).Enqueue();
+                break;
+            case "shifthopfull":
+            case "shopf":
+                if (!SourceIsWithinJumpRange(command))
+                {
+                    command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
+                    return;
+                }
 
-                    Actions.Dispatched.Jump.CreateHopFull(command).Enqueue();
-                    break;
-                case "shifthopfull":
-                case "shopf":
-                    if (!SourceIsWithinJumpRange(command))
-                    {
-                        command.GiveFeedback(FeedbackType.Ignored, "You are too far away");
-                        return;
-                    }
+                Actions.Dispatched.Jump.CreateShiftHopFull(command).Enqueue();
+                break;
 
-                    Actions.Dispatched.Jump.CreateShiftHopFull(command).Enqueue();
-                    break;
+            #endregion
 
-                #endregion
+            #region Recalling - Spell Casting
 
-                #region Recalling - Spell Casting
+            case "recall":
+            case "r":
+                SimpleActions.CastSelfSpell("Portal Recall");
+                break;
+            case "rprimary":
+            case "rp":
+                SimpleActions.CastSelfSpell("Primary Portal Recall");
+                break;
 
-                case "recall":
-                case "r":
-                    SimpleActions.CastSelfSpell("Portal Recall");
-                    break;
-                case "rprimary":
-                case "rp":
-                    SimpleActions.CastSelfSpell("Primary Portal Recall");
-                    break;
+            case "rsecondary":
+            case "rs":
+                SimpleActions.CastSelfSpell("Secondary Portal Recall");
+                break;
 
-                case "rsecondary":
-                case "rs":
-                    SimpleActions.CastSelfSpell("Secondary Portal Recall");
-                    break;
+            case "rls":
+                SimpleActions.CastSelfSpell("Lifestone Recall");
+                break;
+            
+            case "rlss":
+                SimpleActions.CastSelfSpell("Lifestone Sending");
+                break;
+            
+            case "rnef":
+                SimpleActions.CastSelfSpell("Lost City of Neftet Recall");
+                break;
+            
+            case "rpara":
+                SimpleActions.CastSelfSpell("Paradox-touched Olthoi Infested Area Recall");
+                break;
 
-                case "rls":
-                    SimpleActions.CastSelfSpell("Lifestone Recall");
-                    break;
-                
-                case "rlss":
-                    SimpleActions.CastSelfSpell("Lifestone Sending");
-                    break;
-                
-                case "rnef":
-                    SimpleActions.CastSelfSpell("Lost City of Neftet Recall");
-                    break;
-                
-                case "rpara":
-                    SimpleActions.CastSelfSpell("Paradox-touched Olthoi Infested Area Recall");
-                    break;
+            case "regroup":
+                // TODO : Will regroup the fellow at a known location.  So, probably just do portal recall.
+                // wil also turn off combat (before recalling), rebuff, etc.  This will be used after someone in the fellow dies.
+                throw new NotImplementedException();
 
-                case "regroup":
-                    // TODO : Will regroup the fellow at a known location.  So, probably just do portal recall.
-                    // wil also turn off combat (before recalling), rebuff, etc.  This will be used after someone in the fellow dies.
-                    throw new NotImplementedException();
+            #endregion
 
-                #endregion
+            #region Plugin Management
 
-                #region Plugin Management
+            // Plugin Management Options
+            case "reunload":
+                ACUtilities.ProcessArbitraryCommand("/rew unload");
+                break;
+            case "rereload":
+                ACUtilities.ProcessArbitraryCommand("/rew reload");
+                break;
 
-                // Plugin Management Options
-                case "reunload":
-                    ACUtilities.ProcessArbitraryCommand("/rew unload");
-                    break;
-                case "rereload":
-                    ACUtilities.ProcessArbitraryCommand("/rew reload");
-                    break;
+            #endregion
 
-                #endregion
+            #region Bank Stats
 
-                #region Bank Stats
+            case "track":
+                REPlugin.Instance.MonitorManager.Banking.StartTracking(null);
+                break;
 
-                case "track":
-                    REPlugin.Instance.MonitorManager.Banking.StartTracking(null);
-                    break;
+            case "report":
+                // Only report if we're actually tracking so non-farming fellows (e.g. the main
+                // account issuing the command) don't spam the fellowship.
+                if (REPlugin.Instance.MonitorManager.Banking.IsTracking)
+                {
+                    REPlugin.Instance.MonitorManager.Banking.Report(s => TellActions.TellFellow(s));
+                }
+                break;
 
-                case "report":
-                    // Only report if we're actually tracking so non-farming fellows (e.g. the main
-                    // account issuing the command) don't spam the fellowship.
-                    if (REPlugin.Instance.MonitorManager.Banking.IsTracking)
-                    {
-                        REPlugin.Instance.MonitorManager.Banking.Report(s => TellActions.TellFellow(s));
-                    }
-                    break;
+            #endregion
 
-                #endregion
+            #region Diagnostic / Troubleshooting
 
-                #region Diagnostic / Troubleshooting
+            case "clearqueue":
+                // Clears the dispatch pipeline queue
+                REPlugin.Instance.Dispatch.Pipeline.Clear();
+                break;
 
-                case "clearqueue":
-                    // Clears the dispatch pipeline queue
-                    REPlugin.Instance.Dispatch.Pipeline.Clear();
-                    break;
+            case "distancecheck":
+            case "distcheck":
+                var distanceFromSelf = WorldUtilities.GetDistanceFromSelf(command);
+                command.GiveFeedback(FeedbackType.Successful, "Distance from you = {0}", distanceFromSelf);
+                break;
 
-                case "distancecheck":
-                case "distcheck":
-                    var distanceFromSelf = WorldUtilities.GetDistanceFromSelf(command);
-                    command.GiveFeedback(FeedbackType.Successful, "Distance from you = {0}", distanceFromSelf);
-                    break;
+            #endregion
 
-                #endregion
+            case "init":
+                SimpleActions.InitState(command);
+                break;
+            case "profile":
+                // No Args = default
+                // Standard Values :
+                //     normal
+                //     support
+                //     light
+                SimpleActions.SetMainProfile(command);
+                break;
+            case "followme":
+            case "come":
+                SimpleActions.FollowMe(command);
+                break;
+            case "wait":
+                SimpleActions.Wait(command);
+                break;
+            case "waitnice":
+            case "waitn":
+                SimpleActions.WaitNice(command);
+                break;
+            
+            case "navto":
+                SimpleActions.NavTo(command);
+                break;
 
-                case "init":
-                    SimpleActions.InitState(command);
-                    break;
-                case "profile":
-                    // No Args = default
-                    // Standard Values :
-                    //     normal
-                    //     support
-                    //     light
-                    SimpleActions.SetMainProfile(command);
-                    break;
-                case "followme":
-                case "come":
-                    SimpleActions.FollowMe(command);
-                    break;
-                case "wait":
-                    SimpleActions.Wait(command);
-                    break;
-                case "waitnice":
-                case "waitn":
-                    SimpleActions.WaitNice(command);
-                    break;
-                
-                case "navto":
-                    SimpleActions.NavTo(command);
-                    break;
+            #region Range
 
-                #region Range
+            case "range":
+                SimpleActions.SetAttackRange(command);
+                break;
 
-                case "range":
+            case "petrange":
+            case "prange":
+                SimpleActions.SetPetRange(command);
+                break;
+
+            #region Mage
+
+            case "magerange":
+            case "mrange":
+                if (ActiveSettings.Instance.Mage.Contains(CurrentCharacter.Name))
                     SimpleActions.SetAttackRange(command);
-                    break;
+                break;
 
-                case "petrange":
-                case "prange":
-                    SimpleActions.SetPetRange(command);
-                    break;
+            case "attackmagerange":
+            case "amrange":
+                if (ActiveSettings.Instance.AttackMage.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                #region Mage
+            case "supportmagerange":
+            case "smrange":
+                if (ActiveSettings.Instance.SupportMage.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                case "magerange":
-                case "mrange":
-                    if (ActiveSettings.Instance.Mage.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            #endregion
 
-                case "attackmagerange":
-                case "amrange":
-                    if (ActiveSettings.Instance.AttackMage.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            #region Support
 
-                case "supportmagerange":
-                case "smrange":
-                    if (ActiveSettings.Instance.SupportMage.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            case "supportrange":
+            case "srange":
+                if (ActiveSettings.Instance.Support.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                #endregion
+            #endregion
 
-                #region Support
+            #region Archer
 
-                case "supportrange":
-                case "srange":
-                    if (ActiveSettings.Instance.Support.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            case "archerrange":
+            case "arange":
+                if (ActiveSettings.Instance.Archer.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                #endregion
+            case "attackarcherrange":
+            case "aarange":
+                if (ActiveSettings.Instance.AttackArcher.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                #region Archer
+            case "supportarcherrange":
+            case "sarange":
+                if (ActiveSettings.Instance.SupportArcher.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                case "archerrange":
-                case "arange":
-                    if (ActiveSettings.Instance.Archer.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            #endregion
 
-                case "attackarcherrange":
-                case "aarange":
-                    if (ActiveSettings.Instance.AttackArcher.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            #region Melee
 
-                case "supportarcherrange":
-                case "sarange":
-                    if (ActiveSettings.Instance.SupportArcher.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            case "meleerange":
+                if (ActiveSettings.Instance.Melee.Contains(CurrentCharacter.Name))
+                    SimpleActions.SetAttackRange(command);
+                break;
 
-                #endregion
+            #endregion
 
-                #region Melee
+            #endregion
 
-                case "meleerange":
-                    if (ActiveSettings.Instance.Melee.Contains(CurrentCharacter.Name))
-                        SimpleActions.SetAttackRange(command);
-                    break;
+            case "fight":
+                SimpleActions.Fight();
+                break;
 
-                #endregion
+            case "loot":
+                SimpleActions.Loot();
+                break;
 
-                #endregion
+            case "buff":
+                SimpleActions.Buff();
+                break;
+            case "fbuff":
+                SimpleActions.ForceBuff();
+                break;
 
-                case "fight":
-                    SimpleActions.Fight();
-                    break;
+            case "peace":
+                SimpleActions.Peace();
+                break;
 
-                case "loot":
-                    SimpleActions.Loot();
-                    break;
+            case "camp":
+                SimpleActions.Camp(command);
+                break;
 
-                case "buff":
-                    SimpleActions.Buff();
-                    break;
-                case "fbuff":
-                    SimpleActions.ForceBuff();
-                    break;
+            // nav controls
+            case "nav":
+                SimpleActions.ProcessNavCommand(command);
+                break;
+            case "navt":
+                SimpleActions.NavDistanceTight(command);
+                break;
+            case "navn":
+                SimpleActions.NavDistanceNormal(command);
+                break;
+            case "navl":
+                SimpleActions.NavDistanceLoose(command);
+                break;
 
-                case "peace":
-                    SimpleActions.Peace();
-                    break;
+            case "formation":
+                SimpleActions.SetFormation(command);
+                break;
 
-                case "camp":
-                    SimpleActions.Camp(command);
-                    break;
+            // Pets
+            case "pets":
+                SimpleActions.ProcessPetsCommand(command);
+                break;
 
-                // nav controls
-                case "nav":
-                    SimpleActions.ProcessNavCommand(command);
-                    break;
-                case "navt":
-                    SimpleActions.NavDistanceTight(command);
-                    break;
-                case "navn":
-                    SimpleActions.NavDistanceNormal(command);
-                    break;
-                case "navl":
-                    SimpleActions.NavDistanceLoose(command);
-                    break;
+            case "pmin":
+            case "petdensity":
+            case "petmin":
+                VTActions.SetPetMonsterDensity(int.Parse(command.Arguments[0]));
+                break;
 
-                case "formation":
-                    SimpleActions.SetFormation(command);
-                    break;
+            // VT State short cuts
+            case "buffon":
+                VTActions.EnableBuffing();
+                break;
 
-                // Pets
-                case "pets":
-                    SimpleActions.ProcessPetsCommand(command);
-                    break;
+            // PhatAC based
+            case "tele":
 
-                case "pmin":
-                case "petdensity":
-                case "petmin":
-                    VTActions.SetPetMonsterDensity(int.Parse(command.Arguments[0]));
-                    break;
-
-                // VT State short cuts
-                case "buffon":
-                    VTActions.EnableBuffing();
-                    break;
-
-                // PhatAC based
-                case "tele":
-
-                    // When no args, assume that means teleport to the requesting character
-                    if (command.Arguments.Count == 0)
-                    {
-                        if (command.FromSelf)
-                            break;
-
-                        SimpleActions.Teleport(command.SourceCharacter, command);
+                // When no args, assume that means teleport to the requesting character
+                if (command.Arguments.Count == 0)
+                {
+                    if (command.FromSelf)
                         break;
-                    }
 
-                    SimpleActions.Teleport(command);
+                    SimpleActions.Teleport(command.SourceCharacter, command);
                     break;
+                }
 
-                case "teleinto":
-                    SimpleActions.TeleportInto(command);
-                    break;
+                SimpleActions.Teleport(command);
+                break;
 
-                default:
-                    CommandResponseHandler.TellSource(command, "Unknown Command : {0} , with value of : {1}", command.Name, command.RebuildArgumentString());
-                    break;
-            }
+            case "teleinto":
+                SimpleActions.TeleportInto(command);
+                break;
+
+            default:
+                CommandResponseHandler.TellSource(command, "Unknown Command : {0} , with value of : {1}", command.Name, command.RebuildArgumentString());
+                break;
         }
+    }
 
-        private static bool SourceIsWithinJumpRange(ISourceInformation requestor)
-        {
-            // For jumping, the slaves should be pretty close to the master, otherwise jumping would be pointless
-            return Core.Utilities.WorldUtilities.WithinRangeOfSelf(requestor, 4);
-        }
+    private static bool SourceIsWithinJumpRange(ISourceInformation requestor)
+    {
+        // For jumping, the slaves should be pretty close to the master, otherwise jumping would be pointless
+        return Core.Utilities.WorldUtilities.WithinRangeOfSelf(requestor, 4);
     }
 }

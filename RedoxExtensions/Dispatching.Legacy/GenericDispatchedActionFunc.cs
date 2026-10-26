@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Dispatching.Legacy
+namespace RedoxExtensions.Dispatching.Legacy;
+
+public class GenericDispatchedActionFunc<TResult> : IDispatchedActionFunc<TResult>
 {
-    public class GenericDispatchedActionFunc<TResult> : IDispatchedActionFunc<TResult>
+    private readonly DispatchedFuncDelegate<TResult> _actionFunc;
+
+    public GenericDispatchedActionFunc(DispatchedFuncDelegate<TResult> actionFunc)
     {
-        private readonly DispatchedFuncDelegate<TResult> _actionFunc;
-
-        public GenericDispatchedActionFunc(DispatchedFuncDelegate<TResult> actionFunc)
-        {
-            this._actionFunc = actionFunc;
-        }
-
-        public TResult Invoke() => this._actionFunc();
-
-        public object InvokeGeneric() => this.Invoke();
+        this._actionFunc = actionFunc;
     }
+
+    public TResult Invoke() => this._actionFunc();
+
+    public object InvokeGeneric() => this.Invoke();
 }

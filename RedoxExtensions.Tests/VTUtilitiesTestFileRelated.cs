@@ -9,50 +9,49 @@ using NUnit.Framework;
 using RedoxExtensions.Tests.TestUtilities;
 using RedoxExtensions.VirindiInterop;
 
-namespace RedoxExtensions.Tests
+namespace RedoxExtensions.Tests;
+
+[TestFixture]
+public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
 {
-    [TestFixture]
-    public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
+    [SetUp]
+    public override void TestSetup()
     {
-        [SetUp]
-        public override void TestSetup()
-        {
-            base.TestSetup();
+        base.TestSetup();
 
-            VTUtilities.VTankDirectory = this.TestTemporaryDirectory;
-        }
+        VTUtilities.VTankDirectory = this.TestTemporaryDirectory;
+    }
 
-        [Test]
-        public void GetFollowNavForCharacter_SingleWordName()
-        {
-            this.CreateFile("FollowRedox.nav");
+    [Test]
+    public void GetFollowNavForCharacter_SingleWordName()
+    {
+        this.CreateFile("FollowRedox.nav");
 
-            // Test
-            var result = VTUtilities.GetFollowNavForCharacter("Redox");
+        // Test
+        var result = VTUtilities.GetFollowNavForCharacter("Redox");
 
-            Assert.AreEqual("FollowRedox.nav", result);
-        }
+        Assert.AreEqual("FollowRedox.nav", result);
+    }
 
-        [Test]
-        public void GetFollowNavForCharacter_MultiWord_ExpectingFullMatchMinusSpaces()
-        {
-            this.CreateFile("FollowRockdownGuy.nav");
+    [Test]
+    public void GetFollowNavForCharacter_MultiWord_ExpectingFullMatchMinusSpaces()
+    {
+        this.CreateFile("FollowRockdownGuy.nav");
 
-            // Test
-            var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
+        // Test
+        var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
 
-            Assert.AreEqual("FollowRockdownGuy.nav", result);
-        }
+        Assert.AreEqual("FollowRockdownGuy.nav", result);
+    }
 
-        [Test]
-        public void GetFollowNavForCharacter_MultiWord_ExpectingSubsetOfNameMatch()
-        {
-            this.CreateFile("FollowGuy.nav");
+    [Test]
+    public void GetFollowNavForCharacter_MultiWord_ExpectingSubsetOfNameMatch()
+    {
+        this.CreateFile("FollowGuy.nav");
 
-            // Test
-            var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
+        // Test
+        var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
 
-            Assert.AreEqual("FollowGuy.nav", result);
-        }
+        Assert.AreEqual("FollowGuy.nav", result);
     }
 }

@@ -6,37 +6,36 @@ using NUnit.Framework;
 
 using RedoxExtensions.VirindiInterop;
 
-namespace RedoxExtensions.Tests
+namespace RedoxExtensions.Tests;
+
+[TestFixture]
+public class VTUtilitiesTests
 {
-    [TestFixture]
-    public class VTUtilitiesTests
+    [Test]
+    public void TestTryParseOptionOutputWhenNotVTOptionOutput()
     {
-        [Test]
-        public void TestTryParseOptionOutputWhenNotVTOptionOutput()
-        {
-            bool result = VTUtilities.TryParseOptionOutput("Hello World", out var keyValue);
+        bool result = VTUtilities.TryParseOptionOutput("Hello World", out var keyValue);
 
-            Assert.IsFalse(result);
-        }
+        Assert.IsFalse(result);
+    }
 
-        [Test]
-        public void TestTryParseOptionOutputWhen()
-        {
-            bool result = VTUtilities.TryParseOptionOutput("[VTank] Option EnableLooting = False", out var keyValue);
+    [Test]
+    public void TestTryParseOptionOutputWhen()
+    {
+        bool result = VTUtilities.TryParseOptionOutput("[VTank] Option EnableLooting = False", out var keyValue);
 
-            Assert.IsTrue(result);
+        Assert.IsTrue(result);
 
-            Assert.AreEqual(VTOptionNames.EnableLooting, keyValue.Key);
-            Assert.AreEqual("False", keyValue.Value);
-        }
+        Assert.AreEqual(VTOptionNames.EnableLooting, keyValue.Key);
+        Assert.AreEqual("False", keyValue.Value);
+    }
 
-        [Test]
-        public void TestHumanRangeToVTRange()
-        {
-            var result = VTUtilities.HumanRangeToVTRange(10);
+    [Test]
+    public void TestHumanRangeToVTRange()
+    {
+        var result = VTUtilities.HumanRangeToVTRange(10);
 
-            Assert.Greater(result, 0);
-            Assert.Less(result, 1);
-        }
+        Assert.Greater(result, 0);
+        Assert.Less(result, 1);
     }
 }

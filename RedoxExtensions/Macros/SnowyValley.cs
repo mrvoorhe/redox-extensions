@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Macros
+namespace RedoxExtensions.Macros;
+
+class SnowyValley
 {
-    class SnowyValley
-    {
-    }
 }

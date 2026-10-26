@@ -7,183 +7,182 @@ using Decal.Adapter;
 using RedoxExtensions.Actions;
 using RedoxExtensions.Core.Utilities;
 
-namespace RedoxExtensions.Listeners.Monitors
+namespace RedoxExtensions.Listeners.Monitors;
+
+/// <summary>
+/// Tracks bank balances over time so the user can gauge the income of a farming spot.
+///
+/// Enabling tracking records a baseline snapshot of the bank (via a hidden /b query) and the
+/// current time.  A later report re-queries the bank and shows, for each changed balance, the
+/// current value, the total gained, and the rate of increase per hour.
+/// </summary>
+public class BankingTracker : IDisposable
 {
-    /// <summary>
-    /// Tracks bank balances over time so the user can gauge the income of a farming spot.
-    ///
-    /// Enabling tracking records a baseline snapshot of the bank (via a hidden /b query) and the
-    /// current time.  A later report re-queries the bank and shows, for each changed balance, the
-    /// current value, the total gained, and the rate of increase per hour.
-    /// </summary>
-    public class BankingTracker : IDisposable
+    // The /b response arrives as several chatbox lines with no terminator, so we collect for a
+    // short window after issuing the query and then finalize.
+    private const int CaptureWindowMilliseconds = 1000;
+
+    private bool _trackingEnabled;
+    private DateTime _startTime;
+    private List<KeyValuePair<string, long>> _baseline;
+
+    private bool _capturing;
+    private List<KeyValuePair<string, long>> _captureBuffer;
+    private Action<IList<KeyValuePair<string, long>>> _onCaptureComplete;
+
+    public BankingTracker()
     {
-        // The /b response arrives as several chatbox lines with no terminator, so we collect for a
-        // short window after issuing the query and then finalize.
-        private const int CaptureWindowMilliseconds = 1000;
+        REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
+    }
 
-        private bool _trackingEnabled;
-        private DateTime _startTime;
-        private List<KeyValuePair<string, long>> _baseline;
+    public bool IsTracking => this._trackingEnabled;
 
-        private bool _capturing;
-        private List<KeyValuePair<string, long>> _captureBuffer;
-        private Action<IList<KeyValuePair<string, long>>> _onCaptureComplete;
+    public void Dispose()
+    {
+        REPlugin.Instance.Events.Decal.ChatBoxMessage -= Decal_ChatBoxMessage;
+    }
 
-        public BankingTracker()
+    /// <summary>
+    /// Starts (or resets) tracking.  Records a fresh baseline and the current time.
+    /// </summary>
+    public void StartTracking(Action<string> writer)
+    {
+        BeginCapture(balances =>
         {
-            REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
+            this._baseline = new List<KeyValuePair<string, long>>(balances);
+            this._startTime = DateTime.Now;
+            this._trackingEnabled = true;
+
+            writer?.Invoke("Bank tracking started.");
+        });
+    }
+
+    /// <summary>
+    /// Re-queries the bank and reports the current balances and their rate of increase.
+    /// </summary>
+    public void Report(Action<string> writer)
+    {
+        if (!this._trackingEnabled)
+        {
+            writer?.Invoke("Bank tracking not enabled.  Use /re track first.");
+            return;
         }
 
-        public bool IsTracking => this._trackingEnabled;
+        BeginCapture(balances => WriteReport(balances, writer));
+    }
 
-        public void Dispose()
+    private void BeginCapture(Action<IList<KeyValuePair<string, long>>> onComplete)
+    {
+        if (this._capturing)
         {
-            REPlugin.Instance.Events.Decal.ChatBoxMessage -= Decal_ChatBoxMessage;
+            REPlugin.Instance.Debug.WriteLine("[BankStats] Ignoring request, a bank query is already in progress");
+            return;
         }
 
-        /// <summary>
-        /// Starts (or resets) tracking.  Records a fresh baseline and the current time.
-        /// </summary>
-        public void StartTracking(Action<string> writer)
-        {
-            BeginCapture(balances =>
-            {
-                this._baseline = new List<KeyValuePair<string, long>>(balances);
-                this._startTime = DateTime.Now;
-                this._trackingEnabled = true;
+        this._capturing = true;
+        this._captureBuffer = new List<KeyValuePair<string, long>>();
+        this._onCaptureComplete = onComplete;
 
-                writer?.Invoke("Bank tracking started.");
-            });
+        ACUtilities.ProcessNativeCommand("/b");
+
+        REPlugin.Instance.Dispatch.LegacyGameThread.QueueDelayedAction(FinishCapture, CaptureWindowMilliseconds);
+    }
+
+    private void FinishCapture()
+    {
+        if (!this._capturing)
+        {
+            return;
         }
 
-        /// <summary>
-        /// Re-queries the bank and reports the current balances and their rate of increase.
-        /// </summary>
-        public void Report(Action<string> writer)
-        {
-            if (!this._trackingEnabled)
-            {
-                writer?.Invoke("Bank tracking not enabled.  Use /re track first.");
-                return;
-            }
+        this._capturing = false;
 
-            BeginCapture(balances => WriteReport(balances, writer));
+        var buffer = this._captureBuffer;
+        var onComplete = this._onCaptureComplete;
+        this._captureBuffer = null;
+        this._onCaptureComplete = null;
+
+        onComplete?.Invoke(buffer);
+    }
+
+    private void Decal_ChatBoxMessage(object sender, ChatTextInterceptEventArgs e)
+    {
+        if (!this._capturing)
+        {
+            return;
         }
 
-        private void BeginCapture(Action<IList<KeyValuePair<string, long>>> onComplete)
+        if (e.Text == null || e.Text.IndexOf(ChatParsingUtilities.BankMessagePrefix.Trim(), StringComparison.Ordinal) < 0)
         {
-            if (this._capturing)
-            {
-                REPlugin.Instance.Debug.WriteLine("[BankStats] Ignoring request, a bank query is already in progress");
-                return;
-            }
-
-            this._capturing = true;
-            this._captureBuffer = new List<KeyValuePair<string, long>>();
-            this._onCaptureComplete = onComplete;
-
-            ACUtilities.ProcessNativeCommand("/b");
-
-            REPlugin.Instance.Dispatch.LegacyGameThread.QueueDelayedAction(FinishCapture, CaptureWindowMilliseconds);
+            return;
         }
 
-        private void FinishCapture()
+        // Hide the response to our own query from the game chat window.
+        e.Eat = true;
+
+        if (ChatParsingUtilities.TryParseBankBalanceLine(e.Text, out var name, out var amount))
         {
-            if (!this._capturing)
-            {
-                return;
-            }
+            this._captureBuffer.Add(new KeyValuePair<string, long>(name, amount));
+        }
+    }
 
-            this._capturing = false;
-
-            var buffer = this._captureBuffer;
-            var onComplete = this._onCaptureComplete;
-            this._captureBuffer = null;
-            this._onCaptureComplete = null;
-
-            onComplete?.Invoke(buffer);
+    private void WriteReport(IList<KeyValuePair<string, long>> current, Action<string> writer)
+    {
+        if (writer == null)
+        {
+            return;
         }
 
-        private void Decal_ChatBoxMessage(object sender, ChatTextInterceptEventArgs e)
+        var elapsed = DateTime.Now - this._startTime;
+        var hours = elapsed.TotalHours;
+
+        var baselineByName = new Dictionary<string, long>();
+        if (this._baseline != null)
         {
-            if (!this._capturing)
+            foreach (var kvp in this._baseline)
             {
-                return;
-            }
-
-            if (e.Text == null || e.Text.IndexOf(ChatParsingUtilities.BankMessagePrefix.Trim(), StringComparison.Ordinal) < 0)
-            {
-                return;
-            }
-
-            // Hide the response to our own query from the game chat window.
-            e.Eat = true;
-
-            if (ChatParsingUtilities.TryParseBankBalanceLine(e.Text, out var name, out var amount))
-            {
-                this._captureBuffer.Add(new KeyValuePair<string, long>(name, amount));
-            }
-        }
-
-        private void WriteReport(IList<KeyValuePair<string, long>> current, Action<string> writer)
-        {
-            if (writer == null)
-            {
-                return;
-            }
-
-            var elapsed = DateTime.Now - this._startTime;
-            var hours = elapsed.TotalHours;
-
-            var baselineByName = new Dictionary<string, long>();
-            if (this._baseline != null)
-            {
-                foreach (var kvp in this._baseline)
-                {
-                    baselineByName[kvp.Key] = kvp.Value;
-                }
-            }
-
-            writer($"[BankStats] Tracked {FormatDuration(elapsed)}");
-
-            bool anyChanges = false;
-            foreach (var kvp in current)
-            {
-                baselineByName.TryGetValue(kvp.Key, out var baseAmount);
-
-                long delta = kvp.Value - baseAmount;
-                if (delta == 0)
-                {
-                    continue;
-                }
-
-                anyChanges = true;
-                double rate = hours > 0 ? delta / hours : 0;
-
-                writer(string.Format(CultureInfo.InvariantCulture,
-                    "{0}: {1:N0} ({2:+#,##0;-#,##0;0} total, {3:+#,##0;-#,##0;0}/hr)",
-                    kvp.Key, kvp.Value, delta, rate));
-            }
-
-            if (!anyChanges)
-            {
-                writer("[BankStats] No changes since tracking started.");
+                baselineByName[kvp.Key] = kvp.Value;
             }
         }
 
-        private static string FormatDuration(TimeSpan elapsed)
-        {
-            int totalMinutes = (int)elapsed.TotalMinutes;
-            int hours = totalMinutes / 60;
-            int minutes = totalMinutes % 60;
+        writer($"[BankStats] Tracked {FormatDuration(elapsed)}");
 
-            if (hours <= 0)
+        bool anyChanges = false;
+        foreach (var kvp in current)
+        {
+            baselineByName.TryGetValue(kvp.Key, out var baseAmount);
+
+            long delta = kvp.Value - baseAmount;
+            if (delta == 0)
             {
-                return $"{minutes}m";
+                continue;
             }
 
-            return $"{hours}h {minutes}m";
+            anyChanges = true;
+            double rate = hours > 0 ? delta / hours : 0;
+
+            writer(string.Format(CultureInfo.InvariantCulture,
+                "{0}: {1:N0} ({2:+#,##0;-#,##0;0} total, {3:+#,##0;-#,##0;0}/hr)",
+                kvp.Key, kvp.Value, delta, rate));
         }
+
+        if (!anyChanges)
+        {
+            writer("[BankStats] No changes since tracking started.");
+        }
+    }
+
+    private static string FormatDuration(TimeSpan elapsed)
+    {
+        int totalMinutes = (int)elapsed.TotalMinutes;
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+
+        if (hours <= 0)
+        {
+            return $"{minutes}m";
+        }
+
+        return $"{hours}h {minutes}m";
     }
 }

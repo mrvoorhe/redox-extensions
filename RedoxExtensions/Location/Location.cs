@@ -7,94 +7,93 @@ using Decal.Adapter.Wrappers;
 using RedoxExtensions.Data;
 using RedoxLib.Objects;
 
-namespace RedoxExtensions.Location
+namespace RedoxExtensions.Location;
+
+public class Location : AbstractSerializableData, IHaveCoordsObject
 {
-    public class Location : AbstractSerializableData, IHaveCoordsObject
+    private CoordsObject _coords;
+
+    public Location(double x, double y, double z, int landblock, double headingInDegrees)
     {
-        private CoordsObject _coords;
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+        this.LandBlock = landblock;
+        this.HeadingInDegrees = headingInDegrees;
+        this._coords = Mag.Shared.Util.GetCoords(landblock, x, y);
+    }
 
-        public Location(double x, double y, double z, int landblock, double headingInDegrees)
+    /// <summary>
+    /// Needed for deserialization
+    /// </summary>
+    public Location()
+    {
+    }
+
+    public static Location CaptureCurrent()
+    {
+        return new Location(
+            REPlugin.Instance.Actions.LocationX,
+            REPlugin.Instance.Actions.LocationY,
+            REPlugin.Instance.Actions.LocationZ,
+            REPlugin.Instance.Actions.Landcell,
+            REPlugin.Instance.Actions.Heading);
+    }
+
+    public bool CurrentIsSameAs(Location otherLocation, bool compareHeading) => !CurrentDiffersFrom(otherLocation, compareHeading);
+
+    public static bool CurrentDiffersFrom(Location otherLocation, bool compareHeading)
+    {
+        if(otherLocation.X != REPlugin.Instance.Actions.LocationX)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-            this.LandBlock = landblock;
-            this.HeadingInDegrees = headingInDegrees;
-            this._coords = Mag.Shared.Util.GetCoords(landblock, x, y);
+            return true;
         }
 
-        /// <summary>
-        /// Needed for deserialization
-        /// </summary>
-        public Location()
+        if(otherLocation.Y != REPlugin.Instance.Actions.LocationY)
         {
+            return true;
         }
 
-        public static Location CaptureCurrent()
+        if(otherLocation.Z != REPlugin.Instance.Actions.LocationZ)
         {
-            return new Location(
-                REPlugin.Instance.Actions.LocationX,
-                REPlugin.Instance.Actions.LocationY,
-                REPlugin.Instance.Actions.LocationZ,
-                REPlugin.Instance.Actions.Landcell,
-                REPlugin.Instance.Actions.Heading);
+            return true;
         }
 
-        public bool CurrentIsSameAs(Location otherLocation, bool compareHeading) => !CurrentDiffersFrom(otherLocation, compareHeading);
-
-        public static bool CurrentDiffersFrom(Location otherLocation, bool compareHeading)
+        if (compareHeading)
         {
-            if(otherLocation.X != REPlugin.Instance.Actions.LocationX)
+            if (otherLocation.HeadingInDegrees != REPlugin.Instance.Actions.Heading)
             {
                 return true;
             }
-
-            if(otherLocation.Y != REPlugin.Instance.Actions.LocationY)
-            {
-                return true;
-            }
-
-            if(otherLocation.Z != REPlugin.Instance.Actions.LocationZ)
-            {
-                return true;
-            }
-
-            if (compareHeading)
-            {
-                if (otherLocation.HeadingInDegrees != REPlugin.Instance.Actions.Heading)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-        public int LandBlock { get; set; }
-        public double HeadingInDegrees { get; set; }
+        return false;
+    }
 
-        [ScriptIgnore]
-        public CoordsObject Coords
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Z { get; set; }
+    public int LandBlock { get; set; }
+    public double HeadingInDegrees { get; set; }
+
+    [ScriptIgnore]
+    public CoordsObject Coords
+    {
+        get
         {
-            get
-            {
-                // If the instance was created after deserialization, this will be null, so lazy create it
-                return this._coords ??= Mag.Shared.Util.GetCoords(this.LandBlock, this.X, this.Y);
-            }
+            // If the instance was created after deserialization, this will be null, so lazy create it
+            return this._coords ??= Mag.Shared.Util.GetCoords(this.LandBlock, this.X, this.Y);
         }
+    }
 
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>
-        /// A string that represents the current object.
-        /// </returns>
-        public string ToPrettyString()
-        {
-            return $"({this.Coords.NorthSouth.ToString("F1")}, {this.Coords.EastWest.ToString("F1")}, {this.Z.ToString("F2")}, {this.HeadingInDegrees.ToString("F1")})";
-        }
+    /// <summary>
+    /// Returns a string that represents the current object.
+    /// </summary>
+    /// <returns>
+    /// A string that represents the current object.
+    /// </returns>
+    public string ToPrettyString()
+    {
+        return $"({this.Coords.NorthSouth.ToString("F1")}, {this.Coords.EastWest.ToString("F1")}, {this.Z.ToString("F2")}, {this.HeadingInDegrees.ToString("F1")})";
     }
 }

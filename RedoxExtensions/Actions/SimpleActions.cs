@@ -20,469 +20,468 @@ using RedoxExtensions.Mine;
 using RedoxExtensions.PhatACInterop;
 using RedoxLib.General;
 
-namespace RedoxExtensions.Actions
+namespace RedoxExtensions.Actions;
+
+internal static class SimpleActions
 {
-    internal static class SimpleActions
+    private const int DefaultNormalNavDistance = 3;
+    private const int UsePortalToleranceOverNavDistance = 5;
+    private const int DefaultPetRange = 4;
+    private const int DefaultPetDensity = 4;
+
+    private const int MillisecondsDelayBeforeKillProcessOnExit = 10000;
+
+    #region Movement Related
+
+    internal static void ProcessNavCommand(ICommand command)
     {
-        private const int DefaultNormalNavDistance = 3;
-        private const int UsePortalToleranceOverNavDistance = 5;
-        private const int DefaultPetRange = 4;
-        private const int DefaultPetDensity = 4;
-
-        private const int MillisecondsDelayBeforeKillProcessOnExit = 10000;
-
-        #region Movement Related
-
-        internal static void ProcessNavCommand(ICommand command)
+        // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
+        if (command.FromSelf)
         {
-            // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
-            if (command.FromSelf)
-            {
-                return;
-            }
+            return;
+        }
 
-            switch (command.Arguments[0].ToLower().Trim())
+        switch (command.Arguments[0].ToLower().Trim())
+        {
+            case "tight":
+                NavDistanceTight();
+                break;
+            case "normal":
+                NavDistanceNormal();
+                break;
+            case "loose":
+                NavDistanceLoose();
+                break;
+            default:
+                REPlugin.Instance.Chat.WriteLine($"Unknown nav value : {command.Arguments[0]}");
+                break;
+        }
+    }
+
+    internal static void FollowMe(ISourceInformation command)
+    {
+        // Always ignore if the source character was yourself.  It would never make sense to follow yourself
+        if (command.FromSelf)
+        {
+            return;
+        }
+
+        VTActions.FollowCharacter(command.SourceCharacter, true,
+            // Was '3' previously, Disable for now, I don't know why I was fiddling with this. Having it too tight might be messing with the normal follow behavior and making it worse.
+            // Let's see if leaving the default is fine
+            -1);
+    }
+    
+    internal static void NavTo(ICommand command)
+    {
+        VTActions.NavTo(command.Arguments[0]);
+    }
+
+    internal static void NavDistanceTight(ISourceInformation command)
+    {
+        // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
+        if (command.FromSelf)
+        {
+            return;
+        }
+
+        NavDistanceTight();
+    }
+
+    internal static void NavDistanceTight()
+    {
+        // Set the use portal distance slightly higher than the follow distance to ensure that
+        // we can always use the portal
+        VTActions.SetUsePortalDistance(1 + UsePortalToleranceOverNavDistance);
+
+        VTActions.SetNavDistance(1);
+    }
+
+    internal static void NavDistanceNormal(ISourceInformation command)
+    {
+        // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
+        if (command.FromSelf)
+        {
+            return;
+        }
+
+        // Set the use portal distance slightly higher than the follow distance to ensure that
+        // we can always use the portal
+        VTActions.SetUsePortalDistance(DefaultNormalNavDistance + UsePortalToleranceOverNavDistance);
+
+        NavDistanceNormal();
+    }
+
+    internal static void NavDistanceNormal()
+    {
+        VTActions.SetNavDistance(DefaultNormalNavDistance);
+    }
+
+    internal static void NavDistanceLoose(ISourceInformation command)
+    {
+        // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
+        if (command.FromSelf)
+        {
+            return;
+        }
+
+        NavDistanceLoose();
+    }
+
+    internal static void NavDistanceLoose()
+    {
+        VTActions.SetNavDistance(10);
+    }
+
+    internal static void FaceObject(ICommand command)
+    {
+        // Support both woId as the argument or object name
+        if(int.TryParse(command.Arguments[0], out var targetId))
+        {
+            WorldUtilities.Face(targetId);
+        }
+        else
+        {
+            WorldUtilities.Face(command.Arguments[0]);
+        }
+    }
+
+    internal static void FaceHeading(ISourceInformation command, double degrees, bool skipSelf)
+    {
+        if(command.FromSelf && skipSelf)
+        {
+            return;
+        }
+
+        FaceHeading(degrees);
+    }
+
+    internal static void FaceHeading(double degrees)
+    {
+        REPlugin.Instance.Actions.FaceHeading(degrees, true);
+    }
+
+    #endregion
+
+    #region Combat Related
+
+    internal static void SetAttackRange(ICommand command)
+    {
+        int rangeValue = int.Parse(command.Arguments[0]);
+
+        if (command.FromSelf)
+        {
+            // If we are the master, set our range to be range - default nav distace.
+            // This helps avoid a situation where the slaves are all trailing just a little bit behind
+            // master.  If a monster is right at the edge of our attack distance, master can get caught in
+            // a situation where he is fighting alone due to slaves viewing the monster as out of range.
+
+            // Be smart about this, don't set the range to something stupid over this (i.e. less than 0)
+            int possibleMasterRange = rangeValue - DefaultNormalNavDistance;
+
+            // Don't make the adjustment if the result is less than 2, a range of 2 or less or pretty use less.
+            if (possibleMasterRange > 2)
             {
-                case "tight":
-                    NavDistanceTight();
-                    break;
-                case "normal":
-                    NavDistanceNormal();
-                    break;
-                case "loose":
-                    NavDistanceLoose();
+                rangeValue = possibleMasterRange;
+            }
+        }
+
+        VTActions.SetAttackRange(rangeValue);
+    }
+
+    internal static void SetPetRange(ICommand command)
+    {
+        int rangeValue = int.Parse(command.Arguments[0]);
+
+        VTActions.SetPetRange(rangeValue);
+    }
+
+    #endregion
+
+    #region State Related
+
+    /// <summary>
+    /// Initializes VT to a harmless, and standardized state across all fellow members
+    /// </summary>
+    internal static void InitState(ICommand command)
+    {
+        if (command.Arguments.Count == 0)
+        {
+            InitDefaultState(command);
+        }
+        else
+        {
+            switch (command.Arguments[0].ToLower())
+            {
+                case "mule":
+                    InitMuleState(command);
                     break;
                 default:
-                    REPlugin.Instance.Chat.WriteLine($"Unknown nav value : {command.Arguments[0]}");
-                    break;
+                    throw new DisplayToUserException($"Unknown state : {command.Arguments[0].ToLower()}", command);
             }
         }
+    }
 
-        internal static void FollowMe(ISourceInformation command)
+    internal static void InitMuleState(ISourceInformation command)
+    {
+        if (command.FromSelf)
         {
-            // Always ignore if the source character was yourself.  It would never make sense to follow yourself
-            if (command.FromSelf)
-            {
-                return;
-            }
-
-            VTActions.FollowCharacter(command.SourceCharacter, true,
-                // Was '3' previously, Disable for now, I don't know why I was fiddling with this. Having it too tight might be messing with the normal follow behavior and making it worse.
-                // Let's see if leaving the default is fine
-                -1);
-        }
-        
-        internal static void NavTo(ICommand command)
-        {
-            VTActions.NavTo(command.Arguments[0]);
+            return;
         }
 
-        internal static void NavDistanceTight(ISourceInformation command)
-        {
-            // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
-            if (command.FromSelf)
-            {
-                return;
-            }
+        VTActions.DisableAllVTStates();
+        VTActions.EnableAutoCram();
+        VTActions.StartVT();
+    }
 
-            NavDistanceTight();
+    internal static void InitDefaultState(ISourceInformation command)
+    {
+        // Init needs to put everybod into a consistent state, day in and day out.
+        // So we also need to initialize our main VT profile.
+        SetMainProfile(MyMainProfiles.CharacterSpecificDefault.ToString(), command.SourceCharacter);
+
+        VTActions.DisableAllVTStates();
+
+        MyActions.LoadMyDefaultLootProfile();
+
+        NavDistanceNormal(command);
+
+        VTActions.DisableSummon();
+        VTActions.SetPetRange(DefaultPetRange);
+        VTActions.SetPetMonsterDensity(DefaultPetDensity);
+
+        // Note : I think it would be nice to follow immediately as well.  We'll see how this goes.
+        FollowMe(command);
+
+        VTActions.StartVT();
+
+        // If we are the master, turn on copy cat on init
+        if (command.FromSelf)
+        {
+            REPlugin.Instance.MonitorManager.CopyCatMaster.Enable();
+        }
+    }
+
+    internal static void Peace()
+    {
+        VTActions.DisableCombat();
+        CombatStatePeace();
+    }
+
+    internal static void CombatStatePeace()
+    {
+        CoreManager.Current.Actions.SetCombatMode(CombatState.Peace);
+    }
+
+    /// <summary>
+    /// Waits 'nicely'.  No Nav, No Combt, no Buff
+    /// </summary>
+    /// <param name="command"></param>
+    internal static void WaitNice(ISourceInformation command)
+    {
+        // Always ignore if the source character was yourself.
+        if (command.FromSelf)
+        {
+            return;
         }
 
-        internal static void NavDistanceTight()
-        {
-            // Set the use portal distance slightly higher than the follow distance to ensure that
-            // we can always use the portal
-            VTActions.SetUsePortalDistance(1 + UsePortalToleranceOverNavDistance);
+        VTActions.DisableNav();
+        VTActions.DisableCombat();
+        VTActions.DisableBuffing();
+    }
 
-            VTActions.SetNavDistance(1);
+    /// <summary>
+    /// Waits, but will still buff and fight (if already enabled)
+    /// </summary>
+    /// <param name="command"></param>
+    internal static void Wait(ISourceInformation command)
+    {
+        // Always ignore if the source character was yourself.  It would never make sense to wait on yourself
+        if (command.FromSelf)
+        {
+            return;
         }
 
-        internal static void NavDistanceNormal(ISourceInformation command)
-        {
-            // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
-            if (command.FromSelf)
-            {
-                return;
-            }
+        VTActions.DisableNav();
+    }
 
-            // Set the use portal distance slightly higher than the follow distance to ensure that
-            // we can always use the portal
-            VTActions.SetUsePortalDistance(DefaultNormalNavDistance + UsePortalToleranceOverNavDistance);
+    internal static void Fight()
+    {
+        // Will always want buffing on when fighting
+        VTActions.EnableBuffing();
+        VTActions.EnableCombat();
+    }
 
-            NavDistanceNormal();
-        }
+    internal static void Loot()
+    {
+        VTActions.EnableLooting();
+    }
 
-        internal static void NavDistanceNormal()
-        {
-            VTActions.SetNavDistance(DefaultNormalNavDistance);
-        }
+    internal static void Buff()
+    {
+        VTActions.EnableBuffing();
+    }
 
-        internal static void NavDistanceLoose(ISourceInformation command)
-        {
-            // always ignore self nav commands.  Nav commands are always for controlling slave nav behavior
-            if (command.FromSelf)
-            {
-                return;
-            }
-
-            NavDistanceLoose();
-        }
-
-        internal static void NavDistanceLoose()
-        {
-            VTActions.SetNavDistance(10);
-        }
-
-        internal static void FaceObject(ICommand command)
-        {
-            // Support both woId as the argument or object name
-            if(int.TryParse(command.Arguments[0], out var targetId))
-            {
-                WorldUtilities.Face(targetId);
-            }
-            else
-            {
-                WorldUtilities.Face(command.Arguments[0]);
-            }
-        }
-
-        internal static void FaceHeading(ISourceInformation command, double degrees, bool skipSelf)
-        {
-            if(command.FromSelf && skipSelf)
-            {
-                return;
-            }
-
-            FaceHeading(degrees);
-        }
-
-        internal static void FaceHeading(double degrees)
-        {
-            REPlugin.Instance.Actions.FaceHeading(degrees, true);
-        }
-
-        #endregion
-
-        #region Combat Related
-
-        internal static void SetAttackRange(ICommand command)
+    /// <summary>
+    /// A state optimized for camping a given location
+    /// </summary>
+    internal static void Camp(ICommand command)
+    {
+        // Optional argument to camp is attack range
+        if (command.Arguments.Count > 0)
         {
             int rangeValue = int.Parse(command.Arguments[0]);
-
-            if (command.FromSelf)
-            {
-                // If we are the master, set our range to be range - default nav distace.
-                // This helps avoid a situation where the slaves are all trailing just a little bit behind
-                // master.  If a monster is right at the edge of our attack distance, master can get caught in
-                // a situation where he is fighting alone due to slaves viewing the monster as out of range.
-
-                // Be smart about this, don't set the range to something stupid over this (i.e. less than 0)
-                int possibleMasterRange = rangeValue - DefaultNormalNavDistance;
-
-                // Don't make the adjustment if the result is less than 2, a range of 2 or less or pretty use less.
-                if (possibleMasterRange > 2)
-                {
-                    rangeValue = possibleMasterRange;
-                }
-            }
-
             VTActions.SetAttackRange(rangeValue);
         }
 
-        internal static void SetPetRange(ICommand command)
+        Camp();
+    }
+
+    /// <summary>
+    /// A state optimized for camping a given location
+    /// </summary>
+    internal static void Camp()
+    {
+        VTActions.DisableNav();
+        Fight();
+        Loot();
+    }
+
+    #endregion
+
+    internal static void SetMainProfile(ICommand command)
+    {
+        var profile = command.Arguments.Count == 0 ? MyMainProfiles.CharacterSpecificDefault.ToString() : command.Arguments[0];
+        SetMainProfile(profile, command.SourceCharacter);
+    }
+
+    internal static void SetMainProfile(string profile, string requestingCharacter)
+    {
+        bool success = CharacterActions.SetMainProfile(profile);
+
+        if (!success)
         {
-            int rangeValue = int.Parse(command.Arguments[0]);
-
-            VTActions.SetPetRange(rangeValue);
+            TellActions.TellFellow($"{requestingCharacter}, I couldn't set my profile");
         }
+    }
 
-        #endregion
+    internal static void SetFormation(ICommand command)
+    {
+        // Note : Could update the 'formation' concept to include stuff beyond range.
+        // since it's going to be kind of a "hunting formation" concept.  So some characters might get
+        // loot enabled, summon, on/off etc.
+        // TODO : Switch to json file that is loaded which contains a dictionary of <strig (char name), FormationSettings>
+        // that will load up and apply each characters formation specific settings
+        var formationName = command.Arguments[0].ToLower();
 
-        #region State Related
+        var range = Mine.MyUtilities.GetFormationRangeForCurrentCharacter(formationName);
 
-        /// <summary>
-        /// Initializes VT to a harmless, and standardized state across all fellow members
-        /// </summary>
-        internal static void InitState(ICommand command)
-        {
-            if (command.Arguments.Count == 0)
-            {
-                InitDefaultState(command);
-            }
-            else
-            {
-                switch (command.Arguments[0].ToLower())
-                {
-                    case "mule":
-                        InitMuleState(command);
-                        break;
-                    default:
-                        throw new DisplayToUserException($"Unknown state : {command.Arguments[0].ToLower()}", command);
-                }
-            }
-        }
+        VTActions.SetAttackRange(range);
 
-        internal static void InitMuleState(ISourceInformation command)
-        {
-            if (command.FromSelf)
-            {
-                return;
-            }
-
-            VTActions.DisableAllVTStates();
-            VTActions.EnableAutoCram();
-            VTActions.StartVT();
-        }
-
-        internal static void InitDefaultState(ISourceInformation command)
-        {
-            // Init needs to put everybod into a consistent state, day in and day out.
-            // So we also need to initialize our main VT profile.
-            SetMainProfile(MyMainProfiles.CharacterSpecificDefault.ToString(), command.SourceCharacter);
-
-            VTActions.DisableAllVTStates();
-
-            MyActions.LoadMyDefaultLootProfile();
-
-            NavDistanceNormal(command);
-
-            VTActions.DisableSummon();
-            VTActions.SetPetRange(DefaultPetRange);
-            VTActions.SetPetMonsterDensity(DefaultPetDensity);
-
-            // Note : I think it would be nice to follow immediately as well.  We'll see how this goes.
-            FollowMe(command);
-
-            VTActions.StartVT();
-
-            // If we are the master, turn on copy cat on init
-            if (command.FromSelf)
-            {
-                REPlugin.Instance.MonitorManager.CopyCatMaster.Enable();
-            }
-        }
-
-        internal static void Peace()
-        {
-            VTActions.DisableCombat();
-            CombatStatePeace();
-        }
-
-        internal static void CombatStatePeace()
-        {
-            CoreManager.Current.Actions.SetCombatMode(CombatState.Peace);
-        }
-
-        /// <summary>
-        /// Waits 'nicely'.  No Nav, No Combt, no Buff
-        /// </summary>
-        /// <param name="command"></param>
-        internal static void WaitNice(ISourceInformation command)
-        {
-            // Always ignore if the source character was yourself.
-            if (command.FromSelf)
-            {
-                return;
-            }
-
-            VTActions.DisableNav();
-            VTActions.DisableCombat();
-            VTActions.DisableBuffing();
-        }
-
-        /// <summary>
-        /// Waits, but will still buff and fight (if already enabled)
-        /// </summary>
-        /// <param name="command"></param>
-        internal static void Wait(ISourceInformation command)
-        {
-            // Always ignore if the source character was yourself.  It would never make sense to wait on yourself
-            if (command.FromSelf)
-            {
-                return;
-            }
-
-            VTActions.DisableNav();
-        }
-
-        internal static void Fight()
-        {
-            // Will always want buffing on when fighting
-            VTActions.EnableBuffing();
-            VTActions.EnableCombat();
-        }
-
-        internal static void Loot()
+        if (Mine.MyUtilities.EnableLootForFormationForCurrentCharacter(formationName))
         {
             VTActions.EnableLooting();
         }
 
-        internal static void Buff()
+        VTActions.SetPetRange(10);
+    }
+
+    internal static void ProcessPetsCommand(ICommand command)
+    {
+        // If no args, assume on
+        if (command.Arguments.Count == 0)
         {
-            VTActions.EnableBuffing();
+            VTActions.EnableSummon();
+            return;
         }
 
-        /// <summary>
-        /// A state optimized for camping a given location
-        /// </summary>
-        internal static void Camp(ICommand command)
+        var optionalVal = command.Arguments[0].ToLower();
+        if (optionalVal == "on")
         {
-            // Optional argument to camp is attack range
-            if (command.Arguments.Count > 0)
+            VTActions.EnableSummon();
+            return;
+        }
+
+        // It's a simple on/off option, but who cares about typos, if it's not on, assume off
+        VTActions.DisableSummon();
+    }
+
+    internal static void ForceBuff()
+    {
+        VTActions.EnableBuffing();
+        VTActions.ForceBuff();
+        VTActions.StartVT();
+    }
+
+    internal static void CastSelfSpell(string spellName)
+    {
+        // The CastSpell action handles wielding a wand, entering magic mode and stopping VT for the cast,
+        // so it works regardless of the combat mode we start in.
+        try
+        {
+            RedoxExtensions.Actions.Dispatched.CastSpell.Create(CommandHelpers.Self, spellName, REPlugin.Instance.CharacterFilter.Id).Enqueue();
+        }
+        catch (DisplayToUserException ex)
+        {
+            REPlugin.Instance.Chat.WriteLine(ex.Message);
+        }
+    }
+
+    internal static void Logout()
+    {
+        // TODO : Add random delay so that all slaves do not log out at the same time
+        // many plugins have concurrency bugs and they can be tripped when lots of clients
+        // log out at once
+        REPlugin.Instance.PluginHost.Actions.Logout();
+    }
+
+    internal static void ExitGame()
+    {
+        // First logout.
+        Logout();
+
+        // Now give the logout a chance to complete gracefully before we kill the current process.
+        Continuations.DelayedContinuation.ContinueAfterDelayOnBackgroundThread(
+            (stateObj) =>
             {
-                int rangeValue = int.Parse(command.Arguments[0]);
-                VTActions.SetAttackRange(rangeValue);
-            }
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+            },
+            MillisecondsDelayBeforeKillProcessOnExit,
+            null);
+    }
 
-            Camp();
-        }
+    internal static bool Teleport(ICommand command) => Teleport(command.Arguments.AggregateWithSpace(), command);
 
-        /// <summary>
-        /// A state optimized for camping a given location
-        /// </summary>
-        internal static void Camp()
+    internal static bool Teleport(string args, ISupportFeedback requestor)
+    {
+        if (UserFacingLocation.TryParse(args, out var location))
         {
-            VTActions.DisableNav();
-            Fight();
-            Loot();
-        }
-
-        #endregion
-
-        internal static void SetMainProfile(ICommand command)
-        {
-            var profile = command.Arguments.Count == 0 ? MyMainProfiles.CharacterSpecificDefault.ToString() : command.Arguments[0];
-            SetMainProfile(profile, command.SourceCharacter);
-        }
-
-        internal static void SetMainProfile(string profile, string requestingCharacter)
-        {
-            bool success = CharacterActions.SetMainProfile(profile);
-
-            if (!success)
-            {
-                TellActions.TellFellow($"{requestingCharacter}, I couldn't set my profile");
-            }
-        }
-
-        internal static void SetFormation(ICommand command)
-        {
-            // Note : Could update the 'formation' concept to include stuff beyond range.
-            // since it's going to be kind of a "hunting formation" concept.  So some characters might get
-            // loot enabled, summon, on/off etc.
-            // TODO : Switch to json file that is loaded which contains a dictionary of <strig (char name), FormationSettings>
-            // that will load up and apply each characters formation specific settings
-            var formationName = command.Arguments[0].ToLower();
-
-            var range = Mine.MyUtilities.GetFormationRangeForCurrentCharacter(formationName);
-
-            VTActions.SetAttackRange(range);
-
-            if (Mine.MyUtilities.EnableLootForFormationForCurrentCharacter(formationName))
-            {
-                VTActions.EnableLooting();
-            }
-
-            VTActions.SetPetRange(10);
-        }
-
-        internal static void ProcessPetsCommand(ICommand command)
-        {
-            // If no args, assume on
-            if (command.Arguments.Count == 0)
-            {
-                VTActions.EnableSummon();
-                return;
-            }
-
-            var optionalVal = command.Arguments[0].ToLower();
-            if (optionalVal == "on")
-            {
-                VTActions.EnableSummon();
-                return;
-            }
-
-            // It's a simple on/off option, but who cares about typos, if it's not on, assume off
-            VTActions.DisableSummon();
-        }
-
-        internal static void ForceBuff()
-        {
-            VTActions.EnableBuffing();
-            VTActions.ForceBuff();
-            VTActions.StartVT();
-        }
-
-        internal static void CastSelfSpell(string spellName)
-        {
-            // The CastSpell action handles wielding a wand, entering magic mode and stopping VT for the cast,
-            // so it works regardless of the combat mode we start in.
-            try
-            {
-                RedoxExtensions.Actions.Dispatched.CastSpell.Create(CommandHelpers.Self, spellName, REPlugin.Instance.CharacterFilter.Id).Enqueue();
-            }
-            catch (DisplayToUserException ex)
-            {
-                REPlugin.Instance.Chat.WriteLine(ex.Message);
-            }
-        }
-
-        internal static void Logout()
-        {
-            // TODO : Add random delay so that all slaves do not log out at the same time
-            // many plugins have concurrency bugs and they can be tripped when lots of clients
-            // log out at once
-            REPlugin.Instance.PluginHost.Actions.Logout();
-        }
-
-        internal static void ExitGame()
-        {
-            // First logout.
-            Logout();
-
-            // Now give the logout a chance to complete gracefully before we kill the current process.
-            Continuations.DelayedContinuation.ContinueAfterDelayOnBackgroundThread(
-                (stateObj) =>
-                {
-                    System.Diagnostics.Process.GetCurrentProcess().Kill();
-                },
-                MillisecondsDelayBeforeKillProcessOnExit,
-                null);
-        }
-
-        internal static bool Teleport(ICommand command) => Teleport(command.Arguments.AggregateWithSpace(), command);
-
-        internal static bool Teleport(string args, ISupportFeedback requestor)
-        {
-            if (UserFacingLocation.TryParse(args, out var location))
-            {
-                PhatACActions.TeleTo(location);
-                return true;
-            }
-
-            if (Town.TryParse(args, out var town))
-            {
-                PhatACActions.TeleTown(town.Name);
-                return true;
-            }
-
-            if (Dungeon.TryParse(args, out var dungeon))
-            {
-                PhatACActions.TeleTo(dungeon.Locations[0]);
-                return true;
-            }
-
-            PhatACActions.TeleToPlayer(args);
+            PhatACActions.TeleTo(location);
             return true;
         }
 
-        /// <summary>
-        /// Teleports into a named dungeon
-        /// </summary>
-        /// <param name="command"></param>
-        internal static void TeleportInto(ICommand command)
+        if (Town.TryParse(args, out var town))
         {
-            throw new NotImplementedException();
+            PhatACActions.TeleTown(town.Name);
+            return true;
         }
+
+        if (Dungeon.TryParse(args, out var dungeon))
+        {
+            PhatACActions.TeleTo(dungeon.Locations[0]);
+            return true;
+        }
+
+        PhatACActions.TeleToPlayer(args);
+        return true;
+    }
+
+    /// <summary>
+    /// Teleports into a named dungeon
+    /// </summary>
+    /// <param name="command"></param>
+    internal static void TeleportInto(ICommand command)
+    {
+        throw new NotImplementedException();
     }
 }

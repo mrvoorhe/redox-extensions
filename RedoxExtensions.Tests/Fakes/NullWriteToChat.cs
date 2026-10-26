@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 using RedoxExtensions.Wrapper;
 
-namespace RedoxExtensions.Tests.Fakes
+namespace RedoxExtensions.Tests.Fakes;
+
+public class NullWriteToChat : IWriteToChat
 {
-    public class NullWriteToChat : IWriteToChat
+    public void WriteToChat(string message, int color, int chatWindow)
     {
-        public void WriteToChat(string message, int color, int chatWindow)
-        {
-            // Nothing to do.
-        }
+        // Nothing to do.
     }
 }

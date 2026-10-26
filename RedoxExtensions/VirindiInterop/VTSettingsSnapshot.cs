@@ -2,37 +2,36 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.VirindiInterop
+namespace RedoxExtensions.VirindiInterop;
+
+public class VTSettingsSnapshot
 {
-    public class VTSettingsSnapshot
+    private readonly Dictionary<string, string> _queriedSettings;
+
+    public VTSettingsSnapshot(Dictionary<string, string> queriedSettings)
     {
-        private readonly Dictionary<string, string> _queriedSettings;
+        this._queriedSettings = queriedSettings;
+    }
 
-        public VTSettingsSnapshot(Dictionary<string, string> queriedSettings)
+    #region Public Static Methods
+
+    public static VTSettingsSnapshot Capture(IEnumerable<string> settingNames) => new VTSettingsSnapshot(VTUtilities.GetVTOptions(settingNames));
+
+    #endregion
+
+    public bool IsNavEnabled
+    {
+        get
         {
-            this._queriedSettings = queriedSettings;
+            throw new NotImplementedException();
         }
+    }
 
-        #region Public Static Methods
-
-        public static VTSettingsSnapshot Capture(IEnumerable<string> settingNames) => new VTSettingsSnapshot(VTUtilities.GetVTOptions(settingNames));
-
-        #endregion
-
-        public bool IsNavEnabled
+    public bool IsCombatEnabled
+    {
+        get
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsCombatEnabled
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            throw new NotImplementedException();
         }
     }
 }

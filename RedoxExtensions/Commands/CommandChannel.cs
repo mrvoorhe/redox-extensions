@@ -3,30 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Commands
+namespace RedoxExtensions.Commands;
+
+public enum CommandChannel
 {
-    public enum CommandChannel
-    {
-        /// <summary>
-        /// Ex: /re exit
-        /// </summary>
-        DirectEntry,
+    /// <summary>
+    /// Ex: /re exit
+    /// </summary>
+    DirectEntry,
 
-        /// <summary>
-        /// A command received over local area chat
-        /// </summary>
-        AreaChat,
+    /// <summary>
+    /// A command received over local area chat
+    /// </summary>
+    AreaChat,
 
-        /// <summary>
-        /// Private tell
-        /// </summary>
-        Tell,
+    /// <summary>
+    /// Private tell
+    /// </summary>
+    Tell,
 
-        /// <summary>
-        /// Native fellowship
-        /// </summary>
-        Fellowship,
+    /// <summary>
+    /// Native fellowship
+    /// </summary>
+    Fellowship,
 
-        VirindiFellowship
-    }
+    VirindiFellowship
 }

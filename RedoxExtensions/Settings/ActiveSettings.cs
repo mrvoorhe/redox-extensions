@@ -5,43 +5,42 @@ using System.Text;
 using Newtonsoft.Json;
 using NiceIO;
 
-namespace RedoxExtensions.Settings
+namespace RedoxExtensions.Settings;
+
+public static class ActiveSettings
 {
-    public static class ActiveSettings
+    private static UserSettings _activeSettings;
+
+    public static void Clear()
     {
-        private static UserSettings _activeSettings;
+        _activeSettings = null;
+    }
 
-        public static void Clear()
-        {
-            _activeSettings = null;
-        }
+    public static void Init(UserSettings userSettings)
+    {
+        _activeSettings = userSettings;
+    }
 
-        public static void Init(UserSettings userSettings)
+    public static UserSettings Instance
+    {
+        get
         {
-            _activeSettings = userSettings;
-        }
-
-        public static UserSettings Instance
-        {
-            get
+            if (_activeSettings == null)
             {
-                if (_activeSettings == null)
+                var mainSettings = JsonConvert.DeserializeObject<Main>(GetMainSettingsFilePath().ReadAllText());
+                var expanded = Environment.ExpandEnvironmentVariables(mainSettings.UserSettingsFilePath);
+
+                if (!System.IO.Path.IsPathRooted(expanded))
                 {
-                    var mainSettings = JsonConvert.DeserializeObject<Main>(GetMainSettingsFilePath().ReadAllText());
-                    var expanded = Environment.ExpandEnvironmentVariables(mainSettings.UserSettingsFilePath);
-
-                    if (!System.IO.Path.IsPathRooted(expanded))
-                    {
-                        expanded = new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine(expanded).ToString();
-                    }
-
-                    _activeSettings = JsonConvert.DeserializeObject<UserSettings>(System.IO.File.ReadAllText(expanded));
+                    expanded = new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine(expanded).ToString();
                 }
 
-                return _activeSettings;
+                _activeSettings = JsonConvert.DeserializeObject<UserSettings>(System.IO.File.ReadAllText(expanded));
             }
-        }
 
-        private static NPath GetMainSettingsFilePath() => new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine("settings.json");
+            return _activeSettings;
+        }
     }
+
+    private static NPath GetMainSettingsFilePath() => new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine("settings.json");
 }

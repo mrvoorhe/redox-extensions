@@ -5,25 +5,24 @@ using System.Text;
 
 using RedoxExtensions.Diagnostics;
 
-namespace RedoxExtensions.Data.Events
+namespace RedoxExtensions.Data.Events;
+
+public class FellowshipCreatedEventArgs : EventArgs, ILoggableObject
 {
-    public class FellowshipCreatedEventArgs : EventArgs, ILoggableObject
+    public FellowshipCreatedEventArgs(string fellowshipName)
     {
-        public FellowshipCreatedEventArgs(string fellowshipName)
-        {
-            this.FellowshipName = fellowshipName;
-        }
+        this.FellowshipName = fellowshipName;
+    }
 
-        public string FellowshipName { get; private set; }
+    public string FellowshipName { get; private set; }
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
+    DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
-        string ILoggableObject.GetLoggableFormat()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine($"  FellowshipName = {this.FellowshipName}");
-            return builder.ToString();
-        }
+    string ILoggableObject.GetLoggableFormat()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine(this.GetType().ToString());
+        builder.AppendLine($"  FellowshipName = {this.FellowshipName}");
+        return builder.ToString();
     }
 }

@@ -4,25 +4,24 @@ using System.Text;
 
 using RedoxExtensions.Diagnostics;
 
-namespace RedoxExtensions.Data.Events
+namespace RedoxExtensions.Data.Events;
+
+public class FellowshipMemberDiedEventArgs : EventArgs, ILoggableObject
 {
-    public class FellowshipMemberDiedEventArgs : EventArgs, ILoggableObject
+    public FellowshipMemberDiedEventArgs(string characterName)
     {
-        public FellowshipMemberDiedEventArgs(string characterName)
-        {
-            this.CharacterName = characterName;
-        }
+        this.CharacterName = characterName;
+    }
 
-        public string CharacterName { get; private set; }
+    public string CharacterName { get; private set; }
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
+    DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
-        string ILoggableObject.GetLoggableFormat()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine($"  CharacterName = {this.CharacterName}");
-            return builder.ToString();
-        }
+    string ILoggableObject.GetLoggableFormat()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine(this.GetType().ToString());
+        builder.AppendLine($"  CharacterName = {this.CharacterName}");
+        return builder.ToString();
     }
 }

@@ -6,95 +6,94 @@ using RedoxExtensions.Continuations;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.VirindiInterop;
 
-namespace RedoxExtensions.Actions
+namespace RedoxExtensions.Actions;
+
+internal static class UnstuckActions
 {
-    internal static class UnstuckActions
+    private const int CombatWindowMilliseconds = 30000;
+    private const int StrafeMilliseconds = 750;
+    private const int UnstuckAttackRange = 4;
+
+    internal static bool InProgress { get; private set; }
+
+    internal static void Unstuck()
     {
-        private const int CombatWindowMilliseconds = 30000;
-        private const int StrafeMilliseconds = 750;
-        private const int UnstuckAttackRange = 4;
+        Unstuck(null);
+    }
 
-        internal static bool InProgress { get; private set; }
-
-        internal static void Unstuck()
+    internal static void Unstuck(Action onComplete)
+    {
+        if (InProgress)
         {
-            Unstuck(null);
+            REPlugin.Instance.Chat.WriteLine("[RE] Unstuck already in progress");
+            return;
         }
 
-        internal static void Unstuck(Action onComplete)
+        var options = VTUtilities.GetVTOptions(new[] { VTOptionNames.EnableCombat, VTOptionNames.AttackDistance });
+
+        options.TryGetValue(VTOptionNames.EnableCombat, out var combatEnabled);
+
+        options.TryGetValue(VTOptionNames.AttackDistance, out var originalAttackDistance);
+
+        if (string.Equals(combatEnabled, "True", StringComparison.OrdinalIgnoreCase))
         {
-            if (InProgress)
+            REPlugin.Instance.Chat.WriteLine("[RE] Unstuck : clearing busy and wiggling");
+            ClearBusyAndWiggle(onComplete);
+            return;
+        }
+
+        InProgress = true;
+        REPlugin.Instance.Chat.WriteLine("[RE] Unstuck : enabling combat for {0} seconds", CombatWindowMilliseconds / 1000);
+
+        VTActions.SetAttackRange(UnstuckAttackRange);
+        VTActions.EnableCombat();
+
+        DelayedContinuation.ContinueAfterDelayOnGameThread(
+            state =>
             {
-                REPlugin.Instance.Chat.WriteLine("[RE] Unstuck already in progress");
-                return;
-            }
+                try
+                {
+                    if (!string.IsNullOrEmpty(originalAttackDistance))
+                    {
+                        VTUtilities.SetOption(VTOptionNames.AttackDistance, originalAttackDistance);
+                    }
 
-            var options = VTUtilities.GetVTOptions(new[] { VTOptionNames.EnableCombat, VTOptionNames.AttackDistance });
+                    VTActions.DisableCombat();
+                    REPlugin.Instance.Chat.WriteLine("[RE] Unstuck : combat restored, clearing busy and wiggling");
+                    ClearBusyAndWiggle(onComplete);
+                }
+                finally
+                {
+                    InProgress = false;
+                }
+            },
+            CombatWindowMilliseconds,
+            null);
+    }
 
-            options.TryGetValue(VTOptionNames.EnableCombat, out var combatEnabled);
+    private static void ClearBusyAndWiggle(Action onComplete)
+    {
+        VTActions.ClearBusy();
 
-            options.TryGetValue(VTOptionNames.AttackDistance, out var originalAttackDistance);
+        ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeLeft 1");
 
-            if (string.Equals(combatEnabled, "True", StringComparison.OrdinalIgnoreCase))
+        DelayedContinuation.ContinueAfterDelayOnGameThread(
+            leftState =>
             {
-                REPlugin.Instance.Chat.WriteLine("[RE] Unstuck : clearing busy and wiggling");
-                ClearBusyAndWiggle(onComplete);
-                return;
-            }
+                ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeLeft 0");
+                ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeRight 1");
 
-            InProgress = true;
-            REPlugin.Instance.Chat.WriteLine("[RE] Unstuck : enabling combat for {0} seconds", CombatWindowMilliseconds / 1000);
-
-            VTActions.SetAttackRange(UnstuckAttackRange);
-            VTActions.EnableCombat();
-
-            DelayedContinuation.ContinueAfterDelayOnGameThread(
-                state =>
-                {
-                    try
+                DelayedContinuation.ContinueAfterDelayOnGameThread(
+                    rightState =>
                     {
-                        if (!string.IsNullOrEmpty(originalAttackDistance))
-                        {
-                            VTUtilities.SetOption(VTOptionNames.AttackDistance, originalAttackDistance);
-                        }
+                        ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeRight 0");
 
-                        VTActions.DisableCombat();
-                        REPlugin.Instance.Chat.WriteLine("[RE] Unstuck : combat restored, clearing busy and wiggling");
-                        ClearBusyAndWiggle(onComplete);
-                    }
-                    finally
-                    {
-                        InProgress = false;
-                    }
-                },
-                CombatWindowMilliseconds,
-                null);
-        }
-
-        private static void ClearBusyAndWiggle(Action onComplete)
-        {
-            VTActions.ClearBusy();
-
-            ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeLeft 1");
-
-            DelayedContinuation.ContinueAfterDelayOnGameThread(
-                leftState =>
-                {
-                    ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeLeft 0");
-                    ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeRight 1");
-
-                    DelayedContinuation.ContinueAfterDelayOnGameThread(
-                        rightState =>
-                        {
-                            ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeRight 0");
-
-                            onComplete?.Invoke();
-                        },
-                        StrafeMilliseconds,
-                        null);
-                },
-                StrafeMilliseconds,
-                null);
-        }
+                        onComplete?.Invoke();
+                    },
+                    StrafeMilliseconds,
+                    null);
+            },
+            StrafeMilliseconds,
+            null);
     }
 }

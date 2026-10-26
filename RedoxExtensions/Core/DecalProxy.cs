@@ -4,40 +4,39 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace RedoxExtensions.Core
+namespace RedoxExtensions.Core;
+
+/// <summary>
+/// COPIED FROM MagTools source
+/// </summary>
+public static class DecalProxy
 {
-    /// <summary>
-    /// COPIED FROM MagTools source
-    /// </summary>
-    public static class DecalProxy
+    [DllImport("Decal.dll")]
+    static extern int DispatchOnChatCommand(ref IntPtr str, [MarshalAs(UnmanagedType.U4)] int target);
+
+    static bool Decal_DispatchOnChatCommand(string cmd)
     {
-        [DllImport("Decal.dll")]
-        static extern int DispatchOnChatCommand(ref IntPtr str, [MarshalAs(UnmanagedType.U4)] int target);
+        IntPtr bstr = Marshal.StringToBSTR(cmd);
 
-        static bool Decal_DispatchOnChatCommand(string cmd)
+        try
         {
-            IntPtr bstr = Marshal.StringToBSTR(cmd);
+            bool eaten = (DispatchOnChatCommand(ref bstr, 1) & 0x1) > 0;
 
-            try
-            {
-                bool eaten = (DispatchOnChatCommand(ref bstr, 1) & 0x1) > 0;
-
-                return eaten;
-            }
-            finally
-            {
-                Marshal.FreeBSTR(bstr);
-            }
+            return eaten;
         }
-
-        /// <summary>
-        /// This will first attempt to send the messages to all plugins. If no plugins set e.Eat to true on the message, it will then simply call InvokeChatParser.
-        /// </summary>
-        /// <param name="cmd"></param>
-        public static void DispatchChatToBoxWithPluginIntercept(string cmd)
+        finally
         {
-            if (!Decal_DispatchOnChatCommand(cmd))
-                REPlugin.Instance.Actions.InvokeChatParser(cmd);
+            Marshal.FreeBSTR(bstr);
         }
+    }
+
+    /// <summary>
+    /// This will first attempt to send the messages to all plugins. If no plugins set e.Eat to true on the message, it will then simply call InvokeChatParser.
+    /// </summary>
+    /// <param name="cmd"></param>
+    public static void DispatchChatToBoxWithPluginIntercept(string cmd)
+    {
+        if (!Decal_DispatchOnChatCommand(cmd))
+            REPlugin.Instance.Actions.InvokeChatParser(cmd);
     }
 }

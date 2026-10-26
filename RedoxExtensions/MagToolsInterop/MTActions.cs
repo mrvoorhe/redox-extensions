@@ -2,45 +2,44 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.MagToolsInterop
+namespace RedoxExtensions.MagToolsInterop;
+
+/// <summary>
+/// Helper class for running MagTools commands
+/// </summary>
+internal static class MTActions
 {
-    /// <summary>
-    /// Helper class for running MagTools commands
-    /// </summary>
-    internal static class MTActions
+    internal static void ProcessCommand(string mtCommand)
     {
-        internal static void ProcessCommand(string mtCommand)
-        {
-            MagTools.PluginCore.Current.ProcessMTCommand(mtCommand);
-        }
-
-        internal static void CreateFellow(string name)
-        {
-            MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow create {name}");
-        }
-
-        internal static void RecruitFellow(string characterName)
-        {
-            MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow recruit {characterName}");
-        }
-
-        #region Click
-
-        internal static void ClickOkay()
-        {
-            MagTools.PluginCore.Current.ProcessMTCommand("/mt ok");
-        }
-
-        internal static void ClickYes()
-        {
-            MagTools.PluginCore.Current.ProcessMTCommand("/mt yes");
-        }
-
-        internal static void ClickNo()
-        {
-            MagTools.PluginCore.Current.ProcessMTCommand("/mt no");
-        }
-
-        #endregion
+        MagTools.PluginCore.Current.ProcessMTCommand(mtCommand);
     }
+
+    internal static void CreateFellow(string name)
+    {
+        MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow create {name}");
+    }
+
+    internal static void RecruitFellow(string characterName)
+    {
+        MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow recruit {characterName}");
+    }
+
+    #region Click
+
+    internal static void ClickOkay()
+    {
+        MagTools.PluginCore.Current.ProcessMTCommand("/mt ok");
+    }
+
+    internal static void ClickYes()
+    {
+        MagTools.PluginCore.Current.ProcessMTCommand("/mt yes");
+    }
+
+    internal static void ClickNo()
+    {
+        MagTools.PluginCore.Current.ProcessMTCommand("/mt no");
+    }
+
+    #endregion
 }

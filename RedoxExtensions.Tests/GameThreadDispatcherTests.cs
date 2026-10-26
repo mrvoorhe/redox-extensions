@@ -7,32 +7,31 @@ using NUnit.Framework;
 using RedoxExtensions.Dispatching;
 using RedoxExtensions.Dispatching.Legacy;
 
-namespace RedoxExtensions.Tests
+namespace RedoxExtensions.Tests;
+
+[TestFixture]
+public class GameThreadDispatcherTests
 {
-    [TestFixture]
-    public class GameThreadDispatcherTests
+    [Test]
+    public void VerifyQueueActionWillQueueAndRunOnceRenderFrameFired()
     {
-        [Test]
-        public void VerifyQueueActionWillQueueAndRunOnceRenderFrameFired()
+        var fakeDecalEventsProxy = new Fakes.FakeDecalEventsProxy();
+
+        bool actionCalled = false;
+
+        using var dispatcher = new GameThreadDispatcher(fakeDecalEventsProxy);
+
+        dispatcher.QueueAction(() =>
         {
-            var fakeDecalEventsProxy = new Fakes.FakeDecalEventsProxy();
+            actionCalled = true;
+        });
 
-            bool actionCalled = false;
+        Assert.AreEqual(1, dispatcher.QueueCount);
 
-            using var dispatcher = new GameThreadDispatcher(fakeDecalEventsProxy);
+        // Fire the render event to simulate what decal would do
+        fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
 
-            dispatcher.QueueAction(() =>
-            {
-                actionCalled = true;
-            });
-
-            Assert.AreEqual(1, dispatcher.QueueCount);
-
-            // Fire the render event to simulate what decal would do
-            fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
-
-            Assert.IsTrue(actionCalled);
-            Assert.AreEqual(0, dispatcher.QueueCount);
-        }
+        Assert.IsTrue(actionCalled);
+        Assert.AreEqual(0, dispatcher.QueueCount);
     }
 }

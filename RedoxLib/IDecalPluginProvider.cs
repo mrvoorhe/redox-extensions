@@ -6,18 +6,17 @@ using System.Text;
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
 
-namespace RedoxLib
+namespace RedoxLib;
+
+public interface IDecalPluginProvider
 {
-    public interface IDecalPluginProvider
-    {
-        CoreManager CoreManager { get; }
+    CoreManager CoreManager { get; }
 
-        PluginHost PluginHost { get; }
+    PluginHost PluginHost { get; }
 
-        CharacterFilter CharacterFilter { get; }
+    CharacterFilter CharacterFilter { get; }
 
-        WorldFilter WorldFilter { get; }
+    WorldFilter WorldFilter { get; }
 
-        HooksWrapper Actions { get; }
-    }
+    HooksWrapper Actions { get; }
 }

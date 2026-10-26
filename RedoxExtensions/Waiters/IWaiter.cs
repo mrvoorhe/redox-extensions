@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Waiters
+namespace RedoxExtensions.Waiters;
+
+public interface IWaiter : IDisposable
 {
-    public interface IWaiter : IDisposable
-    {
-        //void Reset();
+    //void Reset();
 
-        void Wait();
+    void Wait();
 
-        bool Wait(int millisecondsTimeout);
-    }
+    bool Wait(int millisecondsTimeout);
 }

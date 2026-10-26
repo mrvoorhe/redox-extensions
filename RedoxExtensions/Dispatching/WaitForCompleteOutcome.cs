@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Dispatching
+namespace RedoxExtensions.Dispatching;
+
+public enum WaitForCompleteOutcome
 {
-    public enum WaitForCompleteOutcome
-    {
-        Undefined,
-        Success,
-        Failed,
-        TooBusy,
-        Timeout
-    }
+    Undefined,
+    Success,
+    Failed,
+    TooBusy,
+    Timeout
 }

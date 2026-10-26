@@ -5,26 +5,25 @@ using System.Text;
 
 using Decal.Filters;
 
-namespace RedoxLib
+namespace RedoxLib;
+
+public static class SpellUtilities
 {
-    public static class SpellUtilities
+    public static int LookUpSpellIdByName(string spellName)
     {
-        public static int LookUpSpellIdByName(string spellName)
+        // NOTE : Code copied from MagTools
+        FileService service = PluginProvider.Instance.CoreManager.Filter<FileService>();
+
+        for (int i = 0; i < service.SpellTable.Length; i++)
         {
-            // NOTE : Code copied from MagTools
-            FileService service = PluginProvider.Instance.CoreManager.Filter<FileService>();
+            Spell spell = service.SpellTable[i];
 
-            for (int i = 0; i < service.SpellTable.Length; i++)
+            if (String.Equals(spellName, spell.Name, StringComparison.OrdinalIgnoreCase))
             {
-                Spell spell = service.SpellTable[i];
-
-                if (String.Equals(spellName, spell.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return spell.Id;
-                }
+                return spell.Id;
             }
-
-            return 0;
         }
+
+        return 0;
     }
 }

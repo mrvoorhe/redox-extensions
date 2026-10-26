@@ -12,215 +12,214 @@ using RedoxExtensions.Data;
 using RedoxExtensions.Dispatching;
 using RedoxLib.Objects;
 
-namespace RedoxExtensions.Actions.Dispatched.Internal
+namespace RedoxExtensions.Actions.Dispatched.Internal;
+
+public class GiveItemsByKeyword : AbstractPipelineAction
 {
-    public class GiveItemsByKeyword : AbstractPipelineAction
+    private readonly ReadOnlyCollection<WorldObject> _itemsToGive;
+    private readonly int _targetId;
+
+    private readonly object _stateLock = new();
+
+    private IWorldObject _targetWorldObj;
+
+    private int _currentGiveIndex = 0;
+    private GiveItemOutcome _lastOutcome = GiveItemOutcome.Undefined;
+    private int _successfulGives = 0;
+
+    public GiveItemsByKeyword(ISupportFeedback requestor, ReadOnlyCollection<WorldObject> itemsToGive, int targetId)
+        : base(requestor)
     {
-        private readonly ReadOnlyCollection<WorldObject> _itemsToGive;
-        private readonly int _targetId;
+        this._itemsToGive = itemsToGive;
+        this._targetId = targetId;
+    }
 
-        private readonly object _stateLock = new();
+    #region Static Methods
 
-        private IWorldObject _targetWorldObj;
+    public static IAction Create(ICommand command)
+    {
+        // Value Formats :
+        // <keyword>
 
-        private int _currentGiveIndex = 0;
-        private GiveItemOutcome _lastOutcome = GiveItemOutcome.Undefined;
-        private int _successfulGives = 0;
+        string keyword = command.Arguments[0];
+        string secondOption = command.Arguments.Count > 1 ? command.Arguments[1] : string.Empty;
 
-        public GiveItemsByKeyword(ISupportFeedback requestor, ReadOnlyCollection<WorldObject> itemsToGive, int targetId)
-            : base(requestor)
+        ReadOnlyCollection<WorldObject> itemsToGive = ItemUtilities.TryGetInventoryItemsForKeyword(keyword, secondOption);
+
+        if (itemsToGive == null)
         {
-            this._itemsToGive = itemsToGive;
-            this._targetId = targetId;
+            throw new DisplayToUserException($"Unknown keyword : {keyword}", command);
         }
 
-        #region Static Methods
+        return Create(command, itemsToGive);
+    }
 
-        public static IAction Create(ICommand command)
+    public static IAction Create(ICommand command, ReadOnlyCollection<WorldObject> alreadyMatchedItems)
+    {
+        if (alreadyMatchedItems == null)
         {
-            // Value Formats :
-            // <keyword>
-
-            string keyword = command.Arguments[0];
-            string secondOption = command.Arguments.Count > 1 ? command.Arguments[1] : string.Empty;
-
-            ReadOnlyCollection<WorldObject> itemsToGive = ItemUtilities.TryGetInventoryItemsForKeyword(keyword, secondOption);
-
-            if (itemsToGive == null)
-            {
-                throw new DisplayToUserException($"Unknown keyword : {keyword}", command);
-            }
-
-            return Create(command, itemsToGive);
+            throw new ArgumentNullException(nameof(alreadyMatchedItems));
         }
 
-        public static IAction Create(ICommand command, ReadOnlyCollection<WorldObject> alreadyMatchedItems)
+        // Value Formats :
+        // <keyword>
+        // <target>
+
+        int targetId = REPlugin.Instance.Actions.CurrentSelection;
+
+        if (command.Arguments.Count >= 2)
         {
-            if (alreadyMatchedItems == null)
-            {
-                throw new ArgumentNullException(nameof(alreadyMatchedItems));
-            }
-
-            // Value Formats :
-            // <keyword>
-            // <target>
-
-            int targetId = REPlugin.Instance.Actions.CurrentSelection;
-
-            if (command.Arguments.Count >= 2)
-            {
-                targetId = int.Parse(command.Arguments[1]);
-            }
-
-            ReadOnlyCollection<WorldObject> itemsToGive = alreadyMatchedItems;
-
-            if (itemsToGive.Count == 0)
-            {
-                throw new DisplayToUserException("No items to give", command);
-            }
-
-            var action = new GiveItemsByKeyword(command, itemsToGive, targetId);
-            return action;
+            targetId = int.Parse(command.Arguments[1]);
         }
 
-        #endregion
+        ReadOnlyCollection<WorldObject> itemsToGive = alreadyMatchedItems;
 
-        #region Properties
-
-        public override bool RequireIdleToPerform => true;
-
-        public override VirindiInterop.VTRunState DesiredVTRunState => VirindiInterop.VTRunState.Off;
-
-
-        protected override int MaxTries => 3;
-
-        protected override int WaitTimeoutInMilliseconds
+        if (itemsToGive.Count == 0)
         {
-            get
-            {
-                // Could have a little bit of a walk to a target, so give this a couple of seconds before timing out
-                return 2000;
-            }
+            throw new DisplayToUserException("No items to give", command);
         }
 
-        #endregion
+        var action = new GiveItemsByKeyword(command, itemsToGive, targetId);
+        return action;
+    }
 
-        #region Methods
+    #endregion
 
-        protected override void DoPeform()
+    #region Properties
+
+    public override bool RequireIdleToPerform => true;
+
+    public override VirindiInterop.VTRunState DesiredVTRunState => VirindiInterop.VTRunState.Off;
+
+
+    protected override int MaxTries => 3;
+
+    protected override int WaitTimeoutInMilliseconds
+    {
+        get
         {
-            this._itemsToGive[this._currentGiveIndex].Give(this._targetId);
+            // Could have a little bit of a walk to a target, so give this a couple of seconds before timing out
+            return 2000;
+        }
+    }
+
+    #endregion
+
+    #region Methods
+
+    protected override void DoPeform()
+    {
+        this._itemsToGive[this._currentGiveIndex].Give(this._targetId);
+    }
+
+    protected override void InitializeData()
+    {
+        this._targetWorldObj = this._targetId.ToWorldObject();
+
+        if (this._targetWorldObj == null)
+        {
+            throw new DisplayToUserException($"Could not find target : {this._targetId}", this.Requestor);
         }
 
-        protected override void InitializeData()
+        REPlugin.Instance.Debug.WriteLine($"Number of Items to Give = {this._itemsToGive.Count}");
+    }
+
+    protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
+    {
+        switch (finalOutcome)
         {
-            this._targetWorldObj = this._targetId.ToWorldObject();
-
-            if (this._targetWorldObj == null)
-            {
-                throw new DisplayToUserException($"Could not find target : {this._targetId}", this.Requestor);
-            }
-
-            REPlugin.Instance.Debug.WriteLine($"Number of Items to Give = {this._itemsToGive.Count}");
-        }
-
-        protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
-        {
-            switch (finalOutcome)
-            {
-                case WaitForCompleteOutcome.Success:
-                    if (!this.Requestor.FromSelf)
-                    {
-                        this.Requestor.GiveFeedback(FeedbackType.Successful, "{0}, Gave {1} items to {2}", this.Requestor.SourceCharacter, this._successfulGives, this._targetWorldObj.Name);
-                    }
-                    break;
-                default:
-                    throw new DisplayToUserException($"Give failed.  Target Busy.  Items Given = {this._currentGiveIndex}, Cause = {this._lastOutcome}", this.Requestor);
-            }
-        }
-
-        protected override void HookEvents()
-        {
-            REPlugin.Instance.Events.RE.EndGiveItem += RT_EndGiveItem;
-        }
-
-        protected override void UnhookEvents()
-        {
-            REPlugin.Instance.Events.RE.EndGiveItem -= RT_EndGiveItem;
-        }
-
-        protected override void DoResetForRetry()
-        {
-            lock (this._stateLock)
-            {
-                this._lastOutcome = GiveItemOutcome.Undefined;
-            }
-        }
-
-        /// <summary>
-        /// Called on the game thread.  Called AFTER ShouldRetry
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <returns></returns>
-        protected override bool ShouldCountRetry(WaitForCompleteOutcome outcome)
-        {
-            lock (this._stateLock)
-            {
-                if (this._lastOutcome == GiveItemOutcome.Successful)
+            case WaitForCompleteOutcome.Success:
+                if (!this.Requestor.FromSelf)
                 {
-                    // Don't count successful gives.  Piggyback on the retry mechanism to give multiple items.
-                    return false;
+                    this.Requestor.GiveFeedback(FeedbackType.Successful, "{0}, Gave {1} items to {2}", this.Requestor.SourceCharacter, this._successfulGives, this._targetWorldObj.Name);
                 }
+                break;
+            default:
+                throw new DisplayToUserException($"Give failed.  Target Busy.  Items Given = {this._currentGiveIndex}, Cause = {this._lastOutcome}", this.Requestor);
+        }
+    }
 
-                // Only count failed gives
+    protected override void HookEvents()
+    {
+        REPlugin.Instance.Events.RE.EndGiveItem += RT_EndGiveItem;
+    }
+
+    protected override void UnhookEvents()
+    {
+        REPlugin.Instance.Events.RE.EndGiveItem -= RT_EndGiveItem;
+    }
+
+    protected override void DoResetForRetry()
+    {
+        lock (this._stateLock)
+        {
+            this._lastOutcome = GiveItemOutcome.Undefined;
+        }
+    }
+
+    /// <summary>
+    /// Called on the game thread.  Called AFTER ShouldRetry
+    /// </summary>
+    /// <param name="outcome"></param>
+    /// <returns></returns>
+    protected override bool ShouldCountRetry(WaitForCompleteOutcome outcome)
+    {
+        lock (this._stateLock)
+        {
+            if (this._lastOutcome == GiveItemOutcome.Successful)
+            {
+                // Don't count successful gives.  Piggyback on the retry mechanism to give multiple items.
+                return false;
+            }
+
+            // Only count failed gives
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Called on a background thread.  Called before ShouldCountRetry
+    /// </summary>
+    /// <param name="outcome"></param>
+    /// <returns></returns>
+    protected override bool ShouldRetry(WaitForCompleteOutcome outcome)
+    {
+        lock (this._stateLock)
+        {
+            this._currentGiveIndex++;
+
+            // If we've reached the end of the items to give, then no more retries.
+            if (this._currentGiveIndex >= this._itemsToGive.Count)
+            {
+                return false;
+            }
+
+            if (outcome == WaitForCompleteOutcome.Success)
+            {
                 return true;
             }
+
+            return base.ShouldRetry(outcome);
         }
-
-        /// <summary>
-        /// Called on a background thread.  Called before ShouldCountRetry
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <returns></returns>
-        protected override bool ShouldRetry(WaitForCompleteOutcome outcome)
-        {
-            lock (this._stateLock)
-            {
-                this._currentGiveIndex++;
-
-                // If we've reached the end of the items to give, then no more retries.
-                if (this._currentGiveIndex >= this._itemsToGive.Count)
-                {
-                    return false;
-                }
-
-                if (outcome == WaitForCompleteOutcome.Success)
-                {
-                    return true;
-                }
-
-                return base.ShouldRetry(outcome);
-            }
-        }
-
-        void RT_EndGiveItem(object sender, Data.Events.EndGiveItemEventArgs e)
-        {
-            lock (this._stateLock)
-            {
-                this._lastOutcome = e.Outcome;
-                switch (e.Outcome)
-                {
-                    case GiveItemOutcome.Successful:
-                        this.Successful.Set();
-                        this._successfulGives++;
-                        break;
-                    default:
-                        this.Failed.Set();
-                        break;
-                }
-            }
-        }
-
-        #endregion
     }
+
+    void RT_EndGiveItem(object sender, Data.Events.EndGiveItemEventArgs e)
+    {
+        lock (this._stateLock)
+        {
+            this._lastOutcome = e.Outcome;
+            switch (e.Outcome)
+            {
+                case GiveItemOutcome.Successful:
+                    this.Successful.Set();
+                    this._successfulGives++;
+                    break;
+                default:
+                    this.Failed.Set();
+                    break;
+            }
+        }
+    }
+
+    #endregion
 }

@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Commands
+namespace RedoxExtensions.Commands;
+
+public enum FeedbackType
 {
-    public enum FeedbackType
-    {
-        Undefined,
+    Undefined,
 
-        /// <summary>
-        /// The command was ignored for one valid reason or another.
-        /// </summary>
-        Ignored,
+    /// <summary>
+    /// The command was ignored for one valid reason or another.
+    /// </summary>
+    Ignored,
 
-        Failed,
+    Failed,
 
-        Successful
-    }
+    Successful
 }

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Data
+namespace RedoxExtensions.Data;
+
+public interface ISerializableData
 {
-    public interface ISerializableData
-    {
-        string Serialize();
-    }
+    string Serialize();
 }

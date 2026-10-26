@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Dispatching
+namespace RedoxExtensions.Dispatching;
+
+public interface IBasicDispatcher
 {
-    public interface IBasicDispatcher
-    {
-        void EnqueueAction(Action action);
-    }
+    void EnqueueAction(Action action);
 }

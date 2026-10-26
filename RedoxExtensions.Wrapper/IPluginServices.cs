@@ -4,17 +4,16 @@ using System.Text;
 
 using RedoxExtensions.Wrapper.Diagnostics;
 
-namespace RedoxExtensions.Wrapper
+namespace RedoxExtensions.Wrapper;
+
+public delegate void SafeAction();
+
+public interface IPluginServices : IRealPluginBase, IWriteToChat
 {
-    public delegate void SafeAction();
+    WrapperDebugWriter Debug { get; }
+    WrapperChatWriter Chat { get; }
+    ErrorLogger Error { get; }
 
-    public interface IPluginServices : IRealPluginBase, IWriteToChat
-    {
-        WrapperDebugWriter Debug { get; }
-        WrapperChatWriter Chat { get; }
-        ErrorLogger Error { get; }
-
-        void InvokeOperationSafely(SafeAction action);
-        void InvokeOperationSafely(Action<object> action, object arg);
-    }
+    void InvokeOperationSafely(SafeAction action);
+    void InvokeOperationSafely(Action<object> action, object arg);
 }

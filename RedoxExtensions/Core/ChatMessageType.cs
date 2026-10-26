@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Core
+namespace RedoxExtensions.Core;
+
+public enum ChatMessageType
 {
-    public enum ChatMessageType
-    {
-        Unknown,
+    Unknown,
 
-        PlayerSaysLocal,
-        PlayerSaysChannel,
-        YouSay,
+    PlayerSaysLocal,
+    PlayerSaysChannel,
+    YouSay,
 
-        PlayerTellsYou,
-        YouTell,
+    PlayerTellsYou,
+    YouTell,
 
-        NpcSays,
-        NpcTellsYou
-    }
+    NpcSays,
+    NpcTellsYou
 }

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RedoxLib.Tests
+namespace RedoxLib.Tests;
+
+class HereToKeepCompilerHappy
 {
-    class HereToKeepCompilerHappy
-    {
-    }
 }

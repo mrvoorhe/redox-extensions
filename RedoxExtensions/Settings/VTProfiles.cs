@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Settings
+namespace RedoxExtensions.Settings;
+
+public class VTProfiles
 {
-    public class VTProfiles
-    {
-        public VTMetaProfiles Meta;
-        public VTLootProfiles Loot;
-        public VTMain Main;
-    }
+    public VTMetaProfiles Meta;
+    public VTLootProfiles Loot;
+    public VTMain Main;
 }

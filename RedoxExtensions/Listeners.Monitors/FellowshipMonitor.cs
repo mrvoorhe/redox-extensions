@@ -5,136 +5,135 @@ using System.Threading;
 
 using Decal.Adapter.Wrappers;
 
-namespace RedoxExtensions.Listeners.Monitors
+namespace RedoxExtensions.Listeners.Monitors;
+
+/// <summary>
+/// An object responsible for monitoring the status of the fellowship
+/// </summary>
+public class FellowshipMonitor : IDisposable
 {
-    /// <summary>
-    /// An object responsible for monitoring the status of the fellowship
-    /// </summary>
-    public class FellowshipMonitor : IDisposable
+    private readonly ManualResetEvent _noFellowship = new(true);
+    private readonly ManualResetEvent _inFellowship = new(false);
+
+    private string _fellowshipName = string.Empty;
+    private string _leader = string.Empty;
+
+    private readonly HashSet<string> _fellowshipMembers = new();
+
+    public FellowshipMonitor()
     {
-        private readonly ManualResetEvent _noFellowship = new(true);
-        private readonly ManualResetEvent _inFellowship = new(false);
+        REPlugin.Instance.Events.RE.Fellowship.Created += Fellowship_Created;
+        REPlugin.Instance.Events.RE.Fellowship.Disband += Fellowship_Disband;
+        REPlugin.Instance.Events.RE.Fellowship.DismissedYou += Fellowship_DismissedYou;
+        REPlugin.Instance.Events.RE.Fellowship.JoinedOther += Fellowship_JoinedOther;
+        REPlugin.Instance.Events.RE.Fellowship.JoinedYou += Fellowship_JoinedYou;
+        REPlugin.Instance.Events.RE.Fellowship.QuitOther += Fellowship_QuitOther;
+        REPlugin.Instance.Events.RE.Fellowship.QuitYou += Fellowship_QuitYou;
+    }
 
-        private string _fellowshipName = string.Empty;
-        private string _leader = string.Empty;
+    #region Public Properties
 
-        private readonly HashSet<string> _fellowshipMembers = new();
+    public WaitHandle NoFellowship => this._noFellowship;
 
-        public FellowshipMonitor()
-        {
-            REPlugin.Instance.Events.RE.Fellowship.Created += Fellowship_Created;
-            REPlugin.Instance.Events.RE.Fellowship.Disband += Fellowship_Disband;
-            REPlugin.Instance.Events.RE.Fellowship.DismissedYou += Fellowship_DismissedYou;
-            REPlugin.Instance.Events.RE.Fellowship.JoinedOther += Fellowship_JoinedOther;
-            REPlugin.Instance.Events.RE.Fellowship.JoinedYou += Fellowship_JoinedYou;
-            REPlugin.Instance.Events.RE.Fellowship.QuitOther += Fellowship_QuitOther;
-            REPlugin.Instance.Events.RE.Fellowship.QuitYou += Fellowship_QuitYou;
-        }
+    public WaitHandle InFellowship => this._inFellowship;
 
-        #region Public Properties
+    public string FellowshipName => this._fellowshipName;
 
-        public WaitHandle NoFellowship => this._noFellowship;
+    public string Leader => this._leader;
 
-        public WaitHandle InFellowship => this._inFellowship;
+    #endregion
 
-        public string FellowshipName => this._fellowshipName;
+    #region Public Methods
 
-        public string Leader => this._leader;
+    public bool IsInFellowship(string characterName) => this._fellowshipMembers.Contains(characterName);
 
-        #endregion
+    public void Dispose()
+    {
+        REPlugin.Instance.Events.RE.Fellowship.Created -= Fellowship_Created;
+        REPlugin.Instance.Events.RE.Fellowship.Disband -= Fellowship_Disband;
+        REPlugin.Instance.Events.RE.Fellowship.DismissedYou -= Fellowship_DismissedYou;
+        REPlugin.Instance.Events.RE.Fellowship.JoinedOther -= Fellowship_JoinedOther;
+        REPlugin.Instance.Events.RE.Fellowship.JoinedYou -= Fellowship_JoinedYou;
+        REPlugin.Instance.Events.RE.Fellowship.QuitOther -= Fellowship_QuitOther;
+        REPlugin.Instance.Events.RE.Fellowship.QuitYou -= Fellowship_QuitYou;
 
-        #region Public Methods
+        this._fellowshipMembers.Clear();
 
-        public bool IsInFellowship(string characterName) => this._fellowshipMembers.Contains(characterName);
+        this._noFellowship.Close();
+        this._inFellowship.Close();
+    }
 
-        public void Dispose()
-        {
-            REPlugin.Instance.Events.RE.Fellowship.Created -= Fellowship_Created;
-            REPlugin.Instance.Events.RE.Fellowship.Disband -= Fellowship_Disband;
-            REPlugin.Instance.Events.RE.Fellowship.DismissedYou -= Fellowship_DismissedYou;
-            REPlugin.Instance.Events.RE.Fellowship.JoinedOther -= Fellowship_JoinedOther;
-            REPlugin.Instance.Events.RE.Fellowship.JoinedYou -= Fellowship_JoinedYou;
-            REPlugin.Instance.Events.RE.Fellowship.QuitOther -= Fellowship_QuitOther;
-            REPlugin.Instance.Events.RE.Fellowship.QuitYou -= Fellowship_QuitYou;
+    #endregion
 
-            this._fellowshipMembers.Clear();
+    void Fellowship_QuitYou(object sender, Data.Events.FellowshipQuitYouEventArgs e)
+    {
+        this.TransitionToNoFellowship();
+    }
 
-            this._noFellowship.Close();
-            this._inFellowship.Close();
-        }
+    void Fellowship_QuitOther(object sender, Data.Events.FellowshipQuitOtherEventArgs e)
+    {
+        this.RemoveMember(e.CharacterName);
+    }
 
-        #endregion
+    void Fellowship_JoinedYou(object sender, Data.Events.FellowshipJoinedYouEventArgs e)
+    {
+        this.TransitionToInFellowship(e.FellowshipName, e.Leader);
+    }
 
-        void Fellowship_QuitYou(object sender, Data.Events.FellowshipQuitYouEventArgs e)
-        {
-            this.TransitionToNoFellowship();
-        }
+    void Fellowship_JoinedOther(object sender, Data.Events.FellowshipJoinedOtherEventArgs e)
+    {
+        this.AddMember(e.CharacterName);
+    }
 
-        void Fellowship_QuitOther(object sender, Data.Events.FellowshipQuitOtherEventArgs e)
-        {
-            this.RemoveMember(e.CharacterName);
-        }
+    void Fellowship_DismissedYou(object sender, Data.Events.FellowshipDismissedYouEventArgs e)
+    {
+        this.TransitionToNoFellowship();
+    }
 
-        void Fellowship_JoinedYou(object sender, Data.Events.FellowshipJoinedYouEventArgs e)
-        {
-            this.TransitionToInFellowship(e.FellowshipName, e.Leader);
-        }
+    void Fellowship_Disband(object sender, Data.Events.FellowshipDisbandEventArgs e)
+    {
+        this.TransitionToNoFellowship();
+    }
 
-        void Fellowship_JoinedOther(object sender, Data.Events.FellowshipJoinedOtherEventArgs e)
-        {
-            this.AddMember(e.CharacterName);
-        }
+    void Fellowship_Created(object sender, Data.Events.FellowshipCreatedEventArgs e)
+    {
+        this.TransitionToInFellowship(e.FellowshipName, "You");
+    }
 
-        void Fellowship_DismissedYou(object sender, Data.Events.FellowshipDismissedYouEventArgs e)
-        {
-            this.TransitionToNoFellowship();
-        }
+    private void TransitionToNoFellowship()
+    {
+        this._fellowshipName = string.Empty;
+        this._leader = string.Empty;
+        this._fellowshipMembers.Clear();
 
-        void Fellowship_Disband(object sender, Data.Events.FellowshipDisbandEventArgs e)
-        {
-            this.TransitionToNoFellowship();
-        }
+        this._noFellowship.Set();
+        this._inFellowship.Reset();
+    }
 
-        void Fellowship_Created(object sender, Data.Events.FellowshipCreatedEventArgs e)
-        {
-            this.TransitionToInFellowship(e.FellowshipName, "You");
-        }
+    private void TransitionToInFellowship(string fellowshipName, string leader)
+    {
+        this._fellowshipName = fellowshipName;
+        this._leader = leader;
+        this._inFellowship.Set();
+        this._noFellowship.Reset();
+    }
 
-        private void TransitionToNoFellowship()
-        {
-            this._fellowshipName = string.Empty;
-            this._leader = string.Empty;
-            this._fellowshipMembers.Clear();
+    private void AddMember(string originalCharacterName)
+    {
+        this._fellowshipMembers.Add(originalCharacterName);
 
-            this._noFellowship.Set();
-            this._inFellowship.Reset();
-        }
+        // Note (4/6/2015) : Not sure if I want to handle case incensitive contains checks or not.
+        // going with not for now
+        //var loweredName = originalCharacterName.ToLower();
 
-        private void TransitionToInFellowship(string fellowshipName, string leader)
-        {
-            this._fellowshipName = fellowshipName;
-            this._leader = leader;
-            this._inFellowship.Set();
-            this._noFellowship.Reset();
-        }
+        //if (loweredName != originalCharacterName)
+        //{
+        //    this._fellowshipMembers.Add(loweredName);
+        //}
+    }
 
-        private void AddMember(string originalCharacterName)
-        {
-            this._fellowshipMembers.Add(originalCharacterName);
-
-            // Note (4/6/2015) : Not sure if I want to handle case incensitive contains checks or not.
-            // going with not for now
-            //var loweredName = originalCharacterName.ToLower();
-
-            //if (loweredName != originalCharacterName)
-            //{
-            //    this._fellowshipMembers.Add(loweredName);
-            //}
-        }
-
-        private void RemoveMember(string originalCharacterName)
-        {
-            this._fellowshipMembers.Remove(originalCharacterName);
-        }
+    private void RemoveMember(string originalCharacterName)
+    {
+        this._fellowshipMembers.Remove(originalCharacterName);
     }
 }

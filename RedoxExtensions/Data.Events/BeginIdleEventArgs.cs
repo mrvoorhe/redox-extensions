@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Data.Events
+namespace RedoxExtensions.Data.Events;
+
+public class BeginIdleEventArgs : EventArgs
 {
-    public class BeginIdleEventArgs : EventArgs
-    {
-    }
 }

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Dispatching.Legacy
+namespace RedoxExtensions.Dispatching.Legacy;
+
+public interface IActionAsyncResultCompleter
 {
-    public interface IActionAsyncResultCompleter
-    {
-        void SetResult(object result);
-    }
+    void SetResult(object result);
 }

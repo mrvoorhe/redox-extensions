@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Location
+namespace RedoxExtensions.Location;
+
+public struct FullLocation
 {
-    public struct FullLocation
-    {
-    }
 }

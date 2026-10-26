@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxLib.Objects
+namespace RedoxLib.Objects;
+
+public static class WorldObjectHelpers
 {
-    public static class WorldObjectHelpers
+    public static IWorldObjectIdentified Load(string serializedObject)
     {
-        public static IWorldObjectIdentified Load(string serializedObject)
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
     }
 }

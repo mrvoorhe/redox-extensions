@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using Decal.Adapter.Wrappers;
 
-namespace RedoxLib.Objects
+namespace RedoxLib.Objects;
+
+public interface IHaveCoordsObject
 {
-    public interface IHaveCoordsObject
-    {
-        CoordsObject Coords { get; }
-    }
+    CoordsObject Coords { get; }
 }

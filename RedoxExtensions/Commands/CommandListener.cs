@@ -5,60 +5,59 @@ using System.Text;
 
 using RedoxExtensions.Core;
 
-namespace RedoxExtensions.Commands
+namespace RedoxExtensions.Commands;
+
+internal class CommandListener : IDisposable
 {
-    internal class CommandListener : IDisposable
+    private readonly IDecalEventsProxy _decalEventsProxy;
+
+    internal CommandListener(IDecalEventsProxy decalEventsProxy)
     {
-        private readonly IDecalEventsProxy _decalEventsProxy;
+        this._decalEventsProxy = decalEventsProxy;
+        this._decalEventsProxy.CommandLineText += _decalEventsProxy_CommandLineText;
+        this._decalEventsProxy.ChatBoxMessage += _decalEventsProxy_ChatBoxMessage;
+    }
 
-        internal CommandListener(IDecalEventsProxy decalEventsProxy)
-        {
-            this._decalEventsProxy = decalEventsProxy;
-            this._decalEventsProxy.CommandLineText += _decalEventsProxy_CommandLineText;
-            this._decalEventsProxy.ChatBoxMessage += _decalEventsProxy_ChatBoxMessage;
-        }
+    public void Dispose()
+    {
+        this._decalEventsProxy.CommandLineText -= _decalEventsProxy_CommandLineText;
+        this._decalEventsProxy.ChatBoxMessage -= _decalEventsProxy_ChatBoxMessage;
+    }
 
-        public void Dispose()
+    void _decalEventsProxy_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
+    {
+        if (CommandHelpers.TryParse(e, out var command))
         {
-            this._decalEventsProxy.CommandLineText -= _decalEventsProxy_CommandLineText;
-            this._decalEventsProxy.ChatBoxMessage -= _decalEventsProxy_ChatBoxMessage;
-        }
-
-        void _decalEventsProxy_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
-        {
-            if (CommandHelpers.TryParse(e, out var command))
+            switch (command.CommandType)
             {
-                switch (command.CommandType)
-                {
-                    case CommandType.Foreign:
-                        // Never eat ...Then I can't see the /f messages i'm causing...while others still can
-                        Handlers.ForeignHandler.HandleCommand(command);
-                        break;
-                }
+                case CommandType.Foreign:
+                    // Never eat ...Then I can't see the /f messages i'm causing...while others still can
+                    Handlers.ForeignHandler.HandleCommand(command);
+                    break;
             }
         }
+    }
 
-        void _decalEventsProxy_CommandLineText(object sender, Decal.Adapter.ChatParserInterceptEventArgs e)
+    void _decalEventsProxy_CommandLineText(object sender, Decal.Adapter.ChatParserInterceptEventArgs e)
+    {
+        if (e.Text.StartsWith("/tele "))
         {
-            if (e.Text.StartsWith("/tele "))
-            {
-                // Our teleport is smarter and it's nice to reuse this short /tele command
-                e.Eat = Actions.SimpleActions.Teleport(e.Text.Substring(6), CommandHelpers.Self);
-                if (e.Eat)
-                    return;
-            }
+            // Our teleport is smarter and it's nice to reuse this short /tele command
+            e.Eat = Actions.SimpleActions.Teleport(e.Text.Substring(6), CommandHelpers.Self);
+            if (e.Eat)
+                return;
+        }
 
-            if (CommandHelpers.TryParse(e, out var command))
+        if (CommandHelpers.TryParse(e, out var command))
+        {
+            switch (command.CommandType)
             {
-                switch (command.CommandType)
-                {
-                    case CommandType.RedoxExtension:
-                        e.Eat = Handlers.RedoxExtensionsHandler.HandleCommand(command);
-                        break;
-                    case CommandType.RedoxFellow:
-                        e.Eat = Handlers.RedoxFellowHandler.HandleCommand(command);
-                        break;
-                }
+                case CommandType.RedoxExtension:
+                    e.Eat = Handlers.RedoxExtensionsHandler.HandleCommand(command);
+                    break;
+                case CommandType.RedoxFellow:
+                    e.Eat = Handlers.RedoxFellowHandler.HandleCommand(command);
+                    break;
             }
         }
     }

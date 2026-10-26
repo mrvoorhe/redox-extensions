@@ -4,104 +4,104 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace RedoxExtensions.Wrapper.Diagnostics
+namespace RedoxExtensions.Wrapper.Diagnostics;
+
+public class WrapperDebugWriter
 {
-    public class WrapperDebugWriter
+    private const int DEFAULT_MESSAGE_COLOR = 5;
+    public const int DEBUG_CHAT = 4;
+
+    private const string StaticDebugFileName = "RTDebugStatic.txt";
+
+    protected readonly string _currentPath;
+    protected readonly object _writeLock = new();
+    private readonly string _messagePrefix;
+    private readonly IPluginServices _pluginServices;
+    
+    public bool EnableDiagnosticsLogging { get; set; }
+
+    public WrapperDebugWriter(IPluginServices pluginServices, string logNamePrefix, string logNamePostFix, string messagePrefix)
     {
-        private const int DEFAULT_MESSAGE_COLOR = 5;
-        public const int DEBUG_CHAT = 4;
+        var logFileName = $"{logNamePrefix}_Debug_{logNamePostFix}.txt";
+        this._currentPath = Path.Combine(WrapperUtilities.LogDirectory, logFileName);
+        this._messagePrefix = messagePrefix;
+        this._pluginServices = pluginServices;
 
-        private const string StaticDebugFileName = "RTDebugStatic.txt";
+        this.LogLine("============================================================================");
+        this.LogLine(DateTime.Now.ToString());
+        this.LogLine("============================================================================");
+    }
 
-        protected readonly string _currentPath;
-        protected readonly object _writeLock = new();
-        private readonly string _messagePrefix;
-        private readonly IPluginServices _pluginServices;
+    public WrapperDebugWriter(IPluginServices pluginServices, string logNamePrefix, string messagePrefix)
+        : this(pluginServices, logNamePrefix, pluginServices.CoreManager.CharacterFilter.Name, messagePrefix)
+    {
+    }
+
+    #region Static Methods
+
+    public static void WriteToStaticLog(string source, string text)
+    {
+        using var stream = new StreamWriter(Path.Combine(WrapperUtilities.LogDirectory, StaticDebugFileName), true);
+        stream.WriteLine($"[{source}] [{DateTime.Now.ToString()}] [{System.Threading.Thread.CurrentThread.ManagedThreadId}] - {text}");
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    #region WriteObject
+
+    //public void WriteObject(ChatTextInterceptEventArgs obj)
+    //{
+    //    this.WriteObject(obj, false);
+    //}
+
+    //public void LogObject(ChatTextInterceptEventArgs obj)
+    //{
+    //    this.WriteObject(obj, true);
+    //}
+
+    //public void WriteObject(ChatTextInterceptEventArgs obj, bool toLogFileOnly)
+    //{
+    //    lock (_writeLock)
+    //    {
+    //        using (StreamWriter stream = new StreamWriter(this._currentPath, true))
+    //        {
+    //            this.LogRawMessage(this.FormatWithPrefix("ChatTextInterupt"), stream, toLogFileOnly);
+    //            this.LogRawMessage(string.Format("  Target = {0}", obj.Target), stream, toLogFileOnly);
+    //            this.LogRawMessage(string.Format("  Text = {0}", obj.Text), stream, toLogFileOnly);
+
+    //            //this.WriteCurrentStateStuff(stream, toLogFileOnly);
+    //        }
+    //    }
+    //}
+
+    #endregion
+
+    #region WriteLines
+
+    public void WriteLineDiagnostic(string text)
+    {
+        if (!EnableDiagnosticsLogging)
+            return;
         
-        public bool EnableDiagnosticsLogging { get; set; }
+        WriteLine($"[DEBUG]{text}");
+    }
 
-        public WrapperDebugWriter(IPluginServices pluginServices, string logNamePrefix, string logNamePostFix, string messagePrefix)
-        {
-            var logFileName = $"{logNamePrefix}_Debug_{logNamePostFix}.txt";
-            this._currentPath = Path.Combine(WrapperUtilities.LogDirectory, logFileName);
-            this._messagePrefix = messagePrefix;
-            this._pluginServices = pluginServices;
-
-            this.LogLine("============================================================================");
-            this.LogLine(DateTime.Now.ToString());
-            this.LogLine("============================================================================");
-        }
-
-        public WrapperDebugWriter(IPluginServices pluginServices, string logNamePrefix, string messagePrefix)
-            : this(pluginServices, logNamePrefix, pluginServices.CoreManager.CharacterFilter.Name, messagePrefix)
-        {
-        }
-
-        #region Static Methods
-
-        public static void WriteToStaticLog(string source, string text)
-        {
-            using var stream = new StreamWriter(Path.Combine(WrapperUtilities.LogDirectory, StaticDebugFileName), true);
-            stream.WriteLine($"[{source}] [{DateTime.Now.ToString()}] [{System.Threading.Thread.CurrentThread.ManagedThreadId}] - {text}");
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        #region WriteObject
-
-        //public void WriteObject(ChatTextInterceptEventArgs obj)
-        //{
-        //    this.WriteObject(obj, false);
-        //}
-
-        //public void LogObject(ChatTextInterceptEventArgs obj)
-        //{
-        //    this.WriteObject(obj, true);
-        //}
-
-        //public void WriteObject(ChatTextInterceptEventArgs obj, bool toLogFileOnly)
-        //{
-        //    lock (_writeLock)
-        //    {
-        //        using (StreamWriter stream = new StreamWriter(this._currentPath, true))
-        //        {
-        //            this.LogRawMessage(this.FormatWithPrefix("ChatTextInterupt"), stream, toLogFileOnly);
-        //            this.LogRawMessage(string.Format("  Target = {0}", obj.Target), stream, toLogFileOnly);
-        //            this.LogRawMessage(string.Format("  Text = {0}", obj.Text), stream, toLogFileOnly);
-
-        //            //this.WriteCurrentStateStuff(stream, toLogFileOnly);
-        //        }
-        //    }
-        //}
-
-        #endregion
-
-        #region WriteLines
-
-        public void WriteLineDiagnostic(string text)
-        {
-            if (!EnableDiagnosticsLogging)
-                return;
-            
-            WriteLine($"[DEBUG]{text}");
-        }
-
-        public void WriteLine(string text)
-        {
+    public void WriteLine(string text)
+    {
 #if DEBUG
-            this._pluginServices.WriteToChat(this.FormatWithPrefix(text), DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
+        this._pluginServices.WriteToChat(this.FormatWithPrefix(text), DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
 #endif
 
-            // Log to file as well
-            this.LogLine(text);
-        }
+        // Log to file as well
+        this.LogLine(text);
+    }
 
-        public void WriteLine(string text, params object[] args)
-        {
-            this.WriteLine(string.Format(text, args));
-        }
+    public void WriteLine(string text, params object[] args)
+    {
+        this.WriteLine(string.Format(text, args));
+    }
 
 #endregion
 
@@ -109,41 +109,40 @@ namespace RedoxExtensions.Wrapper.Diagnostics
 
 #region Private Methods
 
-        protected void WriteCurrentStateStuff(StreamWriter echoStream, bool toLogFileOnly)
-        {
-            this.LogRawMessage("  ---State Data---", echoStream, toLogFileOnly);
-            this.LogRawMessage($"  ThreadId = {System.Threading.Thread.CurrentThread.ManagedThreadId}", echoStream, toLogFileOnly);
-            this.LogRawMessage("", echoStream, toLogFileOnly);
-        }
+    protected void WriteCurrentStateStuff(StreamWriter echoStream, bool toLogFileOnly)
+    {
+        this.LogRawMessage("  ---State Data---", echoStream, toLogFileOnly);
+        this.LogRawMessage($"  ThreadId = {System.Threading.Thread.CurrentThread.ManagedThreadId}", echoStream, toLogFileOnly);
+        this.LogRawMessage("", echoStream, toLogFileOnly);
+    }
 
-        protected string FormatWithPrefix(string text) => $"[{this._messagePrefix}-DEBUG] {text}";
+    protected string FormatWithPrefix(string text) => $"[{this._messagePrefix}-DEBUG] {text}";
 
-        protected void LogRawMessage(string text, StreamWriter echoStream)
-        {
-            this.LogRawMessage(text, echoStream, false);
-        }
+    protected void LogRawMessage(string text, StreamWriter echoStream)
+    {
+        this.LogRawMessage(text, echoStream, false);
+    }
 
-        protected void LogRawMessage(string text, StreamWriter echoStream, bool toLogFileOnly)
-        {
+    protected void LogRawMessage(string text, StreamWriter echoStream, bool toLogFileOnly)
+    {
 #if DEBUG
-            if (!toLogFileOnly)
-            {
-                this._pluginServices.WriteToChat(text, DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
-            }
+        if (!toLogFileOnly)
+        {
+            this._pluginServices.WriteToChat(text, DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
+        }
 #endif
 
-            echoStream.WriteLine($"[{this._messagePrefix}] [{DateTime.Now.ToString()}] [{System.Threading.Thread.CurrentThread.ManagedThreadId}] - {text}");
-        }
+        echoStream.WriteLine($"[{this._messagePrefix}] [{DateTime.Now.ToString()}] [{System.Threading.Thread.CurrentThread.ManagedThreadId}] - {text}");
+    }
 
-        private void LogLine(string text)
+    private void LogLine(string text)
+    {
+        lock (_writeLock)
         {
-            lock (_writeLock)
-            {
-                using var stream = new StreamWriter(this._currentPath, true);
-                stream.WriteLine(text);
-            }
+            using var stream = new StreamWriter(this._currentPath, true);
+            stream.WriteLine(text);
         }
+    }
 
 #endregion
-    }
 }

@@ -8,29 +8,28 @@ using NUnit.Framework;
 
 using RedoxExtensions.Commands;
 
-namespace RedoxExtensions.Tests.CommandTests
+namespace RedoxExtensions.Tests.CommandTests;
+
+[TestFixture]
+public class GeneralTests
 {
-    [TestFixture]
-    public class GeneralTests
+    [Test]
+    public void Test_TryParse_WhenNotACommand()
     {
-        [Test]
-        public void Test_TryParse_WhenNotACommand()
-        {
-            const string text = "/r Hello World";
+        const string text = "/r Hello World";
 
-            bool isCommand = CommandHelpers.TryParse(text, out var result);
+        bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-            Assert.IsFalse(isCommand);
-        }
+        Assert.IsFalse(isCommand);
+    }
 
-        [Test]
-        public void Test_TryParse_NormalFellowshipChatMessage()
-        {
-            const string text = "[Fellowship] <Tell:IIDString:0:Redox>Redox<\\Tell> says, \"Hello World\"\n";
+    [Test]
+    public void Test_TryParse_NormalFellowshipChatMessage()
+    {
+        const string text = "[Fellowship] <Tell:IIDString:0:Redox>Redox<\\Tell> says, \"Hello World\"\n";
 
-            bool isCommand = CommandHelpers.TryParse(text, out var result);
+        bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-            Assert.IsFalse(isCommand);
-        }
+        Assert.IsFalse(isCommand);
     }
 }

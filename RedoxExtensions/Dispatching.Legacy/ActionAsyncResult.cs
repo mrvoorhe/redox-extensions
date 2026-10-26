@@ -3,53 +3,52 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace RedoxExtensions.Dispatching.Legacy
+namespace RedoxExtensions.Dispatching.Legacy;
+
+public class ActionAsyncResult<TResult> : IActionAsyncResult<TResult>, IActionAsyncResultCompleter
 {
-    public class ActionAsyncResult<TResult> : IActionAsyncResult<TResult>, IActionAsyncResultCompleter
+    private readonly AutoResetEvent _sharedAutoCompleteEvent;
+    private readonly ManualResetEvent _sharedManualCompleteEvent;
+
+    private TResult _actionResult;
+
+    public ActionAsyncResult(AutoResetEvent autoResetEvent)
     {
-        private readonly AutoResetEvent _sharedAutoCompleteEvent;
-        private readonly ManualResetEvent _sharedManualCompleteEvent;
+        this._sharedAutoCompleteEvent = autoResetEvent;
+        this._sharedManualCompleteEvent = null;
+    }
 
-        private TResult _actionResult;
+    public ActionAsyncResult(ManualResetEvent manualResetEvent)
+    {
+        this._sharedManualCompleteEvent = manualResetEvent;
+        this._sharedAutoCompleteEvent = null;
+    }
 
-        public ActionAsyncResult(AutoResetEvent autoResetEvent)
+    public TResult Wait()
+    {
+        if (this._sharedManualCompleteEvent != null)
         {
-            this._sharedAutoCompleteEvent = autoResetEvent;
-            this._sharedManualCompleteEvent = null;
+            this._sharedManualCompleteEvent.WaitOne();
+        }
+        else
+        {
+            this._sharedAutoCompleteEvent.WaitOne();
         }
 
-        public ActionAsyncResult(ManualResetEvent manualResetEvent)
+        return this._actionResult;
+    }
+
+    public void SetResult(object result)
+    {
+        this._actionResult = (TResult)result;
+
+        if (this._sharedManualCompleteEvent != null)
         {
-            this._sharedManualCompleteEvent = manualResetEvent;
-            this._sharedAutoCompleteEvent = null;
+            this._sharedManualCompleteEvent.Set();
         }
-
-        public TResult Wait()
+        else
         {
-            if (this._sharedManualCompleteEvent != null)
-            {
-                this._sharedManualCompleteEvent.WaitOne();
-            }
-            else
-            {
-                this._sharedAutoCompleteEvent.WaitOne();
-            }
-
-            return this._actionResult;
-        }
-
-        public void SetResult(object result)
-        {
-            this._actionResult = (TResult)result;
-
-            if (this._sharedManualCompleteEvent != null)
-            {
-                this._sharedManualCompleteEvent.Set();
-            }
-            else
-            {
-                this._sharedAutoCompleteEvent.Set();
-            }
+            this._sharedAutoCompleteEvent.Set();
         }
     }
 }

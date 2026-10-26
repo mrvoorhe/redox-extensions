@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxLib
+namespace RedoxLib;
+
+public static class PluginProvider
 {
-    public static class PluginProvider
+    private static IDecalPluginProvider _instance;
+
+    public static IDecalPluginProvider Instance => _instance;
+
+    public static void Set(IDecalPluginProvider instance)
     {
-        private static IDecalPluginProvider _instance;
-
-        public static IDecalPluginProvider Instance => _instance;
-
-        public static void Set(IDecalPluginProvider instance)
+        if (_instance != null)
         {
-            if (_instance != null)
-            {
-                throw new InvalidOperationException("The previous instance was not cleared properly");
-            }
-
-            _instance = instance;
+            throw new InvalidOperationException("The previous instance was not cleared properly");
         }
 
-        public static void Clear()
-        {
-            _instance = null;
-        }
+        _instance = instance;
+    }
+
+    public static void Clear()
+    {
+        _instance = null;
     }
 }

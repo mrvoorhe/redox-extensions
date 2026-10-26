@@ -6,30 +6,29 @@ using NUnit.Framework;
 
 using RedoxExtensions.VirindiInterop;
 
-namespace RedoxExtensions.Tests
+namespace RedoxExtensions.Tests;
+
+[TestFixture]
+public class VTStateScopeTests
 {
-    [TestFixture]
-    public class VTStateScopeTests
+    [Test]
+    public void TestAddOptionIfGoingToChangeWhenShouldBeAddedToChangeList()
     {
-        [Test]
-        public void TestAddOptionIfGoingToChangeWhenShouldBeAddedToChangeList()
-        {
-            var optionsToChange = new List<string>();
+        var optionsToChange = new List<string>();
 
-            VTStateScope.AddOptionIfGoingToChange(optionsToChange, VTStateOptions.DontChange, VTStateOptions.Nav, VTStateOptions.Nav, VTOptionNames.EnableNav);
+        VTStateScope.AddOptionIfGoingToChange(optionsToChange, VTStateOptions.DontChange, VTStateOptions.Nav, VTStateOptions.Nav, VTOptionNames.EnableNav);
 
-            Assert.AreEqual(1, optionsToChange.Count);
-            Assert.AreEqual(VTOptionNames.EnableNav, optionsToChange[0]);
-        }
+        Assert.AreEqual(1, optionsToChange.Count);
+        Assert.AreEqual(VTOptionNames.EnableNav, optionsToChange[0]);
+    }
 
-        [Test]
-        public void TestAddOptionIfGoingToChangeWhenNotAddedDueToNotCheckingSuppliedState()
-        {
-            var optionsToChange = new List<string>();
+    [Test]
+    public void TestAddOptionIfGoingToChangeWhenNotAddedDueToNotCheckingSuppliedState()
+    {
+        var optionsToChange = new List<string>();
 
-            VTStateScope.AddOptionIfGoingToChange(optionsToChange, VTStateOptions.DontChange, VTStateOptions.Nav, VTStateOptions.Combat, VTOptionNames.EnableNav);
+        VTStateScope.AddOptionIfGoingToChange(optionsToChange, VTStateOptions.DontChange, VTStateOptions.Nav, VTStateOptions.Combat, VTOptionNames.EnableNav);
 
-            Assert.AreEqual(0, optionsToChange.Count);
-        }
+        Assert.AreEqual(0, optionsToChange.Count);
     }
 }

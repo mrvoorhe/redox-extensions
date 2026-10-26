@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Data.Events
+namespace RedoxExtensions.Data.Events;
+
+public class BeginBusyEventArgs : EventArgs
 {
-    public class BeginBusyEventArgs : EventArgs
-    {
-    }
 }

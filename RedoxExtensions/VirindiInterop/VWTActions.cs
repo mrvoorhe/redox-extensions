@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using RedoxExtensions.Core.Utilities;
 
-namespace RedoxExtensions.VirindiInterop
+namespace RedoxExtensions.VirindiInterop;
+
+static class VWTActions
 {
-    static class VWTActions
+    public static void Apply(string name)
     {
-        public static void Apply(string name)
-        {
-            ACUtilities.ProcessArbitraryCommand($"/vwt apply {name}");
-        }
+        ACUtilities.ProcessArbitraryCommand($"/vwt apply {name}");
     }
 }

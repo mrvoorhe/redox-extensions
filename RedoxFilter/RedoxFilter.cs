@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxFilter
+namespace RedoxFilter;
+
+public class RedoxFilter
 {
-    public class RedoxFilter
-    {
-    }
 }

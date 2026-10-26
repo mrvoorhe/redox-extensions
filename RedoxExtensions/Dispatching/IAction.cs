@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Dispatching
+namespace RedoxExtensions.Dispatching;
+
+/// <summary>
+/// Place holder interface to hide the full IPipelineAction interface
+/// </summary>
+public interface IAction
 {
-    /// <summary>
-    /// Place holder interface to hide the full IPipelineAction interface
-    /// </summary>
-    public interface IAction
-    {
-    }
 }

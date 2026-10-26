@@ -4,82 +4,81 @@ using System.Linq;
 using System.Text;
 using Decal.Adapter.Wrappers;
 
-namespace RedoxExtensions.Location
+namespace RedoxExtensions.Location;
+
+/// <summary>
+/// Coords in the format you seen in the radar
+/// </summary>
+public class UserFacingLocation
 {
-    /// <summary>
-    /// Coords in the format you seen in the radar
-    /// </summary>
-    public class UserFacingLocation
+    public readonly UserFacingCoord NorthSouth;
+    public readonly UserFacingCoord EastWest;
+
+    public UserFacingLocation(UserFacingCoord northSouth, UserFacingCoord eastWest)
     {
-        public readonly UserFacingCoord NorthSouth;
-        public readonly UserFacingCoord EastWest;
+        if (northSouth.Direction == Direction.E || northSouth.Direction == Direction.W)
+            throw new ArgumentException(nameof(northSouth.Direction));
 
-        public UserFacingLocation(UserFacingCoord northSouth, UserFacingCoord eastWest)
-        {
-            if (northSouth.Direction == Direction.E || northSouth.Direction == Direction.W)
-                throw new ArgumentException(nameof(northSouth.Direction));
+        if (eastWest.Direction == Direction.N || eastWest.Direction == Direction.S)
+            throw new ArgumentException(nameof(eastWest.Direction));
 
-            if (eastWest.Direction == Direction.N || eastWest.Direction == Direction.S)
-                throw new ArgumentException(nameof(eastWest.Direction));
+        
+        NorthSouth = northSouth;
+        EastWest = eastWest;
+    }
 
-            
-            NorthSouth = northSouth;
-            EastWest = eastWest;
-        }
+    public CoordsObject ToCoords()
+    {
+        // TODO by Mike : I think one direction is positive and the other negative.  Need to look up
+        // so I can implement the conversion
+        throw new NotImplementedException();
+    }
 
-        public CoordsObject ToCoords()
-        {
-            // TODO by Mike : I think one direction is positive and the other negative.  Need to look up
-            // so I can implement the conversion
-            throw new NotImplementedException();
-        }
+    public override string ToString() => $"{NorthSouth}, {EastWest}";
 
-        public override string ToString() => $"{NorthSouth}, {EastWest}";
+    public override int GetHashCode() => ToString().GetHashCode();
 
-        public override int GetHashCode() => ToString().GetHashCode();
+    public override bool Equals(object obj)
+    {
+        if (obj == null)
+            return false;
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-                return false;
+        var other = (UserFacingLocation)obj;
+        return NorthSouth == other.NorthSouth && EastWest == other.EastWest;
+    }
 
-            var other = (UserFacingLocation)obj;
-            return NorthSouth == other.NorthSouth && EastWest == other.EastWest;
-        }
+    public static bool operator ==(UserFacingLocation a, UserFacingLocation b)
+    {
+        return a.Equals(b);
+    }
 
-        public static bool operator ==(UserFacingLocation a, UserFacingLocation b)
-        {
-            return a.Equals(b);
-        }
+    public static bool operator !=(UserFacingLocation a, UserFacingLocation b)
+    {
+        return !(a == b);
+    }
 
-        public static bool operator !=(UserFacingLocation a, UserFacingLocation b)
-        {
-            return !(a == b);
-        }
+    public static bool TryParse(string value, out UserFacingLocation location)
+    {
+        location = default(UserFacingLocation);
 
-        public static bool TryParse(string value, out UserFacingLocation location)
-        {
-            location = default(UserFacingLocation);
+        if (string.IsNullOrEmpty(value))
+            return false;
 
-            if (string.IsNullOrEmpty(value))
-                return false;
+        var split = value.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+        if (split.Length > 2)
+            return false;
 
-            var split = value.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-            if (split.Length > 2)
-                return false;
+        // Case when only a comma is used.  Ex: 1.4n,5.4e
+        if (split.Length == 1)
+            split = value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
-            // Case when only a comma is used.  Ex: 1.4n,5.4e
-            if (split.Length == 1)
-                split = value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+        if (!UserFacingCoord.TryParse(split[0], out var ns))
+            return false;
 
-            if (!UserFacingCoord.TryParse(split[0], out var ns))
-                return false;
+        if (!UserFacingCoord.TryParse(split[1], out var ew))
+            return false;
 
-            if (!UserFacingCoord.TryParse(split[1], out var ew))
-                return false;
-
-            location = new UserFacingLocation(ns, ew);
-            return true;
-        }
+        location = new UserFacingLocation(ns, ew);
+        return true;
     }
 }

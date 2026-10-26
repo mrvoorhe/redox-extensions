@@ -5,16 +5,15 @@ using System.Text;
 using uTank2;
 using RedoxExtensions.VirindiInterop.Events;
 
-namespace RedoxExtensions.VirindiInterop
+namespace RedoxExtensions.VirindiInterop;
+
+public interface IVTEventsProxy
 {
-    public interface IVTEventsProxy
-    {
-        event PluginCore.EmptyDelegate ProfileChanged;
-        event PluginCore.NavRouteChangedDelegate NavRouteChanged;
+    event PluginCore.EmptyDelegate ProfileChanged;
+    event PluginCore.NavRouteChangedDelegate NavRouteChanged;
 
-        event PluginCore.EmptyDelegate MacroStateChanged;
+    event PluginCore.EmptyDelegate MacroStateChanged;
 
-        event EventHandler<SpellCastAttemptingEventArgs> SpellCastAttempting;
-        event EventHandler<SpellCastCompleteEventArgs> SpellCastComplete;
-    }
+    event EventHandler<SpellCastAttemptingEventArgs> SpellCastAttempting;
+    event EventHandler<SpellCastCompleteEventArgs> SpellCastComplete;
 }

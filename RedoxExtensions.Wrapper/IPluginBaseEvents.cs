@@ -5,12 +5,11 @@ using System.Text;
 
 using Decal.Adapter;
 
-namespace RedoxExtensions.Wrapper
+namespace RedoxExtensions.Wrapper;
+
+public interface IPluginBaseEvents
 {
-    public interface IPluginBaseEvents
-    {
-        event EventHandler<NetworkMessageEventArgs> ClientDispatch;
-        event EventHandler<NetworkMessageEventArgs> ServerDispatch;
-        //event EventHandler GraphicsReset;
-    }
+    event EventHandler<NetworkMessageEventArgs> ClientDispatch;
+    event EventHandler<NetworkMessageEventArgs> ServerDispatch;
+    //event EventHandler GraphicsReset;
 }

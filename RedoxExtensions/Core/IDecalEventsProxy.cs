@@ -7,72 +7,71 @@ using Decal.Adapter.Wrappers;
 using RedoxExtensions.Data.Events;
 using RedoxExtensions.Wrapper;
 
-namespace RedoxExtensions.Core
+namespace RedoxExtensions.Core;
+
+/// <summary>
+/// An interface that acts as a proxy to decal events.
+/// </summary>
+public interface IDecalEventsProxy : IPluginBaseEvents
 {
+    #region Events from CoreManager
+
+    event EventHandler<ChatParserInterceptEventArgs> CommandLineText;
+
+    event EventHandler<ChatTextInterceptEventArgs> ChatBoxMessage;
+
+    event EventHandler<ItemSelectedEventArgs> ItemSelected;
+
+    event EventHandler<EventArgs> RenderFrame;
+
+    #endregion
+
+    #region Events from CharacterFilter
+
     /// <summary>
-    /// An interface that acts as a proxy to decal events.
+    /// Caused by:
+    /// -Spell Cast Complete
+    /// -Use NPC Complete
+    /// -After using a portal (but before exiting the portal)
+    /// -After using a portal gem
+    /// 
+    /// 
+    /// NOT CAUSED BY:
+    /// - Changing combat stance
+    /// - Equipting or unequiping an item.
+    /// - At any pointing during a recall command (ex: /hom)
     /// </summary>
-    public interface IDecalEventsProxy : IPluginBaseEvents
-    {
-        #region Events from CoreManager
+    event EventHandler ActionComplete;
 
-        event EventHandler<ChatParserInterceptEventArgs> CommandLineText;
+    event EventHandler<ChangePortalModeEventArgs> ChangePortalMode;
 
-        event EventHandler<ChatTextInterceptEventArgs> ChatBoxMessage;
+    event EventHandler<ChangeVitalEventArgs> ChangeVital;
 
-        event EventHandler<ItemSelectedEventArgs> ItemSelected;
+    event EventHandler<DeathEventArgs> Death;
 
-        event EventHandler<EventArgs> RenderFrame;
+    event EventHandler<SpellCastEventArgs> SpellCast;
 
-        #endregion
+    event EventHandler<StatusMessageEventArgs> StatusMessage;
 
-        #region Events from CharacterFilter
+    event EventHandler<ChangeFellowshipEventArgs> ChangeFellowship;
 
-        /// <summary>
-        /// Caused by:
-        /// -Spell Cast Complete
-        /// -Use NPC Complete
-        /// -After using a portal (but before exiting the portal)
-        /// -After using a portal gem
-        /// 
-        /// 
-        /// NOT CAUSED BY:
-        /// - Changing combat stance
-        /// - Equipting or unequiping an item.
-        /// - At any pointing during a recall command (ex: /hom)
-        /// </summary>
-        event EventHandler ActionComplete;
+    #endregion
 
-        event EventHandler<ChangePortalModeEventArgs> ChangePortalMode;
+    #region From WorldFilter
 
-        event EventHandler<ChangeVitalEventArgs> ChangeVital;
+    event EventHandler<ApproachVendorEventArgs> ApproachingVendor;
 
-        event EventHandler<DeathEventArgs> Death;
+    event EventHandler<CreateObjectEventArgs> CreateObject;
 
-        event EventHandler<SpellCastEventArgs> SpellCast;
+    event EventHandler<ChangeObjectEventArgs> ChangeObject;
 
-        event EventHandler<StatusMessageEventArgs> StatusMessage;
+    event EventHandler<MoveObjectEventArgs> MoveObject;
 
-        event EventHandler<ChangeFellowshipEventArgs> ChangeFellowship;
+    #endregion
 
-        #endregion
+    #region From Underlying Hooks
 
-        #region From WorldFilter
+    event EventHandler<StatusTextInterceptEventArgs> StatusTextIntercept;
 
-        event EventHandler<ApproachVendorEventArgs> ApproachingVendor;
-
-        event EventHandler<CreateObjectEventArgs> CreateObject;
-
-        event EventHandler<ChangeObjectEventArgs> ChangeObject;
-
-        event EventHandler<MoveObjectEventArgs> MoveObject;
-
-        #endregion
-
-        #region From Underlying Hooks
-
-        event EventHandler<StatusTextInterceptEventArgs> StatusTextIntercept;
-
-        #endregion
-    }
+    #endregion
 }

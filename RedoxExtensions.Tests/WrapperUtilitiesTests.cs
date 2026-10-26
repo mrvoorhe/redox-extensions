@@ -4,16 +4,15 @@ using System.Text;
 
 using NUnit.Framework;
 
-namespace RedoxExtensions.Tests
+namespace RedoxExtensions.Tests;
+
+[TestFixture]
+public class WrapperUtilitiesTests
 {
-    [TestFixture]
-    public class WrapperUtilitiesTests
+    [Test]
+    public void TestDllFilePathToPdbFilePath()
     {
-        [Test]
-        public void TestDllFilePathToPdbFilePath()
-        {
-            var result = Wrapper.WrapperUtilities.DllFilePathToPdbFilePath(@"C:\some.dll");
-            Assert.AreEqual(@"C:\some.pdb", result);
-        }
+        var result = Wrapper.WrapperUtilities.DllFilePathToPdbFilePath(@"C:\some.dll");
+        Assert.AreEqual(@"C:\some.pdb", result);
     }
 }

@@ -6,42 +6,41 @@ using System.Text;
 using Decal.Adapter.Wrappers;
 using RedoxLib.General;
 
-namespace RedoxExtensions.Data
+namespace RedoxExtensions.Data;
+
+public class GiveItemData
 {
-    public class GiveItemData
+    public GiveItemData(WorldObject item, int giveCount, int targetId)
     {
-        public GiveItemData(WorldObject item, int giveCount, int targetId)
-        {
-            this.Item = item;
-            this.GiveCount = giveCount;
-            this.TargetId = targetId;
-        }
-
-        public WorldObject Item { get; private set; }
-        public int GiveCount { get; private set; }
-        public int TargetId { get; private set; }
-
-        public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data) => new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
+        this.Item = item;
+        this.GiveCount = giveCount;
+        this.TargetId = targetId;
     }
 
-    public class GiveItemSearchData
+    public WorldObject Item { get; private set; }
+    public int GiveCount { get; private set; }
+    public int TargetId { get; private set; }
+
+    public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data) => new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
+}
+
+public class GiveItemSearchData
+{
+    public GiveItemSearchData(Func<WorldObject, bool> predicate, int giveCount, int targetId)
     {
-        public GiveItemSearchData(Func<WorldObject, bool> predicate, int giveCount, int targetId)
-        {
-            this.Predicate = predicate;
-            this.GiveCount = giveCount;
-            this.TargetId = targetId;
-        }
+        this.Predicate = predicate;
+        this.GiveCount = giveCount;
+        this.TargetId = targetId;
+    }
 
-        public Func<WorldObject, bool> Predicate { get; private set; }
-        public int GiveCount { get; private set; }
-        public int TargetId { get; private set; }
+    public Func<WorldObject, bool> Predicate { get; private set; }
+    public int GiveCount { get; private set; }
+    public int TargetId { get; private set; }
 
-        public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data) => new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
+    public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data) => new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
 
-        public IEnumerable<GiveItemData> GetMatches(IEnumerable<WorldObject> sourceCollection)
-        {
-            return sourceCollection.Where(w => this.Predicate(w)).Select(w => new GiveItemData(w, this.GiveCount, this.TargetId));
-        }
+    public IEnumerable<GiveItemData> GetMatches(IEnumerable<WorldObject> sourceCollection)
+    {
+        return sourceCollection.Where(w => this.Predicate(w)).Select(w => new GiveItemData(w, this.GiveCount, this.TargetId));
     }
 }

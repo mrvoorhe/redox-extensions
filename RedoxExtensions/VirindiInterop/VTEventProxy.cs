@@ -6,120 +6,119 @@ using System.Threading;
 using RedoxExtensions.VirindiInterop.Events;
 using RedoxExtensions.Wrapper.Diagnostics;
 
-namespace RedoxExtensions.VirindiInterop
+namespace RedoxExtensions.VirindiInterop;
+
+/// <summary>
+///
+/// </summary>
+public class VTEventProxy : IVTEventsProxy, IDisposable
 {
-    /// <summary>
-    ///
-    /// </summary>
-    public class VTEventProxy : IVTEventsProxy, IDisposable
+    private readonly bool _enableEventDebugLogging;
+
+    private Timer _hackyDelayedRetryInitTimer;
+    private bool _hookedToVTEvents;
+
+    public VTEventProxy(bool enableEventDebugLogging)
     {
-        private readonly bool _enableEventDebugLogging;
+        this._enableEventDebugLogging = enableEventDebugLogging;
 
-        private Timer _hackyDelayedRetryInitTimer;
-        private bool _hookedToVTEvents;
+        this.TrySubscribeToVTEvents();
+    }
 
-        public VTEventProxy(bool enableEventDebugLogging)
+    public event uTank2.PluginCore.EmptyDelegate ProfileChanged;
+
+    public event uTank2.PluginCore.NavRouteChangedDelegate NavRouteChanged;
+
+    public event uTank2.PluginCore.EmptyDelegate MacroStateChanged;
+
+    public event EventHandler<SpellCastAttemptingEventArgs> SpellCastAttempting;
+
+    public event EventHandler<SpellCastCompleteEventArgs> SpellCastComplete;
+
+    public void TrySubscribeToVTEvents()
+    {
+        try
         {
-            this._enableEventDebugLogging = enableEventDebugLogging;
+            // TODO : Do something harmless first that still checks to see if utank is loaded.  Going straight to the
+            // events causes VT to log an error
+            // Do something harmless first to test if the assembly is loaded.  Otherwise VT may log an error.
+            //var tmp = new uTank2.MySortedList<object, object>(0);
 
-            this.TrySubscribeToVTEvents();
-        }
+            // Currently Bugged.  Exception is throw.  See class doc for details.
+            //this._vtEventsProxy = new VTEventProxy(EnableDebugEventLogger);
 
-        public event uTank2.PluginCore.EmptyDelegate ProfileChanged;
+            uTank2.PluginCore.PC.SpellCastComplete += PC_SpellCastComplete;
+            uTank2.PluginCore.PC.SpellCastAttempting += PC_SpellCastAttempting;
 
-        public event uTank2.PluginCore.NavRouteChangedDelegate NavRouteChanged;
+            this._hookedToVTEvents = true;
 
-        public event uTank2.PluginCore.EmptyDelegate MacroStateChanged;
+            REPlugin.Instance.Chat.WriteLine("***Initialization Complete - VTEventProxy****");
 
-        public event EventHandler<SpellCastAttemptingEventArgs> SpellCastAttempting;
-
-        public event EventHandler<SpellCastCompleteEventArgs> SpellCastComplete;
-
-        public void TrySubscribeToVTEvents()
-        {
-            try
-            {
-                // TODO : Do something harmless first that still checks to see if utank is loaded.  Going straight to the
-                // events causes VT to log an error
-                // Do something harmless first to test if the assembly is loaded.  Otherwise VT may log an error.
-                //var tmp = new uTank2.MySortedList<object, object>(0);
-
-                // Currently Bugged.  Exception is throw.  See class doc for details.
-                //this._vtEventsProxy = new VTEventProxy(EnableDebugEventLogger);
-
-                uTank2.PluginCore.PC.SpellCastComplete += PC_SpellCastComplete;
-                uTank2.PluginCore.PC.SpellCastAttempting += PC_SpellCastAttempting;
-
-                this._hookedToVTEvents = true;
-
-                REPlugin.Instance.Chat.WriteLine("***Initialization Complete - VTEventProxy****");
-
-                if (this._hackyDelayedRetryInitTimer != null)
-                {
-                    this._hackyDelayedRetryInitTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                    this._hackyDelayedRetryInitTimer.Dispose();
-                    this._hackyDelayedRetryInitTimer = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                // TODO : Only catch the exception type that is throw by VT.  I believe it is type load.  But need to double check
-                WrapperDebugWriter.WriteToStaticLog("RT", "Warning : Failed to subscribe to VTEvents");
-                WrapperDebugWriter.WriteToStaticLog("RT", ex.Message);
-
-                WrapperDebugWriter.WriteToStaticLog("RT", "");
-                WrapperDebugWriter.WriteToStaticLog("RT", "Starting the hacky retry timer");
-
-                this._hackyDelayedRetryInitTimer ??= new Timer(this.TimerCallback_RetryTryInitializeExternalPluginDependencies, null, 1000, 1000);
-            }
-        }
-
-        public void Dispose()
-        {
-            if(this._hackyDelayedRetryInitTimer != null)
+            if (this._hackyDelayedRetryInitTimer != null)
             {
                 this._hackyDelayedRetryInitTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 this._hackyDelayedRetryInitTimer.Dispose();
-            }
-
-            if (this._hookedToVTEvents)
-            {
-                uTank2.PluginCore.PC.SpellCastComplete -= PC_SpellCastComplete;
-                uTank2.PluginCore.PC.SpellCastAttempting -= PC_SpellCastAttempting;
+                this._hackyDelayedRetryInitTimer = null;
             }
         }
-
-        private void PC_SpellCastComplete(int spellID, int target, int duration)
+        catch (Exception ex)
         {
-            REPlugin.Instance.InvokeOperationSafely(() =>
+            // TODO : Only catch the exception type that is throw by VT.  I believe it is type load.  But need to double check
+            WrapperDebugWriter.WriteToStaticLog("RT", "Warning : Failed to subscribe to VTEvents");
+            WrapperDebugWriter.WriteToStaticLog("RT", ex.Message);
+
+            WrapperDebugWriter.WriteToStaticLog("RT", "");
+            WrapperDebugWriter.WriteToStaticLog("RT", "Starting the hacky retry timer");
+
+            this._hackyDelayedRetryInitTimer ??= new Timer(this.TimerCallback_RetryTryInitializeExternalPluginDependencies, null, 1000, 1000);
+        }
+    }
+
+    public void Dispose()
+    {
+        if(this._hackyDelayedRetryInitTimer != null)
+        {
+            this._hackyDelayedRetryInitTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            this._hackyDelayedRetryInitTimer.Dispose();
+        }
+
+        if (this._hookedToVTEvents)
+        {
+            uTank2.PluginCore.PC.SpellCastComplete -= PC_SpellCastComplete;
+            uTank2.PluginCore.PC.SpellCastAttempting -= PC_SpellCastAttempting;
+        }
+    }
+
+    private void PC_SpellCastComplete(int spellID, int target, int duration)
+    {
+        REPlugin.Instance.InvokeOperationSafely(() =>
+        {
+            var eventArgs = new SpellCastCompleteEventArgs(spellID, target, duration);
+            if (this._enableEventDebugLogging)
             {
-                var eventArgs = new SpellCastCompleteEventArgs(spellID, target, duration);
-                if (this._enableEventDebugLogging)
-                {
-                    REPlugin.Instance.Debug.WriteObject(eventArgs);
-                }
+                REPlugin.Instance.Debug.WriteObject(eventArgs);
+            }
 
-                this.SpellCastComplete?.Invoke(uTank2.PluginCore.PC, eventArgs);
-            });
-        }
+            this.SpellCastComplete?.Invoke(uTank2.PluginCore.PC, eventArgs);
+        });
+    }
 
-        private void PC_SpellCastAttempting(int spellID, int target, int skill)
+    private void PC_SpellCastAttempting(int spellID, int target, int skill)
+    {
+        REPlugin.Instance.InvokeOperationSafely(() =>
         {
-            REPlugin.Instance.InvokeOperationSafely(() =>
+            var eventArgs = new SpellCastAttemptingEventArgs(spellID, target, skill);
+            if (this._enableEventDebugLogging)
             {
-                var eventArgs = new SpellCastAttemptingEventArgs(spellID, target, skill);
-                if (this._enableEventDebugLogging)
-                {
-                    REPlugin.Instance.Debug.WriteObject(eventArgs);
-                }
+                REPlugin.Instance.Debug.WriteObject(eventArgs);
+            }
 
-                this.SpellCastAttempting?.Invoke(uTank2.PluginCore.PC, eventArgs);
-            });
-        }
+            this.SpellCastAttempting?.Invoke(uTank2.PluginCore.PC, eventArgs);
+        });
+    }
 
-        private void TimerCallback_RetryTryInitializeExternalPluginDependencies(object state)
-        {
-            REPlugin.Instance.InvokeOperationSafely(this.TrySubscribeToVTEvents);
-        }
+    private void TimerCallback_RetryTryInitializeExternalPluginDependencies(object state)
+    {
+        REPlugin.Instance.InvokeOperationSafely(this.TrySubscribeToVTEvents);
     }
 }

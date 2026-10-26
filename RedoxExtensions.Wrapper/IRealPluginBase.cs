@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedoxExtensions.Wrapper
+namespace RedoxExtensions.Wrapper;
+
+public interface IRealPluginBase
 {
-    public interface IRealPluginBase
-    {
-        CoreManager CoreManager { get; }
-        PluginHost PluginHost { get; }
-    }
+    CoreManager CoreManager { get; }
+    PluginHost PluginHost { get; }
 }

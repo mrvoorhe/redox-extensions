@@ -16,155 +16,154 @@ using RedoxExtensions.Diagnostics;
 using RedoxExtensions.Dispatching;
 using RedoxLib.Utilities;
 
-namespace RedoxExtensions.Actions.Dispatched.Internal
+namespace RedoxExtensions.Actions.Dispatched.Internal;
+
+public class UseNpc : AbstractPipelineAction
 {
-    public class UseNpc : AbstractPipelineAction
+    private readonly int _npcId;
+
+    private FilteredChatBoxMessageEventProvider _npcResponseListener;
+    private string _npcName;
+
+    private VTRunScope _originalVTScope;
+    private WorldObjectMutex _woMutex;
+
+    private bool _disposed;
+
+    public UseNpc(ISupportFeedback requestor, int npcId)
+        : base(requestor)
     {
-        private readonly int _npcId;
-
-        private FilteredChatBoxMessageEventProvider _npcResponseListener;
-        private string _npcName;
-
-        private VTRunScope _originalVTScope;
-        private WorldObjectMutex _woMutex;
-
-        private bool _disposed;
-
-        public UseNpc(ISupportFeedback requestor, int npcId)
-            : base(requestor)
-        {
-            this._npcId = npcId;
-        }
-
-        #region Public Static Methods
-
-        public static IAction Create(ICommand command)
-        {
-            var npcId = int.Parse(command.Arguments[0].Trim());
-            return Create(command, npcId);
-        }
-
-        public static IAction Create(ISupportFeedback requestor, int npcId) => new UseNpc(requestor, npcId);
-
-        #endregion
-
-        #region Properties
-
-        public override bool RequireIdleToPerform => true;
-
-        public override VTRunState DesiredVTRunState => VTRunState.Off;
-
-        protected override int MaxTries => 20;
-
-        protected override int WaitTimeoutInMilliseconds => 500;
-
-        #endregion
-
-        #region Methods
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && !this._disposed)
-            {
-                this._npcResponseListener.Dispose();
-                this._disposed = true;
-            }
-
-            base.Dispose(disposing);
-        }
-
-        protected override bool DoReady(int attemptsThusFar)
-        {
-            //  The first couple times, let's just spam use the npc.  Some of them you can use quickly and there is no need
-            //  to get bogged down syncing up with a global lock
-            if (attemptsThusFar < 10)
-                return true;
-
-            _woMutex ??= WorldObjectMutex.Create(_npcId.ToWorldObject());
-
-            if (_woMutex.TryObtain(0))
-                return true;
-
-            return false;
-        }
-
-        protected override void DoPeform()
-        {
-            REPlugin.Instance.PluginHost.Actions.SelectItem(this._npcId);
-            REPlugin.Instance.PluginHost.Actions.UseItem(this._npcId, 0);
-        }
-
-        protected override void InitializeData()
-        {
-            this._npcResponseListener = new FilteredChatBoxMessageEventProvider(REPlugin.Instance.Events.Decal, Mag.Shared.Util.ChatFlags.NpcTellsYou, Mag.Shared.Util.ChatChannels.Tells);
-
-            WorldObject npcObject = REPlugin.Instance.CoreManager.WorldFilter[this._npcId];
-
-            this._npcName = npcObject.Name;
-
-            REPlugin.Instance.Debug.WriteLine($"Will attempt to speak with : {this._npcName}");
-        }
-
-        protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
-        {
-            if (_woMutex != null)
-                _woMutex.Dispose();
-
-            switch (finalOutcome)
-            {
-                case WaitForCompleteOutcome.Success:
-                    if (!this.Requestor.FromSelf)
-                    {
-                        this.Requestor.GiveFeedback(FeedbackType.Successful, "{0}, I spoke to {1}", this.Requestor.SourceCharacter, this._npcName);
-                    }
-                    break;
-                default:
-                    this.Requestor.GiveFeedback(FeedbackType.Failed, "{0}, I FAILED to speak with {1}", this.Requestor.SourceCharacter, this._npcName);
-                    break;
-            }
-        }
-
-        protected override void HookEvents()
-        {
-            this._npcResponseListener.FilteredChatBoxMessage += _npcResponseListener_FilteredChatBoxMessage;
-            REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
-        }
-
-        private void Decal_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
-        {
-            // Sometimes the npc won't say anything, all you get is a message about needing to wait.  When this happens, we need to count this
-            // as a successful use as well.
-
-            // NOTE : Some special NPC's don't send you a tell, they just result in a chatbox message.  Since the list of possible Text is endless,
-            // we'll try to filter down a bit by checking the color value for the value that we normally get when using an NPC
-            // This could potentially result in false positives. But I think the odds are low and favoring success over failed will normally give a slightly better behavior
-            // since failing means retry over and over
-            if (e.Color == 0 && e.Target == 0)
-            {
-                // Filter out some common false positive scenarios
-                if (e.Text.Contains("is now level"))
-                    return;
-
-                this.Successful.Set();
-            }
-        }
-
-        protected override void UnhookEvents()
-        {
-            this._npcResponseListener.FilteredChatBoxMessage -= _npcResponseListener_FilteredChatBoxMessage;
-            REPlugin.Instance.Events.Decal.ChatBoxMessage -= Decal_ChatBoxMessage;
-        }
-
-        private void _npcResponseListener_FilteredChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
-        {
-            string source = ChatParsingUtilities.GetSourceOfChat(e.Text);
-            if (source == this._npcName)
-            {
-                REPlugin.Instance.Debug.WriteLine($"Received confirmation that I spoke with : {this._npcName}");
-                this.Successful.Set();
-            }
-        }
-
-        #endregion
+        this._npcId = npcId;
     }
+
+    #region Public Static Methods
+
+    public static IAction Create(ICommand command)
+    {
+        var npcId = int.Parse(command.Arguments[0].Trim());
+        return Create(command, npcId);
+    }
+
+    public static IAction Create(ISupportFeedback requestor, int npcId) => new UseNpc(requestor, npcId);
+
+    #endregion
+
+    #region Properties
+
+    public override bool RequireIdleToPerform => true;
+
+    public override VTRunState DesiredVTRunState => VTRunState.Off;
+
+    protected override int MaxTries => 20;
+
+    protected override int WaitTimeoutInMilliseconds => 500;
+
+    #endregion
+
+    #region Methods
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && !this._disposed)
+        {
+            this._npcResponseListener.Dispose();
+            this._disposed = true;
+        }
+
+        base.Dispose(disposing);
+    }
+
+    protected override bool DoReady(int attemptsThusFar)
+    {
+        //  The first couple times, let's just spam use the npc.  Some of them you can use quickly and there is no need
+        //  to get bogged down syncing up with a global lock
+        if (attemptsThusFar < 10)
+            return true;
+
+        _woMutex ??= WorldObjectMutex.Create(_npcId.ToWorldObject());
+
+        if (_woMutex.TryObtain(0))
+            return true;
+
+        return false;
+    }
+
+    protected override void DoPeform()
+    {
+        REPlugin.Instance.PluginHost.Actions.SelectItem(this._npcId);
+        REPlugin.Instance.PluginHost.Actions.UseItem(this._npcId, 0);
+    }
+
+    protected override void InitializeData()
+    {
+        this._npcResponseListener = new FilteredChatBoxMessageEventProvider(REPlugin.Instance.Events.Decal, Mag.Shared.Util.ChatFlags.NpcTellsYou, Mag.Shared.Util.ChatChannels.Tells);
+
+        WorldObject npcObject = REPlugin.Instance.CoreManager.WorldFilter[this._npcId];
+
+        this._npcName = npcObject.Name;
+
+        REPlugin.Instance.Debug.WriteLine($"Will attempt to speak with : {this._npcName}");
+    }
+
+    protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
+    {
+        if (_woMutex != null)
+            _woMutex.Dispose();
+
+        switch (finalOutcome)
+        {
+            case WaitForCompleteOutcome.Success:
+                if (!this.Requestor.FromSelf)
+                {
+                    this.Requestor.GiveFeedback(FeedbackType.Successful, "{0}, I spoke to {1}", this.Requestor.SourceCharacter, this._npcName);
+                }
+                break;
+            default:
+                this.Requestor.GiveFeedback(FeedbackType.Failed, "{0}, I FAILED to speak with {1}", this.Requestor.SourceCharacter, this._npcName);
+                break;
+        }
+    }
+
+    protected override void HookEvents()
+    {
+        this._npcResponseListener.FilteredChatBoxMessage += _npcResponseListener_FilteredChatBoxMessage;
+        REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
+    }
+
+    private void Decal_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
+    {
+        // Sometimes the npc won't say anything, all you get is a message about needing to wait.  When this happens, we need to count this
+        // as a successful use as well.
+
+        // NOTE : Some special NPC's don't send you a tell, they just result in a chatbox message.  Since the list of possible Text is endless,
+        // we'll try to filter down a bit by checking the color value for the value that we normally get when using an NPC
+        // This could potentially result in false positives. But I think the odds are low and favoring success over failed will normally give a slightly better behavior
+        // since failing means retry over and over
+        if (e.Color == 0 && e.Target == 0)
+        {
+            // Filter out some common false positive scenarios
+            if (e.Text.Contains("is now level"))
+                return;
+
+            this.Successful.Set();
+        }
+    }
+
+    protected override void UnhookEvents()
+    {
+        this._npcResponseListener.FilteredChatBoxMessage -= _npcResponseListener_FilteredChatBoxMessage;
+        REPlugin.Instance.Events.Decal.ChatBoxMessage -= Decal_ChatBoxMessage;
+    }
+
+    private void _npcResponseListener_FilteredChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
+    {
+        string source = ChatParsingUtilities.GetSourceOfChat(e.Text);
+        if (source == this._npcName)
+        {
+            REPlugin.Instance.Debug.WriteLine($"Received confirmation that I spoke with : {this._npcName}");
+            this.Successful.Set();
+        }
+    }
+
+    #endregion
 }

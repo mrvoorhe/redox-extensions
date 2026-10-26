@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RedoxExtensions.Diagnostics
-{
-    public interface ILoggableObject
-    {
-        DebugLevel MinimumRequiredDebugLevel { get; }
+namespace RedoxExtensions.Diagnostics;
 
-        string GetLoggableFormat();
-    }
+public interface ILoggableObject
+{
+    DebugLevel MinimumRequiredDebugLevel { get; }
+
+    string GetLoggableFormat();
 }

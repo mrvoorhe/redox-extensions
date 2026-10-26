@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using NiceIO;
 
-namespace RedoxExtensions.Settings
+namespace RedoxExtensions.Settings;
+
+public class Main
 {
-    public class Main
-    {
-        public string UserSettingsFilePath;
-    }
+    public string UserSettingsFilePath;
 }

@@ -5,65 +5,64 @@ using System.Threading;
 
 using RedoxExtensions.Dispatching;
 
-namespace RedoxExtensions.Listeners
+namespace RedoxExtensions.Listeners;
+
+public class TellListener : IDisposable
 {
-    public class TellListener : IDisposable
+    private readonly string _expectedSourceName;
+    private readonly ManualResetEvent _tellReceivedWaitHandle = new(false);
+    private readonly bool _unhookOnMatch;
+
+    private bool _unhooked;
+
+    private TellListener(string expectedSourceName, bool unhookOnMatch)
     {
-        private readonly string _expectedSourceName;
-        private readonly ManualResetEvent _tellReceivedWaitHandle = new(false);
-        private readonly bool _unhookOnMatch;
+        this._expectedSourceName = expectedSourceName;
+        this._unhookOnMatch = unhookOnMatch;
+        REPlugin.Instance.CoreManager.CommandLineText += CoreManager_CommandLineText;
+    }
 
-        private bool _unhooked;
+    public static TellListener Begin(string expectedSourceName, bool unhookOnMatch) => new TellListener(expectedSourceName, unhookOnMatch);
 
-        private TellListener(string expectedSourceName, bool unhookOnMatch)
+    public WaitHandle TellReceived => this._tellReceivedWaitHandle;
+
+    public void Reset()
+    {
+        if (this._unhookOnMatch)
         {
-            this._expectedSourceName = expectedSourceName;
-            this._unhookOnMatch = unhookOnMatch;
-            REPlugin.Instance.CoreManager.CommandLineText += CoreManager_CommandLineText;
+            throw new InvalidOperationException("Reset can't be used when unhookOnMatch is true");
         }
 
-        public static TellListener Begin(string expectedSourceName, bool unhookOnMatch) => new TellListener(expectedSourceName, unhookOnMatch);
+        this._tellReceivedWaitHandle.Reset();
+    }
 
-        public WaitHandle TellReceived => this._tellReceivedWaitHandle;
-
-        public void Reset()
+    public void Dispose()
+    {
+        if (!this._unhooked)
         {
-            if (this._unhookOnMatch)
-            {
-                throw new InvalidOperationException("Reset can't be used when unhookOnMatch is true");
-            }
-
-            this._tellReceivedWaitHandle.Reset();
+            REPlugin.Instance.CoreManager.CommandLineText -= CoreManager_CommandLineText;
         }
 
-        public void Dispose()
-        {
-            if (!this._unhooked)
-            {
-                REPlugin.Instance.CoreManager.CommandLineText -= CoreManager_CommandLineText;
-            }
+        this._tellReceivedWaitHandle.Close();
+    }
 
-            this._tellReceivedWaitHandle.Close();
-        }
-
-        private void CoreManager_CommandLineText(object sender, Decal.Adapter.ChatParserInterceptEventArgs e)
+    private void CoreManager_CommandLineText(object sender, Decal.Adapter.ChatParserInterceptEventArgs e)
+    {
+        REPlugin.Instance.InvokeOperationSafely(() =>
         {
-            REPlugin.Instance.InvokeOperationSafely(() =>
+            if (ChatEvent.TryParse(e.Text, out var chatEvent))
             {
-                if (ChatEvent.TryParse(e.Text, out var chatEvent))
+                if (chatEvent.SourceName.Equals(this._expectedSourceName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (chatEvent.SourceName.Equals(this._expectedSourceName, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        this._tellReceivedWaitHandle.Set();
+                    this._tellReceivedWaitHandle.Set();
 
-                        if (this._unhookOnMatch)
-                        {
-                            this._unhooked = true;
-                            REPlugin.Instance.CoreManager.CommandLineText -= CoreManager_CommandLineText;
-                        }
+                    if (this._unhookOnMatch)
+                    {
+                        this._unhooked = true;
+                        REPlugin.Instance.CoreManager.CommandLineText -= CoreManager_CommandLineText;
                     }
                 }
-            });
-        }
+            }
+        });
     }
 }

@@ -10,580 +10,579 @@ using Mag.Shared;
 using RedoxExtensions.Core.Utilities;
 using RedoxLib.General;
 
-namespace RedoxExtensions.Commands
+namespace RedoxExtensions.Commands;
+
+public static class CommandHelpers
 {
-    public static class CommandHelpers
+    private static readonly ISupportFeedback _self = new SelfCommandSource();
+
+    public const string DefaultYouValue = "You";
+
+    public const string ForeignCommandAllPrefix = "^";
+    public const string ForeignCommandSlavesOnlyPrefix = "#";
+    public const string ForeignCommandMasterOnlyPrefix = "$";
+
+    private const char ForeignCommandArgumentSeparator = '|';
+    private const char DirectEntryCommandArgumentSeparator = ' ';
+
+    private const char MetaDataArgumentSeparator = '|';
+
+    private const string RedoxExtensionsCommandPrefix = "/re";
+    private const string RedoxFellowCommandPrefix = "/rf";
+
+    public static ISupportFeedback Self => _self;
+
+    #region Command Text Creation
+
+    public static string CreateRedoxExtensionsCommandText(string cmdName) => $"/re {cmdName}";
+
+    public static string CreateRedoxExtensionsCommandText(string cmdName, params object[] args)
     {
-        private static readonly ISupportFeedback _self = new SelfCommandSource();
+        var collapsedArgs = CollapseDirectEntryCommandArguments(args);
+        return $"{CreateRedoxExtensionsCommandText(cmdName)} {collapsedArgs}";
+    }
 
-        public const string DefaultYouValue = "You";
+    public static string CreateRedoxFellowCommandText(string cmdName) => $"/rf {cmdName}";
 
-        public const string ForeignCommandAllPrefix = "^";
-        public const string ForeignCommandSlavesOnlyPrefix = "#";
-        public const string ForeignCommandMasterOnlyPrefix = "$";
+    public static string CreateRedoxFellowCommandText(string cmdName, params object[] args)
+    {
+        var collapsedArgs = CollapseDirectEntryCommandArguments(args);
+        return $"{CreateRedoxFellowCommandText(cmdName)} {collapsedArgs}";
+    }
 
-        private const char ForeignCommandArgumentSeparator = '|';
-        private const char DirectEntryCommandArgumentSeparator = ' ';
+    public static string CreateForeignCommandText(string cmdName) => $"{ForeignCommandAllPrefix}{cmdName}";
 
-        private const char MetaDataArgumentSeparator = '|';
+    public static string CreateForeignCommandText(string cmdName, params object[] args)
+    {
+        var collapsedArgs = CollapseForeignCommandArguments(args);
+        return $"{CreateForeignCommandText(cmdName)} {collapsedArgs}";
+    }
 
-        private const string RedoxExtensionsCommandPrefix = "/re";
-        private const string RedoxFellowCommandPrefix = "/rf";
+    public static string CreateForeignSlaveOnlyCommandText(string cmdName) => $"{ForeignCommandSlavesOnlyPrefix}{cmdName}";
 
-        public static ISupportFeedback Self => _self;
+    public static string CreateForeignSlaveOnlyCommandText(string cmdName, params object[] args)
+    {
+        var collapsedArgs = CollapseForeignCommandArguments(args);
+        return $"{CreateForeignSlaveOnlyCommandText(cmdName)} {collapsedArgs}";
+    }
 
-        #region Command Text Creation
+    public static string CreateForeignMasterOnlyCommandText(string cmdName) => $"{ForeignCommandMasterOnlyPrefix}{cmdName}";
 
-        public static string CreateRedoxExtensionsCommandText(string cmdName) => $"/re {cmdName}";
+    public static string CreateForeignMasterOnlyCommandText(string cmdName, params object[] args)
+    {
+        var collapsedArgs = CollapseForeignCommandArguments(args);
+        return $"{CreateForeignMasterOnlyCommandText(cmdName)} {collapsedArgs}";
+    }
 
-        public static string CreateRedoxExtensionsCommandText(string cmdName, params object[] args)
+    #region Conversions
+
+    public static string ConvertToForeignCommandText(ICommand command, TargetType targetType = TargetType.All)
+    {
+        return ConvertToForeignCommandText(command, targetType, null);
+    }
+
+    public static string ConvertToForeignCommandTextAppendCurrentSelect(ICommand command, TargetType targetType = TargetType.All)
+    {
+        return ConvertToForeignCommandText(command, targetType, REPlugin.Instance.PluginHost.Actions.CurrentSelection);
+    }
+
+    public static string ConvertToForeignCommandText(ICommand command, params object[] appendAdditionalArgs)
+    {
+        return ConvertToForeignCommandText(command, TargetType.All, appendAdditionalArgs);
+    }
+
+    public static string ConvertToForeignCommandText(ICommand command, TargetType targetType, params object[] appendAdditionalArgs)
+    {
+        var prefix = GetForeignPrefixForTargetType(targetType);
+        var args = command.Arguments.ToList();
+
+        if (appendAdditionalArgs != null)
         {
-            var collapsedArgs = CollapseDirectEntryCommandArguments(args);
-            return $"{CreateRedoxExtensionsCommandText(cmdName)} {collapsedArgs}";
+            args.AddRange(appendAdditionalArgs.Select(a => a.ToString()));
         }
 
-        public static string CreateRedoxFellowCommandText(string cmdName) => $"/rf {cmdName}";
+        var collapsedArgs = CollapseForeignCommandArguments(args.Cast<object>());
 
-        public static string CreateRedoxFellowCommandText(string cmdName, params object[] args)
+        return $"{prefix}{command.Name} {collapsedArgs}".TrimEnd();
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Meta Data
+
+    public static string AppendMetaData(string command, params string[] data)
+    {
+        var collapsedData = CollapseMetaData(data);
+
+        // Append to the of the command
+        return $"{command} {collapsedData}";
+    }
+
+    public static string StripMetaData(string message, out IEnumerable<string> data)
+    {
+        if (!message.EndsWith(")"))
         {
-            var collapsedArgs = CollapseDirectEntryCommandArguments(args);
-            return $"{CreateRedoxFellowCommandText(cmdName)} {collapsedArgs}";
+            // There is no meta data.  Return
+            data = new List<string>();
+            return message;
         }
 
-        public static string CreateForeignCommandText(string cmdName) => $"{ForeignCommandAllPrefix}{cmdName}";
+        var indexOfMetaStart = message.IndexOf('(');
 
-        public static string CreateForeignCommandText(string cmdName, params object[] args)
+        var strippedMessage = message.Substring(0, indexOfMetaStart).Trim();
+
+        var metaData = message.Substring(indexOfMetaStart);
+
+        data = SplitMetaData(metaData);
+        return strippedMessage;
+    }
+
+    #endregion
+
+    #region ICommand Parsing
+
+    public static bool TryParse(ChatParserInterceptEventArgs eventArgs, out ICommand command) => TryParse(eventArgs.Text, out command);
+
+    public static bool TryParse(ChatTextInterceptEventArgs eventArgs, out ICommand command) => TryParse(eventArgs.Text, out command);
+
+    public static bool TryParse(string text, out ICommand command)
+    {
+        // Check for direct entry
+        if (text.StartsWith(RedoxExtensionsCommandPrefix))
         {
-            var collapsedArgs = CollapseForeignCommandArguments(args);
-            return $"{CreateForeignCommandText(cmdName)} {collapsedArgs}";
+            command = ParseDirectEntry(text, text.Substring(RedoxExtensionsCommandPrefix.Length + 1), CommandType.RedoxExtension);
+            return true;
         }
 
-        public static string CreateForeignSlaveOnlyCommandText(string cmdName) => $"{ForeignCommandSlavesOnlyPrefix}{cmdName}";
-
-        public static string CreateForeignSlaveOnlyCommandText(string cmdName, params object[] args)
+        if (text.StartsWith(RedoxFellowCommandPrefix))
         {
-            var collapsedArgs = CollapseForeignCommandArguments(args);
-            return $"{CreateForeignSlaveOnlyCommandText(cmdName)} {collapsedArgs}";
+            command = ParseDirectEntry(text, text.Substring(RedoxFellowCommandPrefix.Length + 1), CommandType.RedoxFellow);
+            return true;
         }
 
-        public static string CreateForeignMasterOnlyCommandText(string cmdName) => $"{ForeignCommandMasterOnlyPrefix}{cmdName}";
+        var cleanedText = text;
 
-        public static string CreateForeignMasterOnlyCommandText(string cmdName, params object[] args)
+        // First, simplify to the simple tell format.  Removing the IIDString stuff.
+        if (ChatParsingUtilities.IsComplexTellFormat(cleanedText))
         {
-            var collapsedArgs = CollapseForeignCommandArguments(args);
-            return $"{CreateForeignMasterOnlyCommandText(cmdName)} {collapsedArgs}";
+            cleanedText = ChatParsingUtilities.CleanTellText(cleanedText);
         }
 
-        #region Conversions
 
-        public static string ConvertToForeignCommandText(ICommand command, TargetType targetType = TargetType.All)
+        // Remove any newlines in the cleaned version
+        cleanedText = cleanedText.Trim('\n');
+        var originalTextMinuxNewline = text.Trim('\n');
+
+        string viChannel, source, message;
+        if (ChatParsingUtilities.IsVIMessage(cleanedText, out viChannel, out source, out message))
         {
-            return ConvertToForeignCommandText(command, targetType, null);
+            // It's a VI message.
+            return TryParseFromVITell(text, viChannel, source, message, out command);
         }
 
-        public static string ConvertToForeignCommandTextAppendCurrentSelect(ICommand command, TargetType targetType = TargetType.All)
+        // It's not a VI message, let's see if it's any of the native tells we care about
+        return TryParseFromNativeTell(text, originalTextMinuxNewline, cleanedText, out command);
+    }
+
+    #endregion
+
+    #region Outcome Reporting
+
+    public static void ReportOutcome(ISourceInformation source, string text)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static void ReportOutcome(ISourceInformation source, string text, params object[] args)
+    {
+        ReportOutcome(source, string.Format(text, args));
+    }
+
+    #endregion
+
+    #region Argument Collapsing
+
+    public static string CollapseDirectEntryCommandArguments(IEnumerable<string> args) => CollapseDirectEntryCommandArguments(args.Cast<object>());
+
+    public static string CollapseDirectEntryCommandArguments(IEnumerable<object> args)
+    {
+        return args.Aggregate(string.Empty, (accum, next) => $"{accum}{DirectEntryCommandArgumentSeparator}{next}").Trim();
+    }
+
+    public static string CollapseForeignCommandArguments(IEnumerable<string> args) => CollapseForeignCommandArguments(args.Cast<object>());
+
+    public static string CollapseForeignCommandArguments(IEnumerable<object> args)
+    {
+        return args.Aggregate(string.Empty, (accum, next) => $"{accum}{ForeignCommandArgumentSeparator}{next}").Trim().TrimStart(ForeignCommandArgumentSeparator);
+    }
+
+    public static string CollapseMetaData(IEnumerable<string> data)
+    {
+        var joinedData = data.Aggregate(string.Empty, (accum, next) => $"{accum}{MetaDataArgumentSeparator}{next}").Trim().TrimStart(MetaDataArgumentSeparator);
+        return $"({joinedData})";
+    }
+
+    #endregion
+
+    #region Command & Argument Splitting
+
+    /// <summary>
+    /// Ex: "give keys"
+    ///         returns ("give", "keys")
+    /// 
+    ///      "!give keys"
+    ///         returns ("!give", "keys")
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    public static Pair<string, string> SplitCommandAndArguments(string message)
+    {
+
+        string commandName = string.Empty;
+        string commandArguments = string.Empty;
+        var firstSpaceIndex = message.IndexOf(' ');
+        if (firstSpaceIndex > 0)
         {
-            return ConvertToForeignCommandText(command, targetType, REPlugin.Instance.PluginHost.Actions.CurrentSelection);
+            commandName = message.Substring(0, firstSpaceIndex);
+            var beginningOfValue = commandName.Length + 1;
+            commandArguments = message.Substring(beginningOfValue, (message.Length - beginningOfValue)).Trim();
+        }
+        else
+        {
+            // The command has no arguments.
+            commandName = message.Trim();
         }
 
-        public static string ConvertToForeignCommandText(ICommand command, params object[] appendAdditionalArgs)
+        return new Pair<string, string>(commandName, commandArguments);
+    }
+
+    public static IEnumerable<string> SplitDirectEntryArguments(string argumentString)
+    {
+        if (string.IsNullOrEmpty(argumentString))
         {
-            return ConvertToForeignCommandText(command, TargetType.All, appendAdditionalArgs);
+            return new List<string>();
         }
 
-        public static string ConvertToForeignCommandText(ICommand command, TargetType targetType, params object[] appendAdditionalArgs)
+        var tmp = argumentString.Split(DirectEntryCommandArgumentSeparator);
+        for (int i = 0; i < tmp.Length; i++)
         {
-            var prefix = GetForeignPrefixForTargetType(targetType);
-            var args = command.Arguments.ToList();
-
-            if (appendAdditionalArgs != null)
-            {
-                args.AddRange(appendAdditionalArgs.Select(a => a.ToString()));
-            }
-
-            var collapsedArgs = CollapseForeignCommandArguments(args.Cast<object>());
-
-            return $"{prefix}{command.Name} {collapsedArgs}".TrimEnd();
+            tmp[i] = tmp[i].Trim();
         }
 
-        #endregion
+        return tmp;
+    }
 
-        #endregion
-
-        #region Meta Data
-
-        public static string AppendMetaData(string command, params string[] data)
+    public static IEnumerable<string> SplitForeignArguments(string argumentString)
+    {
+        if (string.IsNullOrEmpty(argumentString))
         {
-            var collapsedData = CollapseMetaData(data);
-
-            // Append to the of the command
-            return $"{command} {collapsedData}";
+            return new List<string>();
         }
 
-        public static string StripMetaData(string message, out IEnumerable<string> data)
+        var tmp = argumentString.Split(ForeignCommandArgumentSeparator);
+        for (int i = 0; i < tmp.Length; i++)
         {
-            if (!message.EndsWith(")"))
-            {
-                // There is no meta data.  Return
-                data = new List<string>();
-                return message;
-            }
-
-            var indexOfMetaStart = message.IndexOf('(');
-
-            var strippedMessage = message.Substring(0, indexOfMetaStart).Trim();
-
-            var metaData = message.Substring(indexOfMetaStart);
-
-            data = SplitMetaData(metaData);
-            return strippedMessage;
+            tmp[i] = tmp[i].Trim();
         }
 
-        #endregion
+        return tmp;
+    }
 
-        #region ICommand Parsing
-
-        public static bool TryParse(ChatParserInterceptEventArgs eventArgs, out ICommand command) => TryParse(eventArgs.Text, out command);
-
-        public static bool TryParse(ChatTextInterceptEventArgs eventArgs, out ICommand command) => TryParse(eventArgs.Text, out command);
-
-        public static bool TryParse(string text, out ICommand command)
+    /// <summary>
+    /// Expected format : (meta1|meta2)
+    /// </summary>
+    /// <param name="metaData"></param>
+    /// <returns></returns>
+    public static IEnumerable<string> SplitMetaData(string metaData)
+    {
+        var trimmedMeta = metaData.TrimStart('(').TrimEnd(')');
+        if (string.IsNullOrEmpty(trimmedMeta))
         {
-            // Check for direct entry
-            if (text.StartsWith(RedoxExtensionsCommandPrefix))
-            {
-                command = ParseDirectEntry(text, text.Substring(RedoxExtensionsCommandPrefix.Length + 1), CommandType.RedoxExtension);
-                return true;
-            }
-
-            if (text.StartsWith(RedoxFellowCommandPrefix))
-            {
-                command = ParseDirectEntry(text, text.Substring(RedoxFellowCommandPrefix.Length + 1), CommandType.RedoxFellow);
-                return true;
-            }
-
-            var cleanedText = text;
-
-            // First, simplify to the simple tell format.  Removing the IIDString stuff.
-            if (ChatParsingUtilities.IsComplexTellFormat(cleanedText))
-            {
-                cleanedText = ChatParsingUtilities.CleanTellText(cleanedText);
-            }
-
-
-            // Remove any newlines in the cleaned version
-            cleanedText = cleanedText.Trim('\n');
-            var originalTextMinuxNewline = text.Trim('\n');
-
-            string viChannel, source, message;
-            if (ChatParsingUtilities.IsVIMessage(cleanedText, out viChannel, out source, out message))
-            {
-                // It's a VI message.
-                return TryParseFromVITell(text, viChannel, source, message, out command);
-            }
-
-            // It's not a VI message, let's see if it's any of the native tells we care about
-            return TryParseFromNativeTell(text, originalTextMinuxNewline, cleanedText, out command);
+            return new List<string>();
         }
 
-        #endregion
-
-        #region Outcome Reporting
-
-        public static void ReportOutcome(ISourceInformation source, string text)
+        var tmp = trimmedMeta.Split(ForeignCommandArgumentSeparator);
+        for (int i = 0; i < tmp.Length; i++)
         {
-            throw new NotImplementedException();
+            tmp[i] = tmp[i].Trim();
         }
 
-        public static void ReportOutcome(ISourceInformation source, string text, params object[] args)
+        return tmp;
+    }
+
+    /// <summary>
+    /// Ex: "!give keys"
+    ///         returns "give keys"
+    /// </summary>
+    /// <param name="messageOrCommand"></param>
+    /// <param name="targetType"></param>
+    /// <returns></returns>
+    public static string StripTargetTypeFromForeignCommand(string messageOrCommand, out TargetType targetType)
+    {
+        if (messageOrCommand.StartsWith(ForeignCommandAllPrefix))
         {
-            ReportOutcome(source, string.Format(text, args));
+            targetType = TargetType.All;
+            return messageOrCommand.Substring(1);
+        }
+        
+        if (messageOrCommand.StartsWith(ForeignCommandSlavesOnlyPrefix))
+        {
+            targetType = TargetType.SlavesOnly;
+            return messageOrCommand.Substring(1);
+        }
+        
+        if (messageOrCommand.StartsWith(ForeignCommandMasterOnlyPrefix))
+        {
+            targetType = TargetType.MasterOnly;
+            return messageOrCommand.Substring(1);
         }
 
-        #endregion
+        throw new ArgumentException("messageOrCommand was not a valid foreign command");
+    }
 
-        #region Argument Collapsing
+    #endregion
 
-        public static string CollapseDirectEntryCommandArguments(IEnumerable<string> args) => CollapseDirectEntryCommandArguments(args.Cast<object>());
+    #region Private Methods
 
-        public static string CollapseDirectEntryCommandArguments(IEnumerable<object> args)
+    private static string GetForeignPrefixForTargetType(TargetType targetType)
+    {
+        switch (targetType)
         {
-            return args.Aggregate(string.Empty, (accum, next) => $"{accum}{DirectEntryCommandArgumentSeparator}{next}").Trim();
+            case TargetType.All:
+                return ForeignCommandAllPrefix;
+            case TargetType.SlavesOnly:
+                return ForeignCommandSlavesOnlyPrefix;
+            case TargetType.MasterOnly:
+                return ForeignCommandMasterOnlyPrefix;
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
+    #region Command Parsing
+
+    private static bool IsMessageForeignCommand(string message)
+    {
+        if (message.StartsWith(ForeignCommandAllPrefix)
+            || message.StartsWith(ForeignCommandMasterOnlyPrefix)
+            || message.StartsWith(ForeignCommandSlavesOnlyPrefix))
+        {
+            return true;
         }
 
-        public static string CollapseForeignCommandArguments(IEnumerable<string> args) => CollapseForeignCommandArguments(args.Cast<object>());
+        return false;
+    }
 
-        public static string CollapseForeignCommandArguments(IEnumerable<object> args)
+    #region Direct Entry
+
+    private static ICommand ParseDirectEntry(string originalText, string message, CommandType commandType)
+    {
+        var cmdAndArgsPair = SplitCommandAndArguments(message);
+        var args = SplitDirectEntryArguments(cmdAndArgsPair.Item2);
+
+        var command = Command.CreateForDirectEntry(
+            cmdAndArgsPair.Item1,
+            args,
+            originalText,
+            commandType,
+            null);
+
+        return command;
+    }
+
+    #endregion
+
+    #region VI Tell
+
+    private static bool TryParseFromVITell(string rawOriginalText, string viChannel, string source, string message, out ICommand command)
+    {
+        // Don't support commands over VI general chat.
+        if (viChannel == "General")
         {
-            return args.Aggregate(string.Empty, (accum, next) => $"{accum}{ForeignCommandArgumentSeparator}{next}").Trim().TrimStart(ForeignCommandArgumentSeparator);
-        }
-
-        public static string CollapseMetaData(IEnumerable<string> data)
-        {
-            var joinedData = data.Aggregate(string.Empty, (accum, next) => $"{accum}{MetaDataArgumentSeparator}{next}").Trim().TrimStart(MetaDataArgumentSeparator);
-            return $"({joinedData})";
-        }
-
-        #endregion
-
-        #region Command & Argument Splitting
-
-        /// <summary>
-        /// Ex: "give keys"
-        ///         returns ("give", "keys")
-        /// 
-        ///      "!give keys"
-        ///         returns ("!give", "keys")
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public static Pair<string, string> SplitCommandAndArguments(string message)
-        {
-
-            string commandName = string.Empty;
-            string commandArguments = string.Empty;
-            var firstSpaceIndex = message.IndexOf(' ');
-            if (firstSpaceIndex > 0)
-            {
-                commandName = message.Substring(0, firstSpaceIndex);
-                var beginningOfValue = commandName.Length + 1;
-                commandArguments = message.Substring(beginningOfValue, (message.Length - beginningOfValue)).Trim();
-            }
-            else
-            {
-                // The command has no arguments.
-                commandName = message.Trim();
-            }
-
-            return new Pair<string, string>(commandName, commandArguments);
-        }
-
-        public static IEnumerable<string> SplitDirectEntryArguments(string argumentString)
-        {
-            if (string.IsNullOrEmpty(argumentString))
-            {
-                return new List<string>();
-            }
-
-            var tmp = argumentString.Split(DirectEntryCommandArgumentSeparator);
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = tmp[i].Trim();
-            }
-
-            return tmp;
-        }
-
-        public static IEnumerable<string> SplitForeignArguments(string argumentString)
-        {
-            if (string.IsNullOrEmpty(argumentString))
-            {
-                return new List<string>();
-            }
-
-            var tmp = argumentString.Split(ForeignCommandArgumentSeparator);
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = tmp[i].Trim();
-            }
-
-            return tmp;
-        }
-
-        /// <summary>
-        /// Expected format : (meta1|meta2)
-        /// </summary>
-        /// <param name="metaData"></param>
-        /// <returns></returns>
-        public static IEnumerable<string> SplitMetaData(string metaData)
-        {
-            var trimmedMeta = metaData.TrimStart('(').TrimEnd(')');
-            if (string.IsNullOrEmpty(trimmedMeta))
-            {
-                return new List<string>();
-            }
-
-            var tmp = trimmedMeta.Split(ForeignCommandArgumentSeparator);
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = tmp[i].Trim();
-            }
-
-            return tmp;
-        }
-
-        /// <summary>
-        /// Ex: "!give keys"
-        ///         returns "give keys"
-        /// </summary>
-        /// <param name="messageOrCommand"></param>
-        /// <param name="targetType"></param>
-        /// <returns></returns>
-        public static string StripTargetTypeFromForeignCommand(string messageOrCommand, out TargetType targetType)
-        {
-            if (messageOrCommand.StartsWith(ForeignCommandAllPrefix))
-            {
-                targetType = TargetType.All;
-                return messageOrCommand.Substring(1);
-            }
-            
-            if (messageOrCommand.StartsWith(ForeignCommandSlavesOnlyPrefix))
-            {
-                targetType = TargetType.SlavesOnly;
-                return messageOrCommand.Substring(1);
-            }
-            
-            if (messageOrCommand.StartsWith(ForeignCommandMasterOnlyPrefix))
-            {
-                targetType = TargetType.MasterOnly;
-                return messageOrCommand.Substring(1);
-            }
-
-            throw new ArgumentException("messageOrCommand was not a valid foreign command");
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static string GetForeignPrefixForTargetType(TargetType targetType)
-        {
-            switch (targetType)
-            {
-                case TargetType.All:
-                    return ForeignCommandAllPrefix;
-                case TargetType.SlavesOnly:
-                    return ForeignCommandSlavesOnlyPrefix;
-                case TargetType.MasterOnly:
-                    return ForeignCommandMasterOnlyPrefix;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-        #region Command Parsing
-
-        private static bool IsMessageForeignCommand(string message)
-        {
-            if (message.StartsWith(ForeignCommandAllPrefix)
-                || message.StartsWith(ForeignCommandMasterOnlyPrefix)
-                || message.StartsWith(ForeignCommandSlavesOnlyPrefix))
-            {
-                return true;
-            }
-
+            command = null;
             return false;
         }
 
-        #region Direct Entry
-
-        private static ICommand ParseDirectEntry(string originalText, string message, CommandType commandType)
+        if (!IsMessageForeignCommand(message))
         {
-            var cmdAndArgsPair = SplitCommandAndArguments(message);
-            var args = SplitDirectEntryArguments(cmdAndArgsPair.Item2);
-
-            var command = Command.CreateForDirectEntry(
-                cmdAndArgsPair.Item1,
-                args,
-                originalText,
-                commandType,
-                null);
-
-            return command;
+            command = null;
+            return false;
         }
 
-        #endregion
-
-        #region VI Tell
-
-        private static bool TryParseFromVITell(string rawOriginalText, string viChannel, string source, string message, out ICommand command)
-        {
-            // Don't support commands over VI general chat.
-            if (viChannel == "General")
-            {
-                command = null;
-                return false;
-            }
-
-            if (!IsMessageForeignCommand(message))
-            {
-                command = null;
-                return false;
-            }
-
-            command = ParseFromVITell(rawOriginalText, viChannel, source, message);
-            return true;
-        }
-
-        private static ICommand ParseFromVITell(string rawOriginalText, string viChannel, string source, string message)
-        {
-            var cmdArgumentPair = SplitCommandAndArguments(message);
-
-            var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out var targetType);
-            var arguments = SplitForeignArguments(cmdArgumentPair.Item2);
-
-            var command = Command.Create(
-                source,
-                cleanedCommandName,
-                arguments,
-                rawOriginalText,
-                CommandType.Foreign,
-                CommandChannel.VirindiFellowship,
-                viChannel,
-                targetType,
-                null);
-
-            return command;
-        }
-
-        #endregion
-
-        #region Native Tell
-
-        private static bool TryParseFromNativeTell(string rawOriginalText, string originalTextNewLineRemoved, string cleanedText, out ICommand command)
-        {
-            // MagTools IsChat helper doesn't handle your Fellowship message parsing correctly, so we need to special case this.
-
-            bool isFellowMessage = ChatParsingUtilities.IsChatTextFromFellowship(cleanedText, out var isFellowFromSelfMessage);
-
-            bool validCommandChannel;
-            Util.ChatChannels chatChannel = Util.ChatChannels.None;
-
-            if (isFellowMessage)
-            {
-                validCommandChannel = true;
-                chatChannel = Util.ChatChannels.Fellowship;
-            }
-            else
-            {
-                validCommandChannel = IsFromValidCommandChannel(originalTextNewLineRemoved, out chatChannel);
-            }
-
-            if (!validCommandChannel)
-            {
-                command = null;
-                return false;
-            }
-
-            var message = ChatParsingUtilities.ParseMessageFromText(cleanedText);
-
-            if (!IsMessageForeignCommand(message))
-            {
-                command = null;
-                return false;
-            }
-
-            command = ParseFromNativeTell(rawOriginalText, originalTextNewLineRemoved, chatChannel, message, isFellowFromSelfMessage);
-            return true;
-        }
-
-        private static ICommand ParseFromNativeTell(string rawOriginalText, string originalTextNewLineRemoved, Util.ChatChannels channel, string message, bool isFellowFromSelfMessage)
-        {
-            var source = isFellowFromSelfMessage ? DefaultYouValue : ChatParsingUtilities.GetSourceOfChat(originalTextNewLineRemoved);
-
-            var cmdArgumentPair = SplitCommandAndArguments(message);
-
-            var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out var targetType);
-            var arguments = SplitForeignArguments(cmdArgumentPair.Item2);
-
-            var commandChannel = ChatChannelToCommandChannel(channel);
-
-            var command = Command.Create(
-                source,
-                cleanedCommandName,
-                arguments,
-                rawOriginalText,
-                CommandType.Foreign,
-                commandChannel,
-                null,
-                targetType,
-                null);
-
-            return command;
-        }
-
-        #endregion
-
-        private static bool IsFromValidCommandChannel(string originalText, out Util.ChatChannels chatChannel)
-        {
-            // see if it's a tell.  Don't care about YouTell because YouTell's would always be
-            // targetting a specific character
-            var validFlags =
-                Util.ChatFlags.PlayerTellsYou
-                | Util.ChatFlags.PlayerSaysLocal
-                | Util.ChatFlags.PlayerSaysChannel
-                | Util.ChatFlags.YouSay;
-
-            if (!Util.IsChat(originalText, validFlags))
-            {
-                chatChannel = Util.ChatChannels.None;
-                return false;
-            }
-
-            // If we get here, it's one of the chat channels that we support receiving commands over
-
-            // MagTools util is sensitive, we need the uncleaned version of the string, but new lines need to be removed from the
-            // end in order for it to work correctly
-            chatChannel = ChatParsingUtilities.GetChatChannel(originalText);
-
-            return chatChannel is not (
-                Util.ChatChannels.None
-                or Util.ChatChannels.Allegiance
-                or Util.ChatChannels.General
-                or Util.ChatChannels.LFG
-                or Util.ChatChannels.Roleplay
-                or Util.ChatChannels.Society
-                or Util.ChatChannels.Trade
-                or Util.ChatChannels.All);
-        }
-
-        private static CommandChannel ChatChannelToCommandChannel(Util.ChatChannels chatChannel) => chatChannel switch
-        {
-            Util.ChatChannels.Fellowship => CommandChannel.Fellowship,
-            Util.ChatChannels.Area => CommandChannel.AreaChat,
-            Util.ChatChannels.Tells => CommandChannel.Tell,
-            _ => throw new InvalidOperationException("Can't map : " + chatChannel),
-        };
-
-        #endregion
-
-        #endregion
-
-        #region Inner Classes
-
-        private class SelfCommandSource : ISupportFeedback
-        {
-            public string SourceCharacter => DefaultYouValue;
-
-            public bool FromSelf => true;
-
-            public CommandChannel Channel => CommandChannel.DirectEntry;
-
-            public object ChannelTag
-            {
-                get
-                {
-                    throw new NotSupportedException();
-                }
-            }
-
-            public bool UsesChannelTag => false;
-
-            public int SourceCharacterId => REPlugin.Instance.CharacterFilter.Id;
-
-            public bool IsSourceIdAvailable => true;
-
-            public void GiveFeedback(FeedbackType feedbackType, string message)
-            {
-                CommandResponseHandler.TellSource(this, $"[{feedbackType}] {message}");
-            }
-
-            public void GiveFeedback(FeedbackType feedbackType, string message, params object[] args)
-            {
-                CommandResponseHandler.TellSource(this, $"[{feedbackType}] {string.Format(message, args)}");
-            }
-        }
-
-        #endregion
+        command = ParseFromVITell(rawOriginalText, viChannel, source, message);
+        return true;
     }
+
+    private static ICommand ParseFromVITell(string rawOriginalText, string viChannel, string source, string message)
+    {
+        var cmdArgumentPair = SplitCommandAndArguments(message);
+
+        var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out var targetType);
+        var arguments = SplitForeignArguments(cmdArgumentPair.Item2);
+
+        var command = Command.Create(
+            source,
+            cleanedCommandName,
+            arguments,
+            rawOriginalText,
+            CommandType.Foreign,
+            CommandChannel.VirindiFellowship,
+            viChannel,
+            targetType,
+            null);
+
+        return command;
+    }
+
+    #endregion
+
+    #region Native Tell
+
+    private static bool TryParseFromNativeTell(string rawOriginalText, string originalTextNewLineRemoved, string cleanedText, out ICommand command)
+    {
+        // MagTools IsChat helper doesn't handle your Fellowship message parsing correctly, so we need to special case this.
+
+        bool isFellowMessage = ChatParsingUtilities.IsChatTextFromFellowship(cleanedText, out var isFellowFromSelfMessage);
+
+        bool validCommandChannel;
+        Util.ChatChannels chatChannel = Util.ChatChannels.None;
+
+        if (isFellowMessage)
+        {
+            validCommandChannel = true;
+            chatChannel = Util.ChatChannels.Fellowship;
+        }
+        else
+        {
+            validCommandChannel = IsFromValidCommandChannel(originalTextNewLineRemoved, out chatChannel);
+        }
+
+        if (!validCommandChannel)
+        {
+            command = null;
+            return false;
+        }
+
+        var message = ChatParsingUtilities.ParseMessageFromText(cleanedText);
+
+        if (!IsMessageForeignCommand(message))
+        {
+            command = null;
+            return false;
+        }
+
+        command = ParseFromNativeTell(rawOriginalText, originalTextNewLineRemoved, chatChannel, message, isFellowFromSelfMessage);
+        return true;
+    }
+
+    private static ICommand ParseFromNativeTell(string rawOriginalText, string originalTextNewLineRemoved, Util.ChatChannels channel, string message, bool isFellowFromSelfMessage)
+    {
+        var source = isFellowFromSelfMessage ? DefaultYouValue : ChatParsingUtilities.GetSourceOfChat(originalTextNewLineRemoved);
+
+        var cmdArgumentPair = SplitCommandAndArguments(message);
+
+        var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out var targetType);
+        var arguments = SplitForeignArguments(cmdArgumentPair.Item2);
+
+        var commandChannel = ChatChannelToCommandChannel(channel);
+
+        var command = Command.Create(
+            source,
+            cleanedCommandName,
+            arguments,
+            rawOriginalText,
+            CommandType.Foreign,
+            commandChannel,
+            null,
+            targetType,
+            null);
+
+        return command;
+    }
+
+    #endregion
+
+    private static bool IsFromValidCommandChannel(string originalText, out Util.ChatChannels chatChannel)
+    {
+        // see if it's a tell.  Don't care about YouTell because YouTell's would always be
+        // targetting a specific character
+        var validFlags =
+            Util.ChatFlags.PlayerTellsYou
+            | Util.ChatFlags.PlayerSaysLocal
+            | Util.ChatFlags.PlayerSaysChannel
+            | Util.ChatFlags.YouSay;
+
+        if (!Util.IsChat(originalText, validFlags))
+        {
+            chatChannel = Util.ChatChannels.None;
+            return false;
+        }
+
+        // If we get here, it's one of the chat channels that we support receiving commands over
+
+        // MagTools util is sensitive, we need the uncleaned version of the string, but new lines need to be removed from the
+        // end in order for it to work correctly
+        chatChannel = ChatParsingUtilities.GetChatChannel(originalText);
+
+        return chatChannel is not (
+            Util.ChatChannels.None
+            or Util.ChatChannels.Allegiance
+            or Util.ChatChannels.General
+            or Util.ChatChannels.LFG
+            or Util.ChatChannels.Roleplay
+            or Util.ChatChannels.Society
+            or Util.ChatChannels.Trade
+            or Util.ChatChannels.All);
+    }
+
+    private static CommandChannel ChatChannelToCommandChannel(Util.ChatChannels chatChannel) => chatChannel switch
+    {
+        Util.ChatChannels.Fellowship => CommandChannel.Fellowship,
+        Util.ChatChannels.Area => CommandChannel.AreaChat,
+        Util.ChatChannels.Tells => CommandChannel.Tell,
+        _ => throw new InvalidOperationException("Can't map : " + chatChannel),
+    };
+
+    #endregion
+
+    #endregion
+
+    #region Inner Classes
+
+    private class SelfCommandSource : ISupportFeedback
+    {
+        public string SourceCharacter => DefaultYouValue;
+
+        public bool FromSelf => true;
+
+        public CommandChannel Channel => CommandChannel.DirectEntry;
+
+        public object ChannelTag
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        public bool UsesChannelTag => false;
+
+        public int SourceCharacterId => REPlugin.Instance.CharacterFilter.Id;
+
+        public bool IsSourceIdAvailable => true;
+
+        public void GiveFeedback(FeedbackType feedbackType, string message)
+        {
+            CommandResponseHandler.TellSource(this, $"[{feedbackType}] {message}");
+        }
+
+        public void GiveFeedback(FeedbackType feedbackType, string message, params object[] args)
+        {
+            CommandResponseHandler.TellSource(this, $"[{feedbackType}] {string.Format(message, args)}");
+        }
+    }
+
+    #endregion
 }

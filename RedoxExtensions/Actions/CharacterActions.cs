@@ -5,43 +5,42 @@ using System.Text;
 using RedoxExtensions.Mine;
 using RedoxExtensions.VirindiInterop;
 
-namespace RedoxExtensions.Actions
+namespace RedoxExtensions.Actions;
+
+/// <summary>
+/// General purpose actions that a character can perform
+/// </summary>
+public static class CharacterActions
 {
-    /// <summary>
-    /// General purpose actions that a character can perform
-    /// </summary>
-    public static class CharacterActions
+    public static void PullLegendaryKeys()
     {
-        public static void PullLegendaryKeys()
-        {
-            VTActions.StopVT();
-            VTActions.DisableAllVTStates();
+        VTActions.StopVT();
+        VTActions.DisableAllVTStates();
 
-            VTActions.LoadMetaProfile(Settings.ActiveSettings.Instance.VTProfiles.Meta.PullLegendaryKeys);
-            VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.VTProfiles.Loot.LegendaryChestPulls);
+        VTActions.LoadMetaProfile(Settings.ActiveSettings.Instance.VTProfiles.Meta.PullLegendaryKeys);
+        VTActions.LoadLootProfile(Settings.ActiveSettings.Instance.VTProfiles.Loot.LegendaryChestPulls);
 
-            VTActions.SetMetaState("Check");
+        VTActions.SetMetaState("Check");
 
-            VTActions.EnableMeta();
-            VTActions.StartVT();
-        }
-
-        public static bool SetMainProfileRaw(string profileName) => VTActions.LoadCharacterSettingsProfile(profileName);
-
-        public static bool SetMainProfile(string profileName)
-        {
-            try
-            {
-                return SetMainProfile((MyMainProfiles)Enum.Parse(typeof(MyMainProfiles), profileName, true));
-            }
-            catch (ArgumentException)
-            {
-                // It's not one of my profiles.  See if there is a match
-                // for the name as is.
-                return VTActions.LoadSmartSettingsProfile(profileName);
-            }
-        }
-
-        public static bool SetMainProfile(MyMainProfiles myProfile) => SetMainProfileRaw(MyUtilities.LookupProfileName(myProfile));
+        VTActions.EnableMeta();
+        VTActions.StartVT();
     }
+
+    public static bool SetMainProfileRaw(string profileName) => VTActions.LoadCharacterSettingsProfile(profileName);
+
+    public static bool SetMainProfile(string profileName)
+    {
+        try
+        {
+            return SetMainProfile((MyMainProfiles)Enum.Parse(typeof(MyMainProfiles), profileName, true));
+        }
+        catch (ArgumentException)
+        {
+            // It's not one of my profiles.  See if there is a match
+            // for the name as is.
+            return VTActions.LoadSmartSettingsProfile(profileName);
+        }
+    }
+
+    public static bool SetMainProfile(MyMainProfiles myProfile) => SetMainProfileRaw(MyUtilities.LookupProfileName(myProfile));
 }
