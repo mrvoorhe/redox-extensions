@@ -118,6 +118,11 @@ namespace RedoxExtensions.VirindiInterop
             ACUtilities.ProcessArbitraryCommand("/vt forcebuff");
         }
 
+        internal static void ClearBusy()
+        {
+            ACUtilities.ProcessArbitraryCommand("/vt clearbusy");
+        }
+
         internal static void SetBoostNavPriority(bool enabled)
         {
             VTUtilities.SetOption(VTOptionNames.NavPriorityBoost, enabled);

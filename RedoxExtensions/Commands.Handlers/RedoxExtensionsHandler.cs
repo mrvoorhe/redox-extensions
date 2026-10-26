@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -109,6 +110,16 @@ namespace RedoxExtensions.Commands.Handlers
                         return true;
                     }
 
+                case "unstuck":
+                case "us":
+                    Actions.UnstuckActions.Unstuck();
+                    return true;
+
+                case "unstuckdetect":
+                case "usdetect":
+                    ProcessUnstuckDetect(command);
+                    return true;
+
                 case "track":
                     REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                     return true;
@@ -157,6 +168,50 @@ namespace RedoxExtensions.Commands.Handlers
             }
         }
 
+        private static void ProcessUnstuckDetect(ICommand command)
+        {
+            var detector = REPlugin.Instance.MonitorManager.StuckDetector;
+            bool? requestedState = null;
+            double? minutes = null;
+
+            foreach (var rawArg in command.Arguments)
+            {
+                var arg = rawArg.ToLower().Trim();
+                double parsedMinutes;
+
+                if (arg == "on")
+                {
+                    requestedState = true;
+                }
+                else if (arg == "off")
+                {
+                    requestedState = false;
+                }
+                else if (double.TryParse(arg, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedMinutes) && parsedMinutes > 0)
+                {
+                    minutes = parsedMinutes;
+                }
+                else
+                {
+                    REPlugin.Instance.Chat.WriteLine("Unknown unstuckdetect option : {0}", rawArg);
+                    return;
+                }
+            }
+
+            bool newState = requestedState ?? (minutes.HasValue || !detector.Enabled);
+
+            if (newState)
+            {
+                detector.Enable(minutes);
+                REPlugin.Instance.Chat.WriteLine("[RE] Unstuck detect: on ({0} min)", detector.ThresholdMinutes.ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                detector.Disable();
+                REPlugin.Instance.Chat.WriteLine("[RE] Unstuck detect: off");
+            }
+        }
+
         private static void DisplayHelp()
         {
             var chat = REPlugin.Instance.Chat;
@@ -177,6 +232,8 @@ namespace RedoxExtensions.Commands.Handlers
 
             chat.WriteLine("  copycat|cc <on|off>     - Enables or disables copycat mode.");
             chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
+            chat.WriteLine("  unstuck|us              - Tries to get a stuck VT meta moving again.");
+            chat.WriteLine("  unstuckdetect|usdetect [on|off] [min] - Toggles automatic unstuck after [min] idle minutes (default 1).");
             chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
             chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
             chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
