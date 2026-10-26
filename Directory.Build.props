@@ -1,4 +1,8 @@
 <Project>
+  <PropertyGroup>
+    <LangVersion>12</LangVersion>
+  </PropertyGroup>
+
   <!-- Emit classic (full) Windows PDBs in Debug so the .NET Framework runtime
        hosting the Decal plugin resolves file/line numbers in stack traces.
        SDK-style projects default to portable PDBs, which the classic CLR ignores. -->
