@@ -71,16 +71,14 @@ namespace RedoxExtensions.Location
                 // TODO by Mike : Handle multi location dungeons, ex: "Halls of Metos".  Probably going to need to write a tool to clean up the data rather than try and handle
                 // the complexity of parsing here.
 
-                UserFacingLocation location;
-                if (!UserFacingLocation.TryParse(locationString, out location))
+                if (!UserFacingLocation.TryParse(locationString, out var location))
                 {
                     // TODO by Mike : Still add it, but as null location
                     Console.WriteLine($"Failed to parse location for dungeon line : {line}");
                     continue;
                 }
 
-                List<UserFacingLocation> locations;
-                if (dungeonToLocation.TryGetValue(name, out locations))
+                if (dungeonToLocation.TryGetValue(name, out var locations))
                     locations.Add(location);
                 else
                 {
@@ -104,11 +102,9 @@ namespace RedoxExtensions.Location
 
             foreach (var name in allNames)
             {
-                List<UserFacingLocation> locations;
-                dungeonToLocation.TryGetValue(name, out locations);
+                dungeonToLocation.TryGetValue(name, out var locations);
 
-                List<FullLocation> dropLocations;
-                dungeonToDropLocation.TryGetValue(name, out dropLocations);
+                dungeonToDropLocation.TryGetValue(name, out var dropLocations);
 
                 dungeons.Add(name.ToLower(),
                     new Dungeon(

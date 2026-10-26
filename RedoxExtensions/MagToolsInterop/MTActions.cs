@@ -16,12 +16,12 @@ namespace RedoxExtensions.MagToolsInterop
 
         internal static void CreateFellow(string name)
         {
-            MagTools.PluginCore.Current.ProcessMTCommand(string.Format("/mt fellow create {0}", name));
+            MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow create {name}");
         }
 
         internal static void RecruitFellow(string characterName)
         {
-            MagTools.PluginCore.Current.ProcessMTCommand(string.Format("/mt fellow recruit {0}", characterName));
+            MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow recruit {characterName}");
         }
 
         #region Click

@@ -8,10 +8,7 @@ namespace RedoxLib.GameValues
 {
     public static class Identification
     {
-        public static bool Required(WorldObject wo)
-        {
-            return Required(wo.ObjectClass, wo.Name);
-        }
+        public static bool Required(WorldObject wo) => Required(wo.ObjectClass, wo.Name);
 
         public static bool Required(ObjectClass objectClass, string name)
         {

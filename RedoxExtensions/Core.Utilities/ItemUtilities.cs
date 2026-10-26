@@ -38,8 +38,7 @@ namespace RedoxExtensions.Core.Utilities
                         return null;
                     }
 
-                    Sets.Armor armor;
-                    if (Sets.TryParseArmorShortName(secondOption, out armor))
+                    if (Sets.TryParseArmorShortName(secondOption, out var armor))
                     {
                         return woCollection.GetArmorSetItems(armor);
                     }
@@ -58,17 +57,13 @@ namespace RedoxExtensions.Core.Utilities
                         return null;
                     }
 
-                    switch (secondOption)
+                    return secondOption switch
                     {
-                        case "missile":
-                            return woCollection.GetMissileWeapons();
-                        case "melee":
-                            return woCollection.GetMeleeWeapons();
-                        case "magic":
-                            return woCollection.GetMagicWeapons();
-                    }
-
-                    return null;
+                        "missile" => woCollection.GetMissileWeapons(),
+                        "melee" => woCollection.GetMeleeWeapons(),
+                        "magic" => woCollection.GetMagicWeapons(),
+                        _ => null,
+                    };
                 case "jewelry":
                 case "jew":
                     if (string.IsNullOrEmpty(secondOption))
@@ -76,27 +71,18 @@ namespace RedoxExtensions.Core.Utilities
                         return null;
                     }
 
-                    switch (secondOption)
+                    return secondOption switch
                     {
-                        case "legendary":
-                        case "leg":
-                            return woCollection.GetJewelryWithLegendaryAndNoRatings();
-                        case "legendary+ratings":
-                        case "leg+ratings":
-                        case "leg+":
-                            return woCollection.GetJewelryWithLegendaryAndRatings();
-                        case "ratings":
-                            return woCollection.GetJewelryWithRatings();
-                        case "max":
-                            return woCollection.GetJewelryWithMaxRatings();
-                    }
-
-                    return null;
+                        "legendary" or "leg" => woCollection.GetJewelryWithLegendaryAndNoRatings(),
+                        "legendary+ratings" or "leg+ratings" or "leg+" => woCollection.GetJewelryWithLegendaryAndRatings(),
+                        "ratings" => woCollection.GetJewelryWithRatings(),
+                        "max" => woCollection.GetJewelryWithMaxRatings(),
+                        _ => null,
+                    };
 
                 default:
                     // See if it's one of the material short cut keywords
-                    int possibleMaterialId;
-                    if (Constants.MaterialShortCutNamesToIdTable.TryGetValue(loweredKeyWord, out possibleMaterialId))
+                    if (Constants.MaterialShortCutNamesToIdTable.TryGetValue(loweredKeyWord, out var possibleMaterialId))
                     {
                         return woCollection.GetFullSalvage(possibleMaterialId);
                     }

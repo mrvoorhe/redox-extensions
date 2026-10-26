@@ -16,13 +16,7 @@ namespace RedoxExtensions.Data
             InitializeMaterialShortCutTable();
         }
 
-        public static Dictionary<string, int> MaterialShortCutNamesToIdTable
-        {
-            get
-            {
-                return _materialShortCutNamesToMaterialId;
-            }
-        }
+        public static Dictionary<string, int> MaterialShortCutNamesToIdTable => _materialShortCutNamesToMaterialId;
 
         private static void InitializeMaterialShortCutTable()
         {
@@ -35,7 +29,7 @@ namespace RedoxExtensions.Data
                     {
                         // Throwing in a static constructor isn't great, but this is a once and done thing.
                         // So if I see a crash, I know it's this.  If not, then this is okay
-                        throw new InvalidOperationException(string.Format("Short material name already registered : {0}", validName));
+                        throw new InvalidOperationException($"Short material name already registered : {validName}");
                     }
 
                     _materialShortCutNamesToMaterialId.Add(validName, pair.Key);
@@ -65,8 +59,8 @@ namespace RedoxExtensions.Data
             if (splitValue.Length > 1)
             {
                 // It's a multi-word material
-                var oneWord = splitValue.Aggregate(string.Empty, (accum, next) => string.Format("{0}{1}", accum, next));
-                var firstLetters = splitValue.Aggregate(string.Empty, (accum, next) => string.Format("{0}{1}", accum, next[0]));
+                var oneWord = splitValue.Aggregate(string.Empty, (accum, next) => $"{accum}{next}");
+                var firstLetters = splitValue.Aggregate(string.Empty, (accum, next) => $"{accum}{next[0]}");
 
                 yield return oneWord;
                 yield return firstLetters;

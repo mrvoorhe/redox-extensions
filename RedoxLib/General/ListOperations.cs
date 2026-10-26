@@ -102,8 +102,7 @@ namespace RedoxLib.General
         
         public static T Last<T>(IEnumerable<T> source)
         {
-            IList<T> iList = source as IList<T>;
-            if (iList != null)
+            if (source is IList<T> iList)
                 return iList[iList.Count - 1];
 
             T last = default(T); // value is just to shut up the compiler
@@ -127,8 +126,7 @@ namespace RedoxLib.General
         
         public static T TryLast<T>(IEnumerable<T> source)
         {
-            IList<T> iList = source as IList<T>;
-            if (iList != null)
+            if (source is IList<T> iList)
                 if (iList.Count > 0)
                     return iList[iList.Count - 1];
                 else
@@ -168,10 +166,7 @@ namespace RedoxLib.General
         /// Yields a list containing all but the first element of the input list.
         /// </summary>
         
-        public static IEnumerable<T> SkipFirst<T>(IEnumerable<T> source)
-        {
-            return SkipFirstN(1, source);
-        }
+        public static IEnumerable<T> SkipFirst<T>(IEnumerable<T> source) => SkipFirstN(1, source);
 
 
         /// <summary>
@@ -209,8 +204,7 @@ namespace RedoxLib.General
         {
             result = default(T);
             
-            IList<T> iList = source as IList<T>;
-            if (iList != null)
+            if (source is IList<T> iList)
                 if (zeroBasedIndex < iList.Count)
                 {
                     result = iList[(int)zeroBasedIndex];
@@ -249,8 +243,7 @@ namespace RedoxLib.General
         {
             result = null;
 
-            System.Collections.IList iList = source as System.Collections.IList;
-            if (iList != null)
+            if (source is System.Collections.IList iList)
                 if (zeroBasedIndex < iList.Count)
                 {
                     result = iList[(int)zeroBasedIndex];
@@ -358,8 +351,7 @@ namespace RedoxLib.General
         
         public static int Count<T>(IEnumerable<T> list)
         {
-            IList<T> iList = list as IList<T>;
-            if (iList != null)
+            if (list is IList<T> iList)
                 return iList.Count;
 
             IEnumerator<T> e = list.GetEnumerator();
@@ -395,8 +387,7 @@ namespace RedoxLib.General
         
         public static bool CountIs<T>(IEnumerable<T> list, uint expected)
         {
-            IList<T> iList = list as IList<T>;
-            if (iList != null)
+            if (list is IList<T> iList)
                 return (iList.Count == expected);
 
             IEnumerator<T> e = list.GetEnumerator();
@@ -427,8 +418,7 @@ namespace RedoxLib.General
         
         public static bool IsEmpty<T>(IEnumerable<T> list)
         {
-            IList<T> iList = list as IList<T>;
-            if (iList != null)
+            if (list is IList<T> iList)
                 return (iList.Count == 0);
 
             foreach (T obj in list)
@@ -460,15 +450,12 @@ namespace RedoxLib.General
         /// </summary>
         /// <example>List&lt;string&gt; someList = new List&lt;string&gt;(ListOps.Enumerate("one", "two", "three"));</example>
         
-        public static IEnumerable<T> Enumerate<T>(params T[] arguments)
-        {
-            return arguments;
-        }
+        public static IEnumerable<T> Enumerate<T>(params T[] arguments) => arguments;
 
         
         public static string BuildString<T>(IEnumerable<T> items)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (T item in items)
             {
                 sb.Append(item);
@@ -485,7 +472,7 @@ namespace RedoxLib.General
         
         public static string Join<TItem, TJoiner>(TJoiner joiner, IEnumerable<TItem> items)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             bool isFirst = true;
             foreach (TItem item in items)
             {
@@ -509,10 +496,7 @@ namespace RedoxLib.General
         /// except that it allows the compiler to infer the generic type, and avoids repeating it.
         /// </remarks>
         
-        public static List<T> Capture<T>(IEnumerable<T> items)
-        {
-            return new List<T>(items);
-        }
+        public static List<T> Capture<T>(IEnumerable<T> items) => new List<T>(items);
 
         /// <summary>
         /// Creates a non-generic list from a non-generic enumerator
@@ -524,7 +508,7 @@ namespace RedoxLib.General
         /// <returns>new <c>ArrayList</c> containing <c>items</c></returns>
         public static ArrayList Capture(IEnumerable items)
         {
-            ArrayList result = new ArrayList();
+            var result = new ArrayList();
 
             foreach (object item in items)
                 result.Add(item);
@@ -642,10 +626,7 @@ namespace RedoxLib.General
         /// Creates a new list containing the specified items.
         /// </summary>
         
-        public static List<T> Create<T>(params T[] items)
-        {
-            return Capture(items);
-        }
+        public static List<T> Create<T>(params T[] items) => Capture(items);
 
         /// <summary>
         /// Counts the occurrences of each unique item in the list, 
@@ -657,7 +638,7 @@ namespace RedoxLib.General
         
         public static ReadOnlyDictionary<T, int> CountOccurrences<T>(IEnumerable<T> items)
         {
-            Dictionary<T, int> occurrences = new Dictionary<T, int>();
+            var occurrences = new Dictionary<T, int>();
             foreach (T item in items)
             {
                 // is this the most efficient way to increment,
@@ -694,8 +675,7 @@ namespace RedoxLib.General
         
         public static ReadOnlyCollection<T> GetReadOnlyCollection<T>(IEnumerable<T> source)
         {
-            IList<T> iList = source as IList<T>;
-            if (iList != null)
+            if (source is IList<T> iList)
                 return new ReadOnlyCollection<T>(iList);
             else
                 return new ReadOnlyCollection<T>(Capture(source));
@@ -710,12 +690,10 @@ namespace RedoxLib.General
         
         public static T[] GetArray<T>(IEnumerable<T> source)
         {
-            T[] array = source as T[];
-            if (array != null)
+            if (source is T[] array)
                 return array;
 
-            List<T> list = source as List<T>;
-            if (list != null)
+            if (source is List<T> list)
                 return list.ToArray();
 
             // if we could efficiently count the items we could

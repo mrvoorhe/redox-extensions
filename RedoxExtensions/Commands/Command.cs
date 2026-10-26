@@ -165,29 +165,26 @@ namespace RedoxExtensions.Commands
 
         public void GiveFeedback(FeedbackType feedbackType, string message)
         {
-            CommandResponseHandler.TellSource(this, string.Format("[{0}] {1}", feedbackType, message));
+            CommandResponseHandler.TellSource(this, $"[{feedbackType}] {message}");
         }
 
         public void GiveFeedback(FeedbackType feedbackType, string message, params object[] args)
         {
-            CommandResponseHandler.TellSource(this, string.Format("[{0}] {1}", feedbackType, string.Format(message, args)));
+            CommandResponseHandler.TellSource(this, $"[{feedbackType}] {string.Format(message, args)}");
         }
 
         #endregion
 
         #region Explicit ILoggableObject
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel
-        {
-            get { return DebugLevel.Low; }
-        }
+        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
         string ILoggableObject.GetLoggableFormat()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine(string.Format("  Source = {0}", this.SourceCharacter));
-            builder.AppendLine(string.Format("  Name = {0}", this.Name));
+            builder.AppendLine($"  Source = {this.SourceCharacter}");
+            builder.AppendLine($"  Name = {this.Name}");
             return builder.ToString();
         }
 

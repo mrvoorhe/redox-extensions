@@ -15,18 +15,12 @@ namespace RedoxExtensions.Wrapper
 
         public void FireClientDispatch(object sender, NetworkMessageEventArgs eventArgs)
         {
-            if (this.ClientDispatch != null)
-            {
-                this.ClientDispatch(sender, eventArgs);
-            }
+            this.ClientDispatch?.Invoke(sender, eventArgs);
         }
 
         public void FireServerDispatch(object sender, NetworkMessageEventArgs eventArgs)
         {
-            if (this.ServerDispatch != null)
-            {
-                this.ServerDispatch(sender, eventArgs);
-            }
+            this.ServerDispatch?.Invoke(sender, eventArgs);
         }
     }
 }

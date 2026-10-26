@@ -63,9 +63,7 @@ namespace RedoxLib.General
         
         public override bool Equals(object obj)
         {
-            Triple<T1, T2, T3> rhs = obj as Triple<T1, T2, T3>;
-
-            if (rhs != null)
+            if (obj is Triple<T1, T2, T3> rhs)
             {
                 return this.Equals(rhs);
             }
@@ -97,10 +95,7 @@ namespace RedoxLib.General
         /// <remarks>Both members must be non-null before this will work; I think that
         /// makes sense.</remarks>
         
-        public override int GetHashCode()
-        {
-            return CombineHashCodes.Combine(this.Item1.GetHashCode(), this.Item2.GetHashCode(), this.Item3.GetHashCode());
-        }
+        public override int GetHashCode() => CombineHashCodes.Combine(this.Item1.GetHashCode(), this.Item2.GetHashCode(), this.Item3.GetHashCode());
 
         /// <summary>
         /// Overloaded comparison operator.
@@ -108,28 +103,12 @@ namespace RedoxLib.General
 
         public static bool operator ==(Triple<T1, T2, T3> lhs, Triple<T1, T2, T3> rhs)
         {
-            if (Object.ReferenceEquals(lhs, null))
+            if (lhs is null)
             {
-                if (Object.ReferenceEquals(rhs, null))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return rhs is null;
             }
-            else
-            {
-                if (Object.ReferenceEquals(rhs, null))
-                {
-                    return false;
-                }
-                else
-                {
-                    return lhs.Equals(rhs);
-                }
-            }
+
+            return rhs is not null && lhs.Equals(rhs);
         }
 
         /// <summary>
@@ -147,7 +126,7 @@ namespace RedoxLib.General
         
         public sealed override string ToString()
         {
-            StringBuilder combined = new StringBuilder("(");
+            var combined = new StringBuilder("(");
             if (this.Item1 != null)
             {
                 combined.Append(this.Item1.ToString());
@@ -180,14 +159,8 @@ namespace RedoxLib.General
         /// the compiler to determine the types.
         /// </summary>
         
-        public static Triple<T1,T2, T3> Make<T1,T2,T3>(T1 first, T2 second, T3 third)
-        {
-            return new Triple<T1, T2, T3>(first, second, third);
-        }
+        public static Triple<T1,T2, T3> Make<T1,T2,T3>(T1 first, T2 second, T3 third) => new Triple<T1, T2, T3>(first, second, third);
 
-        public static Triple<T1, T2, T3> Make<T1, T2, T3>(Pair<T1, T2> pair, T3 third)
-        {
-            return new Triple<T1, T2, T3>(pair.Item1, pair.Item2, third);
-        }
+        public static Triple<T1, T2, T3> Make<T1, T2, T3>(Pair<T1, T2> pair, T3 third) => new Triple<T1, T2, T3>(pair.Item1, pair.Item2, third);
     }
 }

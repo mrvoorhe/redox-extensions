@@ -26,7 +26,7 @@ namespace RedoxExtensions.Tests
             var fakeRtEvents = new FakeRTEvents();
             var fakeDecalEvents = new FakeDecalEventsProxy();
 
-            Queue<Location.Location> locationResults = new Queue<Location.Location>();
+            var locationResults = new Queue<Location.Location>();
             locationResults.Enqueue(new Location.Location(0, 0, 1, 0, 0));
             locationResults.Enqueue(new Location.Location(0, 0, 2, 0, 0));
             locationResults.Enqueue(new Location.Location(0, 0, 3, 0, 0));
@@ -37,11 +37,11 @@ namespace RedoxExtensions.Tests
                 locationResults.Enqueue(new Location.Location(0, 0, 5, 0, 0));
             }
 
-            List<SelfJumpCompleteEventArgs> cachedCompleteCallValues = new List<SelfJumpCompleteEventArgs>();
+            var cachedCompleteCallValues = new List<SelfJumpCompleteEventArgs>();
 
             // Workflow to Test
 
-            JumpRecorder recorder = new JumpRecorder(fakeRtEvents, fakeDecalEvents, e => cachedCompleteCallValues.Add(e), () => locationResults.Dequeue());
+            var recorder = new JumpRecorder(fakeRtEvents, fakeDecalEvents, e => cachedCompleteCallValues.Add(e), () => locationResults.Dequeue());
 
             var initialJumpData = new JumpData(new Location.Location(0, 0, 0, 0, 0), 0.0, 0.0);
 

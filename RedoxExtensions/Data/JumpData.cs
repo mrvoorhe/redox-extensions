@@ -24,9 +24,6 @@ namespace RedoxExtensions.Data
         /// <returns>
         /// A string that represents the current object.
         /// </returns>
-        public override string ToString()
-        {
-            return string.Format("{0} - {1} - {2}", this.Location, this.Heading.ToString("F2"), this.Height.ToString("F2"));
-        }
+        public override string ToString() => $"{this.Location} - {this.Heading.ToString("F2")} - {this.Height.ToString("F2")}";
     }
 }

@@ -12,13 +12,13 @@ namespace RedoxExtensions.Listeners.Monitors
     /// </summary>
     public class FellowshipMonitor : IDisposable
     {
-        private readonly ManualResetEvent _noFellowship = new ManualResetEvent(true);
-        private readonly ManualResetEvent _inFellowship = new ManualResetEvent(false);
+        private readonly ManualResetEvent _noFellowship = new(true);
+        private readonly ManualResetEvent _inFellowship = new(false);
 
         private string _fellowshipName = string.Empty;
         private string _leader = string.Empty;
 
-        private readonly HashSet<string> _fellowshipMembers = new HashSet<string>();
+        private readonly HashSet<string> _fellowshipMembers = new();
 
         public FellowshipMonitor()
         {
@@ -33,46 +33,19 @@ namespace RedoxExtensions.Listeners.Monitors
 
         #region Public Properties
 
-        public WaitHandle NoFellowship
-        {
-            get
-            {
-                return this._noFellowship;
-            }
-        }
+        public WaitHandle NoFellowship => this._noFellowship;
 
-        public WaitHandle InFellowship
-        {
-            get
-            {
-                return this._inFellowship;
-            }
-        }
+        public WaitHandle InFellowship => this._inFellowship;
 
-        public string FellowshipName
-        {
-            get
-            {
-                return this._fellowshipName;
-            }
-        }
+        public string FellowshipName => this._fellowshipName;
 
-        public string Leader
-        {
-            get
-            {
-                return this._leader;
-            }
-        }
+        public string Leader => this._leader;
 
         #endregion
 
         #region Public Methods
 
-        public bool IsInFellowship(string characterName)
-        {
-            return this._fellowshipMembers.Contains(characterName);
-        }
+        public bool IsInFellowship(string characterName) => this._fellowshipMembers.Contains(characterName);
 
         public void Dispose()
         {

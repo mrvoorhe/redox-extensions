@@ -16,9 +16,6 @@ namespace RedoxExtensions.Data
             return Serializer.Serialize(this);
         }
 
-        public string Serialize()
-        {
-            return this.ToString();
-        }
+        public string Serialize() => this.ToString();
     }
 }

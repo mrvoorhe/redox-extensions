@@ -27,22 +27,15 @@ namespace RedoxLib.Objects
                 return null;
             }
 
-            var asCaptured = wo as CapturedWorldObject;
-            if (asCaptured != null)
+            if (wo is CapturedWorldObject asCaptured)
                 return asCaptured;
 
             return wo.Id.ToWorldObject(provider).Capture();
         }
 
-        public static IWorldObject Wrap(this WorldObject wo)
-        {
-            return new WrappedWorldObject(wo);
-        }
+        public static IWorldObject Wrap(this WorldObject wo) => new WrappedWorldObject(wo);
 
-        public static WorldObject ToWorldObject(this int objectId, IDecalPluginProvider provider)
-        {
-            return provider.CoreManager.WorldFilter[objectId];
-        }
+        public static WorldObject ToWorldObject(this int objectId, IDecalPluginProvider provider) => provider.CoreManager.WorldFilter[objectId];
 
         #endregion
     }

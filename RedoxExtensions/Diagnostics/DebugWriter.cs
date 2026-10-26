@@ -76,7 +76,7 @@ namespace RedoxExtensions.Diagnostics
                 {
                     this.LogRawMessage(this.FormatWithPrefix(eventDisplayName), stream);
                     // Format as hex so that it's easy to pair up with the decal doc
-                    this.LogRawMessage(string.Format("  Message.Type = {0}", obj.Message.Type.ToString("X4")), stream);
+                    this.LogRawMessage($"  Message.Type = {obj.Message.Type.ToString("X4")}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -95,8 +95,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ChangeFellowshipEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  Id = {0}", obj.Id), stream);
-                    this.LogRawMessage(string.Format("  Type = {0}", obj.Type), stream);
+                    this.LogRawMessage($"  Id = {obj.Id}", stream);
+                    this.LogRawMessage($"  Type = {obj.Type}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -115,7 +115,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ObjectIdEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  ObjectId = {0}", obj.ObjectId), stream);
+                    this.LogRawMessage($"  ObjectId = {obj.ObjectId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -134,7 +134,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("BeginGiveItemEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  ObjectId = {0}", obj.ObjectId), stream);
+                    this.LogRawMessage($"  ObjectId = {obj.ObjectId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -153,9 +153,9 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("EndGiveItemEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  ItemGiven = {0}", obj.ItemGiven.ToShortSummary()), stream);
-                    this.LogRawMessage(string.Format("  TargetName = {0}", obj.TargetName), stream);
-                    this.LogRawMessage(string.Format("  Outcome = {0}", obj.Outcome), stream);
+                    this.LogRawMessage($"  ItemGiven = {obj.ItemGiven.ToShortSummary()}", stream);
+                    this.LogRawMessage($"  TargetName = {obj.TargetName}", stream);
+                    this.LogRawMessage($"  Outcome = {obj.Outcome}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -176,8 +176,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("CreateObjectEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  New (WObj) = {0}", obj.New.Name), stream);
-                    this.LogRawMessage(string.Format("    Id = {0}", obj.New.Id), stream);
+                    this.LogRawMessage($"  New (WObj) = {obj.New.Name}", stream);
+                    this.LogRawMessage($"    Id = {obj.New.Id}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -196,9 +196,9 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ChangeObjectEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  Changed (WObj) = {0}", obj.Changed.Name), stream);
-                    this.LogRawMessage(string.Format("    Id = {0}", obj.Changed.Id), stream);
-                    this.LogRawMessage(string.Format("  WorldChangeType = {0}", obj.Change.ToString()), stream);
+                    this.LogRawMessage($"  Changed (WObj) = {obj.Changed.Name}", stream);
+                    this.LogRawMessage($"    Id = {obj.Changed.Id}", stream);
+                    this.LogRawMessage($"  WorldChangeType = {obj.Change.ToString()}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -217,8 +217,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("EndNonZeroBusyStateEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  BusyState = {0}", obj.BusyState), stream);
-                    this.LogRawMessage(string.Format("  BusyStateId = {0}", obj.BusyStateId), stream);
+                    this.LogRawMessage($"  BusyState = {obj.BusyState}", stream);
+                    this.LogRawMessage($"  BusyStateId = {obj.BusyStateId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -237,8 +237,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("BeginNonZeroBusyStateEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  BusyState = {0}", obj.BusyState), stream);
-                    this.LogRawMessage(string.Format("  BusyStateId = {0}", obj.BusyStateId), stream);
+                    this.LogRawMessage($"  BusyState = {obj.BusyState}", stream);
+                    this.LogRawMessage($"  BusyStateId = {obj.BusyStateId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -257,8 +257,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("UsingObjectEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  ObjectName = {0}", obj.ObjectName), stream);
-                    this.LogRawMessage(string.Format("  ObjectId = {0}", obj.ObjectId), stream);
+                    this.LogRawMessage($"  ObjectName = {obj.ObjectName}", stream);
+                    this.LogRawMessage($"  ObjectId = {obj.ObjectId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -277,7 +277,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("UsingPortalCompleteEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  Successful = {0}", obj.Successful), stream);
+                    this.LogRawMessage($"  Successful = {obj.Successful}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -311,7 +311,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ApproachVendorEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  MerchantId = {0}", obj.MerchantId), stream);
+                    this.LogRawMessage($"  MerchantId = {obj.MerchantId}", stream);
                     this.LogRawMessage("  Vendor [Complex Type - Details Not Available]", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
@@ -331,8 +331,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ApproachingObjectEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  ObjectName = {0}", obj.ObjectName), stream);
-                    this.LogRawMessage(string.Format("  ObjectId = {0}", obj.ObjectId), stream);
+                    this.LogRawMessage($"  ObjectName = {obj.ObjectName}", stream);
+                    this.LogRawMessage($"  ObjectId = {obj.ObjectId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -351,8 +351,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("UsingPortalEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  PortalName = {0}", obj.PortalName), stream);
-                    this.LogRawMessage(string.Format("  PortalId = {0}", obj.PortalId), stream);
+                    this.LogRawMessage($"  PortalName = {obj.PortalName}", stream);
+                    this.LogRawMessage($"  PortalId = {obj.PortalId}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -371,7 +371,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("StatusTextInterceptEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  Text = {0}", obj.Text), stream);
+                    this.LogRawMessage($"  Text = {obj.Text}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -390,7 +390,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ChangePortalModeEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  PortalEventType = {0}", obj.Type), stream);
+                    this.LogRawMessage($"  PortalEventType = {obj.Type}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -409,9 +409,9 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("SpellCastEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  SpellId = {0}", obj.SpellId), stream);
-                    this.LogRawMessage(string.Format("  TargetId = {0}", obj.TargetId), stream);
-                    this.LogRawMessage(string.Format("  CastEventType = {0}", obj.EventType), stream);
+                    this.LogRawMessage($"  SpellId = {obj.SpellId}", stream);
+                    this.LogRawMessage($"  TargetId = {obj.TargetId}", stream);
+                    this.LogRawMessage($"  CastEventType = {obj.EventType}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -430,8 +430,8 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("StatusMessageEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  Text = {0}", obj.Text), stream);
-                    this.LogRawMessage(string.Format("  Type = {0}", obj.Type), stream);
+                    this.LogRawMessage($"  Text = {obj.Text}", stream);
+                    this.LogRawMessage($"  Type = {obj.Type}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -447,9 +447,9 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("SpellCastCompleteEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  SpellId = {0}", obj.SpellId), stream);
-                    this.LogRawMessage(string.Format("  Target = {0}", obj.Target), stream);
-                    this.LogRawMessage(string.Format("  Duration = {0}", obj.Duration), stream);
+                    this.LogRawMessage($"  SpellId = {obj.SpellId}", stream);
+                    this.LogRawMessage($"  Target = {obj.Target}", stream);
+                    this.LogRawMessage($"  Duration = {obj.Duration}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -468,9 +468,9 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("SpellCastAttemptingEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  SpellId = {0}", obj.SpellId), stream);
-                    this.LogRawMessage(string.Format("  Target = {0}", obj.Target), stream);
-                    this.LogRawMessage(string.Format("  Skill = {0}", obj.Skill), stream);
+                    this.LogRawMessage($"  SpellId = {obj.SpellId}", stream);
+                    this.LogRawMessage($"  Target = {obj.Target}", stream);
+                    this.LogRawMessage($"  Skill = {obj.Skill}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -489,7 +489,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ItemSelectedEventArgs"), stream);
-                    this.LogRawMessage(string.Format("  ItemGuid = {0}", obj.ItemGuid), stream);
+                    this.LogRawMessage($"  ItemGuid = {obj.ItemGuid}", stream);
 
                     //this.WriteCurrentStateStuff(stream, false);
 
@@ -518,7 +518,7 @@ namespace RedoxExtensions.Diagnostics
                 using (StreamWriter stream = new StreamWriter(this._currentPath, true))
                 {
                     this.LogRawMessage(this.FormatWithPrefix("ChatParserInterceptEventArgs"), stream, toLogFileOnly);
-                    this.LogRawMessage(string.Format("  Text = {0}", obj.Text), stream, toLogFileOnly);
+                    this.LogRawMessage($"  Text = {obj.Text}", stream, toLogFileOnly);
 
                     //this.WriteCurrentStateStuff(stream, toLogFileOnly);
 
@@ -539,7 +539,7 @@ namespace RedoxExtensions.Diagnostics
                     this.LogRawMessage(this.FormatWithPrefix(title), stream);
                     foreach (var keyValue in obj)
                     {
-                        this.LogRawMessage(string.Format("  Name = {0} | Value = {1}", keyValue.Key, keyValue), stream);
+                        this.LogRawMessage($"  Name = {keyValue.Key} | Value = {keyValue}", stream);
                     }
 
                     this.LogRawMessage("", stream);

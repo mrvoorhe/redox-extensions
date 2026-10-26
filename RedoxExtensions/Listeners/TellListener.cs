@@ -10,7 +10,7 @@ namespace RedoxExtensions.Listeners
     public class TellListener : IDisposable
     {
         private readonly string _expectedSourceName;
-        private readonly ManualResetEvent _tellReceivedWaitHandle = new ManualResetEvent(false);
+        private readonly ManualResetEvent _tellReceivedWaitHandle = new(false);
         private readonly bool _unhookOnMatch;
 
         private bool _unhooked;
@@ -22,18 +22,9 @@ namespace RedoxExtensions.Listeners
             REPlugin.Instance.CoreManager.CommandLineText += CoreManager_CommandLineText;
         }
 
-        public static TellListener Begin(string expectedSourceName, bool unhookOnMatch)
-        {
-            return new TellListener(expectedSourceName, unhookOnMatch);
-        }
+        public static TellListener Begin(string expectedSourceName, bool unhookOnMatch) => new TellListener(expectedSourceName, unhookOnMatch);
 
-        public WaitHandle TellReceived
-        {
-            get
-            {
-                return this._tellReceivedWaitHandle;
-            }
-        }
+        public WaitHandle TellReceived => this._tellReceivedWaitHandle;
 
         public void Reset()
         {
@@ -59,8 +50,7 @@ namespace RedoxExtensions.Listeners
         {
             REPlugin.Instance.InvokeOperationSafely(() =>
             {
-                ChatEvent chatEvent;
-                if (ChatEvent.TryParse(e.Text, out chatEvent))
+                if (ChatEvent.TryParse(e.Text, out var chatEvent))
                 {
                     if (chatEvent.SourceName.Equals(this._expectedSourceName, StringComparison.InvariantCultureIgnoreCase))
                     {

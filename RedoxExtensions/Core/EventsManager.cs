@@ -20,29 +20,11 @@ namespace RedoxExtensions.Core
             this._rtEvents = new REEvents(this._decalEventsProxy);
         }
 
-        internal IDecalEventsProxy Decal
-        {
-            get
-            {
-                return this._decalEventsProxy;
-            }
-        }
+        internal IDecalEventsProxy Decal => this._decalEventsProxy;
 
-        internal IVTEventsProxy VT
-        {
-            get
-            {
-                return this._vtEventsProxy;
-            }
-        }
+        internal IVTEventsProxy VT => this._vtEventsProxy;
 
-        internal IREEvents RE
-        {
-            get
-            {
-                return this._rtEvents;
-            }
-        }
+        internal IREEvents RE => this._rtEvents;
 
         public void Dispose()
         {

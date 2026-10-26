@@ -42,9 +42,6 @@ namespace RedoxExtensions.Settings
             }
         }
 
-        private static NPath GetMainSettingsFilePath()
-        {
-            return new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine("settings.json");
-        }
+        private static NPath GetMainSettingsFilePath() => new Uri(typeof(Main).Assembly.CodeBase).LocalPath.ToNPath().Parent.Combine("settings.json");
     }
 }

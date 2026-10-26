@@ -22,10 +22,7 @@ namespace RedoxExtensions.VirindiInterop
             REPlugin.Instance.CoreManager.CommandLineText += Current_CommandLineText;
         }
 
-        public static string BuildQueryOptionCommand(string optionName)
-        {
-            return string.Format("/vt opt get {0}", optionName);
-        }
+        public static string BuildQueryOptionCommand(string optionName) => $"/vt opt get {optionName}";
 
         public Dictionary<string, string> CapturedSettings { get; private set; }
 
@@ -51,8 +48,7 @@ namespace RedoxExtensions.VirindiInterop
         {
             REPlugin.Instance.InvokeOperationSafely(() =>
             {
-                KeyValuePair<string, string> keyValue;
-                if (VTUtilities.TryParseOptionOutput(e.Text, out keyValue))
+                if (VTUtilities.TryParseOptionOutput(e.Text, out var keyValue))
                 {
                     e.Eat = true;
 

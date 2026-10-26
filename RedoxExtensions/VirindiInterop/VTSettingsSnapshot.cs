@@ -15,10 +15,7 @@ namespace RedoxExtensions.VirindiInterop
 
         #region Public Static Methods
 
-        public static VTSettingsSnapshot Capture(IEnumerable<string> settingNames)
-        {
-            return new VTSettingsSnapshot(VTUtilities.GetVTOptions(settingNames));
-        }
+        public static VTSettingsSnapshot Capture(IEnumerable<string> settingNames) => new VTSettingsSnapshot(VTUtilities.GetVTOptions(settingNames));
 
         #endregion
 

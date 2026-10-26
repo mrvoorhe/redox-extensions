@@ -58,15 +58,9 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get { return true; }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VirindiInterop.VTRunState DesiredVTRunState
-        {
-            get { return VTRunState.Off; }
-        }
+        public override VirindiInterop.VTRunState DesiredVTRunState => VTRunState.Off;
 
         protected override int MaxTries
         {

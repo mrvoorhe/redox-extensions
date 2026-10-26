@@ -28,14 +28,13 @@ namespace RedoxLib.Utilities
 
         public static WorldObjectMutex Create(IWorldObject wo)
         {
-            var mutex = new Mutex(false, string.Format("Global\\re_{0}", wo.Id));
+            var mutex = new Mutex(false, $"Global\\re_{wo.Id}");
             return new WorldObjectMutex(wo, mutex, false);
         }
 
         public static WorldObjectMutex Obtain(IWorldObject wo)
         {
-            bool owned;
-            var mutex = new Mutex(true, string.Format("Global\\re_{0}", wo.Id), out owned);
+            var mutex = new Mutex(true, $"Global\\re_{wo.Id}", out var owned);
 
             if (!owned)
                 mutex.WaitOne();

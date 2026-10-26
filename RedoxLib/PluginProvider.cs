@@ -9,13 +9,7 @@ namespace RedoxLib
     {
         private static IDecalPluginProvider _instance;
 
-        public static IDecalPluginProvider Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        public static IDecalPluginProvider Instance => _instance;
 
         public static void Set(IDecalPluginProvider instance)
         {

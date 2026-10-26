@@ -18,15 +18,9 @@ namespace RedoxExtensions.Diagnostics
     {
         #region Extensions for ILoggableObject
 
-        public static DebugLevel MinimumRequiredDebugLevel(this ILoggableObject e)
-        {
-            return e.MinimumRequiredDebugLevel;
-        }
+        public static DebugLevel MinimumRequiredDebugLevel(this ILoggableObject e) => e.MinimumRequiredDebugLevel;
 
-        public static string ToLoggableFormat(this ILoggableObject e)
-        {
-            return e.GetLoggableFormat();
-        }
+        public static string ToLoggableFormat(this ILoggableObject e) => e.GetLoggableFormat();
 
         #endregion
 
@@ -40,10 +34,10 @@ namespace RedoxExtensions.Diagnostics
 
         public static string ToLoggableFormat(this MoveObjectEventArgs e)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(e.GetType().ToString());
-            builder.AppendLine(string.Format("  New (WObj) = {0}", e.Moved.ToShortSummary()));
-            builder.AppendLine(string.Format("    Id = {0}", e.Moved.Id));
+            builder.AppendLine($"  New (WObj) = {e.Moved.ToShortSummary()}");
+            builder.AppendLine($"    Id = {e.Moved.Id}");
 
             return builder.ToString();
         }
@@ -56,10 +50,10 @@ namespace RedoxExtensions.Diagnostics
 
         public static string ToLoggableFormat(this ChatTextInterceptEventArgs e)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(e.GetType().ToString());
-            builder.AppendLine(string.Format("  Target = {0}", e.Target));
-            builder.AppendLine(string.Format("  Text = {0}", e.Text));
+            builder.AppendLine($"  Target = {e.Target}");
+            builder.AppendLine($"  Text = {e.Text}");
 
             return builder.ToString();
         }
@@ -70,7 +64,7 @@ namespace RedoxExtensions.Diagnostics
 
         public static string ToPrettyString(this ReadOnlyCollection<Location.Location> locationCollection)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine();
             foreach(var loc in locationCollection)
             {

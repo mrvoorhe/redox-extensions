@@ -30,69 +30,48 @@ namespace RedoxExtensions.Commands
         private const string RedoxExtensionsCommandPrefix = "/re";
         private const string RedoxFellowCommandPrefix = "/rf";
 
-        public static ISupportFeedback Self
-        {
-            get
-            {
-                return _self;
-            }
-        }
+        public static ISupportFeedback Self => _self;
 
         #region Command Text Creation
 
-        public static string CreateRedoxExtensionsCommandText(string cmdName)
-        {
-            return string.Format("/re {0}", cmdName);
-        }
+        public static string CreateRedoxExtensionsCommandText(string cmdName) => $"/re {cmdName}";
 
         public static string CreateRedoxExtensionsCommandText(string cmdName, params object[] args)
         {
             var collapsedArgs = CollapseDirectEntryCommandArguments(args);
-            return string.Format("{0} {1}", CreateRedoxExtensionsCommandText(cmdName), collapsedArgs);
+            return $"{CreateRedoxExtensionsCommandText(cmdName)} {collapsedArgs}";
         }
 
-        public static string CreateRedoxFellowCommandText(string cmdName)
-        {
-            return string.Format("/rf {0}", cmdName);
-        }
+        public static string CreateRedoxFellowCommandText(string cmdName) => $"/rf {cmdName}";
 
         public static string CreateRedoxFellowCommandText(string cmdName, params object[] args)
         {
             var collapsedArgs = CollapseDirectEntryCommandArguments(args);
-            return string.Format("{0} {1}", CreateRedoxFellowCommandText(cmdName), collapsedArgs);
+            return $"{CreateRedoxFellowCommandText(cmdName)} {collapsedArgs}";
         }
 
-        public static string CreateForeignCommandText(string cmdName)
-        {
-            return string.Format("{0}{1}", ForeignCommandAllPrefix, cmdName);
-        }
+        public static string CreateForeignCommandText(string cmdName) => $"{ForeignCommandAllPrefix}{cmdName}";
 
         public static string CreateForeignCommandText(string cmdName, params object[] args)
         {
             var collapsedArgs = CollapseForeignCommandArguments(args);
-            return string.Format("{0} {1}", CreateForeignCommandText(cmdName), collapsedArgs);
+            return $"{CreateForeignCommandText(cmdName)} {collapsedArgs}";
         }
 
-        public static string CreateForeignSlaveOnlyCommandText(string cmdName)
-        {
-            return string.Format("{0}{1}", ForeignCommandSlavesOnlyPrefix, cmdName);
-        }
+        public static string CreateForeignSlaveOnlyCommandText(string cmdName) => $"{ForeignCommandSlavesOnlyPrefix}{cmdName}";
 
         public static string CreateForeignSlaveOnlyCommandText(string cmdName, params object[] args)
         {
             var collapsedArgs = CollapseForeignCommandArguments(args);
-            return string.Format("{0} {1}", CreateForeignSlaveOnlyCommandText(cmdName), collapsedArgs);
+            return $"{CreateForeignSlaveOnlyCommandText(cmdName)} {collapsedArgs}";
         }
 
-        public static string CreateForeignMasterOnlyCommandText(string cmdName)
-        {
-            return string.Format("{0}{1}", ForeignCommandMasterOnlyPrefix, cmdName);
-        }
+        public static string CreateForeignMasterOnlyCommandText(string cmdName) => $"{ForeignCommandMasterOnlyPrefix}{cmdName}";
 
         public static string CreateForeignMasterOnlyCommandText(string cmdName, params object[] args)
         {
             var collapsedArgs = CollapseForeignCommandArguments(args);
-            return string.Format("{0} {1}", CreateForeignMasterOnlyCommandText(cmdName), collapsedArgs);
+            return $"{CreateForeignMasterOnlyCommandText(cmdName)} {collapsedArgs}";
         }
 
         #region Conversions
@@ -124,7 +103,7 @@ namespace RedoxExtensions.Commands
 
             var collapsedArgs = CollapseForeignCommandArguments(args.Cast<object>());
 
-            return string.Format("{0}{1} {2}", prefix, command.Name, collapsedArgs).TrimEnd();
+            return $"{prefix}{command.Name} {collapsedArgs}".TrimEnd();
         }
 
         #endregion
@@ -138,7 +117,7 @@ namespace RedoxExtensions.Commands
             var collapsedData = CollapseMetaData(data);
 
             // Append to the of the command
-            return string.Format("{0} {1}", command, collapsedData);
+            return $"{command} {collapsedData}";
         }
 
         public static string StripMetaData(string message, out IEnumerable<string> data)
@@ -164,15 +143,9 @@ namespace RedoxExtensions.Commands
 
         #region ICommand Parsing
 
-        public static bool TryParse(ChatParserInterceptEventArgs eventArgs, out ICommand command)
-        {
-            return TryParse(eventArgs.Text, out command);
-        }
+        public static bool TryParse(ChatParserInterceptEventArgs eventArgs, out ICommand command) => TryParse(eventArgs.Text, out command);
 
-        public static bool TryParse(ChatTextInterceptEventArgs eventArgs, out ICommand command)
-        {
-            return TryParse(eventArgs.Text, out command);
-        }
+        public static bool TryParse(ChatTextInterceptEventArgs eventArgs, out ICommand command) => TryParse(eventArgs.Text, out command);
 
         public static bool TryParse(string text, out ICommand command)
         {
@@ -231,30 +204,24 @@ namespace RedoxExtensions.Commands
 
         #region Argument Collapsing
 
-        public static string CollapseDirectEntryCommandArguments(IEnumerable<string> args)
-        {
-            return CollapseDirectEntryCommandArguments(args.Cast<object>());
-        }
+        public static string CollapseDirectEntryCommandArguments(IEnumerable<string> args) => CollapseDirectEntryCommandArguments(args.Cast<object>());
 
         public static string CollapseDirectEntryCommandArguments(IEnumerable<object> args)
         {
-            return args.Aggregate(string.Empty, (accum, next) => string.Format("{0}{1}{2}", accum, DirectEntryCommandArgumentSeparator, next)).Trim();
+            return args.Aggregate(string.Empty, (accum, next) => $"{accum}{DirectEntryCommandArgumentSeparator}{next}").Trim();
         }
 
-        public static string CollapseForeignCommandArguments(IEnumerable<string> args)
-        {
-            return CollapseForeignCommandArguments(args.Cast<object>());
-        }
+        public static string CollapseForeignCommandArguments(IEnumerable<string> args) => CollapseForeignCommandArguments(args.Cast<object>());
 
         public static string CollapseForeignCommandArguments(IEnumerable<object> args)
         {
-            return args.Aggregate(string.Empty, (accum, next) => string.Format("{0}{1}{2}", accum, ForeignCommandArgumentSeparator, next)).Trim().TrimStart(ForeignCommandArgumentSeparator);
+            return args.Aggregate(string.Empty, (accum, next) => $"{accum}{ForeignCommandArgumentSeparator}{next}").Trim().TrimStart(ForeignCommandArgumentSeparator);
         }
 
         public static string CollapseMetaData(IEnumerable<string> data)
         {
-            var joinedData = data.Aggregate(string.Empty, (accum, next) => string.Format("{0}{1}{2}", accum, MetaDataArgumentSeparator, next)).Trim().TrimStart(MetaDataArgumentSeparator);
-            return string.Format("({0})", joinedData);
+            var joinedData = data.Aggregate(string.Empty, (accum, next) => $"{accum}{MetaDataArgumentSeparator}{next}").Trim().TrimStart(MetaDataArgumentSeparator);
+            return $"({joinedData})";
         }
 
         #endregion
@@ -452,8 +419,7 @@ namespace RedoxExtensions.Commands
         {
             var cmdArgumentPair = SplitCommandAndArguments(message);
 
-            TargetType targetType;
-            var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out targetType);
+            var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out var targetType);
             var arguments = SplitForeignArguments(cmdArgumentPair.Item2);
 
             var command = Command.Create(
@@ -478,8 +444,7 @@ namespace RedoxExtensions.Commands
         {
             // MagTools IsChat helper doesn't handle your Fellowship message parsing correctly, so we need to special case this.
 
-            bool isFellowFromSelfMessage;
-            bool isFellowMessage = ChatParsingUtilities.IsChatTextFromFellowship(cleanedText, out isFellowFromSelfMessage);
+            bool isFellowMessage = ChatParsingUtilities.IsChatTextFromFellowship(cleanedText, out var isFellowFromSelfMessage);
 
             bool validCommandChannel;
             Util.ChatChannels chatChannel = Util.ChatChannels.None;
@@ -518,8 +483,7 @@ namespace RedoxExtensions.Commands
 
             var cmdArgumentPair = SplitCommandAndArguments(message);
 
-            TargetType targetType;
-            var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out targetType);
+            var cleanedCommandName = StripTargetTypeFromForeignCommand(cmdArgumentPair.Item1, out var targetType);
             var arguments = SplitForeignArguments(cmdArgumentPair.Item2);
 
             var commandChannel = ChatChannelToCommandChannel(channel);
@@ -562,38 +526,24 @@ namespace RedoxExtensions.Commands
             // end in order for it to work correctly
             chatChannel = ChatParsingUtilities.GetChatChannel(originalText);
 
-            // Check for all of the cases we don't support, and if it's one of them, return
-            switch (chatChannel)
-            {
-                case Util.ChatChannels.None:
-                case Util.ChatChannels.Allegiance:
-                case Util.ChatChannels.General:
-                case Util.ChatChannels.LFG:
-                case Util.ChatChannels.Roleplay:
-                case Util.ChatChannels.Society:
-                case Util.ChatChannels.Trade:
-                case Util.ChatChannels.All:
-                    return false;
-
-            }
-
-            return true;
+            return chatChannel is not (
+                Util.ChatChannels.None
+                or Util.ChatChannels.Allegiance
+                or Util.ChatChannels.General
+                or Util.ChatChannels.LFG
+                or Util.ChatChannels.Roleplay
+                or Util.ChatChannels.Society
+                or Util.ChatChannels.Trade
+                or Util.ChatChannels.All);
         }
 
-        private static CommandChannel ChatChannelToCommandChannel(Util.ChatChannels chatChannel)
+        private static CommandChannel ChatChannelToCommandChannel(Util.ChatChannels chatChannel) => chatChannel switch
         {
-            switch (chatChannel)
-            {
-                case Util.ChatChannels.Fellowship:
-                    return CommandChannel.Fellowship;
-                case Util.ChatChannels.Area:
-                    return CommandChannel.AreaChat;
-                case Util.ChatChannels.Tells:
-                    return CommandChannel.Tell;
-                default:
-                    throw new InvalidOperationException("Can't map : " + chatChannel);
-            }
-        }
+            Util.ChatChannels.Fellowship => CommandChannel.Fellowship,
+            Util.ChatChannels.Area => CommandChannel.AreaChat,
+            Util.ChatChannels.Tells => CommandChannel.Tell,
+            _ => throw new InvalidOperationException("Can't map : " + chatChannel),
+        };
 
         #endregion
 
@@ -603,29 +553,11 @@ namespace RedoxExtensions.Commands
 
         private class SelfCommandSource : ISupportFeedback
         {
-            public string SourceCharacter
-            {
-                get
-                {
-                    return DefaultYouValue;
-                }
-            }
+            public string SourceCharacter => DefaultYouValue;
 
-            public bool FromSelf
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public bool FromSelf => true;
 
-            public CommandChannel Channel
-            {
-                get
-                {
-                    return CommandChannel.DirectEntry;
-                }
-            }
+            public CommandChannel Channel => CommandChannel.DirectEntry;
 
             public object ChannelTag
             {
@@ -635,38 +567,20 @@ namespace RedoxExtensions.Commands
                 }
             }
 
-            public bool UsesChannelTag
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            public bool UsesChannelTag => false;
 
-            public int SourceCharacterId
-            {
-                get
-                {
-                    return REPlugin.Instance.CharacterFilter.Id;
-                }
-            }
+            public int SourceCharacterId => REPlugin.Instance.CharacterFilter.Id;
 
-            public bool IsSourceIdAvailable
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public bool IsSourceIdAvailable => true;
 
             public void GiveFeedback(FeedbackType feedbackType, string message)
             {
-                CommandResponseHandler.TellSource(this, string.Format("[{0}] {1}", feedbackType, message));
+                CommandResponseHandler.TellSource(this, $"[{feedbackType}] {message}");
             }
 
             public void GiveFeedback(FeedbackType feedbackType, string message, params object[] args)
             {
-                CommandResponseHandler.TellSource(this, string.Format("[{0}] {1}", feedbackType, string.Format(message, args)));
+                CommandResponseHandler.TellSource(this, $"[{feedbackType}] {string.Format(message, args)}");
             }
         }
 

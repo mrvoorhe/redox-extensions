@@ -40,7 +40,7 @@ namespace RedoxExtensions.Actions.Dispatched
                 if (woObj == null)
                 {
                     command.GiveFeedback(FeedbackType.Ignored, "Could not locate object : {0}", woId);
-                    throw new DisplayToUserException(string.Format("Could not locate object : {0}", woId), command);
+                    throw new DisplayToUserException($"Could not locate object : {woId}", command);
                 }
 
                 coords = woObj.Coordinates();

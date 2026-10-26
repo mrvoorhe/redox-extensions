@@ -31,11 +31,9 @@ namespace RedoxExtensions.Actions
 
             var options = VTUtilities.GetVTOptions(new[] { VTOptionNames.EnableCombat, VTOptionNames.AttackDistance });
 
-            string combatEnabled;
-            options.TryGetValue(VTOptionNames.EnableCombat, out combatEnabled);
+            options.TryGetValue(VTOptionNames.EnableCombat, out var combatEnabled);
 
-            string originalAttackDistance;
-            options.TryGetValue(VTOptionNames.AttackDistance, out originalAttackDistance);
+            options.TryGetValue(VTOptionNames.AttackDistance, out var originalAttackDistance);
 
             if (string.Equals(combatEnabled, "True", StringComparison.OrdinalIgnoreCase))
             {
@@ -90,10 +88,7 @@ namespace RedoxExtensions.Actions
                         {
                             ACUtilities.ProcessArbitraryCommand("/ub setmotion StrafeRight 0");
 
-                            if (onComplete != null)
-                            {
-                                onComplete();
-                            }
+                            onComplete?.Invoke();
                         },
                         StrafeMilliseconds,
                         null);

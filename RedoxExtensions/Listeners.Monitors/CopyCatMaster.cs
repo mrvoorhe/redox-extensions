@@ -99,7 +99,7 @@ namespace RedoxExtensions.Listeners.Monitors
 
                     if (targetWorldObj == null)
                     {
-                        throw new DisplayToUserException(string.Format("Expected to find a world object for target name : {0}", e.TargetName), CommandHelpers.Self);
+                        throw new DisplayToUserException($"Expected to find a world object for target name : {e.TargetName}", CommandHelpers.Self);
                     }
 
                     // For now, limit this feature to NPC's.  It would be annoying to have it going off every time I mule something

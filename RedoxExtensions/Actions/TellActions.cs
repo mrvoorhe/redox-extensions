@@ -48,7 +48,7 @@ namespace RedoxExtensions.Actions
 
         public static void TellNativeFellow(string text)
         {
-            ACUtilities.ProcessNativeCommand(string.Format("/f {0}", text));
+            ACUtilities.ProcessNativeCommand($"/f {text}");
         }
 
         public static void TellNativeFellow(string text, params object[] args)
@@ -58,7 +58,7 @@ namespace RedoxExtensions.Actions
 
         public static void TellVirindiFellow(string viFellowName, string text)
         {
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vim {0} {1}", viFellowName, text));
+            ACUtilities.ProcessArbitraryCommand($"/vim {viFellowName} {text}");
         }
 
         public static void TellVirindiFellow(string viFellowName, string text, params object[] args)
@@ -68,7 +68,7 @@ namespace RedoxExtensions.Actions
 
         public static void TellPlayer(string player, string text)
         {
-            ACUtilities.ProcessNativeCommand(string.Format("/t {0}, {1}", player, text));
+            ACUtilities.ProcessNativeCommand($"/t {player}, {text}");
         }
 
         public static void TellPlayer(string player, string text, params object[] args)

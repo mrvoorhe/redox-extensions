@@ -13,8 +13,7 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void ParseTwoDigit()
         {
-            UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("1.5N", out result));
+            Assert.IsTrue(UserFacingCoord.TryParse("1.5N", out var result));
             Assert.That(result.Value, Is.EqualTo(1.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("1.5N"));
@@ -23,8 +22,7 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void ParseThreeDigit()
         {
-            UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("10.5N", out result));
+            Assert.IsTrue(UserFacingCoord.TryParse("10.5N", out var result));
             Assert.That(result.Value, Is.EqualTo(10.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("10.5N"));
@@ -37,8 +35,7 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void ParseWithTrailingDotAndWhitespace()
         {
-            UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("1.5N.  ", out result));
+            Assert.IsTrue(UserFacingCoord.TryParse("1.5N.  ", out var result));
             Assert.That(result.Value, Is.EqualTo(1.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("1.5N"));
@@ -51,8 +48,7 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void ParseWithTrailingComma()
         {
-            UserFacingCoord result;
-            Assert.IsTrue(UserFacingCoord.TryParse("1.5N,", out result));
+            Assert.IsTrue(UserFacingCoord.TryParse("1.5N,", out var result));
             Assert.That(result.Value, Is.EqualTo(1.5));
             Assert.That(result.Direction, Is.EqualTo(Direction.N));
             Assert.That(result.ToString(), Is.EqualTo("1.5N"));

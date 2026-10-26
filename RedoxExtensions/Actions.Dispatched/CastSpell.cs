@@ -48,11 +48,10 @@ namespace RedoxExtensions.Actions.Dispatched
             var spellId = RedoxLib.SpellUtilities.LookUpSpellIdByName(spellName);
             if (spellId == 0)
             {
-                throw new DisplayToUserException(string.Format("Unable to lookup spell id for : {0}", spellName), requestor);
+                throw new DisplayToUserException($"Unable to lookup spell id for : {spellName}", requestor);
             }
 
-            bool wandAlreadyEquipped;
-            var wandId = ResolveWand(out wandAlreadyEquipped);
+            var wandId = ResolveWand(out var wandAlreadyEquipped);
             if (wandId == 0)
             {
                 throw new DisplayToUserException("I have no wand/staff/orb to cast with", requestor);
@@ -95,20 +94,11 @@ namespace RedoxExtensions.Actions.Dispatched
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get { return true; }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VTRunState DesiredVTRunState
-        {
-            get { return VTRunState.Off; }
-        }
+        public override VTRunState DesiredVTRunState => VTRunState.Off;
 
-        protected override int MaxTries
-        {
-            get { return 2; }
-        }
+        protected override int MaxTries => 2;
 
         protected override int WaitTimeoutInMilliseconds
         {

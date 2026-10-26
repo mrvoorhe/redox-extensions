@@ -40,15 +40,9 @@ namespace RedoxExtensions.Actions.Dispatched
             get { throw new NotImplementedException(); }
         }
 
-        protected override int MaxTries
-        {
-            get { return 3; }
-        }
+        protected override int MaxTries => 3;
 
-        protected override int WaitTimeoutInMilliseconds
-        {
-            get { return 100; }
-        }
+        protected override int WaitTimeoutInMilliseconds => 100;
 
         #endregion
 

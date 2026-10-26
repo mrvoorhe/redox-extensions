@@ -24,7 +24,7 @@ namespace RedoxExtensions.VirindiInterop
 
         public VTStateScope(VTStateOptions desiredEnabledStates, VTStateOptions desiredDisabledStates)
         {
-            List<string> optionsToCheck = new List<string>();
+            var optionsToCheck = new List<string>();
 
             // Only check the options that will get changed.  That way we don't even mess with options
             // the scope doesn't care about.
@@ -59,20 +59,14 @@ namespace RedoxExtensions.VirindiInterop
             }
         }
 
-        public static VTStateScope Enter(VTStateOptions enabledStates, VTStateOptions disabledStates)
-        {
-            return new VTStateScope(enabledStates, disabledStates);
-        }
+        public static VTStateScope Enter(VTStateOptions enabledStates, VTStateOptions disabledStates) => new VTStateScope(enabledStates, disabledStates);
 
         public static VTStateScope EnterAllDisabled()
         {
             return new VTStateScope(VTStateOptions.DontChange, VTStateOptions.Nav | VTStateOptions.Meta | VTStateOptions.Looting | VTStateOptions.Combat | VTStateOptions.Buffing);
         }
 
-        public static VTStateScope EnterNavDisabled()
-        {
-            return new VTStateScope(VTStateOptions.DontChange, VTStateOptions.Nav);
-        }
+        public static VTStateScope EnterNavDisabled() => new VTStateScope(VTStateOptions.DontChange, VTStateOptions.Nav);
 
         public void Dispose()
         {

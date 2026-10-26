@@ -21,25 +21,13 @@ namespace RedoxLib.General
                 yield return i;
         }
 
-        public static string AggregateWithComma(this IEnumerable<string> elements)
-        {
-            return elements.AggregateWith(", ");
-        }
+        public static string AggregateWithComma(this IEnumerable<string> elements) => elements.AggregateWith(", ");
 
-        public static string AggregateWithSpace(this IEnumerable<string> elements)
-        {
-            return elements.AggregateWith(" ");
-        }
+        public static string AggregateWithSpace(this IEnumerable<string> elements) => elements.AggregateWith(" ");
 
-        public static string AggregateWithUnderscore(this IEnumerable<string> elements)
-        {
-            return elements.AggregateWith("_");
-        }
+        public static string AggregateWithUnderscore(this IEnumerable<string> elements) => elements.AggregateWith("_");
 
-        public static string AggregateWithNewLine(this IEnumerable<string> elements)
-        {
-            return elements.AggregateWith(System.Environment.NewLine);
-        }
+        public static string AggregateWithNewLine(this IEnumerable<string> elements) => elements.AggregateWith(System.Environment.NewLine);
 
         public static string AggregateWith(this IEnumerable<string> elements, string separator)
         {

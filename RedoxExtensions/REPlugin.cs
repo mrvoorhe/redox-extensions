@@ -30,7 +30,7 @@ namespace RedoxExtensions
 
         #region Instance Data
 
-        private readonly object _classLock = new object();
+        private readonly object _classLock = new();
 
         private bool _startupComplete;
         private bool _shutdownComplete;
@@ -58,13 +58,7 @@ namespace RedoxExtensions
 
         #region Internal Static Properties
 
-        internal static REPlugin Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        internal static REPlugin Instance => _instance;
 
         #endregion
 
@@ -72,63 +66,21 @@ namespace RedoxExtensions
 
         #region My Objects
 
-        public ChatWriter Chat
-        {
-            get
-            {
-                return this._chatWriter;
-            }
-        }
+        public ChatWriter Chat => this._chatWriter;
 
         public bool ShowColors { get; set; }
 
-        public DebugWriter Debug
-        {
-            get
-            {
-                return this._debugWriter;
-            }
-        }
+        public DebugWriter Debug => this._debugWriter;
 
-        public ErrorLogger Error
-        {
-            get
-            {
-                return this._errorLogger;
-            }
-        }
+        public ErrorLogger Error => this._errorLogger;
 
-        internal RTSettings Settings
-        {
-            get
-            {
-                return this._settings;
-            }
-        }
+        internal RTSettings Settings => this._settings;
 
-        internal EventsManager Events
-        {
-            get
-            {
-                return this._eventsManager;
-            }
-        }
+        internal EventsManager Events => this._eventsManager;
 
-        internal DispatchManager Dispatch
-        {
-            get
-            {
-                return this._dispatchManager;
-            }
-        }
+        internal DispatchManager Dispatch => this._dispatchManager;
 
-        internal MonitorManager MonitorManager
-        {
-            get
-            {
-                return this._monitorManager;
-            }
-        }
+        internal MonitorManager MonitorManager => this._monitorManager;
 
         internal Location.LocationDatabase LocationDatabase => _locationDatabase;
 
@@ -177,29 +129,11 @@ namespace RedoxExtensions
             }
         }
 
-        public CharacterFilter CharacterFilter
-        {
-            get
-            {
-                return this.CoreManager.CharacterFilter;
-            }
-        }
+        public CharacterFilter CharacterFilter => this.CoreManager.CharacterFilter;
 
-        public WorldFilter WorldFilter
-        {
-            get
-            {
-                return this.CoreManager.WorldFilter;
-            }
-        }
+        public WorldFilter WorldFilter => this.CoreManager.WorldFilter;
 
-        public HooksWrapper Actions
-        {
-            get
-            {
-                return this.PluginHost.Actions;
-            }
-        }
+        public HooksWrapper Actions => this.PluginHost.Actions;
 
         #endregion
 
@@ -610,29 +544,11 @@ namespace RedoxExtensions
 
         #region Explicit IPluginServices Implementation
 
-        WrapperDebugWriter IPluginServices.Debug
-        {
-            get
-            {
-                return this.Debug;
-            }
-        }
+        WrapperDebugWriter IPluginServices.Debug => this.Debug;
 
-        WrapperChatWriter IPluginServices.Chat
-        {
-            get
-            {
-                return this.Chat;
-            }
-        }
+        WrapperChatWriter IPluginServices.Chat => this.Chat;
 
-        ErrorLogger IPluginServices.Error
-        {
-            get
-            {
-                return this.Error;
-            }
-        }
+        ErrorLogger IPluginServices.Error => this.Error;
 
         void IPluginServices.InvokeOperationSafely(SafeAction action)
         {
@@ -644,21 +560,9 @@ namespace RedoxExtensions
             this.InvokeOperationSafely(action, arg);
         }
 
-        CoreManager IRealPluginBase.CoreManager
-        {
-            get
-            {
-                return this.CoreManager;
-            }
-        }
+        CoreManager IRealPluginBase.CoreManager => this.CoreManager;
 
-        PluginHost IRealPluginBase.PluginHost
-        {
-            get
-            {
-                return this.PluginHost;
-            }
-        }
+        PluginHost IRealPluginBase.PluginHost => this.PluginHost;
 
         #endregion
     }

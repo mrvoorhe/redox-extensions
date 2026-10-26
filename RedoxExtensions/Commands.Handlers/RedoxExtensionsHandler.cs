@@ -177,7 +177,6 @@ namespace RedoxExtensions.Commands.Handlers
             foreach (var rawArg in command.Arguments)
             {
                 var arg = rawArg.ToLower().Trim();
-                double parsedMinutes;
 
                 if (arg == "on")
                 {
@@ -187,7 +186,7 @@ namespace RedoxExtensions.Commands.Handlers
                 {
                     requestedState = false;
                 }
-                else if (double.TryParse(arg, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedMinutes) && parsedMinutes > 0)
+                else if (double.TryParse(arg, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedMinutes) && parsedMinutes > 0)
                 {
                     minutes = parsedMinutes;
                 }

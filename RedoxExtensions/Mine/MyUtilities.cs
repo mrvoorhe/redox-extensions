@@ -17,8 +17,8 @@ namespace RedoxExtensions.Mine
     {
         public const int NpcSleepDelayInMilliseconds = 1000;
 
-        private static readonly HashSet<string> _whitelist = new HashSet<string>();
-        private static readonly Dictionary<string, int> _sleepDelayFactorByCharacter = new Dictionary<string, int>();
+        private static readonly HashSet<string> _whitelist = new();
+        private static readonly Dictionary<string, int> _sleepDelayFactorByCharacter = new();
 
 
         internal static void Shutdown()
@@ -53,25 +53,18 @@ namespace RedoxExtensions.Mine
             return _whitelist.Contains(characterName);
         }
 
-        public static int GetNpcSleepDelayForCurrentAccount()
-        {
-            return GetNpcSleepDelayForCurrentAccount(1000);
-        }
+        public static int GetNpcSleepDelayForCurrentAccount() => GetNpcSleepDelayForCurrentAccount(1000);
 
-        private static int GetNpcSleepDelayFactorForCurrentAccount()
-        {
-            return GetNpcSleepDelayFactor(CurrentCharacter.Name);
-        }
+        private static int GetNpcSleepDelayFactorForCurrentAccount() => GetNpcSleepDelayFactor(CurrentCharacter.Name);
 
         public static int GetNpcSleepDelayFactor(string characterName)
         {
-            int factor;
-            if (_sleepDelayFactorByCharacter.TryGetValue(characterName, out factor))
+            if (_sleepDelayFactorByCharacter.TryGetValue(characterName, out var factor))
             {
                 return factor;
             }
 
-            throw new InvalidOperationException(string.Format("Unknown character : {0}", characterName));
+            throw new InvalidOperationException($"Unknown character : {characterName}");
         }
 
         public static int GetNpcSleepDelayForCurrentAccount(int baseDelayBetweenAccounts)
@@ -83,8 +76,7 @@ namespace RedoxExtensions.Mine
         {
             if (requestedProfile == MyMainProfiles.CharacterSpecificDefault)
             {
-                string profileName;
-                if (ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults.TryGetValue(characterName, out profileName))
+                if (ActiveSettings.Instance.VTProfiles.Main.CharacterDefaults.TryGetValue(characterName, out var profileName))
                 {
                     return profileName;
                 }
@@ -95,23 +87,15 @@ namespace RedoxExtensions.Mine
             return requestedProfile.ToString();
         }
 
-        public static string LookupProfileName(MyMainProfiles requestedProfile)
-        {
-            return LookupProfileName(CurrentCharacter.Name, requestedProfile);
-        }
+        public static string LookupProfileName(MyMainProfiles requestedProfile) => LookupProfileName(CurrentCharacter.Name, requestedProfile);
 
-        public static int GetFormationRangeForCurrentCharacter(string formation)
-        {
-            return GetFormationRange(CurrentCharacter.Name, formation);
-        }
+        public static int GetFormationRangeForCurrentCharacter(string formation) => GetFormationRange(CurrentCharacter.Name, formation);
 
         public static int GetFormationRange(string characterName, string formationName)
         {
-            Formation formation;
-            if (ActiveSettings.Instance.Formations.TryGetValue(formationName.ToLower(), out formation))
+            if (ActiveSettings.Instance.Formations.TryGetValue(formationName.ToLower(), out var formation))
             {
-                int range;
-                if (formation.RangeTable.TryGetValue(characterName, out range))
+                if (formation.RangeTable.TryGetValue(characterName, out var range))
                 {
                     return range;
                 }
@@ -119,24 +103,20 @@ namespace RedoxExtensions.Mine
                 return formation.RangeDefault;
             }
 
-            throw new InvalidOperationException(string.Format("Unknown formation : {0}", formationName));
+            throw new InvalidOperationException($"Unknown formation : {formationName}");
         }
 
         public static bool EnableLootForFormation(string characterName, string formationName)
         {
-            Formation formation;
-            if (ActiveSettings.Instance.Formations.TryGetValue(formationName.ToLower(), out formation))
+            if (ActiveSettings.Instance.Formations.TryGetValue(formationName.ToLower(), out var formation))
             {
                 return formation.Looters.Contains(characterName);
             }
 
-            throw new InvalidOperationException(string.Format("Unknown formation : {0}", formationName));
+            throw new InvalidOperationException($"Unknown formation : {formationName}");
         }
 
-        public static bool EnableLootForFormationForCurrentCharacter(string formation)
-        {
-            return EnableLootForFormation(CurrentCharacter.Name, formation);
-        }
+        public static bool EnableLootForFormationForCurrentCharacter(string formation) => EnableLootForFormation(CurrentCharacter.Name, formation);
 
         public static void RecruitUsualSuspects()
         {

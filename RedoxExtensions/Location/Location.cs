@@ -40,10 +40,7 @@ namespace RedoxExtensions.Location
                 REPlugin.Instance.Actions.Heading);
         }
 
-        public bool CurrentIsSameAs(Location otherLocation, bool compareHeading)
-        {
-            return !CurrentDiffersFrom(otherLocation, compareHeading);
-        }
+        public bool CurrentIsSameAs(Location otherLocation, bool compareHeading) => !CurrentDiffersFrom(otherLocation, compareHeading);
 
         public static bool CurrentDiffersFrom(Location otherLocation, bool compareHeading)
         {
@@ -85,12 +82,7 @@ namespace RedoxExtensions.Location
             get
             {
                 // If the instance was created after deserialization, this will be null, so lazy create it
-                if (this._coords == null)
-                {
-                    this._coords = Mag.Shared.Util.GetCoords(this.LandBlock, this.X, this.Y);
-                }
-
-                return this._coords;
+                return this._coords ??= Mag.Shared.Util.GetCoords(this.LandBlock, this.X, this.Y);
             }
         }
 
@@ -102,7 +94,7 @@ namespace RedoxExtensions.Location
         /// </returns>
         public string ToPrettyString()
         {
-            return string.Format("({0}, {1}, {2}, {3})", this.Coords.NorthSouth.ToString("F1"), this.Coords.EastWest.ToString("F1"), this.Z.ToString("F2"), this.HeadingInDegrees.ToString("F1"));
+            return $"({this.Coords.NorthSouth.ToString("F1")}, {this.Coords.EastWest.ToString("F1")}, {this.Z.ToString("F2")}, {this.HeadingInDegrees.ToString("F1")})";
         }
     }
 }

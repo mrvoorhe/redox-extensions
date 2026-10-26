@@ -19,7 +19,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         private readonly ReadOnlyCollection<WorldObject> _itemsToGive;
         private readonly int _targetId;
 
-        private readonly object _stateLock = new object();
+        private readonly object _stateLock = new();
 
         private IWorldObject _targetWorldObj;
 
@@ -48,7 +48,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
             if (itemsToGive == null)
             {
-                throw new DisplayToUserException(string.Format("Unknown keyword : {0}", keyword), command);
+                throw new DisplayToUserException($"Unknown keyword : {keyword}", command);
             }
 
             return Create(command, itemsToGive);
@@ -58,7 +58,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         {
             if (alreadyMatchedItems == null)
             {
-                throw new ArgumentNullException("alreadyMatchedItems");
+                throw new ArgumentNullException(nameof(alreadyMatchedItems));
             }
 
             // Value Formats :
@@ -87,30 +87,12 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VirindiInterop.VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VirindiInterop.VTRunState.Off;
-            }
-        }
+        public override VirindiInterop.VTRunState DesiredVTRunState => VirindiInterop.VTRunState.Off;
 
 
-        protected override int MaxTries
-        {
-            get
-            {
-                return 3;
-            }
-        }
+        protected override int MaxTries => 3;
 
         protected override int WaitTimeoutInMilliseconds
         {
@@ -136,10 +118,10 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
             if (this._targetWorldObj == null)
             {
-                throw new DisplayToUserException(string.Format("Could not find target : {0}", this._targetId), this.Requestor);
+                throw new DisplayToUserException($"Could not find target : {this._targetId}", this.Requestor);
             }
 
-            REPlugin.Instance.Debug.WriteLine(string.Format("Number of Items to Give = {0}", this._itemsToGive.Count));
+            REPlugin.Instance.Debug.WriteLine($"Number of Items to Give = {this._itemsToGive.Count}");
         }
 
         protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
@@ -153,7 +135,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
                     }
                     break;
                 default:
-                    throw new DisplayToUserException(string.Format("Give failed.  Target Busy.  Items Given = {0}, Cause = {1}", this._currentGiveIndex, this._lastOutcome), this.Requestor);
+                    throw new DisplayToUserException($"Give failed.  Target Busy.  Items Given = {this._currentGiveIndex}, Cause = {this._lastOutcome}", this.Requestor);
             }
         }
 

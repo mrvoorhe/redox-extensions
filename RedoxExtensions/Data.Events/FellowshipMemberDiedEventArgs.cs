@@ -15,16 +15,13 @@ namespace RedoxExtensions.Data.Events
 
         public string CharacterName { get; private set; }
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel
-        {
-            get { return DebugLevel.Low; }
-        }
+        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
         string ILoggableObject.GetLoggableFormat()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine(string.Format("  CharacterName = {0}", this.CharacterName));
+            builder.AppendLine($"  CharacterName = {this.CharacterName}");
             return builder.ToString();
         }
     }

@@ -35,10 +35,7 @@ namespace RedoxExtensions.Listeners.Monitors
             REPlugin.Instance.Events.Decal.ChatBoxMessage += Decal_ChatBoxMessage;
         }
 
-        public bool IsTracking
-        {
-            get { return this._trackingEnabled; }
-        }
+        public bool IsTracking => this._trackingEnabled;
 
         public void Dispose()
         {
@@ -56,10 +53,7 @@ namespace RedoxExtensions.Listeners.Monitors
                 this._startTime = DateTime.Now;
                 this._trackingEnabled = true;
 
-                if (writer != null)
-                {
-                    writer("Bank tracking started.");
-                }
+                writer?.Invoke("Bank tracking started.");
             });
         }
 
@@ -70,10 +64,7 @@ namespace RedoxExtensions.Listeners.Monitors
         {
             if (!this._trackingEnabled)
             {
-                if (writer != null)
-                {
-                    writer("Bank tracking not enabled.  Use /re track first.");
-                }
+                writer?.Invoke("Bank tracking not enabled.  Use /re track first.");
                 return;
             }
 
@@ -111,10 +102,7 @@ namespace RedoxExtensions.Listeners.Monitors
             this._captureBuffer = null;
             this._onCaptureComplete = null;
 
-            if (onComplete != null)
-            {
-                onComplete(buffer);
-            }
+            onComplete?.Invoke(buffer);
         }
 
         private void Decal_ChatBoxMessage(object sender, ChatTextInterceptEventArgs e)
@@ -132,9 +120,7 @@ namespace RedoxExtensions.Listeners.Monitors
             // Hide the response to our own query from the game chat window.
             e.Eat = true;
 
-            string name;
-            long amount;
-            if (ChatParsingUtilities.TryParseBankBalanceLine(e.Text, out name, out amount))
+            if (ChatParsingUtilities.TryParseBankBalanceLine(e.Text, out var name, out var amount))
             {
                 this._captureBuffer.Add(new KeyValuePair<string, long>(name, amount));
             }
@@ -159,13 +145,12 @@ namespace RedoxExtensions.Listeners.Monitors
                 }
             }
 
-            writer(string.Format("[BankStats] Tracked {0}", FormatDuration(elapsed)));
+            writer($"[BankStats] Tracked {FormatDuration(elapsed)}");
 
             bool anyChanges = false;
             foreach (var kvp in current)
             {
-                long baseAmount;
-                baselineByName.TryGetValue(kvp.Key, out baseAmount);
+                baselineByName.TryGetValue(kvp.Key, out var baseAmount);
 
                 long delta = kvp.Value - baseAmount;
                 if (delta == 0)
@@ -195,10 +180,10 @@ namespace RedoxExtensions.Listeners.Monitors
 
             if (hours <= 0)
             {
-                return string.Format("{0}m", minutes);
+                return $"{minutes}m";
             }
 
-            return string.Format("{0}h {1}m", hours, minutes);
+            return $"{hours}h {minutes}m";
         }
     }
 }

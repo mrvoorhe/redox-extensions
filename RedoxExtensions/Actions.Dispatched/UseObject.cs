@@ -27,7 +27,7 @@ namespace RedoxExtensions.Actions.Dispatched
             }
             else if (command.Arguments.Count > 1)
             {
-                throw new DisplayToUserException(string.Format("Multi argument use is not currently supported : {0}", command.RebuildArgumentString()), command);
+                throw new DisplayToUserException($"Multi argument use is not currently supported : {command.RebuildArgumentString()}", command);
             }
             else
             {
@@ -43,7 +43,7 @@ namespace RedoxExtensions.Actions.Dispatched
 
             if (worldObj == null)
             {
-                throw new DisplayToUserException(string.Format("Could not locate object : {0}", objectId), command);
+                throw new DisplayToUserException($"Could not locate object : {objectId}", command);
             }
 
             switch (worldObj.ObjectClass)
@@ -56,7 +56,7 @@ namespace RedoxExtensions.Actions.Dispatched
 
                     return Internal.UseNpc.Create(command, objectId);
                 default:
-                    throw new DisplayToUserException(string.Format("Unknown object class to use : {0}", worldObj.ObjectClass), command);
+                    throw new DisplayToUserException($"Unknown object class to use : {worldObj.ObjectClass}", command);
             }
         }
     }

@@ -61,12 +61,7 @@ namespace RedoxExtensions.Core.Utilities
             return isFellowshipText;
         }
 
-        public static string GetSourceOfChat(string text)
-        {
-            bool bugged;
-            string tmp;
-            return GetSourceOfChat(text, out bugged, out tmp);
-        }
+        public static string GetSourceOfChat(string text) => GetSourceOfChat(text, out _, out _);
 
         public static string GetSourceOfChat(string text, out bool bugged, out string workAroundText)
         {
@@ -85,8 +80,7 @@ namespace RedoxExtensions.Core.Utilities
                 }
 
                 // With PhatAC, the fellowship case is bugged also
-                bool fromSelf;
-                var isFellowship = IsChatTextFromFellowship(text, out fromSelf);
+                var isFellowship = IsChatTextFromFellowship(text, out var fromSelf);
                 if (isFellowship)
                 {
                     bugged = true;
@@ -119,18 +113,14 @@ namespace RedoxExtensions.Core.Utilities
 
         public static bool IsChat(string text, Util.ChatFlags chatFilter)
         {
-            bool bugged;
-            string workAroundText;
-            GetSourceOfChat(text, out bugged, out workAroundText);
+            GetSourceOfChat(text, out _, out var workAroundText);
 
             return Util.IsChat(workAroundText, chatFilter);
         }
 
         public static Util.ChatChannels GetChatChannel(string text)
         {
-            bool bugged;
-            string workAroundText;
-            GetSourceOfChat(text, out bugged, out workAroundText);
+            GetSourceOfChat(text, out _, out var workAroundText);
 
             return Util.GetChatChannel(workAroundText);
         }
@@ -221,10 +211,7 @@ namespace RedoxExtensions.Core.Utilities
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static bool IsComplexTellFormat(string text)
-        {
-            return text.Contains("<Tell:IIDString");
-        }
+        public static bool IsComplexTellFormat(string text) => text.Contains("<Tell:IIDString");
 
         /// <summary>
         /// Converts a message of:
@@ -234,10 +221,7 @@ namespace RedoxExtensions.Core.Utilities
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string CleanTellText(string text)
-        {
-            return Mag.Shared.Util.CleanMessage(text);
-        }
+        public static string CleanTellText(string text) => Mag.Shared.Util.CleanMessage(text);
 
         public static bool IsVIMessage(string text, out string channel, out string source, out string message)
         {
@@ -284,15 +268,9 @@ namespace RedoxExtensions.Core.Utilities
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static bool IsCannotCarryAnymore(string text)
-        {
-            return text.EndsWith(CannotCarryAnymore);
-        }
+        public static bool IsCannotCarryAnymore(string text) => text.EndsWith(CannotCarryAnymore);
 
-        public static bool IsYouGive(string text)
-        {
-            return text.StartsWith(YouGive);
-        }
+        public static bool IsYouGive(string text) => text.StartsWith(YouGive);
 
         #endregion
 
@@ -480,8 +458,7 @@ namespace RedoxExtensions.Core.Utilities
                 return false;
             }
 
-            long parsed;
-            if (!long.TryParse(value, NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out parsed))
+            if (!long.TryParse(value, NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var parsed))
             {
                 return false;
             }

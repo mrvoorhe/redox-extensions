@@ -49,7 +49,7 @@ namespace RedoxExtensions.Commands
                 REPlugin.Instance.Chat.WriteLine(message);
             }
 
-            throw new NotImplementedException(string.Format("Support for channel {0} has not been implemented", command.Channel));
+            throw new NotImplementedException($"Support for channel {command.Channel} has not been implemented");
         }
     }
 }

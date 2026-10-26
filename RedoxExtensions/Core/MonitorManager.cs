@@ -25,53 +25,17 @@ namespace RedoxExtensions.Core
             this._stuckDetector = new StuckDetector();
         }
 
-        public CopyCatMaster CopyCatMaster
-        {
-            get
-            {
-                return this._copyCatMaster;
-            }
-        }
+        public CopyCatMaster CopyCatMaster => this._copyCatMaster;
 
-        public CharacterState CharacterState
-        {
-            get
-            {
-                return this._characterState;
-            }
-        }
+        public CharacterState CharacterState => this._characterState;
 
-        public FellowshipMonitor Fellowship
-        {
-            get
-            {
-                return this._fellowshipMonitor;
-            }
-        }
+        public FellowshipMonitor Fellowship => this._fellowshipMonitor;
 
-        public WorldMonitor WorldMonitor
-        {
-            get
-            {
-                return this._worldMonitor;
-            }
-        }
+        public WorldMonitor WorldMonitor => this._worldMonitor;
 
-        public BankingTracker Banking
-        {
-            get
-            {
-                return this._bankingTracker;
-            }
-        }
+        public BankingTracker Banking => this._bankingTracker;
 
-        public StuckDetector StuckDetector
-        {
-            get
-            {
-                return this._stuckDetector;
-            }
-        }
+        public StuckDetector StuckDetector => this._stuckDetector;
 
         #region IDisposable Members
 

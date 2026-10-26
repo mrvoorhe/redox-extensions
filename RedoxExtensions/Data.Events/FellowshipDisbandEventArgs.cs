@@ -16,16 +16,13 @@ namespace RedoxExtensions.Data.Events
 
         public string Leader { get; private set; }
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel
-        {
-            get { return DebugLevel.Low; }
-        }
+        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
         string ILoggableObject.GetLoggableFormat()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine(string.Format("  Leader = {0}", this.Leader));
+            builder.AppendLine($"  Leader = {this.Leader}");
             return builder.ToString();
         }
     }

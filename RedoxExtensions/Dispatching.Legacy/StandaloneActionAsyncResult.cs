@@ -7,16 +7,10 @@ namespace RedoxExtensions.Dispatching.Legacy
 {
     public class StandaloneActionAsyncResult<TResult> : IStandaloneActionAsyncResult<TResult>, IActionAsyncResultCompleter
     {
-        private readonly ManualResetEvent _completeEvent = new ManualResetEvent(false);
+        private readonly ManualResetEvent _completeEvent = new(false);
         private TResult _actionResult;
 
-        public System.Threading.WaitHandle WaitHandle
-        {
-            get
-            {
-                return this._completeEvent;
-            }
-        }
+        public System.Threading.WaitHandle WaitHandle => this._completeEvent;
 
         public TResult Wait()
         {

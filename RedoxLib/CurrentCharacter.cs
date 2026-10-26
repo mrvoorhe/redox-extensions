@@ -10,9 +10,6 @@ namespace RedoxLib
     /// </summary>
     public static class CurrentCharacter
     {
-        public static string Name
-        {
-            get { return PluginProvider.Instance.CharacterFilter.Name; }
-        }
+        public static string Name => PluginProvider.Instance.CharacterFilter.Name;
     }
 }

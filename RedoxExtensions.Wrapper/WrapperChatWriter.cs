@@ -27,12 +27,12 @@ namespace RedoxExtensions.Wrapper
 
         public void WriteLine(string text)
         {
-            this._pluginServices.WriteToChat(string.Format("{0} {1}", this._messagePrefix, text), DEFAULT_MESSAGE_COLOR, DEFAULT_CHAT);
+            this._pluginServices.WriteToChat($"{this._messagePrefix} {text}", DEFAULT_MESSAGE_COLOR, DEFAULT_CHAT);
         }
 
         public void WriteLine(string text, params object[] args)
         {
-            this._pluginServices.WriteToChat(string.Format("{0} {1}", this._messagePrefix, string.Format(text, args)), DEFAULT_MESSAGE_COLOR, DEFAULT_CHAT);
+            this._pluginServices.WriteToChat($"{this._messagePrefix} {string.Format(text, args)}", DEFAULT_MESSAGE_COLOR, DEFAULT_CHAT);
         }
 
         #endregion

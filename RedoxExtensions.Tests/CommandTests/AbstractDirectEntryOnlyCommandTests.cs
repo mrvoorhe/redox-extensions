@@ -19,8 +19,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             string text = this.CreateCommandText("test");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -36,8 +35,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             string text = this.CreateCommandText("test", "one");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -54,8 +52,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             string text = this.CreateCommandText("test", "one", "two", "three");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 

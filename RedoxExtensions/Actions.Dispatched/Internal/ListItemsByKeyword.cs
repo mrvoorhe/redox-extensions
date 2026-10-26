@@ -27,7 +27,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
         {
             if (alreadyMatchedItems == null)
             {
-                throw new ArgumentNullException("alreadyMatchedItems");
+                throw new ArgumentNullException(nameof(alreadyMatchedItems));
             }
 
             // Value Formats :
@@ -48,30 +48,12 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VirindiInterop.VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VirindiInterop.VTRunState.Off;
-            }
-        }
+        public override VirindiInterop.VTRunState DesiredVTRunState => VirindiInterop.VTRunState.Off;
 
 
-        protected override int MaxTries
-        {
-            get
-            {
-                return 1;
-            }
-        }
+        protected override int MaxTries => 1;
 
         protected override int WaitTimeoutInMilliseconds
         {

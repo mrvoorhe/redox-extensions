@@ -22,9 +22,9 @@ namespace RedoxExtensions.Core
     {
         private const int UsingPortalTimeoutInMilliseconds = 5000;
 
-        private readonly ManualResetEvent _usingPortalPending = new ManualResetEvent(false);
-        private readonly ManualResetEvent _nonZeroActionStatePending = new ManualResetEvent(false);
-        private readonly ManualResetEvent _giveItemPending = new ManualResetEvent(false);
+        private readonly ManualResetEvent _usingPortalPending = new(false);
+        private readonly ManualResetEvent _nonZeroActionStatePending = new(false);
+        private readonly ManualResetEvent _giveItemPending = new(false);
 
         private readonly IDecalEventsProxy _decalEventsProxy;
         private readonly IFellowshipEventsDisposable _fellowshipEvents;
@@ -61,13 +61,7 @@ namespace RedoxExtensions.Core
 
         #region Public Properties
 
-        public IFellowshipEvents Fellowship
-        {
-            get
-            {
-                return this._fellowshipEvents;
-            }
-        }
+        public IFellowshipEvents Fellowship => this._fellowshipEvents;
 
         #endregion
 
@@ -126,20 +120,14 @@ namespace RedoxExtensions.Core
         {
             REPlugin.Instance.Debug.WriteObject(e);
 
-            if (this.BeginBusy != null)
-            {
-                this.BeginBusy(sender, e);
-            }
+            this.BeginBusy?.Invoke(sender, e);
         }
 
         public void FireBeginIdle(object sender, BeginIdleEventArgs e)
         {
             REPlugin.Instance.Debug.WriteObject(e);
 
-            if (this.BeginIdle != null)
-            {
-                this.BeginIdle(sender, e);
-            }
+            this.BeginIdle?.Invoke(sender, e);
         }
 
         #endregion
@@ -190,10 +178,7 @@ namespace RedoxExtensions.Core
 
             REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-            if (this.UsingPortal != null)
-            {
-                this.UsingPortal(sender, eventArgs);
-            }
+            this.UsingPortal?.Invoke(sender, eventArgs);
 
             // TODO : Test this out.  Will it be a problem that this sleep will block all other
             // background actions while we are waiting?  Might not be the best behavior for this use case.
@@ -218,10 +203,7 @@ namespace RedoxExtensions.Core
 
             REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-            if (this.UsingPortalComplete != null)
-            {
-                this.UsingPortalComplete(sender, eventArgs);
-            }
+            this.UsingPortalComplete?.Invoke(sender, eventArgs);
         }
 
         private void FireBeginNonZeroBusyState(object sender, BeginNonZeroBusyStateEventArgs eventArgs)
@@ -233,10 +215,7 @@ namespace RedoxExtensions.Core
 
             REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-            if (this.BeginNonZeroBusyState != null)
-            {
-                this.BeginNonZeroBusyState(sender, eventArgs);
-            }
+            this.BeginNonZeroBusyState?.Invoke(sender, eventArgs);
 
             // Check for busy states that we fire events for.
             switch (this._pendingBusyState)
@@ -252,10 +231,7 @@ namespace RedoxExtensions.Core
 
                     REPlugin.Instance.Debug.WriteObject(beginGiveEventArgs);
 
-                    if (this.BeginGiveItem != null)
-                    {
-                        this.BeginGiveItem(sender, beginGiveEventArgs);
-                    }
+                    this.BeginGiveItem?.Invoke(sender, beginGiveEventArgs);
                     break;
                 case BusyStateConstants.EquipingItem:
                     // TODO : Investigate how to detect failed equips.  Once found, introduce a manual reset event
@@ -264,10 +240,7 @@ namespace RedoxExtensions.Core
 
                     REPlugin.Instance.Debug.WriteObject(beginEquipEventArgs);
 
-                    if (this.BeginEquipItem != null)
-                    {
-                        this.BeginEquipItem(sender, beginEquipEventArgs);
-                    }
+                    this.BeginEquipItem?.Invoke(sender, beginEquipEventArgs);
                     break;
 
                 case BusyStateConstants.UnequipingItem:
@@ -277,10 +250,7 @@ namespace RedoxExtensions.Core
 
                     REPlugin.Instance.Debug.WriteObject(beginUnequipEventArgs);
 
-                    if (this.BeginUnequipItem != null)
-                    {
-                        this.BeginUnequipItem(sender, beginUnequipEventArgs);
-                    }
+                    this.BeginUnequipItem?.Invoke(sender, beginUnequipEventArgs);
                     break;
             }
         }
@@ -304,10 +274,7 @@ namespace RedoxExtensions.Core
                         {
                             var tmpEventArgs = new EndGiveItemEventArgs(null, string.Empty, GiveItemOutcome.FailedUnknown);
                             REPlugin.Instance.Debug.WriteObject(eventArgs);
-                            if (this.EndGiveItem != null)
-                            {
-                                this.EndGiveItem(sender, tmpEventArgs);
-                            }
+                            this.EndGiveItem?.Invoke(sender, tmpEventArgs);
 
                             this._giveItemPending.Reset();
                         }
@@ -316,25 +283,16 @@ namespace RedoxExtensions.Core
 
                     case BusyStateConstants.EquipingItem:
                         // TODO : Investigate how to detect failed equips.  Once found, introduce a manual reset event
-                        if (this.EndEquipItem != null)
-                        {
-                            this.EndEquipItem(sender, new ObjectIdEventArgs(this._pendingBusyStateId));
-                        }
+                        this.EndEquipItem?.Invoke(sender, new ObjectIdEventArgs(this._pendingBusyStateId));
                         break;
 
                     case BusyStateConstants.UnequipingItem:
                         // TODO : Investigate how to detect failed equips.  Once found, introduce a manual reset event
-                        if (this.EndUnequipItem != null)
-                        {
-                            this.EndUnequipItem(sender, new ObjectIdEventArgs(this._pendingBusyStateId));
-                        }
+                        this.EndUnequipItem?.Invoke(sender, new ObjectIdEventArgs(this._pendingBusyStateId));
                         break;
                 }
 
-                if (this.EndNonZeroBusyState != null)
-                {
-                    this.EndNonZeroBusyState(sender, eventArgs);
-                }
+                this.EndNonZeroBusyState?.Invoke(sender, eventArgs);
             }
             finally
             {
@@ -347,10 +305,7 @@ namespace RedoxExtensions.Core
         {
             REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-            if (this.SelfJumpCompleted != null)
-            {
-                this.SelfJumpCompleted(this, eventArgs);
-            }
+            this.SelfJumpCompleted?.Invoke(this, eventArgs);
         }
 
         private void DecalEventsProxy_RenderFrame(object sender, EventArgs e)
@@ -394,10 +349,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-                if (this.UsingObject != null)
-                {
-                    this.UsingObject(sender, eventArgs);
-                }
+                this.UsingObject?.Invoke(sender, eventArgs);
 
                 // Once we fire the generic event, check and see if there is a more specific event we can fire
                 this.CheckForAndFireMoreSpecificUsingEvents(sender, objectName, currentSelectionId);
@@ -418,10 +370,7 @@ namespace RedoxExtensions.Core
                 var eventArgs = new ApproachingObjectEventArgs(objectName, currentSelectionId);
 
                 REPlugin.Instance.Debug.WriteObject(eventArgs);
-                if (this.ApproachingObject != null)
-                {
-                    this.ApproachingObject(sender, eventArgs);
-                }
+                this.ApproachingObject?.Invoke(sender, eventArgs);
 
                 return;
             }
@@ -434,10 +383,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-                if (this.YourTooBusy != null)
-                {
-                    this.YourTooBusy(sender, eventArgs);
-                }
+                this.YourTooBusy?.Invoke(sender, eventArgs);
             }
 
             if (this._giveItemPending.WaitOne(0) && e.IsCantBeGiven())
@@ -456,10 +402,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-                if (this.EndGiveItem != null)
-                {
-                    this.EndGiveItem(sender, eventArgs);
-                }
+                this.EndGiveItem?.Invoke(sender, eventArgs);
 
                 this._giveItemPending.Reset();
                 this._pendingGiveItemOutcome = GiveItemOutcome.Undefined;
@@ -500,8 +443,7 @@ namespace RedoxExtensions.Core
                     var materialValue = worldObj.Values(LongValueKey.Material);
                     if (materialValue > 0)
                     {
-                        string materialName;
-                        if(Mag.Shared.Constants.Dictionaries.MaterialInfo.TryGetValue(materialValue, out materialName))
+                        if(Mag.Shared.Constants.Dictionaries.MaterialInfo.TryGetValue(materialValue, out var materialName))
                         {
                             targetName = targetName.Substring(0, targetName.Length - (materialName.Length + 1));
                         }
@@ -520,10 +462,7 @@ namespace RedoxExtensions.Core
                     var eventArgs = new EndGiveItemEventArgs(worldObj, targetName, GiveItemOutcome.Successful);
                     REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-                    if (this.EndGiveItem != null)
-                    {
-                        this.EndGiveItem(sender, eventArgs);
-                    }
+                    this.EndGiveItem?.Invoke(sender, eventArgs);
 
                     this._giveItemPending.Reset();
                     this._pendingGiveItemCapturedWorldObject = null;
@@ -584,10 +523,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(jumpEventArgs);
 
-                if (this.SelfJump != null)
-                {
-                    this.SelfJump(sender, jumpEventArgs);
-                }
+                this.SelfJump?.Invoke(sender, jumpEventArgs);
             }
             else if (e.Message.Type == 0x019E) // Player Killed
             {
@@ -731,7 +667,7 @@ namespace RedoxExtensions.Core
                     }
                 }
 
-                var header = string.Format("[RE] Color highlights for {0} (0x{1:X8}):", objectId.ToWorldObject().Name, objectId);
+                var header = $"[RE] Color highlights for {objectId.ToWorldObject().Name} (0x{objectId:X8}):";
 
                 if (sections.Count == 0)
                 {

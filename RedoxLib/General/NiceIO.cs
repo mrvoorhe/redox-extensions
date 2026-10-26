@@ -53,10 +53,7 @@ namespace NiceIO
             return stack.ToArray();
         }
 
-        private static bool HasNonDotDotLastElement(List<string> stack)
-        {
-            return stack.Count > 0 && stack[stack.Count - 1] != "..";
-        }
+        private static bool HasNonDotDotLastElement(List<string> stack) => stack.Count > 0 && stack[stack.Count - 1] != "..";
 
         private string ParseDriveLetter(string path, out string driveLetter)
         {
@@ -85,10 +82,7 @@ namespace NiceIO
             _driveLetter = driveLetter;
         }
 
-        public NPath Combine(params string[] append)
-        {
-            return Combine(append.Select(a => new NPath(a)).ToArray());
-        }
+        public NPath Combine(params string[] append) => Combine(append.Select(a => new NPath(a)).ToArray());
 
         public NPath Combine(params NPath[] append)
         {
@@ -129,55 +123,34 @@ namespace NiceIO
 
         #region inspection
 
-        public bool IsRelative
-        {
-            get { return _isRelative; }
-        }
+        public bool IsRelative => _isRelative;
 
-        public string FileName
-        {
-            get { return _elements.Last(); }
-        }
+        public string FileName => _elements.Last();
 
-        public string FileNameWithoutExtension
-        {
-            get { return Path.GetFileNameWithoutExtension (FileName); }
-        }
+        public string FileNameWithoutExtension => Path.GetFileNameWithoutExtension (FileName);
 
-        public IEnumerable<string> Elements
-        {
-            get { return _elements; }
-        }
+        public IEnumerable<string> Elements => _elements;
 
         public bool Exists(string append = "")
         {
             return Exists(new NPath(append));
         }
 
-        public bool Exists(NPath append)
-        {
-            return FileExists(append) || DirectoryExists(append);
-        }
+        public bool Exists(NPath append) => FileExists(append) || DirectoryExists(append);
 
         public bool DirectoryExists(string append = "")
         {
             return DirectoryExists(new NPath(append));
         }
 
-        public bool DirectoryExists(NPath append)
-        {
-            return Directory.Exists(Combine(append).ToString());
-        }
+        public bool DirectoryExists(NPath append) => Directory.Exists(Combine(append).ToString());
 
         public bool FileExists(string append = "")
         {
             return FileExists(new NPath(append));
         }
 
-        public bool FileExists(NPath append)
-        {
-            return File.Exists(Combine(append).ToString());
-        }
+        public bool FileExists(NPath append) => File.Exists(Combine(append).ToString());
 
         public string ExtensionWithDot
         {
@@ -190,20 +163,11 @@ namespace NiceIO
             }
         }
 
-        public string InQuotes()
-        {
-            return "\"" + ToString() + "\"";
-        }
+        public string InQuotes() => "\"" + ToString() + "\"";
 
-        public string InQuotes(SlashMode slashMode)
-        {
-            return "\"" + ToString(slashMode) + "\"";
-        }
+        public string InQuotes(SlashMode slashMode) => "\"" + ToString(slashMode) + "\"";
 
-        public override string ToString()
-        {
-            return ToString(SlashMode.Native);
-        }
+        public override string ToString() => ToString(SlashMode.Native);
 
         public string ToString(SlashMode slashMode)
         {
@@ -227,27 +191,16 @@ namespace NiceIO
             return sb.ToString();
         }
 
-        static char Slash(SlashMode slashMode)
+        static char Slash(SlashMode slashMode) => slashMode switch
         {
-            switch (slashMode)
-            {
-                case SlashMode.Backward:
-                    return '\\';
-                case SlashMode.Forward:
-                    return '/';
-                default:
-                    return Path.DirectorySeparatorChar;
-            }
-        }
+            SlashMode.Backward => '\\',
+            SlashMode.Forward => '/',
+            _ => Path.DirectorySeparatorChar,
+        };
 
         public override bool Equals(Object obj)
         {
-            if (obj == null)
-                return false;
-
-            // If parameter cannot be cast to Point return false.
-            var p = obj as NPath;
-            if ((Object)p == null)
+            if (obj is not NPath p)
                 return false;
 
             if (p._isRelative != _isRelative)
@@ -273,7 +226,7 @@ namespace NiceIO
                 return true;
 
             // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
+            if (a is null || b is null)
                 return false;
 
             // Return true if the fields match:
@@ -305,15 +258,9 @@ namespace NiceIO
             return extensions.Any(e => WithDot(e).ToLower() == extensionWithDotLower);
         }
 
-        private static string WithDot(string extension)
-        {
-            return extension.StartsWith(".") ? extension : "." + extension;
-        }
+        private static string WithDot(string extension) => extension.StartsWith(".") ? extension : "." + extension;
 
-        private bool IsEmpty()
-        {
-            return _elements.Length == 0;
-        }
+        private bool IsEmpty() => _elements.Length == 0;
         #endregion inspection
 
         #region directory enumeration
@@ -359,10 +306,7 @@ namespace NiceIO
             return this;
         }
 
-        public NPath CreateFile(string file)
-        {
-            return CreateFile(new NPath(file));
-        }
+        public NPath CreateFile(string file) => CreateFile(new NPath(file));
 
         public NPath CreateFile(NPath file)
         {
@@ -378,10 +322,7 @@ namespace NiceIO
             return this;
         }
 
-        public NPath CreateDirectory(string directory)
-        {
-            return CreateDirectory(new NPath(directory));
-        }
+        public NPath CreateDirectory(string directory) => CreateDirectory(new NPath(directory));
 
         public NPath CreateDirectory(NPath directory)
         {
@@ -391,20 +332,11 @@ namespace NiceIO
             return Combine(directory).CreateDirectory();
         }
 
-        public NPath Copy(string dest)
-        {
-            return Copy(new NPath(dest));
-        }
+        public NPath Copy(string dest) => Copy(new NPath(dest));
 
-        public NPath Copy(string dest, Func<NPath, bool> fileFilter)
-        {
-            return Copy(new NPath(dest), fileFilter);
-        }
+        public NPath Copy(string dest, Func<NPath, bool> fileFilter) => Copy(new NPath(dest), fileFilter);
 
-        public NPath Copy(NPath dest)
-        {
-            return Copy(dest, p => true);
-        }
+        public NPath Copy(NPath dest) => Copy(dest, p => true);
 
         public NPath Copy(NPath dest, Func<NPath, bool> fileFilter)
         {
@@ -498,10 +430,7 @@ namespace NiceIO
             }
         }
 
-        public NPath Move(string dest)
-        {
-            return Move(new NPath(dest));
-        }
+        public NPath Move(string dest) => Move(new NPath(dest));
 
         public NPath Move(NPath dest)
         {
@@ -532,13 +461,7 @@ namespace NiceIO
 
         #region special paths
 
-        public static NPath CurrentDirectory
-        {
-            get
-            {
-                return new NPath(Directory.GetCurrentDirectory());
-            }
-        }
+        public static NPath CurrentDirectory => new NPath(Directory.GetCurrentDirectory());
 
         public static NPath HomeDirectory
         {
@@ -550,13 +473,7 @@ namespace NiceIO
             }
         }
 
-        public static NPath SystemTemp
-        {
-            get
-            {
-                return new NPath(Path.GetTempPath());
-            }
-        }
+        public static NPath SystemTemp => new NPath(Path.GetTempPath());
 
         #endregion
 
@@ -588,10 +505,7 @@ namespace NiceIO
             return parent;
         }
 
-        public bool IsChildOf(string potentialBasePath)
-        {
-            return IsChildOf(new NPath(potentialBasePath));
-        }
+        public bool IsChildOf(string potentialBasePath) => IsChildOf(new NPath(potentialBasePath));
 
         public bool IsChildOf(NPath potentialBasePath)
         {
@@ -607,10 +521,7 @@ namespace NiceIO
             return Parent.IsChildOf(potentialBasePath);
         }
 
-        public NPath ParentContaining(string needle)
-        {
-            return ParentContaining(new NPath(needle));
-        }
+        public NPath ParentContaining(string needle) => ParentContaining(new NPath(needle));
 
         public NPath ParentContaining(NPath needle)
         {
@@ -676,23 +587,14 @@ namespace NiceIO
             return Files(recurse).Where(fileFilter ?? AlwaysTrue).Select(file => file.Copy(destination.Combine(file.RelativeTo(this)))).ToArray();
         }
 
-        static bool AlwaysTrue(NPath p)
-        {
-            return true;
-        }
+        static bool AlwaysTrue(NPath p) => true;
 
-        private static bool IsLinux()
-        {
-            return Directory.Exists("/proc");
-        }
+        private static bool IsLinux() => Directory.Exists("/proc");
     }
 
     public static class Extensions
     {
-        public static IEnumerable<NPath> Copy(this IEnumerable<NPath> self, string dest)
-        {
-            return Copy(self, new NPath(dest));
-        }
+        public static IEnumerable<NPath> Copy(this IEnumerable<NPath> self, string dest) => Copy(self, new NPath(dest));
 
         public static IEnumerable<NPath> Copy(this IEnumerable<NPath> self, NPath dest)
         {
@@ -702,10 +604,7 @@ namespace NiceIO
             return self.Select(p => p.Copy(dest.Combine(p.FileName))).ToArray();
         }
 
-        public static IEnumerable<NPath> Move(this IEnumerable<NPath> self, string dest)
-        {
-            return Move(self, new NPath(dest));
-        }
+        public static IEnumerable<NPath> Move(this IEnumerable<NPath> self, string dest) => Move(self, new NPath(dest));
 
         public static IEnumerable<NPath> Move(this IEnumerable<NPath> self, NPath dest)
         {
@@ -727,10 +626,7 @@ namespace NiceIO
             return self.Select(p => p.InQuotes(forward));
         }
 
-        public static NPath ToNPath(this string path)
-        {
-            return new NPath(path);
-        }
+        public static NPath ToNPath(this string path) => new NPath(path);
     }
 
     public enum SlashMode

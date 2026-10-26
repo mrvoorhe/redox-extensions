@@ -24,9 +24,9 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
     {
         private readonly ReadOnlyCollection<GiveItemSearchData> _giveSearchData;
         private readonly bool _stopOnTargetFull;
-        private readonly Dictionary<int, IWorldObject> _foundTargets = new Dictionary<int, IWorldObject>();
+        private readonly Dictionary<int, IWorldObject> _foundTargets = new();
 
-        private readonly object _stateLock = new object();
+        private readonly object _stateLock = new();
 
         private ReadOnlyCollection<ReadOnlyCollection<GiveItemData>> _foundItemsToGive;
         private List<int> _givenCount;
@@ -67,11 +67,11 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
                 if (command.Arguments.Count < 2)
                 {
-                    throw new DisplayToUserException(string.Format("Missing required arguments : {0}", command.RawValue), command);
+                    throw new DisplayToUserException($"Missing required arguments : {command.RawValue}", command);
                 }
                 if (command.Arguments.Count > 3)
                 {
-                    throw new DisplayToUserException(string.Format("Too many arguments : {0}", command.RawValue), command);
+                    throw new DisplayToUserException($"Too many arguments : {command.RawValue}", command);
                 }
 
                 string itemName = command.Arguments[0];
@@ -102,29 +102,11 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VTRunState.Off;
-            }
-        }
+        public override VTRunState DesiredVTRunState => VTRunState.Off;
 
-        protected override int MaxTries
-        {
-            get
-            {
-                return 10;
-            }
-        }
+        protected override int MaxTries => 10;
 
         protected override int WaitTimeoutInMilliseconds
         {
@@ -217,7 +199,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
                     }
                     break;
                 default:
-                    throw new DisplayToUserException(string.Format("Give failed.  Target Busy.  Items Given = {0}, Cause = {1}", this._currentGiveIndex, this._lastOutcome), this.Requestor);
+                    throw new DisplayToUserException($"Give failed.  Target Busy.  Items Given = {this._currentGiveIndex}, Cause = {this._lastOutcome}", this.Requestor);
             }
         }
 

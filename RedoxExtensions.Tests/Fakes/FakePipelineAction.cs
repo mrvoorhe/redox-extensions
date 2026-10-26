@@ -10,7 +10,7 @@ namespace RedoxExtensions.Tests.Fakes
 {
     public class FakePipelineAction : IPipelineAction
     {
-        private readonly ManualResetEvent _complete = new ManualResetEvent(false);
+        private readonly ManualResetEvent _complete = new(false);
         private volatile bool _retry;
         private bool _postDisposeCachedCompleteValue;
         private bool _disposed;
@@ -64,13 +64,7 @@ namespace RedoxExtensions.Tests.Fakes
             }
         }
 
-        public bool RequireIdleToPerform
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool RequireIdleToPerform => false;
 
         public bool RequiresExplicitVTState
         {
@@ -81,13 +75,7 @@ namespace RedoxExtensions.Tests.Fakes
             }
         }
 
-        public VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VTRunState.Off;
-            }
-        }
+        public VTRunState DesiredVTRunState => VTRunState.Off;
 
         public void Init()
         {

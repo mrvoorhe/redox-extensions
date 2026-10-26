@@ -21,7 +21,7 @@ namespace RedoxExtensions.Core
         private readonly Action<SelfJumpCompleteEventArgs> _fireJumpComplete;
         private readonly Func<Location.Location> _captureCurrentLocation;
 
-        private readonly List<Location.Location> _jumpTrajectory = new List<Location.Location>();
+        private readonly List<Location.Location> _jumpTrajectory = new();
 
         private bool _isRecording = false;
         private JumpData _cachedJumpData;
@@ -51,13 +51,7 @@ namespace RedoxExtensions.Core
         {
         }
 
-        internal bool IsRecording
-        {
-            get
-            {
-                return this._isRecording;
-            }
-        }
+        internal bool IsRecording => this._isRecording;
 
         public void Dispose()
         {

@@ -102,10 +102,7 @@ namespace VTankFreeMethodsTest
             return false;
         }
 
-        private static bool Curtain_IsVTankPresent()
-        {
-            return uTank2.PluginCore.PC != null;
-        }
+        private static bool Curtain_IsVTankPresent() => uTank2.PluginCore.PC != null;
 
         //Safe methods. These can be called directly from plugin code without bothering to check if VT is running.
 

@@ -34,15 +34,9 @@ namespace RedoxExtensions.Location
             throw new NotImplementedException();
         }
 
-        public override string ToString()
-        {
-            return $"{NorthSouth}, {EastWest}";
-        }
+        public override string ToString() => $"{NorthSouth}, {EastWest}";
 
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
+        public override int GetHashCode() => ToString().GetHashCode();
 
         public override bool Equals(object obj)
         {
@@ -78,12 +72,10 @@ namespace RedoxExtensions.Location
             if (split.Length == 1)
                 split = value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
-            UserFacingCoord ns;
-            if (!UserFacingCoord.TryParse(split[0], out ns))
+            if (!UserFacingCoord.TryParse(split[0], out var ns))
                 return false;
 
-            UserFacingCoord ew;
-            if (!UserFacingCoord.TryParse(split[1], out ew))
+            if (!UserFacingCoord.TryParse(split[1], out var ew))
                 return false;
 
             location = new UserFacingLocation(ns, ew);

@@ -43,21 +43,21 @@ namespace RedoxExtensions.Commands.Handlers
 
                 // short cut for running vt commands
                 case "vt":
-                    ACUtilities.ProcessArbitraryCommand(string.Format("/vt {0}", command.RebuildArgumentsWithSpaceSeparator()));
+                    ACUtilities.ProcessArbitraryCommand($"/vt {command.RebuildArgumentsWithSpaceSeparator()}");
                     break;
 
                 // Shortcut for running mt commands
                 case "mt":
-                    ACUtilities.ProcessArbitraryCommand(string.Format("/mt {0}", command.RebuildArgumentsWithSpaceSeparator()));
+                    ACUtilities.ProcessArbitraryCommand($"/mt {command.RebuildArgumentsWithSpaceSeparator()}");
                     break;
 
                 // Shortcut for local redox extensions commands
                 case "re":
-                    ACUtilities.ProcessArbitraryCommand(string.Format("/re {0}", command.RebuildArgumentsWithSpaceSeparator()));
+                    ACUtilities.ProcessArbitraryCommand($"/re {command.RebuildArgumentsWithSpaceSeparator()}");
                     break;
 
                 case "rew":
-                    ACUtilities.ProcessArbitraryCommand(string.Format("/rew {0}", command.RebuildArgumentsWithSpaceSeparator()));
+                    ACUtilities.ProcessArbitraryCommand($"/rew {command.RebuildArgumentsWithSpaceSeparator()}");
                     break;
 
                 #endregion

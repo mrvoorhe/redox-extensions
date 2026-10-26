@@ -24,7 +24,7 @@ namespace RedoxExtensions.Wrapper
         /// </summary>
         public static string FullExceptionTrace(Exception exception)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             addStackTraceForNonAggregateException(sb, exception);
             string stackTrace = sb.ToString();
             return stackTrace;
@@ -36,14 +36,11 @@ namespace RedoxExtensions.Wrapper
         /// </summary>
         /// <param name="exception"></param>
         /// <returns></returns>
-        public static string ToFullStackTrace(this Exception exception)
-        {
-            return FullExceptionTrace(exception);
-        }
+        public static string ToFullStackTrace(this Exception exception) => FullExceptionTrace(exception);
 
         private static void addStackTraceForNonAggregateException(StringBuilder sb, Exception exception)
         {
-            List<Exception> exceptions = new List<Exception>();
+            var exceptions = new List<Exception>();
             for (Exception ecursor = exception; ecursor != null; ecursor = ecursor.InnerException)
             {
                 exceptions.Add(ecursor);
@@ -63,21 +60,21 @@ namespace RedoxExtensions.Wrapper
 
         private static void addInfoForException(StringBuilder sb, Exception exception)
         {
-            sb.AppendLine(String.Format("{0}: {1}", exception.GetType(), exception.Message));
-            if (exception is ReflectionTypeLoadException)
+            sb.AppendLine($"{exception.GetType()}: {exception.Message}");
+            if (exception is ReflectionTypeLoadException typeLoadException)
             {
-                getDebugByExceptionType(sb, exception as ReflectionTypeLoadException);
+                getDebugByExceptionType(sb, typeLoadException);
             }
             else
             {
                 // extract public fields and properties with the IncludeInTrace attribue
                 foreach (FieldInfo field in exception.GetType().GetFields())
                     if (field.GetCustomAttributes(typeof(IncludeInTraceAttribute), true).Length > 0)
-                        sb.AppendLine(String.Format("{0}: {1}", field.Name, field.GetValue(exception)));
+                        sb.AppendLine($"{field.Name}: {field.GetValue(exception)}");
 
                 foreach (PropertyInfo prop in exception.GetType().GetProperties())
                     if (prop.GetCustomAttributes(typeof(IncludeInTraceAttribute), true).Length > 0)
-                        sb.AppendLine(String.Format("{0}: {1}", prop.Name, prop.GetValue(exception, null)));
+                        sb.AppendLine($"{prop.Name}: {prop.GetValue(exception, null)}");
 
                 sb.AppendLine(exception.StackTrace);
             }
@@ -107,7 +104,7 @@ namespace RedoxExtensions.Wrapper
         /// <remarks>I think this still needs a little work to get the right answer.</remarks>
         public static StackFrame FirstInterestingFrame(uint skipFrames, params string[] namespacesAndMethodsToIgnore)
         {
-            StackTrace trace = new StackTrace(true);
+            var trace = new StackTrace(true);
             // i=1 => start with the caller's stack frame
             for (int i = 1 + (int)skipFrames; i < trace.FrameCount; ++i)
             {
@@ -164,7 +161,7 @@ namespace RedoxExtensions.Wrapper
         /// </summary>
         public static string MessageOriginFromStackFrame(StackFrame frame)
         {
-            StringBuilder message = new StringBuilder();
+            var message = new StringBuilder();
             if (frame.GetFileName() != null)
             {
                 message.Append(frame.GetFileName());

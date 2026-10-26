@@ -21,8 +21,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromSelfSampleText("test");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsFalse(isCommand);
         }
@@ -35,8 +34,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromSelfSampleText("test", "one");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsFalse(isCommand);
         }
@@ -49,16 +47,12 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromSelfSampleText("test", "one", "two", "three");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsFalse(isCommand);
         }
 
-        protected override Commands.CommandChannel ExpectedChannel
-        {
-            get { return CommandChannel.Tell; }
-        }
+        protected override Commands.CommandChannel ExpectedChannel => CommandChannel.Tell;
 
         protected override string CreateFromSelfSampleText(string cmdName)
         {

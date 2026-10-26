@@ -14,8 +14,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestTryParseOptionOutputWhenNotVTOptionOutput()
         {
-            KeyValuePair<string, string> keyValue;
-            bool result = VTUtilities.TryParseOptionOutput("Hello World", out keyValue);
+            bool result = VTUtilities.TryParseOptionOutput("Hello World", out var keyValue);
 
             Assert.IsFalse(result);
         }
@@ -23,8 +22,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestTryParseOptionOutputWhen()
         {
-            KeyValuePair<string, string> keyValue;
-            bool result = VTUtilities.TryParseOptionOutput("[VTank] Option EnableLooting = False", out keyValue);
+            bool result = VTUtilities.TryParseOptionOutput("[VTank] Option EnableLooting = False", out var keyValue);
 
             Assert.IsTrue(result);
 

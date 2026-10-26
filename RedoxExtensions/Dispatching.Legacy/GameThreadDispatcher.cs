@@ -35,7 +35,7 @@ namespace RedoxExtensions.Dispatching.Legacy
 
         #endregion
 
-        private readonly object _classLock = new object();
+        private readonly object _classLock = new();
         private readonly Queue<ActionContainer> _actionQueue;
         private readonly IDecalEventsProxy _decalEventsProxy;
 
@@ -65,13 +65,7 @@ namespace RedoxExtensions.Dispatching.Legacy
         /// <summary>
         /// For unit testing only
         /// </summary>
-        public bool IsHooked
-        {
-            get
-            {
-                return this._hooked;
-            }
-        }
+        public bool IsHooked => this._hooked;
 
         public void QueueAction(DispatchedActionDelegate action)
         {
@@ -115,8 +109,8 @@ namespace RedoxExtensions.Dispatching.Legacy
 
         public IStandaloneActionAsyncResult<TResult> QueueCompletableAction<TResult>(IDispatchedActionFunc<TResult> func)
         {
-            StandaloneActionAsyncResult<TResult> asyncResult = new StandaloneActionAsyncResult<TResult>();
-            ActionContainer container = new ActionContainer(func, asyncResult);
+            var asyncResult = new StandaloneActionAsyncResult<TResult>();
+            var container = new ActionContainer(func, asyncResult);
             this.QueueContainer(container);
             return asyncResult;
         }

@@ -19,21 +19,20 @@ namespace RedoxExtensions.Tests
 
             bool actionCalled = false;
 
-            using (var dispatcher = new GameThreadDispatcher(fakeDecalEventsProxy))
+            using var dispatcher = new GameThreadDispatcher(fakeDecalEventsProxy);
+
+            dispatcher.QueueAction(() =>
             {
-                dispatcher.QueueAction(() =>
-                {
-                    actionCalled = true;
-                });
+                actionCalled = true;
+            });
 
-                Assert.AreEqual(1, dispatcher.QueueCount);
+            Assert.AreEqual(1, dispatcher.QueueCount);
 
-                // Fire the render event to simulate what decal would do
-                fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
+            // Fire the render event to simulate what decal would do
+            fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
 
-                Assert.IsTrue(actionCalled);
-                Assert.AreEqual(0, dispatcher.QueueCount);
-            }
+            Assert.IsTrue(actionCalled);
+            Assert.AreEqual(0, dispatcher.QueueCount);
         }
     }
 }

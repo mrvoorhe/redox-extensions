@@ -19,261 +19,84 @@ namespace RedoxLib.Objects
             this._wo = wo;
         }
 
-        public int Id
-        {
-            get
-            {
-                return _wo.Id;
-            }
-        }
+        public int Id => _wo.Id;
 
-        public string Name
-        {
-            get
-            {
-                return _wo.Name;
-            }
-        }
+        public string Name => _wo.Name;
 
-        public ObjectClass ObjectClass
-        {
-            get
-            {
-                return _wo.ObjectClass;
-            }
-        }
+        public ObjectClass ObjectClass => _wo.ObjectClass;
 
-        public int ActiveSpellCount
-        {
-            get
-            {
-                return _wo.ActiveSpellCount;
-            }
-        }
+        public int ActiveSpellCount => _wo.ActiveSpellCount;
 
-        public int SpellCount
-        {
-            get
-            {
-                return _wo.SpellCount;
-            }
-        }
+        public int SpellCount => _wo.SpellCount;
 
-        public int Behavior
-        {
-            get
-            {
-                return _wo.Behavior;
-            }
-        }
+        public int Behavior => _wo.Behavior;
 
-        public int Category
-        {
-            get
-            {
-                return _wo.Category;
-            }
-        }
+        public int Category => _wo.Category;
 
-        public int Container
-        {
-            get
-            {
-                return _wo.Container;
-            }
-        }
+        public int Container => _wo.Container;
 
-        public int GameDataFlags1
-        {
-            get
-            {
-                return _wo.GameDataFlags1;
-            }
-        }
+        public int GameDataFlags1 => _wo.GameDataFlags1;
 
-        public int Icon
-        {
-            get
-            {
-                return _wo.Icon;
-            }
-        }
+        public int Icon => _wo.Icon;
 
-        public int LastIdTime
-        {
-            get
-            {
-                return _wo.LastIdTime;
-            }
-        }
+        public int LastIdTime => _wo.LastIdTime;
 
-        public int PhysicsDataFlags
-        {
-            get
-            {
-                return _wo.PhysicsDataFlags;
-            }
-        }
+        public int PhysicsDataFlags => _wo.PhysicsDataFlags;
 
-        public int Type
-        {
-            get
-            {
-                return _wo.Type;
-            }
-        }
+        public int Type => _wo.Type;
 
-        public bool HasIdData
-        {
-            get
-            {
-                return _wo.HasIdData;
-            }
-        }
+        public bool HasIdData => _wo.HasIdData;
 
-        public System.Collections.ObjectModel.ReadOnlyCollection<int> BoolKeys
-        {
-            get
-            {
-                return _wo.BoolKeys.AsReadOnly();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<int> BoolKeys => _wo.BoolKeys.AsReadOnly();
 
-        public System.Collections.ObjectModel.ReadOnlyCollection<int> LongKeys
-        {
-            get
-            {
-                return _wo.LongKeys.AsReadOnly();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<int> LongKeys => _wo.LongKeys.AsReadOnly();
 
-        public System.Collections.ObjectModel.ReadOnlyCollection<int> DoubleKeys
-        {
-            get
-            {
-                return _wo.DoubleKeys.AsReadOnly();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<int> DoubleKeys => _wo.DoubleKeys.AsReadOnly();
 
-        public System.Collections.ObjectModel.ReadOnlyCollection<int> StringKeys
-        {
-            get
-            {
-                return _wo.StringKeys.AsReadOnly();
-            }
-        }
-        public CoordsObject Coords
-        {
-            get
-            {
-                return this.Coordinates();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<int> StringKeys => _wo.StringKeys.AsReadOnly();
+        public CoordsObject Coords => this.Coordinates();
 
-        public int ActiveSpell(int index)
-        {
-            return _wo.ActiveSpell(index);
-        }
+        public int ActiveSpell(int index) => _wo.ActiveSpell(index);
 
-        public int Spell(int index)
-        {
-            return _wo.Spell(index);
-        }
+        public int Spell(int index) => _wo.Spell(index);
 
-        public bool Exists(BoolValueKey index)
-        {
-            return _wo.Exists(index);
-        }
+        public bool Exists(BoolValueKey index) => _wo.Exists(index);
 
-        public bool Exists(DoubleValueKey index)
-        {
-            return _wo.Exists(index);
-        }
+        public bool Exists(DoubleValueKey index) => _wo.Exists(index);
 
-        public bool Exists(LongValueKey index)
-        {
-            return _wo.Exists(index);
-        }
+        public bool Exists(LongValueKey index) => _wo.Exists(index);
 
-        public bool Exists(IntValueKey index)
-        {
-            return Exists((LongValueKey)(int)index);
-        }
+        public bool Exists(IntValueKey index) => Exists((LongValueKey)(int)index);
 
-        public bool Exists(StringValueKey index)
-        {
-            return _wo.Exists(index);
-        }
+        public bool Exists(StringValueKey index) => _wo.Exists(index);
 
-        public bool Values(BoolValueKey index)
-        {
-            return _wo.Values(index);
-        }
+        public bool Values(BoolValueKey index) => _wo.Values(index);
 
-        public double Values(DoubleValueKey index)
-        {
-            return _wo.Values(index);
-        }
+        public double Values(DoubleValueKey index) => _wo.Values(index);
 
-        public int Values(LongValueKey index)
-        {
-            return _wo.Values(index);
-        }
+        public int Values(LongValueKey index) => _wo.Values(index);
 
-        public int Values(IntValueKey index)
-        {
-            return Values((LongValueKey)(int)index);
-        }
+        public int Values(IntValueKey index) => Values((LongValueKey)(int)index);
 
-        public string Values(StringValueKey index)
-        {
-            return _wo.Values(index);
-        }
+        public string Values(StringValueKey index) => _wo.Values(index);
 
-        public bool Values(BoolValueKey index, bool defaultValue)
-        {
-            return _wo.Values(index, defaultValue);
-        }
+        public bool Values(BoolValueKey index, bool defaultValue) => _wo.Values(index, defaultValue);
 
-        public double Values(DoubleValueKey index, double defaultValue)
-        {
-            return _wo.Values(index, defaultValue);
-        }
+        public double Values(DoubleValueKey index, double defaultValue) => _wo.Values(index, defaultValue);
 
-        public int Values(LongValueKey index, int defaultValue)
-        {
-            return _wo.Values(index, defaultValue);
-        }
+        public int Values(LongValueKey index, int defaultValue) => _wo.Values(index, defaultValue);
 
-        public int Values(IntValueKey index, int defaultValue)
-        {
-            return Values((LongValueKey)(int)index, defaultValue);
-        }
+        public int Values(IntValueKey index, int defaultValue) => Values((LongValueKey)(int)index, defaultValue);
 
-        public string Values(StringValueKey index, string defaultValue)
-        {
-            return _wo.Values(index, defaultValue);
-        }
+        public string Values(StringValueKey index, string defaultValue) => _wo.Values(index, defaultValue);
 
-        public CoordsObject Coordinates()
-        {
-            return _wo.Coordinates();
-        }
+        public CoordsObject Coordinates() => _wo.Coordinates();
 
-        public Vector3Object Offset()
-        {
-            return _wo.Offset();
-        }
+        public Vector3Object Offset() => _wo.Offset();
 
-        public Vector4Object Orientation()
-        {
-            return _wo.Orientation();
-        }
+        public Vector4Object Orientation() => _wo.Orientation();
 
-        public Vector3Object RawCoordinates()
-        {
-            return _wo.RawCoordinates();
-        }
+        public Vector3Object RawCoordinates() => _wo.RawCoordinates();
 
         public System.Collections.ObjectModel.ReadOnlyCollection<int> GetActiveSpells()
         {
@@ -333,10 +156,7 @@ namespace RedoxLib.Objects
             return false;
         }
 
-        public bool TryGetValue(IntValueKey index, out int value)
-        {
-            return TryGetValue((LongValueKey)(int)index, out value);
-        }
+        public bool TryGetValue(IntValueKey index, out int value) => TryGetValue((LongValueKey)(int)index, out value);
 
         public bool TryGetValue(StringValueKey index, out string value)
         {

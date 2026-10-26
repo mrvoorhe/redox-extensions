@@ -30,12 +30,11 @@ namespace RedoxExtensions.VirindiInterop
 
         public static Dictionary<string, string> GetVTOptions(IEnumerable<string> optionNames)
         {
-            using (var captureContext = new VTCaptureContext())
-            {
-                captureContext.QueryOptions(optionNames);
+            using var captureContext = new VTCaptureContext();
 
-                return captureContext.CapturedSettings;
-            }
+            captureContext.QueryOptions(optionNames);
+
+            return captureContext.CapturedSettings;
         }
 
         public static void SetOption(KeyValuePair<string, string> keyValue)
@@ -45,7 +44,7 @@ namespace RedoxExtensions.VirindiInterop
 
         public static void SetOption(string optionName, string optionValue)
         {
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vt opt set {0} {1}", optionName, optionValue));
+            ACUtilities.ProcessArbitraryCommand($"/vt opt set {optionName} {optionValue}");
         }
 
         public static void SetOption(string optionName, bool enabledValue)
@@ -78,7 +77,7 @@ namespace RedoxExtensions.VirindiInterop
 
         public static void SetRangeOption(string optionName, double rangeValue)
         {
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vt opt set {0} {1}", optionName, rangeValue));
+            ACUtilities.ProcessArbitraryCommand($"/vt opt set {optionName} {rangeValue}");
         }
 
 
@@ -101,15 +100,9 @@ namespace RedoxExtensions.VirindiInterop
             return new KeyValuePair<string, string>(splitKeyValue[0].Trim(), splitKeyValue[1].Trim());
         }
 
-        public static double HumanRangeToVTRange(string humanRange)
-        {
-            return HumanRangeToVTRange(int.Parse(humanRange));
-        }
+        public static double HumanRangeToVTRange(string humanRange) => HumanRangeToVTRange(int.Parse(humanRange));
 
-        public static double HumanRangeToVTRange(int humanRange)
-        {
-            return ((double)humanRange) / 240;
-        }
+        public static double HumanRangeToVTRange(int humanRange) => ((double)humanRange) / 240;
 
         #endregion
 
@@ -141,7 +134,7 @@ namespace RedoxExtensions.VirindiInterop
 
         public static string GetFollowNavForCharacter(string characterName)
         {
-            string possibleFileName = string.Format("Follow{0}.nav", characterName);
+            string possibleFileName = $"Follow{characterName}.nav";
 
             if (File.Exists(Path.Combine(VTankDirectory, possibleFileName)))
             {
@@ -151,7 +144,7 @@ namespace RedoxExtensions.VirindiInterop
             // Next try the charactername, spaces removed.
             if (characterName.Contains(" "))
             {
-                possibleFileName = string.Format("Follow{0}.nav", characterName.Replace(" ", ""));
+                possibleFileName = $"Follow{characterName.Replace(" ", "")}.nav";
 
                 if (File.Exists(Path.Combine(VTankDirectory, possibleFileName)))
                 {
@@ -167,7 +160,7 @@ namespace RedoxExtensions.VirindiInterop
             {
                 foreach (string partialName in partialNames)
                 {
-                    possibleFileName = string.Format("Follow{0}.nav", partialName);
+                    possibleFileName = $"Follow{partialName}.nav";
 
                     if (File.Exists(Path.Combine(VTankDirectory, possibleFileName)))
                     {
@@ -192,13 +185,10 @@ namespace RedoxExtensions.VirindiInterop
 
         public static string GetCharacterSpecificProfileFullFilePath(string profileName, string characterName, string server)
         {
-            return Path.Combine(VTankDirectory, string.Format("--{0}_{1}_{2}.usd", characterName, server, profileName));
+            return Path.Combine(VTankDirectory, $"--{characterName}_{server}_{profileName}.usd");
         }
 
-        public static string GetAnyProfileFullFilePath(string profileName)
-        {
-            return Path.Combine(VTankDirectory, string.Format("{0}.usd", profileName));
-        }
+        public static string GetAnyProfileFullFilePath(string profileName) => Path.Combine(VTankDirectory, $"{profileName}.usd");
 
         #endregion
     }

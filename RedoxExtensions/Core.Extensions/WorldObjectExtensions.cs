@@ -23,7 +23,7 @@ namespace RedoxExtensions.Core.Extensions
                 return "NULL";
             }
 
-            return string.Format("[{0}] {1}, {2}", worldObject.ObjectClass, worldObject.Name, worldObject.Id);
+            return $"[{worldObject.ObjectClass}] {worldObject.Name}, {worldObject.Id}";
         }
 
         public static string ToShortSummary(this IWorldObject worldObject)
@@ -33,7 +33,7 @@ namespace RedoxExtensions.Core.Extensions
                 return "NULL";
             }
 
-            return string.Format("[{0}] {1}, {2}", worldObject.ObjectClass, worldObject.Name, worldObject.Id);
+            return $"[{worldObject.ObjectClass}] {worldObject.Name}, {worldObject.Id}";
         }
 
         public static void WriteToDebug(this WorldObject worldObject, string message)
@@ -43,7 +43,7 @@ namespace RedoxExtensions.Core.Extensions
 
         public static void WriteToDebug(this IWorldObject worldObject, string message)
         {
-            REPlugin.Instance.Debug.WriteLine(string.Format("{0} : {1}", message, worldObject.ToShortSummary()));
+            REPlugin.Instance.Debug.WriteLine($"{message} : {worldObject.ToShortSummary()}");
         }
 
         #endregion
@@ -190,10 +190,7 @@ namespace RedoxExtensions.Core.Extensions
             return obj.Name.Contains("Key");
         }
 
-        public static bool IsLegendaryKey(this WorldObject obj)
-        {
-            return IsLegendaryKey(obj.Wrap());
-        }
+        public static bool IsLegendaryKey(this WorldObject obj) => IsLegendaryKey(obj.Wrap());
 
         public static bool IsLegendaryKey(this IWorldObject obj)
         {
@@ -205,10 +202,7 @@ namespace RedoxExtensions.Core.Extensions
             return obj.Name.Contains("Legendary Key");
         }
 
-        public static bool IsLevel8SpellComponent(this WorldObject obj)
-        {
-            return IsLevel8SpellComponent(obj.Wrap());
-        }
+        public static bool IsLevel8SpellComponent(this WorldObject obj) => IsLevel8SpellComponent(obj.Wrap());
 
         public static bool IsLevel8SpellComponent(this IWorldObject obj)
         {
@@ -427,8 +421,7 @@ namespace RedoxExtensions.Core.Extensions
         {
             foreach (var rating in Ratings.AllRatingsIntValueKeys)
             {
-                int value;
-                if (wo.TryGetValue(rating, out value) && value > 0)
+                if (wo.TryGetValue(rating, out var value) && value > 0)
                 {
                     return new Ratings.Information(value, (Ratings.Type)rating);
                 }
@@ -437,44 +430,29 @@ namespace RedoxExtensions.Core.Extensions
             return new Ratings.Information(0, Ratings.Type.None);
         }
 
-        public static bool HasRatings(this IWorldObject wo)
-        {
-            return wo.GetRatings().Type != Ratings.Type.None;
-        }
+        public static bool HasRatings(this IWorldObject wo) => wo.GetRatings().Type != Ratings.Type.None;
 
         public static bool IsLegendary(this IWorldObject wo)
         {
             throw new NotImplementedException();
         }
 
-        public static bool RequiresIdentification(this WorldObject wo)
-        {
-            return Identification.Required(wo);
-        }
+        public static bool RequiresIdentification(this WorldObject wo) => Identification.Required(wo);
 
         #endregion
 
         #region WorldObject Conversions
 
-        public static IWorldObject Capture(this IWorldObject wo)
-        {
-            return wo.Capture(REPlugin.Instance);
-        }
+        public static IWorldObject Capture(this IWorldObject wo) => wo.Capture(REPlugin.Instance);
 
         #endregion
 
 
         #region WorldObject as Integer
 
-        public static IWorldObject ToWorldObject(this int objectId)
-        {
-            return objectId.ToWorldObject(REPlugin.Instance).Wrap();
-        }
+        public static IWorldObject ToWorldObject(this int objectId) => objectId.ToWorldObject(REPlugin.Instance).Wrap();
 
-        public static bool IsSelf(this int objectId)
-        {
-            return objectId == REPlugin.Instance.CharacterFilter.Id;
-        }
+        public static bool IsSelf(this int objectId) => objectId == REPlugin.Instance.CharacterFilter.Id;
 
         #endregion
 

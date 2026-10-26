@@ -14,32 +14,28 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public static void ParseShoushi()
         {
-            Town result;
-            Assert.IsTrue(Town.TryParse("shoushi", out result));
+            Assert.IsTrue(Town.TryParse("shoushi", out var result));
             Assert.That(result.ToString(), Is.EqualTo("Shoushi"));
         }
 
         [Test]
         public static void ParseAyan()
         {
-            Town result;
-            Assert.IsTrue(Town.TryParse("ayan", out result));
+            Assert.IsTrue(Town.TryParse("ayan", out var result));
             Assert.That(result.ToString(), Is.EqualTo("Ayan Baqur"));
         }
 
         [Test]
         public static void ParseAyanBaqur()
         {
-            Town result;
-            Assert.IsTrue(Town.TryParse("Ayan Baqur", out result));
+            Assert.IsTrue(Town.TryParse("Ayan Baqur", out var result));
             Assert.That(result.ToString(), Is.EqualTo("Ayan Baqur"));
         }
 
         [Test]
         public static void ParseNonTown()
         {
-            Town result;
-            Assert.IsFalse(Town.TryParse("Some Location", out result));
+            Assert.IsFalse(Town.TryParse("Some Location", out var result));
         }
     }
 }

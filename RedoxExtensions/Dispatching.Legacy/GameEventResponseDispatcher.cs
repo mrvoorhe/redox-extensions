@@ -11,7 +11,7 @@ namespace RedoxExtensions.Dispatching.Legacy
     /// </summary>
     public class GameEventResponseDispatcher : IDisposable
     {
-        private readonly Dictionary<string, Queue<SafeAction>> _chatRecievedResponseQueue = new Dictionary<string, Queue<SafeAction>>();
+        private readonly Dictionary<string, Queue<SafeAction>> _chatRecievedResponseQueue = new();
 
         public GameEventResponseDispatcher()
         {
@@ -20,9 +20,8 @@ namespace RedoxExtensions.Dispatching.Legacy
 
         public void QueueChatResponseAction(string fromCharacter, SafeAction action)
         {
-            Queue<SafeAction> queue;
             var loweredCharacterName = fromCharacter.ToLower();
-            if (this._chatRecievedResponseQueue.TryGetValue(loweredCharacterName, out queue))
+            if (this._chatRecievedResponseQueue.TryGetValue(loweredCharacterName, out var queue))
             {
                 queue.Enqueue(action);
             }
@@ -42,8 +41,7 @@ namespace RedoxExtensions.Dispatching.Legacy
         private void HandleChatEvent(ChatEvent chatEvent)
         {
             var loweredCharacterName = chatEvent.SourceName.ToLower();
-            Queue<SafeAction> queue;
-            if (this._chatRecievedResponseQueue.TryGetValue(loweredCharacterName, out queue))
+            if (this._chatRecievedResponseQueue.TryGetValue(loweredCharacterName, out var queue))
             {
                 var action = queue.Dequeue();
                 action();
@@ -54,8 +52,7 @@ namespace RedoxExtensions.Dispatching.Legacy
         {
             REPlugin.Instance.InvokeOperationSafely(() =>
             {
-                ChatEvent chatEvent;
-                if (ChatEvent.TryParse(e.Text, out chatEvent))
+                if (ChatEvent.TryParse(e.Text, out var chatEvent))
                 {
                     this.HandleChatEvent(chatEvent);
                 }

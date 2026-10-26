@@ -59,9 +59,7 @@ namespace RedoxLib.General
         
         public override bool Equals(object obj)
         {
-            Pair<T1, T2> rhs = obj as Pair<T1, T2>;
-
-            if (rhs != null)
+            if (obj is Pair<T1, T2> rhs)
             {
                 return this.Equals(rhs);
             }
@@ -93,10 +91,7 @@ namespace RedoxLib.General
         /// <remarks>Both members must be non-null before this will work; I think that
         /// makes sense.</remarks>
         
-        public override int GetHashCode()
-        {
-            return CombineHashCodes.Combine(this.Item1.GetHashCode(), this.Item2.GetHashCode());
-        }
+        public override int GetHashCode() => CombineHashCodes.Combine(this.Item1.GetHashCode(), this.Item2.GetHashCode());
 
         /// <summary>
         /// Overloaded comparison operator.
@@ -104,28 +99,12 @@ namespace RedoxLib.General
         
         public static bool operator ==(Pair<T1, T2> lhs, Pair<T1, T2> rhs)
         {
-            if (Object.ReferenceEquals(lhs, null))
+            if (lhs is null)
             {
-                if (Object.ReferenceEquals(rhs, null))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return rhs is null;
             }
-            else
-            {
-                if (Object.ReferenceEquals(rhs, null))
-                {
-                    return false;
-                }
-                else
-                {
-                    return lhs.Equals(rhs);
-                }
-            }
+
+            return rhs is not null && lhs.Equals(rhs);
         }
 
         /// <summary>
@@ -143,7 +122,7 @@ namespace RedoxLib.General
         
         public sealed override string ToString()
         {
-            StringBuilder combined = new StringBuilder("(");
+            var combined = new StringBuilder("(");
             if (this.Item1 != null)
             {
                 combined.Append(this.Item1.ToString());
@@ -171,9 +150,6 @@ namespace RedoxLib.General
         /// the compiler to determine the types.
         /// </summary>
         
-        public static Pair<T1,T2> Make<T1,T2>(T1 first, T2 second)
-        {
-            return new Pair<T1, T2>(first, second);
-        }
+        public static Pair<T1,T2> Make<T1,T2>(T1 first, T2 second) => new Pair<T1, T2>(first, second);
     }
 }

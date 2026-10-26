@@ -53,7 +53,7 @@ namespace RedoxExtensions.Actions
                     NavDistanceLoose();
                     break;
                 default:
-                    REPlugin.Instance.Chat.WriteLine(string.Format("Unknown nav value : {0}", command.Arguments[0]));
+                    REPlugin.Instance.Chat.WriteLine($"Unknown nav value : {command.Arguments[0]}");
                     break;
             }
         }
@@ -136,8 +136,7 @@ namespace RedoxExtensions.Actions
         internal static void FaceObject(ICommand command)
         {
             // Support both woId as the argument or object name
-            int targetId;
-            if(int.TryParse(command.Arguments[0], out targetId))
+            if(int.TryParse(command.Arguments[0], out var targetId))
             {
                 WorldUtilities.Face(targetId);
             }
@@ -218,7 +217,7 @@ namespace RedoxExtensions.Actions
                         InitMuleState(command);
                         break;
                     default:
-                        throw new DisplayToUserException(string.Format("Unknown state : {0}", command.Arguments[0].ToLower()), command);
+                        throw new DisplayToUserException($"Unknown state : {command.Arguments[0].ToLower()}", command);
                 }
             }
         }
@@ -362,7 +361,7 @@ namespace RedoxExtensions.Actions
 
             if (!success)
             {
-                TellActions.TellFellow(string.Format("{0}, I couldn't set my profile", requestingCharacter));
+                TellActions.TellFellow($"{requestingCharacter}, I couldn't set my profile");
             }
         }
 
@@ -451,29 +450,23 @@ namespace RedoxExtensions.Actions
                 null);
         }
 
-        internal static bool Teleport(ICommand command)
-        {
-            return Teleport(command.Arguments.AggregateWithSpace(), command);
-        }
+        internal static bool Teleport(ICommand command) => Teleport(command.Arguments.AggregateWithSpace(), command);
 
         internal static bool Teleport(string args, ISupportFeedback requestor)
         {
-            UserFacingLocation location;
-            if (UserFacingLocation.TryParse(args, out location))
+            if (UserFacingLocation.TryParse(args, out var location))
             {
                 PhatACActions.TeleTo(location);
                 return true;
             }
 
-            Town town;
-            if (Town.TryParse(args, out town))
+            if (Town.TryParse(args, out var town))
             {
                 PhatACActions.TeleTown(town.Name);
                 return true;
             }
 
-            Dungeon dungeon;
-            if (Dungeon.TryParse(args, out dungeon))
+            if (Dungeon.TryParse(args, out var dungeon))
             {
                 PhatACActions.TeleTo(dungeon.Locations[0]);
                 return true;

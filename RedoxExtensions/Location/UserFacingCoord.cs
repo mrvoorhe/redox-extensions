@@ -18,15 +18,9 @@ namespace RedoxExtensions.Location
             Direction = direction;
         }
 
-        public override string ToString()
-        {
-            return $"{Value}{Direction}";
-        }
+        public override string ToString() => $"{Value}{Direction}";
 
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
+        public override int GetHashCode() => ToString().GetHashCode();
 
         public override bool Equals(object obj)
         {
@@ -56,19 +50,10 @@ namespace RedoxExtensions.Location
             var sanitizedValue = value.Trim().TrimEnd('.', ',');
 
             var directionValue = sanitizedValue[sanitizedValue.Length - 1].ToString().ToUpper();
-            switch (directionValue)
-            {
-                case "N":
-                case "S":
-                case "E":
-                case "W":
-                    break;
-                default:
-                    return false;
-            }
+            if (directionValue is not ("N" or "S" or "E" or "W"))
+                return false;
 
-            double doubleValue;
-            if (!Double.TryParse(sanitizedValue.Substring(0, sanitizedValue.Length - 1), out doubleValue))
+            if (!Double.TryParse(sanitizedValue.Substring(0, sanitizedValue.Length - 1), out var doubleValue))
                 return false;
 
             coord = new UserFacingCoord(doubleValue, (Direction)Enum.Parse(typeof(Direction), directionValue));

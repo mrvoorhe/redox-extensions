@@ -34,9 +34,7 @@ namespace RedoxLib.General
 
             if (entry != null)
             {
-                object[] subObjects = entry as object[];
-
-                if (subObjects != null)
+                if (entry is object[] subObjects)
                 {
                     entryHash = Combine(subObjects);
                 }
@@ -52,10 +50,7 @@ namespace RedoxLib.General
         /// <summary>
         /// Returns a hash code combining the hash codes of the objects supplied as parameters.
         /// </summary>
-        public static int Combine(params object[] objects)
-        {
-            return Combine(objects as IEnumerable<object>);
-        }
+        public static int Combine(params object[] objects) => Combine(objects as IEnumerable<object>);
 
         /// <summary>
         /// Returns a hash code combining the hash codes of the objects supplied as a sequence.

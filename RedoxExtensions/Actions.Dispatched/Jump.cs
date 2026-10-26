@@ -23,73 +23,34 @@ namespace RedoxExtensions.Actions.Dispatched
 
         public static IAction Create(ISupportFeedback requestor, string mtJumpOption, int millisecondsHold)
         {
-            return Create(requestor, string.Format("/mt {0} {1}", mtJumpOption, millisecondsHold));
+            return Create(requestor, $"/mt {mtJumpOption} {millisecondsHold}");
         }
 
-        public static IAction Create(ISupportFeedback requestor, string jumpCommand)
-        {
-            return new Jump(requestor, jumpCommand);
-        }
+        public static IAction Create(ISupportFeedback requestor, string jumpCommand) => new Jump(requestor, jumpCommand);
 
-        public static IAction CreateShiftHop()
-        {
-            return CreateShiftHop(CommandHelpers.Self);
-        }
+        public static IAction CreateShiftHop() => CreateShiftHop(CommandHelpers.Self);
 
-        public static IAction CreateShiftHop(ISupportFeedback requestor)
-        {
-            return Create(requestor, "sjumpw", 1);
-        }
+        public static IAction CreateShiftHop(ISupportFeedback requestor) => Create(requestor, "sjumpw", 1);
 
-        public static IAction CreateHop()
-        {
-            return CreateHop(CommandHelpers.Self);
-        }
+        public static IAction CreateHop() => CreateHop(CommandHelpers.Self);
 
-        public static IAction CreateHop(ISupportFeedback requestor)
-        {
-            return Create(requestor, "jumpw", 1);
-        }
+        public static IAction CreateHop(ISupportFeedback requestor) => Create(requestor, "jumpw", 1);
 
-        public static IAction CreateHopFull()
-        {
-            return CreateHopFull(CommandHelpers.Self);
-        }
+        public static IAction CreateHopFull() => CreateHopFull(CommandHelpers.Self);
 
-        public static IAction CreateHopFull(ISupportFeedback requestor)
-        {
-            return Create(requestor, "jumpw", 1000);
-        }
+        public static IAction CreateHopFull(ISupportFeedback requestor) => Create(requestor, "jumpw", 1000);
 
-        public static IAction CreateShiftHopFull()
-        {
-            return CreateShiftHopFull(CommandHelpers.Self);
-        }
+        public static IAction CreateShiftHopFull() => CreateShiftHopFull(CommandHelpers.Self);
 
-        public static IAction CreateShiftHopFull(ISupportFeedback requestor)
-        {
-            return Create(requestor, "sjumpw", 1000);
-        }
+        public static IAction CreateShiftHopFull(ISupportFeedback requestor) => Create(requestor, "sjumpw", 1000);
 
         #endregion
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VirindiInterop.VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VTRunState.Off;
-            }
-        }
+        public override VirindiInterop.VTRunState DesiredVTRunState => VTRunState.Off;
 
         protected override int MaxTries
         {

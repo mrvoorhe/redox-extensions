@@ -31,7 +31,7 @@ namespace RedoxExtensions.Wrapper
 
         private bool HandleNormalCommand(string command, bool explicitWrapperCommand)
         {
-            REWrapperPlugin.Instance.Debug.WriteLine(string.Format("Processing Command : {0}", command));
+            REWrapperPlugin.Instance.Debug.WriteLine($"Processing Command : {command}");
 
             switch (command.ToLower())
             {

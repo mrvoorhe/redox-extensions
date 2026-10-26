@@ -159,13 +159,11 @@ namespace RedoxExtensions.Tests.CommandTests
         [Test]
         public void TestStripMetaData()
         {
-            IEnumerable<string> meta;
-
             var commandString = CommandHelpers.CreateForeignCommandText("test");
 
             var commandStringWithMeta = CommandHelpers.AppendMetaData(commandString, "arg1", "arg2");
 
-            var result = CommandHelpers.StripMetaData(commandStringWithMeta, out meta);
+            var result = CommandHelpers.StripMetaData(commandStringWithMeta, out var meta);
 
             Assert.AreEqual(commandString, result);
 
@@ -180,11 +178,9 @@ namespace RedoxExtensions.Tests.CommandTests
         [Test]
         public void TestStripMetaData_WhenNoMeta()
         {
-            IEnumerable<string> meta;
-
             var commandString = CommandHelpers.CreateForeignCommandText("test");
 
-            var result = CommandHelpers.StripMetaData(commandString, out meta);
+            var result = CommandHelpers.StripMetaData(commandString, out var meta);
 
             Assert.AreEqual(commandString, result);
 
@@ -294,8 +290,7 @@ namespace RedoxExtensions.Tests.CommandTests
         [Test]
         public void Test_StripTargetTypeFromForeignCommand_WithAll()
         {
-            TargetType targetType;
-            var result = CommandHelpers.StripTargetTypeFromForeignCommand(CommandHelpers.CreateForeignCommandText("test", "arg1"), out targetType);
+            var result = CommandHelpers.StripTargetTypeFromForeignCommand(CommandHelpers.CreateForeignCommandText("test", "arg1"), out var targetType);
 
             Assert.AreEqual("test arg1", result);
             Assert.AreEqual(TargetType.All, targetType);

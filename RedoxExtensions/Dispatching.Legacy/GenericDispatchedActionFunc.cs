@@ -13,14 +13,8 @@ namespace RedoxExtensions.Dispatching.Legacy
             this._actionFunc = actionFunc;
         }
 
-        public TResult Invoke()
-        {
-            return this._actionFunc();
-        }
+        public TResult Invoke() => this._actionFunc();
 
-        public object InvokeGeneric()
-        {
-            return this.Invoke();
-        }
+        public object InvokeGeneric() => this.Invoke();
     }
 }

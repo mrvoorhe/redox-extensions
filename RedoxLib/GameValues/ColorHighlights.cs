@@ -16,15 +16,9 @@ namespace RedoxLib.GameValues
 
         public bool IsGreen { get; private set; }
 
-        public string Color
-        {
-            get { return this.IsGreen ? "green" : "red"; }
-        }
+        public string Color => this.IsGreen ? "green" : "red";
 
-        public override string ToString()
-        {
-            return $"{this.Name}={this.Color}";
-        }
+        public override string ToString() => $"{this.Name}={this.Color}";
     }
 
     /// <summary>

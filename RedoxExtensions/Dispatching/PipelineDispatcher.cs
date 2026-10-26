@@ -24,8 +24,8 @@ namespace RedoxExtensions.Dispatching
 
         private delegate void PendingBackgroundWaitCall();
 
-        private readonly object _queueLock = new object();
-        private readonly Queue<IPipelineAction> _actionQueue = new Queue<IPipelineAction>();
+        private readonly object _queueLock = new();
+        private readonly Queue<IPipelineAction> _actionQueue = new();
 
         private readonly IDecalEventsProxy _decalEventsProxy;
         private readonly Timer _processQueueTimer;
@@ -61,24 +61,12 @@ namespace RedoxExtensions.Dispatching
             }
         }
 
-        public bool HasPendingAction
-        {
-            get
-            {
-                return this._pendingAction != null;
-            }
-        }
+        public bool HasPendingAction => this._pendingAction != null;
 
         /// <summary>
         /// For unit testing only
         /// </summary>
-        public bool IsHooked
-        {
-            get
-            {
-                return this._hooked;
-            }
-        }
+        public bool IsHooked => this._hooked;
 
         public void EnqueueAction(IAction action)
         {
@@ -346,10 +334,7 @@ namespace RedoxExtensions.Dispatching
                     }
 
                     // If we get here and the sached VT scope is null, it means we need to initialize it
-                    if (this._cachedVTRunScope == null)
-                    {
-                        this._cachedVTRunScope = VTRunScope.Enter(actionToBegin.DesiredVTRunState);
-                    }
+                    this._cachedVTRunScope ??= VTRunScope.Enter(actionToBegin.DesiredVTRunState);
                 }
 
                 actionToBegin.Init();

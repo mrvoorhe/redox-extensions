@@ -41,21 +41,15 @@ namespace RedoxExtensions.Core
 
         void _decalEventsProxy_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
         {
-            string tmpValue;
-            string tmpValue2;
-
             // TODO : Support MemberDied
 
-            if (e.IsFellowshipCreated(out tmpValue))
+            if (e.IsFellowshipCreated(out var tmpValue))
             {
                 var createdEventArgs = new FellowshipCreatedEventArgs(tmpValue);
 
                 REPlugin.Instance.Debug.WriteObject(createdEventArgs);
 
-                if (this.Created != null)
-                {
-                    this.Created(this, createdEventArgs);
-                }
+                this.Created?.Invoke(this, createdEventArgs);
             }
             else if (e.IsFellowshipDisbanded(out tmpValue))
             {
@@ -63,10 +57,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(disbandEventArgs);
 
-                if (this.Disband != null)
-                {
-                    this.Disband(sender, disbandEventArgs);
-                }
+                this.Disband?.Invoke(sender, disbandEventArgs);
             }
             else if (e.IsYouHaveBeenDismissedFromFellowship(out tmpValue))
             {
@@ -74,10 +65,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(dismissedYouEventArgs);
 
-                if (this.DismissedYou != null)
-                {
-                    this.DismissedYou(sender, dismissedYouEventArgs);
-                }
+                this.DismissedYou?.Invoke(sender, dismissedYouEventArgs);
             }
             else if (e.IsPlayerJoinedFellowship(out tmpValue))
             {
@@ -85,21 +73,15 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(joinedEventArgs);
 
-                if (this.JoinedOther != null)
-                {
-                    this.JoinedOther(this, joinedEventArgs);
-                }
+                this.JoinedOther?.Invoke(this, joinedEventArgs);
             }
-            else if (e.IsYouHaveBeenRecruitedToFellowship(out tmpValue, out tmpValue2))
+            else if (e.IsYouHaveBeenRecruitedToFellowship(out tmpValue, out var tmpValue2))
             {
                 var recruitedEventArgs = new FellowshipJoinedYouEventArgs(tmpValue, tmpValue2);
 
                 REPlugin.Instance.Debug.WriteObject(recruitedEventArgs);
 
-                if (this.JoinedYou != null)
-                {
-                    this.JoinedYou(this, recruitedEventArgs);
-                }
+                this.JoinedYou?.Invoke(this, recruitedEventArgs);
             }
             else if (e.IsPlayerLeftFellowship(out tmpValue))
             {
@@ -107,10 +89,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(leftEventArgs);
 
-                if (this.QuitOther != null)
-                {
-                    this.QuitOther(this, leftEventArgs);
-                }
+                this.QuitOther?.Invoke(this, leftEventArgs);
             }
 
             else if (e.IsYouLeftFellowship(out tmpValue))
@@ -119,10 +98,7 @@ namespace RedoxExtensions.Core
 
                 REPlugin.Instance.Debug.WriteObject(quitYouEventArgs);
 
-                if (this.QuitYou != null)
-                {
-                    this.QuitYou(this, quitYouEventArgs);
-                }
+                this.QuitYou?.Invoke(this, quitYouEventArgs);
             }
         }
     }

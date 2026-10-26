@@ -13,10 +13,10 @@ namespace RedoxLib.Objects
     /// </summary>
     internal class CapturedWorldObject : IWorldObject
     {
-        private readonly Dictionary<int, bool> _boolValues = new Dictionary<int, bool>();
-        private readonly Dictionary<int, double> _doubleValues = new Dictionary<int, double>();
-        private readonly Dictionary<int, int> _longValues = new Dictionary<int, int>();
-        private readonly Dictionary<int, string> _stringValues = new Dictionary<int, string>();
+        private readonly Dictionary<int, bool> _boolValues = new();
+        private readonly Dictionary<int, double> _doubleValues = new();
+        private readonly Dictionary<int, int> _longValues = new();
+        private readonly Dictionary<int, string> _stringValues = new();
         private readonly ReadOnlyCollection<int> _activeSpells;
         private readonly ReadOnlyCollection<int> _spells;
 
@@ -82,21 +82,9 @@ namespace RedoxLib.Objects
 
         public ObjectClass ObjectClass { get; private set; }
 
-        public int ActiveSpellCount
-        {
-            get
-            {
-                return this._activeSpells.Count;
-            }
-        }
+        public int ActiveSpellCount => this._activeSpells.Count;
 
-        public int SpellCount
-        {
-            get
-            {
-                return this._spells.Count;
-            }
-        }
+        public int SpellCount => this._spells.Count;
 
         public int Behavior { get; private set; }
 
@@ -116,110 +104,43 @@ namespace RedoxLib.Objects
 
         public bool HasIdData { get; private set; }
 
-        public ReadOnlyCollection<int> BoolKeys
-        {
-            get
-            {
-                return this._boolValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> BoolKeys => this._boolValues.Select(p => p.Key).ToList().AsReadOnly();
 
-        public ReadOnlyCollection<int> LongKeys
-        {
-            get
-            {
-                return this._longValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> LongKeys => this._longValues.Select(p => p.Key).ToList().AsReadOnly();
 
-        public ReadOnlyCollection<int> DoubleKeys
-        {
-            get
-            {
-                return this._doubleValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> DoubleKeys => this._doubleValues.Select(p => p.Key).ToList().AsReadOnly();
 
-        public ReadOnlyCollection<int> StringKeys
-        {
-            get
-            {
-                return this._stringValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> StringKeys => this._stringValues.Select(p => p.Key).ToList().AsReadOnly();
 
-        public CoordsObject Coords
-        {
-            get
-            {
-                return this.Coordinates();
-            }
-        }
+        public CoordsObject Coords => this.Coordinates();
 
-        public int ActiveSpell(int index)
-        {
-            return this._activeSpells[index];
-        }
+        public int ActiveSpell(int index) => this._activeSpells[index];
 
-        public int Spell(int index)
-        {
-            return this._spells[index];
-        }
+        public int Spell(int index) => this._spells[index];
 
-        public bool Exists(BoolValueKey index)
-        {
-            return this._boolValues.ContainsKey((int)index);
-        }
+        public bool Exists(BoolValueKey index) => this._boolValues.ContainsKey((int)index);
 
-        public bool Exists(DoubleValueKey index)
-        {
-            return this._doubleValues.ContainsKey((int)index);
-        }
+        public bool Exists(DoubleValueKey index) => this._doubleValues.ContainsKey((int)index);
 
-        public bool Exists(LongValueKey index)
-        {
-            return this._longValues.ContainsKey((int)index);
-        }
+        public bool Exists(LongValueKey index) => this._longValues.ContainsKey((int)index);
 
-        public bool Exists(IntValueKey index)
-        {
-            return this._longValues.ContainsKey((int)index);
-        }
+        public bool Exists(IntValueKey index) => this._longValues.ContainsKey((int)index);
 
-        public bool Exists(StringValueKey index)
-        {
-            return this._stringValues.ContainsKey((int)index);
-        }
+        public bool Exists(StringValueKey index) => this._stringValues.ContainsKey((int)index);
 
-        public bool Values(BoolValueKey index)
-        {
-            return this.Values(index, false);
-        }
+        public bool Values(BoolValueKey index) => this.Values(index, false);
 
-        public double Values(DoubleValueKey index)
-        {
-            return this.Values(index, 0.0);
-        }
+        public double Values(DoubleValueKey index) => this.Values(index, 0.0);
 
-        public int Values(LongValueKey index)
-        {
-            return this.Values(index, 0);
-        }
+        public int Values(LongValueKey index) => this.Values(index, 0);
 
-        public int Values(IntValueKey index)
-        {
-            return this.Values(index, 0);
-        }
+        public int Values(IntValueKey index) => this.Values(index, 0);
 
-        public string Values(StringValueKey index)
-        {
-            return this.Values(index, null);
-        }
+        public string Values(StringValueKey index) => this.Values(index, null);
 
         public bool Values(BoolValueKey index, bool defaultValue)
         {
-            bool value;
-            if (this._boolValues.TryGetValue((int)index, out value))
+            if (this._boolValues.TryGetValue((int)index, out var value))
             {
                 return value;
             }
@@ -229,8 +150,7 @@ namespace RedoxLib.Objects
 
         public double Values(DoubleValueKey index, double defaultValue)
         {
-            double value;
-            if (this._doubleValues.TryGetValue((int)index, out value))
+            if (this._doubleValues.TryGetValue((int)index, out var value))
             {
                 return value;
             }
@@ -240,8 +160,7 @@ namespace RedoxLib.Objects
 
         public int Values(LongValueKey index, int defaultValue)
         {
-            int value;
-            if (this._longValues.TryGetValue((int)index, out value))
+            if (this._longValues.TryGetValue((int)index, out var value))
             {
                 return value;
             }
@@ -251,8 +170,7 @@ namespace RedoxLib.Objects
 
         public int Values(IntValueKey index, int defaultValue)
         {
-            int value;
-            if (this._longValues.TryGetValue((int)index, out value))
+            if (this._longValues.TryGetValue((int)index, out var value))
             {
                 return value;
             }
@@ -262,8 +180,7 @@ namespace RedoxLib.Objects
 
         public string Values(StringValueKey index, string defaultValue)
         {
-            string value;
-            if (this._stringValues.TryGetValue((int)index, out value))
+            if (this._stringValues.TryGetValue((int)index, out var value))
             {
                 return value;
             }
@@ -271,59 +188,26 @@ namespace RedoxLib.Objects
             return defaultValue;
         }
 
-        public CoordsObject Coordinates()
-        {
-            return this._coordinates;
-        }
+        public CoordsObject Coordinates() => this._coordinates;
 
-        public Vector3Object Offset()
-        {
-            return this._offset;
-        }
+        public Vector3Object Offset() => this._offset;
 
-        public Vector4Object Orientation()
-        {
-            return this._orientation;
-        }
+        public Vector4Object Orientation() => this._orientation;
 
-        public Vector3Object RawCoordinates()
-        {
-            return this._rawCoordinates;
-        }
+        public Vector3Object RawCoordinates() => this._rawCoordinates;
 
-        public ReadOnlyCollection<int> GetActiveSpells()
-        {
-            return this._activeSpells;
-        }
+        public ReadOnlyCollection<int> GetActiveSpells() => this._activeSpells;
 
-        public ReadOnlyCollection<int> GetSpells()
-        {
-            return this._spells;
-        }
+        public ReadOnlyCollection<int> GetSpells() => this._spells;
 
-        public bool TryGetValue(BoolValueKey index, out bool value)
-        {
-            return this._boolValues.TryGetValue((int)index, out value);
-        }
+        public bool TryGetValue(BoolValueKey index, out bool value) => this._boolValues.TryGetValue((int)index, out value);
 
-        public bool TryGetValue(DoubleValueKey index, out double value)
-        {
-            return this._doubleValues.TryGetValue((int)index, out value);
-        }
+        public bool TryGetValue(DoubleValueKey index, out double value) => this._doubleValues.TryGetValue((int)index, out value);
 
-        public bool TryGetValue(LongValueKey index, out int value)
-        {
-            return this._longValues.TryGetValue((int)index, out value);
-        }
+        public bool TryGetValue(LongValueKey index, out int value) => this._longValues.TryGetValue((int)index, out value);
 
-        public bool TryGetValue(IntValueKey index, out int value)
-        {
-            return this._longValues.TryGetValue((int)index, out value);
-        }
+        public bool TryGetValue(IntValueKey index, out int value) => this._longValues.TryGetValue((int)index, out value);
 
-        public bool TryGetValue(StringValueKey index, out string value)
-        {
-            return this._stringValues.TryGetValue((int)index, out value);
-        }
+        public bool TryGetValue(StringValueKey index, out string value) => this._stringValues.TryGetValue((int)index, out value);
     }
 }

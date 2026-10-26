@@ -14,10 +14,10 @@ namespace RedoxLib.Objects
     /// </summary>
     internal class SerializedWorldObject : IWorldObjectIdentified
     {
-        public Dictionary<int, bool> BoolValues = new Dictionary<int, bool>();
-        public Dictionary<int, double> DoubleValues = new Dictionary<int, double>();
-        public Dictionary<int, int> LongValues = new Dictionary<int, int>();
-        public Dictionary<int, string> StringValues = new Dictionary<int, string>();
+        public Dictionary<int, bool> BoolValues = new();
+        public Dictionary<int, double> DoubleValues = new();
+        public Dictionary<int, int> LongValues = new();
+        public Dictionary<int, string> StringValues = new();
 
         public int Id { get; set; }
         public string Name { get; set; }
@@ -36,40 +36,16 @@ namespace RedoxLib.Objects
         public bool HasIdData { get; }
 
         [JsonIgnore]
-        public ReadOnlyCollection<int> BoolKeys
-        {
-            get
-            {
-                return this.BoolValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> BoolKeys => this.BoolValues.Select(p => p.Key).ToList().AsReadOnly();
 
         [JsonIgnore]
-        public ReadOnlyCollection<int> LongKeys
-        {
-            get
-            {
-                return this.LongValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> LongKeys => this.LongValues.Select(p => p.Key).ToList().AsReadOnly();
 
         [JsonIgnore]
-        public ReadOnlyCollection<int> DoubleKeys
-        {
-            get
-            {
-                return this.DoubleValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> DoubleKeys => this.DoubleValues.Select(p => p.Key).ToList().AsReadOnly();
 
         [JsonIgnore]
-        public ReadOnlyCollection<int> StringKeys
-        {
-            get
-            {
-                return this.StringValues.Select(p => p.Key).ToList().AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> StringKeys => this.StringValues.Select(p => p.Key).ToList().AsReadOnly();
 
         public int ActiveSpell(int index)
         {

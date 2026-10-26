@@ -7,10 +7,7 @@ namespace RedoxExtensions.Commands
 {
     public static class CommandExtensions
     {
-        public static bool IsSlaveOnlyAndFromSelf(this ICommand command)
-        {
-            return command.CommandTargetType == TargetType.SlavesOnly && command.FromSelf;
-        }
+        public static bool IsSlaveOnlyAndFromSelf(this ICommand command) => command.CommandTargetType == TargetType.SlavesOnly && command.FromSelf;
 
         public static string RebuildArgumentString(this ICommand command)
         {
@@ -29,7 +26,7 @@ namespace RedoxExtensions.Commands
 
         public static string RebuildArgumentsWithSpaceSeparator(this ICommand command)
         {
-            return command.Arguments.Aggregate(string.Empty, (accum, next) => string.Format("{0}{1}{2}", accum, ' ', next)).Trim();
+            return command.Arguments.Aggregate(string.Empty, (accum, next) => $"{accum} {next}").Trim();
         }
     }
 }

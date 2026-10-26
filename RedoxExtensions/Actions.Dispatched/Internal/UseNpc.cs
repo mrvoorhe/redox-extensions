@@ -44,40 +44,19 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             return Create(command, npcId);
         }
 
-        public static IAction Create(ISupportFeedback requestor, int npcId)
-        {
-            return new UseNpc(requestor, npcId);
-        }
+        public static IAction Create(ISupportFeedback requestor, int npcId) => new UseNpc(requestor, npcId);
 
         #endregion
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VTRunState.Off;
-            }
-        }
+        public override VTRunState DesiredVTRunState => VTRunState.Off;
 
-        protected override int MaxTries
-        {
-            get { return 20; }
-        }
+        protected override int MaxTries => 20;
 
-        protected override int WaitTimeoutInMilliseconds
-        {
-            get { return 500; }
-        }
+        protected override int WaitTimeoutInMilliseconds => 500;
 
         #endregion
 
@@ -101,8 +80,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             if (attemptsThusFar < 10)
                 return true;
 
-            if (_woMutex == null)
-                _woMutex = WorldObjectMutex.Create(_npcId.ToWorldObject());
+            _woMutex ??= WorldObjectMutex.Create(_npcId.ToWorldObject());
 
             if (_woMutex.TryObtain(0))
                 return true;
@@ -124,7 +102,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
             this._npcName = npcObject.Name;
 
-            REPlugin.Instance.Debug.WriteLine(string.Format("Will attempt to speak with : {0}", this._npcName));
+            REPlugin.Instance.Debug.WriteLine($"Will attempt to speak with : {this._npcName}");
         }
 
         protected override void DoEnd(WaitForCompleteOutcome finalOutcome)
@@ -182,7 +160,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             string source = ChatParsingUtilities.GetSourceOfChat(e.Text);
             if (source == this._npcName)
             {
-                REPlugin.Instance.Debug.WriteLine(string.Format("Received confirmation that I spoke with : {0}", this._npcName));
+                REPlugin.Instance.Debug.WriteLine($"Received confirmation that I spoke with : {this._npcName}");
                 this.Successful.Set();
             }
         }

@@ -24,16 +24,16 @@ namespace RedoxExtensions.Listeners.Monitors
         /// </summary>
         private const int MaxCachedCastingItems = 5;
 
-        private readonly ManualResetEvent _idle = new ManualResetEvent(true);
-        private readonly ManualResetEvent _busy = new ManualResetEvent(false);
-        private readonly ManualResetEvent _airBorne = new ManualResetEvent(false);
-        private readonly ManualResetEvent _grounded = new ManualResetEvent(true);
+        private readonly ManualResetEvent _idle = new(true);
+        private readonly ManualResetEvent _busy = new(false);
+        private readonly ManualResetEvent _airBorne = new(false);
+        private readonly ManualResetEvent _grounded = new(true);
 
-        private readonly ManualResetEvent _vtRunning = new ManualResetEvent(false);
+        private readonly ManualResetEvent _vtRunning = new(false);
 
         private readonly IREEventsFireCallbacks _fireCallbacks;
 
-        private readonly List<int> _knownCastingItems = new List<int>();
+        private readonly List<int> _knownCastingItems = new();
 
         public CharacterState(IREEventsFireCallbacks fireCallbacks)
         {
@@ -61,69 +61,21 @@ namespace RedoxExtensions.Listeners.Monitors
             // TODO : Hook VT Spell cast events once I have VTEventProxy Init'ing correctly
         }
 
-        public WaitHandle Idle
-        {
-            get
-            {
-                return this._idle;
-            }
-        }
+        public WaitHandle Idle => this._idle;
 
-        public WaitHandle Busy
-        {
-            get
-            {
-                return this._busy;
-            }
-        }
+        public WaitHandle Busy => this._busy;
 
-        public WaitHandle NoFellowship
-        {
-            get
-            {
-                return REPlugin.Instance.MonitorManager.Fellowship.NoFellowship;
-            }
-        }
+        public WaitHandle NoFellowship => REPlugin.Instance.MonitorManager.Fellowship.NoFellowship;
 
-        public WaitHandle InFellowship
-        {
-            get
-            {
-                return REPlugin.Instance.MonitorManager.Fellowship.InFellowship;
-            }
-        }
+        public WaitHandle InFellowship => REPlugin.Instance.MonitorManager.Fellowship.InFellowship;
 
-        public WaitHandle AirBorne
-        {
-            get
-            {
-                return this._airBorne;
-            }
-        }
+        public WaitHandle AirBorne => this._airBorne;
 
-        public WaitHandle Grounded
-        {
-            get
-            {
-                return this._grounded;
-            }
-        }
+        public WaitHandle Grounded => this._grounded;
 
-        public WaitHandle VTRunning
-        {
-            get
-            {
-                return this._vtRunning;
-            }
-        }
+        public WaitHandle VTRunning => this._vtRunning;
 
-        public ReadOnlyCollection<int> KnownCastingItems
-        {
-            get
-            {
-                return this._knownCastingItems.AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<int> KnownCastingItems => this._knownCastingItems.AsReadOnly();
 
         public void Dispose()
         {

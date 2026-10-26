@@ -15,10 +15,9 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void TryParseWithSpaceOnly()
         {
-            UserFacingLocation result;
             var ns = new UserFacingCoord(10.5, Direction.N);
             var ew = new UserFacingCoord(90.3, Direction.E);
-            Assert.IsTrue(UserFacingLocation.TryParse($"{ns} {ew}", out result));
+            Assert.IsTrue(UserFacingLocation.TryParse($"{ns} {ew}", out var result));
             Assert.That(result.NorthSouth, Is.EqualTo(ns));
             Assert.That(result.EastWest, Is.EqualTo(ew));
         }
@@ -26,10 +25,9 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void TryParseWithSpaceAndComma()
         {
-            UserFacingLocation result;
             var ns = new UserFacingCoord(10.5, Direction.N);
             var ew = new UserFacingCoord(90.3, Direction.E);
-            Assert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}", out result));
+            Assert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}", out var result));
             Assert.That(result.NorthSouth, Is.EqualTo(ns));
             Assert.That(result.EastWest, Is.EqualTo(ew));
         }
@@ -37,10 +35,9 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void TryParseWithCommaOnly()
         {
-            UserFacingLocation result;
             var ns = new UserFacingCoord(10.5, Direction.N);
             var ew = new UserFacingCoord(90.3, Direction.E);
-            Assert.IsTrue(UserFacingLocation.TryParse($"{ns},{ew}", out result));
+            Assert.IsTrue(UserFacingLocation.TryParse($"{ns},{ew}", out var result));
             Assert.That(result.NorthSouth, Is.EqualTo(ns));
             Assert.That(result.EastWest, Is.EqualTo(ew));
         }
@@ -48,10 +45,9 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void TryParseWithSpaceAndCommaAndExtraSpaces()
         {
-            UserFacingLocation result;
             var ns = new UserFacingCoord(10.5, Direction.N);
             var ew = new UserFacingCoord(90.3, Direction.E);
-            Assert.IsTrue(UserFacingLocation.TryParse($"  {ns}   {ew}   ", out result));
+            Assert.IsTrue(UserFacingLocation.TryParse($"  {ns}   {ew}   ", out var result));
             Assert.That(result.NorthSouth, Is.EqualTo(ns));
             Assert.That(result.EastWest, Is.EqualTo(ew));
         }
@@ -63,10 +59,9 @@ namespace RedoxExtensions.Tests.LocationTests
         [Test]
         public void TryParseWithSpaceAndCommaAndTrailingDot()
         {
-            UserFacingLocation result;
             var ns = new UserFacingCoord(10.5, Direction.N);
             var ew = new UserFacingCoord(90.3, Direction.E);
-            Assert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}.", out result));
+            Assert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}.", out var result));
             Assert.That(result.NorthSouth, Is.EqualTo(ns));
             Assert.That(result.EastWest, Is.EqualTo(ew));
         }

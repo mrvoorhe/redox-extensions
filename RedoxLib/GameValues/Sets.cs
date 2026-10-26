@@ -50,18 +50,11 @@ namespace RedoxLib.GameValues
             InitializeArmorShortCutTable();
         }
 
-        public static Dictionary<string, int> ArmorShortCutNameToIdTable
-        {
-            get
-            {
-                return _armorShortCutNameToIdTable;
-            }
-        }
+        public static Dictionary<string, int> ArmorShortCutNameToIdTable => _armorShortCutNameToIdTable;
 
         public static bool TryParseArmorShortName(string shortName, out Armor armor)
         {
-            int tmp;
-            if (_armorShortCutNameToIdTable.TryGetValue(shortName, out tmp))
+            if (_armorShortCutNameToIdTable.TryGetValue(shortName, out var tmp))
             {
                 armor = (Armor)tmp;
                 return true;

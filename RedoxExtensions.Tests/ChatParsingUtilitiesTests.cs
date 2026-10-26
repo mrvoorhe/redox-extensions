@@ -40,9 +40,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "Gregoria, Gurog Destroyer tells you, \"I have made it my mission to rid the land of those... things... which violate the laws of nature before they can infest the rest of Dereth. If you wish to help me then go destroy as many of these things as you can and I shall reward you for your time.\"";
 
-            bool bugged;
-            string workAroundText;
-            var result = ChatParsingUtilities.GetSourceOfChat(text, out bugged, out workAroundText);
+            var result = ChatParsingUtilities.GetSourceOfChat(text, out var bugged, out var workAroundText);
 
             Assert.AreEqual("Gregoria, Gurog Destroyer", result);
             Assert.IsTrue(bugged);
@@ -82,8 +80,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "You have created the Fellowship of My Fellow.";
 
-            string fellowName;
-            bool result = ChatParsingUtilities.IsFellowshipCreated(text, out fellowName);
+            bool result = ChatParsingUtilities.IsFellowshipCreated(text, out var fellowName);
             Assert.IsTrue(result);
             Assert.AreEqual("My Fellow", fellowName);
         }
@@ -93,8 +90,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "Mini Bonsai is now a member of your Fellowship.";
 
-            string playerName;
-            bool result = ChatParsingUtilities.IsPlayerJoinedFellowship(text, out playerName);
+            bool result = ChatParsingUtilities.IsPlayerJoinedFellowship(text, out var playerName);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Mini Bonsai", playerName);
@@ -105,8 +101,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "Kreap has left your Fellowship.";
 
-            string playerName;
-            bool result = ChatParsingUtilities.IsPlayerLeftFellowship(text, out playerName);
+            bool result = ChatParsingUtilities.IsPlayerLeftFellowship(text, out var playerName);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Kreap", playerName);
@@ -116,9 +111,8 @@ namespace RedoxExtensions.Tests
         public void TestIsYouLeftFellowship()
         {
             var text = "You are no longer a member of the X Fellowship.";
-            string fellowshipName;
 
-            bool result = ChatParsingUtilities.IsYouLeftFellowship(text, out fellowshipName);
+            bool result = ChatParsingUtilities.IsYouLeftFellowship(text, out var fellowshipName);
 
             Assert.IsTrue(result);
             Assert.AreEqual("X", fellowshipName);
@@ -128,9 +122,8 @@ namespace RedoxExtensions.Tests
         public void TestIsYouHaveBeenDismissedFromFellowship()
         {
             var text = "Kreap has dismissed you from the Fellowship.";
-            string dismisser;
 
-            bool result = ChatParsingUtilities.IsYouHaveBeenDismissedFromFellowship(text, out dismisser);
+            bool result = ChatParsingUtilities.IsYouHaveBeenDismissedFromFellowship(text, out var dismisser);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Kreap", dismisser);
@@ -141,9 +134,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "Kreap has disbanded your Fellowship.";
 
-            string disbandoner;
-
-            bool result = ChatParsingUtilities.IsFellowshipDisbanded(text, out disbandoner);
+            bool result = ChatParsingUtilities.IsFellowshipDisbanded(text, out var disbandoner);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Kreap", disbandoner);
@@ -154,9 +145,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "You have disbanded your Fellowship.";
 
-            string disbandoner;
-
-            bool result = ChatParsingUtilities.IsFellowshipDisbanded(text, out disbandoner);
+            bool result = ChatParsingUtilities.IsFellowshipDisbanded(text, out var disbandoner);
 
             Assert.IsTrue(result);
             Assert.AreEqual("You", disbandoner);
@@ -167,10 +156,7 @@ namespace RedoxExtensions.Tests
         {
             var text = "You have been recruited into the X fellowship, a fellowship led by Redox.";
 
-            string fellowName;
-            string leader;
-
-            bool result = ChatParsingUtilities.IsYouHaveBeenRecruitedToFellowship(text, out fellowName, out leader);
+            bool result = ChatParsingUtilities.IsYouHaveBeenRecruitedToFellowship(text, out var fellowName, out var leader);
 
             Assert.IsTrue(result);
             Assert.AreEqual("X", fellowName);
@@ -180,13 +166,9 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestIsVIMessage_WhenFellowMessage_FromOther()
         {
-            string channel;
-            string message;
-            string source;
-
             var text = "[VI] [Redoxrules] Redox says, \"test\"";
 
-            var result = ChatParsingUtilities.IsVIMessage(text, out channel, out source, out message);
+            var result = ChatParsingUtilities.IsVIMessage(text, out var channel, out var source, out var message);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Redoxrules", channel);
@@ -197,13 +179,9 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestVIMessage_WhenFellowMessageFromSelf()
         {
-            string channel;
-            string message;
-            string source;
-
             var text = "[VI] [Redoxrules] You say, \"test\"";
 
-            var result = ChatParsingUtilities.IsVIMessage(text, out channel, out source, out message);
+            var result = ChatParsingUtilities.IsVIMessage(text, out var channel, out var source, out var message);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Redoxrules", channel);
@@ -214,13 +192,9 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestVIMessage_WhenNotVIMessage()
         {
-            string channel;
-            string message;
-            string source;
-
             var text = "Redox say, \"test\"";
 
-            var result = ChatParsingUtilities.IsVIMessage(text, out channel, out source, out message);
+            var result = ChatParsingUtilities.IsVIMessage(text, out var channel, out var source, out var message);
 
             Assert.IsFalse(result);
             Assert.IsNull(channel);
@@ -231,8 +205,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void IsChatTextFromFellowship_PhatACStyle()
         {
-            bool fromSelf;
-            var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says to your fellowship, \"!come\"", out fromSelf);
+            var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says to your fellowship, \"!come\"", out var fromSelf);
 
             Assert.IsTrue(result);
             Assert.IsFalse(fromSelf);
@@ -241,8 +214,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void IsChatTestFromFellowship_PhatACStyle_FromSelf()
         {
-            bool fromSelf;
-            var result = ChatParsingUtilities.IsChatTextFromFellowship("You say to your fellowship, \"!come\"", out fromSelf);
+            var result = ChatParsingUtilities.IsChatTextFromFellowship("You say to your fellowship, \"!come\"", out var fromSelf);
 
             Assert.IsTrue(result);
             Assert.IsTrue(fromSelf);
@@ -251,8 +223,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void IsChatTestFromFellowship_GeneralChatMessage()
         {
-            bool fromSelf;
-            var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says, \"hey\"", out fromSelf);
+            var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says, \"hey\"", out var fromSelf);
 
             Assert.IsFalse(result);
             Assert.IsFalse(fromSelf);
@@ -261,9 +232,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TryParseBankBalanceLine_ParsesCommaSeparatedAmount()
         {
-            string name;
-            long amount;
-            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Pyreals: 47,584,323", out name, out amount);
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Pyreals: 47,584,323", out var name, out var amount);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Pyreals", name);
@@ -273,9 +242,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TryParseBankBalanceLine_HandlesNameWithSpace()
         {
-            string name;
-            long amount;
-            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Legendary Keys: 246", out name, out amount);
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Legendary Keys: 246", out var name, out var amount);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Legendary Keys", name);
@@ -285,9 +252,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TryParseBankBalanceLine_HandlesZero()
         {
-            string name;
-            long amount;
-            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Mythical Keys: 0", out name, out amount);
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Mythical Keys: 0", out var name, out var amount);
 
             Assert.IsTrue(result);
             Assert.AreEqual("Mythical Keys", name);
@@ -297,9 +262,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TryParseBankBalanceLine_ReturnsFalseForHeader()
         {
-            string name;
-            long amount;
-            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Your balances are:", out name, out amount);
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("[BANK] Your balances are:", out var name, out var amount);
 
             Assert.IsFalse(result);
             Assert.IsNull(name);
@@ -309,9 +272,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TryParseBankBalanceLine_ReturnsFalseForNonBankLine()
         {
-            string name;
-            long amount;
-            var result = ChatParsingUtilities.TryParseBankBalanceLine("Cowhead says, \"hey\"", out name, out amount);
+            var result = ChatParsingUtilities.TryParseBankBalanceLine("Cowhead says, \"hey\"", out var name, out var amount);
 
             Assert.IsFalse(result);
             Assert.IsNull(name);

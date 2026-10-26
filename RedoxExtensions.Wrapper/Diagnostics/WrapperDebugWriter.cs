@@ -14,7 +14,7 @@ namespace RedoxExtensions.Wrapper.Diagnostics
         private const string StaticDebugFileName = "RTDebugStatic.txt";
 
         protected readonly string _currentPath;
-        protected readonly object _writeLock = new object();
+        protected readonly object _writeLock = new();
         private readonly string _messagePrefix;
         private readonly IPluginServices _pluginServices;
         
@@ -22,7 +22,7 @@ namespace RedoxExtensions.Wrapper.Diagnostics
 
         public WrapperDebugWriter(IPluginServices pluginServices, string logNamePrefix, string logNamePostFix, string messagePrefix)
         {
-            var logFileName = string.Format("{0}_Debug_{1}.txt", logNamePrefix, logNamePostFix);
+            var logFileName = $"{logNamePrefix}_Debug_{logNamePostFix}.txt";
             this._currentPath = Path.Combine(WrapperUtilities.LogDirectory, logFileName);
             this._messagePrefix = messagePrefix;
             this._pluginServices = pluginServices;
@@ -41,10 +41,8 @@ namespace RedoxExtensions.Wrapper.Diagnostics
 
         public static void WriteToStaticLog(string source, string text)
         {
-            using (StreamWriter stream = new StreamWriter(Path.Combine(WrapperUtilities.LogDirectory, StaticDebugFileName), true))
-            {
-                stream.WriteLine(string.Format("[{0}] [{1}] [{3}] - {2}", source, DateTime.Now.ToString(), text, System.Threading.Thread.CurrentThread.ManagedThreadId));
-            }
+            using var stream = new StreamWriter(Path.Combine(WrapperUtilities.LogDirectory, StaticDebugFileName), true);
+            stream.WriteLine($"[{source}] [{DateTime.Now.ToString()}] [{System.Threading.Thread.CurrentThread.ManagedThreadId}] - {text}");
         }
 
         #endregion
@@ -114,14 +112,11 @@ namespace RedoxExtensions.Wrapper.Diagnostics
         protected void WriteCurrentStateStuff(StreamWriter echoStream, bool toLogFileOnly)
         {
             this.LogRawMessage("  ---State Data---", echoStream, toLogFileOnly);
-            this.LogRawMessage(string.Format("  ThreadId = {0}", System.Threading.Thread.CurrentThread.ManagedThreadId), echoStream, toLogFileOnly);
+            this.LogRawMessage($"  ThreadId = {System.Threading.Thread.CurrentThread.ManagedThreadId}", echoStream, toLogFileOnly);
             this.LogRawMessage("", echoStream, toLogFileOnly);
         }
 
-        protected string FormatWithPrefix(string text)
-        {
-            return string.Format("[{0}-DEBUG] {1}", this._messagePrefix, text);
-        }
+        protected string FormatWithPrefix(string text) => $"[{this._messagePrefix}-DEBUG] {text}";
 
         protected void LogRawMessage(string text, StreamWriter echoStream)
         {
@@ -137,17 +132,15 @@ namespace RedoxExtensions.Wrapper.Diagnostics
             }
 #endif
 
-            echoStream.WriteLine((string.Format("[{0}] [{1}] [{3}] - {2}", this._messagePrefix , DateTime.Now.ToString(), text, System.Threading.Thread.CurrentThread.ManagedThreadId)));
+            echoStream.WriteLine($"[{this._messagePrefix}] [{DateTime.Now.ToString()}] [{System.Threading.Thread.CurrentThread.ManagedThreadId}] - {text}");
         }
 
         private void LogLine(string text)
         {
             lock (_writeLock)
             {
-                using (StreamWriter stream = new StreamWriter(this._currentPath, true))
-                {
-                    stream.WriteLine(text);
-                }
+                using var stream = new StreamWriter(this._currentPath, true);
+                stream.WriteLine(text);
             }
         }
 

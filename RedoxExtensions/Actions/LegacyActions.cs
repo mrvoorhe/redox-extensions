@@ -147,7 +147,7 @@ namespace RedoxExtensions.Actions
 
             SafeAction retriedFailed = () =>
             {
-                TellActions.TellFellow(string.Format("{0}, I failed to speak with : {1}", command.SourceCharacter, npcName));
+                TellActions.TellFellow($"{command.SourceCharacter}, I failed to speak with : {npcName}");
             };
 
             REPlugin.Instance.Dispatch.LegacyGameThread.QueueRetriedAction(useItemAction, tryFinish, 20, retriedFailed);

@@ -13,11 +13,11 @@ namespace RedoxExtensions.Dispatching
     {
         #region Instance Data
 
-        private readonly ManualResetEvent _successful = new ManualResetEvent(false);
-        private readonly ManualResetEvent _failed = new ManualResetEvent(false);
-        private readonly ManualResetEvent _busy = new ManualResetEvent(false);
+        private readonly ManualResetEvent _successful = new(false);
+        private readonly ManualResetEvent _failed = new(false);
+        private readonly ManualResetEvent _busy = new(false);
 
-        private readonly ManualResetEvent _complete = new ManualResetEvent(false);
+        private readonly ManualResetEvent _complete = new(false);
 
         private readonly ISupportFeedback _requestor;
 
@@ -46,21 +46,9 @@ namespace RedoxExtensions.Dispatching
 
         #region Public Properties
 
-        public bool IsComplete
-        {
-            get
-            {
-                return this._complete.WaitOne(0);
-            }
-        }
+        public bool IsComplete => this._complete.WaitOne(0);
 
-        public bool Retry
-        {
-            get
-            {
-                return this._retryPlease && this._retryCounter < this.MaxTries;
-            }
-        }
+        public bool Retry => this._retryPlease && this._retryCounter < this.MaxTries;
 
         #region Abstract
 
@@ -72,13 +60,7 @@ namespace RedoxExtensions.Dispatching
 
         #region Virtual
 
-        public virtual bool RequiresExplicitVTState
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public virtual bool RequiresExplicitVTState => true;
 
         #endregion
 
@@ -106,37 +88,13 @@ namespace RedoxExtensions.Dispatching
 
         #endregion
 
-        protected ManualResetEvent Successful
-        {
-            get
-            {
-                return this._successful;
-            }
-        }
+        protected ManualResetEvent Successful => this._successful;
 
-        protected ManualResetEvent Failed
-        {
-            get
-            {
-                return this._failed;
-            }
-        }
+        protected ManualResetEvent Failed => this._failed;
 
-        protected ManualResetEvent Busy
-        {
-            get
-            {
-                return this._busy;
-            }
-        }
+        protected ManualResetEvent Busy => this._busy;
 
-        protected ISupportFeedback Requestor
-        {
-            get
-            {
-                return this._requestor;
-            }
-        }
+        protected ISupportFeedback Requestor => this._requestor;
 
         #endregion
 
@@ -151,10 +109,7 @@ namespace RedoxExtensions.Dispatching
             this.HookEvents();
         }
 
-        public bool Ready()
-        {
-            return this.DoReady(_retryCounter);
-        }
+        public bool Ready() => this.DoReady(_retryCounter);
 
         public void Perform()
         {
@@ -185,7 +140,7 @@ namespace RedoxExtensions.Dispatching
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format("Unhandled WaitAny result : {0}", index));
+                    throw new InvalidOperationException($"Unhandled WaitAny result : {index}");
                 }
 
                 this._retryPlease = this.ShouldRetry(this._outcome);
@@ -251,10 +206,7 @@ namespace RedoxExtensions.Dispatching
 
         #region Virtual
 
-        protected virtual bool DoReady(int attemptsThusFar)
-        {
-            return true;
-        }
+        protected virtual bool DoReady(int attemptsThusFar) => true;
 
         protected virtual void DoResetForRetry()
         {
@@ -272,10 +224,7 @@ namespace RedoxExtensions.Dispatching
             }
         }
 
-        protected virtual bool ShouldCountRetry(WaitForCompleteOutcome outcome)
-        {
-            return true;
-        }
+        protected virtual bool ShouldCountRetry(WaitForCompleteOutcome outcome) => true;
 
         protected virtual void Dispose(bool disposing)
         {

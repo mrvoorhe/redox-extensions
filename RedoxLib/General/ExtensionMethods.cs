@@ -21,14 +21,8 @@ namespace RedoxLib.General
             return sb.ToString();
         }
 
-        public static IEnumerable<string> InQuotes(this IEnumerable<string> inputs)
-        {
-            return inputs.Select(input => input.InQuotes());
-        }
+        public static IEnumerable<string> InQuotes(this IEnumerable<string> inputs) => inputs.Select(input => input.InQuotes());
 
-        public static string InQuotes(this string input)
-        {
-            return "\"" + input + "\"";
-        }
+        public static string InQuotes(this string input) => "\"" + input + "\"";
     }
 }

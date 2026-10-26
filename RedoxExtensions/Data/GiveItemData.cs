@@ -21,10 +21,7 @@ namespace RedoxExtensions.Data
         public int GiveCount { get; private set; }
         public int TargetId { get; private set; }
 
-        public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data)
-        {
-            return new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
-        }
+        public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data) => new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
     }
 
     public class GiveItemSearchData
@@ -40,10 +37,7 @@ namespace RedoxExtensions.Data
         public int GiveCount { get; private set; }
         public int TargetId { get; private set; }
 
-        public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data)
-        {
-            return new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
-        }
+        public static GiveItemSearchData From(Triple<Func<WorldObject, bool>, int, int> data) => new GiveItemSearchData(data.Item1, data.Item2, data.Item3);
 
         public IEnumerable<GiveItemData> GetMatches(IEnumerable<WorldObject> sourceCollection)
         {

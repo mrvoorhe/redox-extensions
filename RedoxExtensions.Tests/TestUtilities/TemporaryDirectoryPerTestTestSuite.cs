@@ -20,13 +20,7 @@ namespace RedoxExtensions.Tests.TestUtilities
     {
         private string _testTemporaryDirectory;
 
-        protected string TestTemporaryDirectory
-        {
-            get
-            {
-                return this._testTemporaryDirectory;
-            }
-        }
+        protected string TestTemporaryDirectory => this._testTemporaryDirectory;
 
         [SetUp]
         public virtual void TestSetup()

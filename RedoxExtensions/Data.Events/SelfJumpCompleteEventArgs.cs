@@ -38,24 +38,18 @@ namespace RedoxExtensions.Data.Events
 
         public TimeSpan AirTime { get; private set; }
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel
-        {
-            get
-            {
-                return DebugLevel.Low;
-            }
-        }
+        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
         string ILoggableObject.GetLoggableFormat()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine(string.Format("  JumpData = {0}", this.JumpData));
-            builder.AppendLine(string.Format("  Trajectory = {0}", this.Trajectory.ToPrettyString()));
-            builder.AppendLine(string.Format("  LandingLocation = {0}", this.LandingLocation));
-            builder.AppendLine(string.Format("  Height = {0}", this.MaxHeightInMeters));
-            builder.AppendLine(string.Format("  Distance = {0}", this.DistanceJumpedInMeters));
-            builder.AppendLine(string.Format("  AirTime(s) = {0}", this.AirTime.TotalSeconds));
+            builder.AppendLine($"  JumpData = {this.JumpData}");
+            builder.AppendLine($"  Trajectory = {this.Trajectory.ToPrettyString()}");
+            builder.AppendLine($"  LandingLocation = {this.LandingLocation}");
+            builder.AppendLine($"  Height = {this.MaxHeightInMeters}");
+            builder.AppendLine($"  Distance = {this.DistanceJumpedInMeters}");
+            builder.AppendLine($"  AirTime(s) = {this.AirTime.TotalSeconds}");
 
             return builder.ToString();
         }

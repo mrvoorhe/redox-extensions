@@ -24,29 +24,11 @@ namespace RedoxExtensions.Core
             this._pipelineDispatcher = new PipelineDispatcher(decalEventsProxy);
         }
 
-        internal BackgroundDispatcher Background
-        {
-            get
-            {
-                return this._backgroundDispatcher;
-            }
-        }
+        internal BackgroundDispatcher Background => this._backgroundDispatcher;
 
-        internal GameThreadDispatcher LegacyGameThread
-        {
-            get
-            {
-                return this._gameThreadDispatcher;
-            }
-        }
+        internal GameThreadDispatcher LegacyGameThread => this._gameThreadDispatcher;
 
-        internal PipelineDispatcher Pipeline
-        {
-            get
-            {
-                return this._pipelineDispatcher;
-            }
-        }
+        internal PipelineDispatcher Pipeline => this._pipelineDispatcher;
 
         public void Dispose()
         {

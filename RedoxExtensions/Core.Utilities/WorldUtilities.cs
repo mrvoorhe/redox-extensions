@@ -55,10 +55,7 @@ namespace RedoxExtensions.Core.Utilities
         /// <param name="obj2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">Object passed with an Id of 0</exception>
-        public static double GetDistance(WorldObject obj1, WorldObject obj2)
-        {
-            return GetDistance(obj1.Wrap(), obj2.Wrap());
-        }
+        public static double GetDistance(WorldObject obj1, WorldObject obj2) => GetDistance(obj1.Wrap(), obj2.Wrap());
 
         /// <summary>
         /// This function will return the distance in meters.
@@ -73,23 +70,17 @@ namespace RedoxExtensions.Core.Utilities
         public static double GetDistance(IWorldObject obj1, IWorldObject obj2)
         {
             if (obj1.Id == 0)
-                throw new ArgumentOutOfRangeException("obj1", "Object passed with an Id of 0");
+                throw new ArgumentOutOfRangeException(nameof(obj1), "Object passed with an Id of 0");
 
             if (obj2.Id == 0)
-                throw new ArgumentOutOfRangeException("obj2", "Object passed with an Id of 0");
+                throw new ArgumentOutOfRangeException(nameof(obj2), "Object passed with an Id of 0");
 
             return REPlugin.Instance.WorldFilter.Distance(obj1.Id, obj2.Id) * 240;
         }
 
-        public static double GetDistance(Location.Location loc1, Location.Location loc2)
-        {
-            return GetDistance(loc1.Coords, loc2.Coords);
-        }
+        public static double GetDistance(Location.Location loc1, Location.Location loc2) => GetDistance(loc1.Coords, loc2.Coords);
 
-        public static double GetDistance(CoordsObject coords1, CoordsObject coords2)
-        {
-            return coords1.DistanceToCoords(coords2) * 240;
-        }
+        public static double GetDistance(CoordsObject coords1, CoordsObject coords2) => coords1.DistanceToCoords(coords2) * 240;
 
         public static double GetDistanceFromSelf(ISourceInformation requestor)
         {
@@ -123,10 +114,7 @@ namespace RedoxExtensions.Core.Utilities
         /// <param name="destObj"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">CharacterFilder.Id or Object passed with an Id of 0</exception>
-        public static double GetDistanceFromSelf(int woId)
-        {
-            return GetDistanceFromSelf(woId.ToWorldObject());
-        }
+        public static double GetDistanceFromSelf(int woId) => GetDistanceFromSelf(woId.ToWorldObject());
 
         /// <summary>
         /// This function will return the distance in meters.
@@ -137,10 +125,7 @@ namespace RedoxExtensions.Core.Utilities
         /// <param name="destObj"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">CharacterFilder.Id or Object passed with an Id of 0</exception>
-        public static double GetDistanceFromSelf(WorldObject destObj)
-        {
-            return GetDistanceFromSelf(destObj.Wrap());
-        }
+        public static double GetDistanceFromSelf(WorldObject destObj) => GetDistanceFromSelf(destObj.Wrap());
 
         /// <summary>
         /// This function will return the distance in meters.
@@ -154,18 +139,15 @@ namespace RedoxExtensions.Core.Utilities
         public static double GetDistanceFromSelf(IWorldObject destObj)
         {
             if (REPlugin.Instance.CharacterFilter.Id == 0)
-                throw new ArgumentOutOfRangeException("destObj", "CharacterFilter.Id of 0");
+                throw new ArgumentOutOfRangeException(nameof(destObj), "CharacterFilter.Id of 0");
 
             if (destObj.Id == 0)
-                throw new ArgumentOutOfRangeException("destObj", "Object passed with an Id of 0");
+                throw new ArgumentOutOfRangeException(nameof(destObj), "Object passed with an Id of 0");
 
             return REPlugin.Instance.WorldFilter.Distance(REPlugin.Instance.CharacterFilter.Id, destObj.Id) * 240;
         }
 
-        public static double GetDistanceFromSelf(Location.Location point)
-        {
-            return GetDistanceFromSelf(point.Coords);
-        }
+        public static double GetDistanceFromSelf(Location.Location point) => GetDistanceFromSelf(point.Coords);
 
         public static double GetDistanceFromSelf(CoordsObject point)
         {
@@ -226,7 +208,7 @@ namespace RedoxExtensions.Core.Utilities
         {
             if (wo == null)
             {
-                throw new ArgumentNullException("wo");
+                throw new ArgumentNullException(nameof(wo));
             }
 
             return WithinRangeOfSelf(wo.Coordinates(), maxDistance);
@@ -236,16 +218,13 @@ namespace RedoxExtensions.Core.Utilities
         {
             if (wo == null)
             {
-                throw new ArgumentNullException("wo");
+                throw new ArgumentNullException(nameof(wo));
             }
 
             return WithinRangeOfSelf(wo.Coordinates(), maxDistance);
         }
 
-        public static bool WithinRangeOfSelf(Location.Location location, int maxDistance)
-        {
-            return WithinRangeOfSelf(location.Coords, maxDistance);
-        }
+        public static bool WithinRangeOfSelf(Location.Location location, int maxDistance) => WithinRangeOfSelf(location.Coords, maxDistance);
 
         public static bool WithinRangeOfSelf(CoordsObject coords, int maxDistance)
         {
@@ -273,7 +252,7 @@ namespace RedoxExtensions.Core.Utilities
         {
             if(coordsObject == null)
             {
-                throw new ArgumentNullException("coordsObject");
+                throw new ArgumentNullException(nameof(coordsObject));
             }
 
             Face(coordsObject.Coords);
@@ -284,7 +263,7 @@ namespace RedoxExtensions.Core.Utilities
         {
             if (coords == null)
             {
-                throw new ArgumentNullException("coords");
+                throw new ArgumentNullException(nameof(coords));
             }
 
             var selfCoords = Location.Location.CaptureCurrent().Coords;

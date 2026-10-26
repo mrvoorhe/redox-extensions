@@ -26,8 +26,7 @@ namespace RedoxExtensions.Commands
 
         void _decalEventsProxy_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
         {
-            ICommand command;
-            if (CommandHelpers.TryParse(e, out command))
+            if (CommandHelpers.TryParse(e, out var command))
             {
                 switch (command.CommandType)
                 {
@@ -49,8 +48,7 @@ namespace RedoxExtensions.Commands
                     return;
             }
 
-            ICommand command;
-            if (CommandHelpers.TryParse(e, out command))
+            if (CommandHelpers.TryParse(e, out var command))
             {
                 switch (command.CommandType)
                 {

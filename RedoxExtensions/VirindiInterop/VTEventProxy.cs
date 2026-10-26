@@ -70,10 +70,7 @@ namespace RedoxExtensions.VirindiInterop
                 WrapperDebugWriter.WriteToStaticLog("RT", "");
                 WrapperDebugWriter.WriteToStaticLog("RT", "Starting the hacky retry timer");
 
-                if (this._hackyDelayedRetryInitTimer == null)
-                {
-                    this._hackyDelayedRetryInitTimer = new Timer(this.TimerCallback_RetryTryInitializeExternalPluginDependencies, null, 1000, 1000);
-                }
+                this._hackyDelayedRetryInitTimer ??= new Timer(this.TimerCallback_RetryTryInitializeExternalPluginDependencies, null, 1000, 1000);
             }
         }
 
@@ -102,10 +99,7 @@ namespace RedoxExtensions.VirindiInterop
                     REPlugin.Instance.Debug.WriteObject(eventArgs);
                 }
 
-                if (this.SpellCastComplete != null)
-                {
-                    this.SpellCastComplete(uTank2.PluginCore.PC, eventArgs);
-                }
+                this.SpellCastComplete?.Invoke(uTank2.PluginCore.PC, eventArgs);
             });
         }
 
@@ -119,10 +113,7 @@ namespace RedoxExtensions.VirindiInterop
                     REPlugin.Instance.Debug.WriteObject(eventArgs);
                 }
 
-                if (this.SpellCastAttempting != null)
-                {
-                    this.SpellCastAttempting(uTank2.PluginCore.PC, eventArgs);
-                }
+                this.SpellCastAttempting?.Invoke(uTank2.PluginCore.PC, eventArgs);
             });
         }
 

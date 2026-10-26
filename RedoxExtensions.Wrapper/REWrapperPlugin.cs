@@ -30,55 +30,19 @@ namespace RedoxExtensions.Wrapper
 
         #region Internal Static Properties
 
-        internal static REWrapperPlugin Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        internal static REWrapperPlugin Instance => _instance;
 
         #endregion
 
-        public CoreManager CoreManager
-        {
-            get
-            {
-                return this.Core;
-            }
-        }
+        public CoreManager CoreManager => this.Core;
 
-        public PluginHost PluginHost
-        {
-            get
-            {
-                return this.Host;
-            }
-        }
+        public PluginHost PluginHost => this.Host;
 
-        public WrapperChatWriter Chat
-        {
-            get
-            {
-                return this._wrapperChat;
-            }
-        }
+        public WrapperChatWriter Chat => this._wrapperChat;
 
-        public WrapperDebugWriter Debug
-        {
-            get
-            {
-                return this._wrapperDebug;
-            }
-        }
+        public WrapperDebugWriter Debug => this._wrapperDebug;
 
-        public ErrorLogger Error
-        {
-            get
-            {
-                return this._errorLogger;
-            }
-        }
+        public ErrorLogger Error => this._errorLogger;
 
         #region Public Methods
 
@@ -132,7 +96,7 @@ namespace RedoxExtensions.Wrapper
         {
             if (this._wrappedPlugin == null)
             {
-                this.Debug.WriteLine(string.Format("Ignoring Unload.  No Plugin Loaded"));
+                this.Debug.WriteLine("Ignoring Unload.  No Plugin Loaded");
                 return;
             }
 
@@ -144,7 +108,7 @@ namespace RedoxExtensions.Wrapper
         {
             if (this._wrappedPlugin != null)
             {
-                this.Debug.WriteLine(string.Format("Ignoring Load.  Plugin Already Loaded"));
+                this.Debug.WriteLine("Ignoring Load.  Plugin Already Loaded");
                 return;
             }
 

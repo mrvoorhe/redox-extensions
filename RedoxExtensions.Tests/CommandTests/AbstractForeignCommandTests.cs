@@ -14,37 +14,13 @@ namespace RedoxExtensions.Tests.CommandTests
     {
         protected abstract CommandChannel ExpectedChannel { get; }
 
-        protected virtual bool UsesChannelTag
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected virtual bool UsesChannelTag => false;
 
-        protected virtual object ChannelTag
-        {
-            get
-            {
-                return null;
-            }
-        }
+        protected virtual object ChannelTag => null;
 
-        protected virtual bool UsesExplicitTargettingTag
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected virtual bool UsesExplicitTargettingTag => false;
 
-        protected virtual object ExplicitTargettingTag
-        {
-            get
-            {
-                return null;
-            }
-        }
+        protected virtual object ExplicitTargettingTag => null;
 
         #region From Self
 
@@ -53,8 +29,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromSelfSampleText("test");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -70,8 +45,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromSelfSampleText("test", "one");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -88,8 +62,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromSelfSampleText("test", "one", "two", "three");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -112,8 +85,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromOtherSampleText("Big Ted", "test");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -129,8 +101,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromOtherSampleText("Big Ted", "test", "one");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 
@@ -147,8 +118,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             var text = this.CreateFromOtherSampleText("Big Ted", "test", "one", "two", "three");
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsTrue(isCommand);
 

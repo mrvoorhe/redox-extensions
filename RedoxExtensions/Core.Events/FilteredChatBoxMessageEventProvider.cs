@@ -36,10 +36,7 @@ namespace RedoxExtensions.Core.Events
         {
             if (ChatParsingUtilities.IsChat(e.Text, this._chatFilter) && ChatParsingUtilities.IsChannel(e.Text, this._channelFilter))
             {
-                if (this.FilteredChatBoxMessage != null)
-                {
-                    this.FilteredChatBoxMessage(sender, e);
-                }
+                this.FilteredChatBoxMessage?.Invoke(sender, e);
 
                 // Only try to parse if someone is listening
                 if (this.FilteredAndParsedChatBoxMessage != null)

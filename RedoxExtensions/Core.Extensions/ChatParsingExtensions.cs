@@ -12,15 +12,9 @@ namespace RedoxExtensions.Core.Extensions
     public static class ChatParsingExtensions
     {
 
-        public static bool IsYouGive(this ChatTextInterceptEventArgs eventArgs)
-        {
-            return ChatParsingUtilities.IsYouGive(eventArgs.Text);
-        }
+        public static bool IsYouGive(this ChatTextInterceptEventArgs eventArgs) => ChatParsingUtilities.IsYouGive(eventArgs.Text);
 
-        public static bool IsCannotCarryAnymore(this ChatTextInterceptEventArgs eventArgs)
-        {
-            return ChatParsingUtilities.IsCannotCarryAnymore(eventArgs.Text);
-        }
+        public static bool IsCannotCarryAnymore(this ChatTextInterceptEventArgs eventArgs) => ChatParsingUtilities.IsCannotCarryAnymore(eventArgs.Text);
 
         public static bool IsFellowshipCreated(this ChatTextInterceptEventArgs eventArgs, out string fellowshipName)
         {

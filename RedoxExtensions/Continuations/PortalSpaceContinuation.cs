@@ -13,7 +13,7 @@ namespace RedoxExtensions.Continuations
         private readonly Action<object> _onTimeoutAction;
         private readonly Timer _timeoutTimer;
         private readonly object _stateTag;
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
 
         private bool _complete;
 

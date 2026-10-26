@@ -18,10 +18,7 @@ namespace RedoxExtensions.Core.Utilities
         private const string UsingObjectStatusTextPrefix = "Using the";
         private const string ApproachingObjectStatusTextPrefix = "Approaching";
 
-        public static bool IsUsingObject(string text)
-        {
-            return text.StartsWith(UsingObjectStatusTextPrefix);
-        }
+        public static bool IsUsingObject(string text) => text.StartsWith(UsingObjectStatusTextPrefix);
 
         public static bool IsUsingObject(string text, out string objectName)
         {
@@ -35,10 +32,7 @@ namespace RedoxExtensions.Core.Utilities
             return false;
         }
 
-        public static bool IsApproachingObject(string text)
-        {
-            return text.StartsWith(ApproachingObjectStatusTextPrefix);
-        }
+        public static bool IsApproachingObject(string text) => text.StartsWith(ApproachingObjectStatusTextPrefix);
 
         public static bool IsApproachingObject(string text, out string objectName)
         {
@@ -52,20 +46,14 @@ namespace RedoxExtensions.Core.Utilities
             return false;
         }
 
-        public static bool IsYoureTooBusy(string text)
-        {
-            return text.StartsWith(YoureTooBusy);
-        }
+        public static bool IsYoureTooBusy(string text) => text.StartsWith(YoureTooBusy);
 
         /// <summary>
         /// Ex: The Aged Legendary Key can't be given
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static bool IsCantBeGiven(string text)
-        {
-            return text.Trim().EndsWith(CantBeGiven);
-        }
+        public static bool IsCantBeGiven(string text) => text.Trim().EndsWith(CantBeGiven);
 
         /// <summary>
         /// Ex: The Aged Legendary Key can't be given
@@ -88,30 +76,15 @@ namespace RedoxExtensions.Core.Utilities
 
         #region Extension Methods
 
-        public static bool IsCantBeGiven(this StatusTextInterceptEventArgs eventArgs)
-        {
-            return IsCantBeGiven(eventArgs.Text);
-        }
+        public static bool IsCantBeGiven(this StatusTextInterceptEventArgs eventArgs) => IsCantBeGiven(eventArgs.Text);
 
-        public static bool IsYoureTooBusy(this StatusTextInterceptEventArgs eventArgs)
-        {
-            return IsYoureTooBusy(eventArgs.Text);
-        }
+        public static bool IsYoureTooBusy(this StatusTextInterceptEventArgs eventArgs) => IsYoureTooBusy(eventArgs.Text);
 
-        public static bool IsUsingObject(this StatusTextInterceptEventArgs eventArgs)
-        {
-            return IsUsingObject(eventArgs.Text);
-        }
+        public static bool IsUsingObject(this StatusTextInterceptEventArgs eventArgs) => IsUsingObject(eventArgs.Text);
 
-        public static bool IsUsingObject(this StatusTextInterceptEventArgs eventArgs, out string objectName)
-        {
-            return IsUsingObject(eventArgs.Text, out objectName);
-        }
+        public static bool IsUsingObject(this StatusTextInterceptEventArgs eventArgs, out string objectName) => IsUsingObject(eventArgs.Text, out objectName);
 
-        public static bool IsApproachingObject(this StatusTextInterceptEventArgs eventArgs)
-        {
-            return IsApproachingObject(eventArgs.Text);
-        }
+        public static bool IsApproachingObject(this StatusTextInterceptEventArgs eventArgs) => IsApproachingObject(eventArgs.Text);
 
         public static bool IsApproachingObject(this StatusTextInterceptEventArgs eventArgs, out string objectName)
         {

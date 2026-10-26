@@ -40,21 +40,9 @@ namespace RedoxExtensions.Listeners.Monitors
             REPlugin.Instance.Events.Decal.ChangePortalMode += Decal_ChangePortalMode;
         }
 
-        public bool Enabled
-        {
-            get
-            {
-                return this._enabled;
-            }
-        }
+        public bool Enabled => this._enabled;
 
-        public double ThresholdMinutes
-        {
-            get
-            {
-                return this._threshold.TotalMinutes;
-            }
-        }
+        public double ThresholdMinutes => this._threshold.TotalMinutes;
 
         public void Enable(double? minutes)
         {

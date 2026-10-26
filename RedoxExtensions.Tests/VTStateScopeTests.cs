@@ -14,7 +14,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestAddOptionIfGoingToChangeWhenShouldBeAddedToChangeList()
         {
-            List<string> optionsToChange = new List<string>();
+            var optionsToChange = new List<string>();
 
             VTStateScope.AddOptionIfGoingToChange(optionsToChange, VTStateOptions.DontChange, VTStateOptions.Nav, VTStateOptions.Nav, VTOptionNames.EnableNav);
 
@@ -25,7 +25,7 @@ namespace RedoxExtensions.Tests
         [Test]
         public void TestAddOptionIfGoingToChangeWhenNotAddedDueToNotCheckingSuppliedState()
         {
-            List<string> optionsToChange = new List<string>();
+            var optionsToChange = new List<string>();
 
             VTStateScope.AddOptionIfGoingToChange(optionsToChange, VTStateOptions.DontChange, VTStateOptions.Nav, VTStateOptions.Combat, VTOptionNames.EnableNav);
 

@@ -22,22 +22,16 @@ namespace RedoxExtensions.Data.Events
         public int NumLogins { get; private set; }
         public int TotalJumps { get; private set; }
 
-        DebugLevel ILoggableObject.MinimumRequiredDebugLevel
-        {
-            get
-            {
-                return DebugLevel.Low;
-            }
-        }
+        DebugLevel ILoggableObject.MinimumRequiredDebugLevel => DebugLevel.Low;
 
         string ILoggableObject.GetLoggableFormat()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine(this.GetType().ToString());
-            builder.AppendLine(string.Format("  Id = {0}", this.CharacterId));
-            builder.AppendLine(string.Format("  Data = {0}", this.Data));
-            builder.AppendLine(string.Format("  NumLogins = {0}", this.NumLogins));
-            builder.AppendLine(string.Format("  TotalJumps = {0}", this.TotalJumps));
+            builder.AppendLine($"  Id = {this.CharacterId}");
+            builder.AppendLine($"  Data = {this.Data}");
+            builder.AppendLine($"  NumLogins = {this.NumLogins}");
+            builder.AppendLine($"  TotalJumps = {this.TotalJumps}");
 
             return builder.ToString();
         }

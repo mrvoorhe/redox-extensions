@@ -18,8 +18,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             const string text = "/r Hello World";
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsFalse(isCommand);
         }
@@ -29,8 +28,7 @@ namespace RedoxExtensions.Tests.CommandTests
         {
             const string text = "[Fellowship] <Tell:IIDString:0:Redox>Redox<\\Tell> says, \"Hello World\"\n";
 
-            ICommand result;
-            bool isCommand = CommandHelpers.TryParse(text, out result);
+            bool isCommand = CommandHelpers.TryParse(text, out var result);
 
             Assert.IsFalse(isCommand);
         }

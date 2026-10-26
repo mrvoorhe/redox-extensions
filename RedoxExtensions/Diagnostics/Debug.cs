@@ -75,7 +75,7 @@ namespace RedoxExtensions.Diagnostics
                 throw new InvalidOperationException("These debug helpers cannot be used until the Plugin instance has been created");
             }
 
-            Writer.WriteToChat(string.Format("{0} {1}", DefaultDebugMessagePrefix, text), DEFAULT_MESSAGE_COLOR, chatWindow);
+            Writer.WriteToChat($"{DefaultDebugMessagePrefix} {text}", DEFAULT_MESSAGE_COLOR, chatWindow);
         }
 
         #region Inner Class

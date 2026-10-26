@@ -26,10 +26,7 @@ namespace RedoxExtensions.Actions
             VTActions.StartVT();
         }
 
-        public static bool SetMainProfileRaw(string profileName)
-        {
-            return VTActions.LoadCharacterSettingsProfile(profileName);
-        }
+        public static bool SetMainProfileRaw(string profileName) => VTActions.LoadCharacterSettingsProfile(profileName);
 
         public static bool SetMainProfile(string profileName)
         {
@@ -45,9 +42,6 @@ namespace RedoxExtensions.Actions
             }
         }
 
-        public static bool SetMainProfile(MyMainProfiles myProfile)
-        {
-            return SetMainProfileRaw(MyUtilities.LookupProfileName(myProfile));
-        }
+        public static bool SetMainProfile(MyMainProfiles myProfile) => SetMainProfileRaw(MyUtilities.LookupProfileName(myProfile));
     }
 }

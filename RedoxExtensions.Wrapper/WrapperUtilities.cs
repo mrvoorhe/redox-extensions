@@ -38,34 +38,13 @@ namespace RedoxExtensions.Wrapper
         }
 
 
-        public static string RedoxExtensionsBinDirectory
-        {
-            get
-            {
-                return _redoxExtensionsBinDirectory;
-            }
-        }
+        public static string RedoxExtensionsBinDirectory => _redoxExtensionsBinDirectory;
 
-        public static string LogDirectory
-        {
-            get
-            {
-                return _logDirectory;
-            }
-        }
+        public static string LogDirectory => _logDirectory;
 
-        public static string TmpDllDirectory
-        {
-            get
-            {
-                return _tmpDllDirectory;
-            }
-        }
+        public static string TmpDllDirectory => _tmpDllDirectory;
 
-        internal static string DllFilePathToPdbFilePath(string dllFilePath)
-        {
-            return dllFilePath.Substring(0, dllFilePath.Length - 4) + ".pdb";
-        }
+        internal static string DllFilePathToPdbFilePath(string dllFilePath) => dllFilePath.Substring(0, dllFilePath.Length - 4) + ".pdb";
 
         internal static void TryCleanupTmpDlls()
         {
@@ -115,7 +94,7 @@ namespace RedoxExtensions.Wrapper
 
             CopyDependencies(newDirectory);
 
-            var newFilePathBase = Path.Combine(newDirectory, string.Format("{0}-{1}", assemblyName, tempFileName));
+            var newFilePathBase = Path.Combine(newDirectory, $"{assemblyName}-{tempFileName}");
             var newDllFilePath = newFilePathBase + ".dll";
             var newPdbFilePath = newFilePathBase + ".pdb";
 

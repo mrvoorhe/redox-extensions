@@ -105,10 +105,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.CommandLineText != null)
-                {
-                    this.CommandLineText(sender, e);
-                }
+                this.CommandLineText?.Invoke(sender, e);
             });
         }
 
@@ -118,10 +115,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.ChatBoxMessage != null)
-                {
-                    this.ChatBoxMessage(sender, e);
-                }
+                this.ChatBoxMessage?.Invoke(sender, e);
             });
         }
 
@@ -129,10 +123,7 @@ namespace RedoxExtensions.Core
         {
             REPlugin.Instance.InvokeOperationSafely(() =>
             {
-                if (this.RenderFrame != null)
-                {
-                    this.RenderFrame(sender, e);
-                }
+                this.RenderFrame?.Invoke(sender, e);
             });
         }
 
@@ -142,10 +133,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.ItemSelected != null)
-                {
-                    this.ItemSelected(sender, e);
-                }
+                this.ItemSelected?.Invoke(sender, e);
             });
         }
 
@@ -153,10 +141,7 @@ namespace RedoxExtensions.Core
         {
             REPlugin.Instance.InvokeOperationSafely(() =>
             {
-                if (this.ActionComplete != null)
-                {
-                    this.ActionComplete(sender, e);
-                }
+                this.ActionComplete?.Invoke(sender, e);
             });
         }
 
@@ -166,10 +151,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.DebugWriter.WriteObject(e);
 
-                if (this.ChangePortalMode != null)
-                {
-                    this.ChangePortalMode(sender, e);
-                }
+                this.ChangePortalMode?.Invoke(sender, e);
             });
         }
 
@@ -179,10 +161,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.DebugWriter.WriteObject(e);
 
-                if (this.Death != null)
-                {
-                    this.Death(sender, e);
-                }
+                this.Death?.Invoke(sender, e);
             });
         }
 
@@ -192,10 +171,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.ChangeVital != null)
-                {
-                    this.ChangeVital(sender, e);
-                }
+                this.ChangeVital?.Invoke(sender, e);
             });
         }
 
@@ -205,10 +181,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.SpellCast != null)
-                {
-                    this.SpellCast(sender, e);
-                }
+                this.SpellCast?.Invoke(sender, e);
             });
         }
 
@@ -218,10 +191,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.StatusMessage != null)
-                {
-                    this.StatusMessage(sender, e);
-                }
+                this.StatusMessage?.Invoke(sender, e);
             });
         }
 
@@ -231,10 +201,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.ChangeFellowship != null)
-                {
-                    this.ChangeFellowship(sender, e);
-                }
+                this.ChangeFellowship?.Invoke(sender, e);
             });
         }
 
@@ -244,10 +211,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.ApproachingVendor != null)
-                {
-                    this.ApproachingVendor(sender, e);
-                }
+                this.ApproachingVendor?.Invoke(sender, e);
             });
         }
 
@@ -257,10 +221,7 @@ namespace RedoxExtensions.Core
             {
                 REPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.CreateObject != null)
-                {
-                    this.CreateObject(sender, e);
-                }
+                this.CreateObject?.Invoke(sender, e);
             });
         }
 
@@ -274,10 +235,7 @@ namespace RedoxExtensions.Core
                     REPlugin.Instance.Debug.WriteObject(e);
                 }
 
-                if (this.ChangeObject != null)
-                {
-                    this.ChangeObject(sender, e);
-                }
+                this.ChangeObject?.Invoke(sender, e);
             });
         }
 
@@ -287,10 +245,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.Debug.WriteObject(e);
 
-                if (this.MoveObject != null)
-                {
-                    this.MoveObject(sender, e);
-                }
+                this.MoveObject?.Invoke(sender, e);
             });
         }
 
@@ -323,10 +278,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.Debug.WriteObject(e, "ServerDispatch");
 
-                if (this.ServerDispatch != null)
-                {
-                    this.ServerDispatch(sender, e);
-                }
+                this.ServerDispatch?.Invoke(sender, e);
             });
         }
 
@@ -336,10 +288,7 @@ namespace RedoxExtensions.Core
             {
                 //RTPlugin.Instance.Debug.WriteObject(e, "ClientDispatch");
 
-                if (this.ClientDispatch != null)
-                {
-                    this.ClientDispatch(sender, e);
-                }
+                this.ClientDispatch?.Invoke(sender, e);
             });
         }
     }

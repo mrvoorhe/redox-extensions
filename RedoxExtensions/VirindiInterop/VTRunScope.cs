@@ -47,20 +47,11 @@ namespace RedoxExtensions.VirindiInterop
             }
         }
 
-        public static VTRunScope Enter(VTRunState desiredState)
-        {
-            return new VTRunScope(desiredState);
-        }
+        public static VTRunScope Enter(VTRunState desiredState) => new VTRunScope(desiredState);
 
-        public static VTRunScope EnterStopped()
-        {
-            return Enter(VTRunState.Off);
-        }
+        public static VTRunScope EnterStopped() => Enter(VTRunState.Off);
 
-        public static VTRunScope EnterRunning()
-        {
-            return Enter(VTRunState.On);
-        }
+        public static VTRunScope EnterRunning() => Enter(VTRunState.On);
 
         public static VTRunScope EnterStoppedFromBackground()
         {
@@ -68,13 +59,7 @@ namespace RedoxExtensions.VirindiInterop
             throw new NotImplementedException();
         }
 
-        public VTRunState DesiredState
-        {
-            get
-            {
-                return this._desiredRunState;
-            }
-        }
+        public VTRunState DesiredState => this._desiredRunState;
 
         public void Dispose()
         {

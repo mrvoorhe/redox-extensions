@@ -15,9 +15,9 @@ namespace RedoxExtensions.Dispatching
 
         //private readonly Timer _dispatcherTimer;
 
-        private readonly AutoResetEvent _dispatchEvent = new AutoResetEvent(false);
-        private readonly ManualResetEvent _stopDispatcherEvent = new ManualResetEvent(false);
-        private readonly ManualResetEvent _dispatcherStoppedEvent = new ManualResetEvent(false);
+        private readonly AutoResetEvent _dispatchEvent = new(false);
+        private readonly ManualResetEvent _stopDispatcherEvent = new(false);
+        private readonly ManualResetEvent _dispatcherStoppedEvent = new(false);
 
         private readonly WaitHandle[] _dispatcherWakeEvents;
 
@@ -176,10 +176,7 @@ namespace RedoxExtensions.Dispatching
             }
         }
 
-        private IDispatchedAction CheckForWork()
-        {
-            return this._actionQueue.Count > 0 ? this._actionQueue.Dequeue() : null;
-        }
+        private IDispatchedAction CheckForWork() => this._actionQueue.Count > 0 ? this._actionQueue.Dequeue() : null;
 
         private void InvokeWork(IDispatchedAction action)
         {

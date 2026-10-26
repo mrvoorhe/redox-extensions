@@ -78,7 +78,7 @@ namespace RedoxLib.General
         {
             if (items == null)
             {
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
             }
 
             return Filter<T>(filterFunction, new List<T>(items));
@@ -96,12 +96,12 @@ namespace RedoxLib.General
         {
             if (filterFunction == null)
             {
-                throw new ArgumentNullException("filterFunction");
+                throw new ArgumentNullException(nameof(filterFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -124,7 +124,7 @@ namespace RedoxLib.General
         {
             if (items == null)
             {
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
             }
 
             return Map<T>(mapFunction, new List<T>(items));
@@ -141,12 +141,12 @@ namespace RedoxLib.General
         {
             if (mapFunction == null)
             {
-                throw new ArgumentNullException("mapFunction");
+                throw new ArgumentNullException(nameof(mapFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -199,10 +199,7 @@ namespace RedoxLib.General
         /// <param name="reduceFunction">A function to reduce the collection</param>
         /// <param name="collection">A collection of items</param>
         /// <returns>A single value</returns>
-        public static T Reduce<T>(ReduceFunction<T> reduceFunction, IEnumerable<T> collection)
-        {
-            return Reduce(reduceFunction, collection, default(T));
-        }
+        public static T Reduce<T>(ReduceFunction<T> reduceFunction, IEnumerable<T> collection) => Reduce(reduceFunction, collection, default(T));
 
         /// <summary>
         /// Reduces a collection of items into a single item
@@ -216,12 +213,12 @@ namespace RedoxLib.General
         {
             if (reduceFunction == null)
             {
-                throw new ArgumentNullException("reduceFunction");
+                throw new ArgumentNullException(nameof(reduceFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -258,12 +255,12 @@ namespace RedoxLib.General
         {
             if (reduceFunction == null)
             {
-                throw new ArgumentNullException("reduceFunction");
+                throw new ArgumentNullException(nameof(reduceFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -286,12 +283,12 @@ namespace RedoxLib.General
         {
             if (mapFunction == null)
             {
-                throw new ArgumentNullException("mapFunction");
+                throw new ArgumentNullException(nameof(mapFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -311,12 +308,12 @@ namespace RedoxLib.General
         {
             if (mapFunctionCollection == null)
             {
-                throw new ArgumentNullException("mapFunctionCollection");
+                throw new ArgumentNullException(nameof(mapFunctionCollection));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -337,17 +334,17 @@ namespace RedoxLib.General
         {
             if (filterFunction == null)
             {
-                throw new ArgumentNullException("filterFunction");
+                throw new ArgumentNullException(nameof(filterFunction));
             }
 
             if (mapFunction == null)
             {
-                throw new ArgumentNullException("mapFunction");
+                throw new ArgumentNullException(nameof(mapFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -372,17 +369,17 @@ namespace RedoxLib.General
         {
             if (filterFunction == null)
             {
-                throw new ArgumentNullException("filterFunction");
+                throw new ArgumentNullException(nameof(filterFunction));
             }
 
             if (mapFunction == null)
             {
-                throw new ArgumentNullException("mapFunction");
+                throw new ArgumentNullException(nameof(mapFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -404,12 +401,12 @@ namespace RedoxLib.General
         {
             if (iterateFunction == null)
             {
-                throw new ArgumentNullException("iterateFunction");
+                throw new ArgumentNullException(nameof(iterateFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)
@@ -428,12 +425,12 @@ namespace RedoxLib.General
         {
             if (mapFunction == null)
             {
-                throw new ArgumentNullException("mapFunction");
+                throw new ArgumentNullException(nameof(mapFunction));
             }
 
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (T item in collection)

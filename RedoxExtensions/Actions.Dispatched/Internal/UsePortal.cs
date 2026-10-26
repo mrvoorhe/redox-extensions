@@ -31,30 +31,15 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
             return Create(command, portalId);
         }
 
-        public static IAction Create(ISupportFeedback requestor, int portalId)
-        {
-            return new UsePortal(requestor, portalId);
-        }
+        public static IAction Create(ISupportFeedback requestor, int portalId) => new UsePortal(requestor, portalId);
 
         #endregion
 
         #region Properties
 
-        public override bool RequireIdleToPerform
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool RequireIdleToPerform => true;
 
-        public override VTRunState DesiredVTRunState
-        {
-            get
-            {
-                return VTRunState.Off;
-            }
-        }
+        public override VTRunState DesiredVTRunState => VTRunState.Off;
 
         #endregion
 
@@ -126,10 +111,7 @@ namespace RedoxExtensions.Actions.Dispatched.Internal
 
         #endregion
 
-        protected override int MaxTries
-        {
-            get { return 3; }
-        }
+        protected override int MaxTries => 3;
 
         protected override int WaitTimeoutInMilliseconds
         {

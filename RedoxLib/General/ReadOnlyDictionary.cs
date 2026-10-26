@@ -44,10 +44,7 @@ namespace RedoxLib.General
         /// <param name="key">The given key</param>
         /// <returns>True if the key exists</returns>
         
-        public bool ContainsKey(TKey key)
-        {
-            return _dictionary.ContainsKey(key);
-        }
+        public bool ContainsKey(TKey key) => _dictionary.ContainsKey(key);
 
         /// <summary>
         /// Tries to get the value for a given key. The value is returned as out parameter for the call.
@@ -56,10 +53,7 @@ namespace RedoxLib.General
         /// <param name="value">The returned value</param>
         /// <returns>True if a value for the given key was found</returns>
         
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            return _dictionary.TryGetValue(key, out value);
-        }
+        public bool TryGetValue(TKey key, out TValue value) => _dictionary.TryGetValue(key, out value);
 
         /// <summary>
         /// Checks whether the ReadOnlyDictionary contains a given item.
@@ -67,10 +61,7 @@ namespace RedoxLib.General
         /// <param name="item">The key-value pair to check</param>
         /// <returns>True if the item exists</returns>
         
-        public bool Contains(KeyValuePair<TKey, TValue> item)
-        {
-            return _dictionary.Contains(item);
-        }
+        public bool Contains(KeyValuePair<TKey, TValue> item) => _dictionary.Contains(item);
 
         /// <summary>
         /// Copies the elements of the ReadOnlyDictionary to a given array, starting at the specified array index.
@@ -89,13 +80,7 @@ namespace RedoxLib.General
         /// <param name="key">The given key</param>
         /// <returns>The returned value</returns>
         
-        public TValue this[TKey key]
-        {
-            get
-            {
-                return _dictionary[key];
-            }
-        }
+        public TValue this[TKey key] => _dictionary[key];
 
         /// <summary>
         /// A collection with the dictionary keys.
@@ -105,7 +90,7 @@ namespace RedoxLib.General
         {
             get
             {
-                ReadOnlyCollection<TKey> keys = new ReadOnlyCollection<TKey>(new List<TKey>(_dictionary.Keys));
+                var keys = new ReadOnlyCollection<TKey>(new List<TKey>(_dictionary.Keys));
                 return (ICollection<TKey>)keys;
             }
         }
@@ -119,7 +104,7 @@ namespace RedoxLib.General
         {
             get
             {
-                ReadOnlyCollection<TValue> values = new ReadOnlyCollection<TValue>(new List<TValue>(_dictionary.Values));
+                var values = new ReadOnlyCollection<TValue>(new List<TValue>(_dictionary.Values));
                 return (ICollection<TValue>)values;
             }
         }
@@ -128,22 +113,13 @@ namespace RedoxLib.General
         /// The number of items in the dictionary.
         /// </summary>
         
-        public int Count
-        {
-            get
-            {
-                return _dictionary.Count;
-            }
-        }
+        public int Count => _dictionary.Count;
 
         /// <summary>
         /// Indicates whether the dictionary is read-only. Always true.
         /// </summary>
         
-        public bool IsReadOnly
-        {
-            get { return true; }
-        }
+        public bool IsReadOnly => true;
 
 
         void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
@@ -216,16 +192,13 @@ namespace RedoxLib.General
             return ((IDictionary)_dictionary).GetEnumerator();
         }
 
-        bool IDictionary.IsFixedSize
-        {
-            get { return ((IDictionary)_dictionary).IsFixedSize; }
-        }
+        bool IDictionary.IsFixedSize => ((IDictionary)_dictionary).IsFixedSize;
 
         ICollection IDictionary.Keys
         {
             get 
             {
-                ReadOnlyCollection<TKey> keys = new ReadOnlyCollection<TKey>(new List<TKey>(_dictionary.Keys));
+                var keys = new ReadOnlyCollection<TKey>(new List<TKey>(_dictionary.Keys));
                 return (ICollection)keys;
             }
         }
@@ -239,7 +212,7 @@ namespace RedoxLib.General
         {
             get
             {
-                ReadOnlyCollection<TValue> values = new ReadOnlyCollection<TValue>(new List<TValue>(_dictionary.Values));
+                var values = new ReadOnlyCollection<TValue>(new List<TValue>(_dictionary.Values));
                 return (ICollection)values;
             }
         }
@@ -265,15 +238,9 @@ namespace RedoxLib.General
             ((IDictionary)_dictionary).CopyTo(array, index);
         }
 
-        bool ICollection.IsSynchronized
-        {
-            get { return ((IDictionary)_dictionary).IsSynchronized; }
-        }
+        bool ICollection.IsSynchronized => ((IDictionary)_dictionary).IsSynchronized;
 
-        object ICollection.SyncRoot
-        {
-            get { return ((IDictionary)_dictionary).SyncRoot; }
-        }
+        object ICollection.SyncRoot => ((IDictionary)_dictionary).SyncRoot;
 
         #endregion
     }

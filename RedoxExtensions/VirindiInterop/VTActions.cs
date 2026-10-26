@@ -152,7 +152,7 @@ namespace RedoxExtensions.VirindiInterop
         {
             // VT will automatically append the .nav extension, so remove the extesion if it's defined
             var modifiedNavFile = navFile.EndsWith(".nav") ? System.IO.Path.GetFileNameWithoutExtension(navFile) : navFile;
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vt nav load {0}", modifiedNavFile));
+            ACUtilities.ProcessArbitraryCommand($"/vt nav load {modifiedNavFile}");
         }
 
         internal static void FollowCharacter(string characterName, bool boostNav, int followDistance)
@@ -164,7 +164,7 @@ namespace RedoxExtensions.VirindiInterop
 
                 if (string.IsNullOrEmpty(navFile))
                 {
-                    REPlugin.Instance.Debug.WriteLine(string.Format("Could not locate nav file to follow : {0}", characterName));
+                    REPlugin.Instance.Debug.WriteLine($"Could not locate nav file to follow : {characterName}");
                     return;
                 }
 
@@ -226,7 +226,7 @@ namespace RedoxExtensions.VirindiInterop
         {
             if (File.Exists(VTUtilities.GetAnyProfileFullFilePath(profileName)))
             {
-                ACUtilities.ProcessArbitraryCommand(string.Format("/vt settings load {0}", profileName));
+                ACUtilities.ProcessArbitraryCommand($"/vt settings load {profileName}");
                 return true;
             }
 
@@ -237,7 +237,7 @@ namespace RedoxExtensions.VirindiInterop
         {
             if (File.Exists(VTUtilities.GetCharacterSpecificProfileFullFilePath(profileName)))
             {
-                ACUtilities.ProcessArbitraryCommand(string.Format("/vt settings loadchar {0}", profileName));
+                ACUtilities.ProcessArbitraryCommand($"/vt settings loadchar {profileName}");
                 return true;
             }
 
@@ -247,18 +247,18 @@ namespace RedoxExtensions.VirindiInterop
         internal static void LoadLootProfile(string profileName)
         {
             // VT wants loot profiles to include the utl file extension
-            var tweakedProfileNmae = profileName.EndsWith(".utl") ? profileName : string.Format("{0}.utl", profileName);
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vt loot load {0}", tweakedProfileNmae));
+            var tweakedProfileNmae = profileName.EndsWith(".utl") ? profileName : $"{profileName}.utl";
+            ACUtilities.ProcessArbitraryCommand($"/vt loot load {tweakedProfileNmae}");
         }
 
         internal static void LoadMetaProfile(string metaName)
         {
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vt meta load {0}", metaName));
+            ACUtilities.ProcessArbitraryCommand($"/vt meta load {metaName}");
         }
 
         internal static void SetMetaState(string stateName)
         {
-            ACUtilities.ProcessArbitraryCommand(string.Format("/vt setmetastate {0}", stateName));
+            ACUtilities.ProcessArbitraryCommand($"/vt setmetastate {stateName}");
         }
 
         internal static void EnableAutoCram()
