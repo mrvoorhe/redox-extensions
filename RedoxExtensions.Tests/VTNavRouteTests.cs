@@ -43,6 +43,34 @@ public class VTNavRouteTests
     }
 
     [Test]
+    public void TestSerializePortalNpc()
+    {
+        var route = new VTNavRoute(VTNavRouteType.Once);
+        route.AddPortalNpc(new VTNavCoord(33.5, 42.25, 0.125), "Town Crier", 37, new VTNavCoord(33.75, 42.5, 0.25));
+
+        var expected =
+            "uTank2 NAV 1.2\r\n4\r\n1\r\n" +
+            "6\r\n33.5\r\n42.25\r\n0.125\r\n0\r\n" +
+            "Town Crier\r\n37\r\nTrue\r\n33.75\r\n42.5\r\n0.25\r\n";
+
+        Assert.AreEqual(expected, route.Serialize());
+    }
+
+    [Test]
+    public void TestSerializeOpenVendor()
+    {
+        var route = new VTNavRoute(VTNavRouteType.Once);
+        route.AddOpenVendor(1234, "Shopkeeper Renald");
+
+        var expected =
+            "uTank2 NAV 1.2\r\n4\r\n1\r\n" +
+            "5\r\n0\r\n0\r\n0\r\n0\r\n" +
+            "1234\r\nShopkeeper Renald\r\n";
+
+        Assert.AreEqual(expected, route.Serialize());
+    }
+
+    [Test]
     public void TestFromLandcell()
     {
         var coord = VTNavCoord.FromLandcell(unchecked((int)0xA9B40019), 84, 84, 240);

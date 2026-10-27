@@ -50,6 +50,8 @@ public class VTNavRoute
     public const string FileExtension = ".nav";
 
     private const int PointNodeType = 0;
+    private const int OpenVendorNodeType = 5;
+    private const int PortalNpcNodeType = 6;
 
     private readonly List<Node> _nodes = new();
 
@@ -73,6 +75,24 @@ public class VTNavRoute
     public void AddPoint(VTNavCoord position)
     {
         this._nodes.Add(new Node(PointNodeType, position));
+    }
+
+    public void AddOpenVendor(int vendorId, string vendorName)
+    {
+        this._nodes.Add(new Node(OpenVendorNodeType, default, Format(vendorId), vendorName));
+    }
+
+    public void AddPortalNpc(VTNavCoord position, string objectName, int objectClass, VTNavCoord objectPosition)
+    {
+        this._nodes.Add(new Node(
+            PortalNpcNodeType,
+            position,
+            objectName,
+            Format(objectClass),
+            bool.TrueString,
+            Format(objectPosition.EastWest),
+            Format(objectPosition.NorthSouth),
+            Format(objectPosition.Z)));
     }
 
     public string Serialize()
