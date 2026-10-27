@@ -11,6 +11,8 @@ namespace RedoxExtensions.Location;
 
 public class Location : AbstractSerializableData, IHaveCoordsObject
 {
+    private const double MovementEpsilon = 0.5;
+
     private CoordsObject _coords;
 
     public Location(double x, double y, double z, int landblock, double headingInDegrees)
@@ -38,6 +40,18 @@ public class Location : AbstractSerializableData, IHaveCoordsObject
             REPlugin.Instance.Actions.LocationZ,
             REPlugin.Instance.Actions.Landcell,
             REPlugin.Instance.Actions.Heading);
+    }
+
+    public static bool HasMoved(Location anchor, Location current)
+    {
+        if (anchor == null || anchor.LandBlock != current.LandBlock)
+        {
+            return true;
+        }
+
+        return Math.Abs(anchor.X - current.X) > MovementEpsilon
+            || Math.Abs(anchor.Y - current.Y) > MovementEpsilon
+            || Math.Abs(anchor.Z - current.Z) > MovementEpsilon;
     }
 
     public bool CurrentIsSameAs(Location otherLocation, bool compareHeading) => !CurrentDiffersFrom(otherLocation, compareHeading);

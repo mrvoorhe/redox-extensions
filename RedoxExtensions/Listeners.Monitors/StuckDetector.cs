@@ -21,7 +21,6 @@ public class StuckDetector : IDisposable
     private const int InflictMeleeDamageEvent = 0x01B1;
     private const int OtherMeleeEvadeEvent = 0x01B3;
 
-    private const double MovementEpsilon = 0.5;
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(1);
 
     private bool _enabled;
@@ -92,7 +91,7 @@ public class StuckDetector : IDisposable
         this._lastCheckAt = now;
 
         var current = Location.Location.CaptureCurrent();
-        if (HasMoved(this._anchor, current))
+        if (Location.Location.HasMoved(this._anchor, current))
         {
             this._anchor = current;
             this._lastMovedAt = now;
@@ -136,17 +135,5 @@ public class StuckDetector : IDisposable
     void Decal_ChangePortalMode(object sender, ChangePortalModeEventArgs e)
     {
         this._inPortalSpace = e.Type == PortalEventType.EnterPortal;
-    }
-
-    private static bool HasMoved(Location.Location anchor, Location.Location current)
-    {
-        if (anchor == null || anchor.LandBlock != current.LandBlock)
-        {
-            return true;
-        }
-
-        return Math.Abs(anchor.X - current.X) > MovementEpsilon
-            || Math.Abs(anchor.Y - current.Y) > MovementEpsilon
-            || Math.Abs(anchor.Z - current.Z) > MovementEpsilon;
     }
 }

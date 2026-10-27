@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using RedoxExtensions.Core.Extensions;
+using RedoxExtensions.VirindiInterop;
 
 namespace RedoxExtensions.Commands.Handlers;
 
@@ -120,6 +121,11 @@ internal static class RedoxExtensionsHandler
                 ProcessUnstuckDetect(command);
                 return true;
 
+            case "recordroute":
+            case "rr":
+                ProcessRecordRoute(command);
+                return true;
+
             case "track":
                 REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                 return true;
@@ -211,6 +217,40 @@ internal static class RedoxExtensionsHandler
         }
     }
 
+    private static void ProcessRecordRoute(ICommand command)
+    {
+        var recorder = REPlugin.Instance.MonitorManager.RouteRecorder;
+        var routeName = command.Arguments.Count > 0 ? VTNavRoute.NormalizeName(command.Arguments[0]) : string.Empty;
+
+        if (routeName.Length == 0 || routeName.Equals("stop", StringComparison.OrdinalIgnoreCase))
+        {
+            recorder.Stop();
+            return;
+        }
+
+        var routeType = VTNavRouteType.Circular;
+        if (command.Arguments.Count > 1)
+        {
+            switch (command.Arguments[1].ToLower().Trim())
+            {
+                case "circular":
+                    routeType = VTNavRouteType.Circular;
+                    break;
+                case "linear":
+                    routeType = VTNavRouteType.Linear;
+                    break;
+                case "once":
+                    routeType = VTNavRouteType.Once;
+                    break;
+                default:
+                    REPlugin.Instance.Chat.WriteLine("Unknown recordroute route type : {0}", command.Arguments[1]);
+                    return;
+            }
+        }
+
+        recorder.Start(routeName, routeType);
+    }
+
     private static void DisplayHelp()
     {
         var chat = REPlugin.Instance.Chat;
@@ -233,6 +273,8 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
         chat.WriteLine("  unstuck|us              - Tries to get a stuck VT meta moving again.");
         chat.WriteLine("  unstuckdetect|usdetect [on|off] [min] - Toggles automatic unstuck after [min] idle minutes (default 1).");
+        chat.WriteLine("  recordroute|rr <name> [circular|linear|once] - Records a VT nav route while you move (default circular).");
+        chat.WriteLine("  recordroute|rr [stop]   - Stops recording and loads the route in VT.");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
         chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
