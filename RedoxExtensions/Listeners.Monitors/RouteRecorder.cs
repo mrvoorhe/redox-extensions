@@ -182,6 +182,7 @@ public class RouteRecorder : IDisposable
         switch (worldObject.ObjectClass)
         {
             case ObjectClass.Npc:
+            case ObjectClass.Portal:
             case ObjectClass.Container when worldObject.Icon == NpcContainerIcon:
                 this.AddPortalNpc(worldObject);
                 break;
