@@ -71,6 +71,21 @@ public class VTNavRouteTests
     }
 
     [Test]
+    public void TestSerializeChatCommandAndPause()
+    {
+        var route = new VTNavRoute(VTNavRouteType.Once);
+        route.AddChatCommand("/ub usei Town Network Sending Gem");
+        route.AddPause(5000);
+
+        var expected =
+            "uTank2 NAV 1.2\r\n4\r\n2\r\n" +
+            "4\r\n0\r\n0\r\n0\r\n0\r\n/ub usei Town Network Sending Gem\r\n" +
+            "3\r\n0\r\n0\r\n0\r\n0\r\n5000\r\n";
+
+        Assert.AreEqual(expected, route.Serialize());
+    }
+
+    [Test]
     public void TestFromLandcell()
     {
         var coord = VTNavCoord.FromLandcell(unchecked((int)0xA9B40019), 84, 84, 240);

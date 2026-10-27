@@ -18,6 +18,7 @@ public class RouteRecorder : IDisposable
     private const int GameActionMessageType = 0xF7B1;
     private const int UseItemAction = 0x0036;
     private const int NpcContainerIcon = 8384;
+    private const int PortalGemPauseMilliseconds = 5000;
 
     private static readonly TimeSpan RecordInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan RepeatUseWindow = TimeSpan.FromSeconds(3);
@@ -133,6 +134,38 @@ public class RouteRecorder : IDisposable
         REPlugin.Instance.Chat.WriteLine("[RE] Recorded open vendor {0}", worldObject.Name);
     }
 
+    private void AddPortalGem(WorldObject worldObject)
+    {
+        if (Location.Location.HasMoved(this._anchor, Location.Location.CaptureCurrent()))
+        {
+            this.AddPointAtCurrentLocation();
+        }
+
+        this._route.AddChatCommand($"/ub usei {worldObject.Name}");
+        this._route.AddPause(PortalGemPauseMilliseconds);
+        this._route.Save(this._routePath);
+
+        REPlugin.Instance.Chat.WriteLine("[RE] Recorded use of {0}", worldObject.Name);
+    }
+
+    private static bool IsPortalGem(WorldObject worldObject)
+    {
+        if (!worldObject.Name.EndsWith("Gem", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        foreach (var item in REPlugin.Instance.WorldFilter.GetInventory())
+        {
+            if (item.Id == worldObject.Id)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private bool IsRepeatUse(int objectId)
     {
         var now = DateTime.Now;
@@ -176,6 +209,12 @@ public class RouteRecorder : IDisposable
         var worldObject = REPlugin.Instance.WorldFilter[objectId];
         if (worldObject == null || this.IsRepeatUse(objectId))
         {
+            return;
+        }
+
+        if (IsPortalGem(worldObject))
+        {
+            this.AddPortalGem(worldObject);
             return;
         }
 

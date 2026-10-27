@@ -50,6 +50,8 @@ public class VTNavRoute
     public const string FileExtension = ".nav";
 
     private const int PointNodeType = 0;
+    private const int PauseNodeType = 3;
+    private const int ChatCommandNodeType = 4;
     private const int OpenVendorNodeType = 5;
     private const int PortalNpcNodeType = 6;
 
@@ -75,6 +77,16 @@ public class VTNavRoute
     public void AddPoint(VTNavCoord position)
     {
         this._nodes.Add(new Node(PointNodeType, position));
+    }
+
+    public void AddPause(int milliseconds)
+    {
+        this._nodes.Add(new Node(PauseNodeType, default, Format(milliseconds)));
+    }
+
+    public void AddChatCommand(string text)
+    {
+        this._nodes.Add(new Node(ChatCommandNodeType, default, text));
     }
 
     public void AddOpenVendor(int vendorId, string vendorName)
