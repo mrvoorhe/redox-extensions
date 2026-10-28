@@ -19,6 +19,19 @@ internal static class MTActions
         MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow create {name}");
     }
 
+    internal static void QuitFellow()
+    {
+        try
+        {
+            MagTools.PluginCore.Current.ProcessMTCommand("/mt fellow quit");
+        }
+        catch (AccessViolationException)
+        {
+            // Decal's FellowshipQuit throws an AccessViolationException even when the quit succeeds,
+            // and when there is no fellowship to quit.  MagTools ignores the same exception from FellowshipRecruit.
+        }
+    }
+
     internal static void RecruitFellow(string characterName)
     {
         MagTools.PluginCore.Current.ProcessMTCommand($"/mt fellow recruit {characterName}");

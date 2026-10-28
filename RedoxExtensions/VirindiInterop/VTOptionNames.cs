@@ -19,6 +19,7 @@ public static class VTOptionNames
     public const string NavCloseStopRange = "NavCloseStopRange";
     public const string NavFarStopRange = "NavFarStopRange";
     public const string NavPriorityBoost = "NavPriorityBoost";
+    public const string IdlePeaceMode = "IdlePeaceMode";
     public const string UsePortalDistance = "UsePortalDistance";
 
     public const string SummonPets = "SummonPets";

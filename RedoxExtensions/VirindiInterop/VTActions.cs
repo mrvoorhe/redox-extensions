@@ -128,6 +128,11 @@ internal static class VTActions
         VTUtilities.SetOption(VTOptionNames.NavPriorityBoost, enabled);
     }
 
+    internal static void SetIdlePeaceMode(bool enabled)
+    {
+        VTUtilities.SetOption(VTOptionNames.IdlePeaceMode, enabled);
+    }
+
     internal static void SetAttackRange(string rangeValue)
     {
         SetAttackRange(int.Parse(rangeValue));
@@ -253,7 +258,23 @@ internal static class VTActions
 
     internal static void LoadMetaProfile(string metaName)
     {
-        ACUtilities.ProcessArbitraryCommand($"/vt meta load {metaName}");
+        ACUtilities.ProcessArbitraryCommand($"/vt meta load {NormalizeMetaName(metaName)}");
+    }
+
+    /// <summary>
+    /// VT wants meta names without the .met extension, so trim and remove the extension if it's defined
+    /// </summary>
+    internal static string NormalizeMetaName(string metaName)
+    {
+        var trimmed = metaName.Trim();
+        return trimmed.EndsWith(".met", StringComparison.OrdinalIgnoreCase)
+            ? trimmed.Substring(0, trimmed.Length - ".met".Length)
+            : trimmed;
+    }
+
+    internal static bool MetaProfileExists(string metaName)
+    {
+        return File.Exists(Path.Combine(VTUtilities.VTankDirectory, $"{NormalizeMetaName(metaName)}.met"));
     }
 
     internal static void SetMetaState(string stateName)
