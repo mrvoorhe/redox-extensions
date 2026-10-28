@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Core;
 using RedoxExtensions.Data;
@@ -45,19 +46,19 @@ public class JumpRecorderTests
 
         var initialJumpData = new JumpData(new Location.Location(0, 0, 0, 0, 0), 0.0, 0.0);
 
-        Assert.IsFalse(recorder.IsRecording);
+        ClassicAssert.IsFalse(recorder.IsRecording);
 
         fakeRtEvents.FireSelfJump(new JumpEventArgs(0, initialJumpData, 0, 0));
 
-        Assert.IsTrue(recorder.IsRecording);
+        ClassicAssert.IsTrue(recorder.IsRecording);
 
         fakeDecalEvents.FireRenderFrame(new EventArgs());
         fakeDecalEvents.FireRenderFrame(new EventArgs());
         fakeDecalEvents.FireRenderFrame(new EventArgs());
 
         // We should not have landed yet
-        Assert.IsTrue(recorder.IsRecording);
-        Assert.AreEqual(0, cachedCompleteCallValues.Count);
+        ClassicAssert.IsTrue(recorder.IsRecording);
+        ClassicAssert.AreEqual(0, cachedCompleteCallValues.Count);
 
         fakeDecalEvents.FireRenderFrame(new EventArgs());
 
@@ -67,15 +68,15 @@ public class JumpRecorderTests
         }
 
         // Now we should have landed
-        Assert.IsFalse(recorder.IsRecording);
-        Assert.AreEqual(1, cachedCompleteCallValues.Count);
+        ClassicAssert.IsFalse(recorder.IsRecording);
+        ClassicAssert.AreEqual(1, cachedCompleteCallValues.Count);
 
-        Assert.AreEqual(initialJumpData, cachedCompleteCallValues[0].JumpData);
+        ClassicAssert.AreEqual(initialJumpData, cachedCompleteCallValues[0].JumpData);
 
-        Assert.AreEqual(4 + JumpRecorder.NumberOfConsecutiveZCoordsSameToSingleLand, cachedCompleteCallValues[0].Trajectory);
-        Assert.AreEqual(1, cachedCompleteCallValues[0].Trajectory[0].Z);
-        Assert.AreEqual(5, cachedCompleteCallValues[0].Trajectory.Last().Z);
+        ClassicAssert.AreEqual(4 + JumpRecorder.NumberOfConsecutiveZCoordsSameToSingleLand, cachedCompleteCallValues[0].Trajectory);
+        ClassicAssert.AreEqual(1, cachedCompleteCallValues[0].Trajectory[0].Z);
+        ClassicAssert.AreEqual(5, cachedCompleteCallValues[0].Trajectory.Last().Z);
 
-        Assert.AreEqual(5, cachedCompleteCallValues[0].LandingLocation.Z);
+        ClassicAssert.AreEqual(5, cachedCompleteCallValues[0].LandingLocation.Z);
     }
 }

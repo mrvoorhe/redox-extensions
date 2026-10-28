@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Location;
 
 namespace RedoxExtensions.Tests.LocationTests;
@@ -13,7 +14,7 @@ public class UserFacingCoordTests
     [Test]
     public void ParseTwoDigit()
     {
-        Assert.IsTrue(UserFacingCoord.TryParse("1.5N", out var result));
+        ClassicAssert.IsTrue(UserFacingCoord.TryParse("1.5N", out var result));
         Assert.That(result.Value, Is.EqualTo(1.5));
         Assert.That(result.Direction, Is.EqualTo(Direction.N));
         Assert.That(result.ToString(), Is.EqualTo("1.5N"));
@@ -22,7 +23,7 @@ public class UserFacingCoordTests
     [Test]
     public void ParseThreeDigit()
     {
-        Assert.IsTrue(UserFacingCoord.TryParse("10.5N", out var result));
+        ClassicAssert.IsTrue(UserFacingCoord.TryParse("10.5N", out var result));
         Assert.That(result.Value, Is.EqualTo(10.5));
         Assert.That(result.Direction, Is.EqualTo(Direction.N));
         Assert.That(result.ToString(), Is.EqualTo("10.5N"));
@@ -35,7 +36,7 @@ public class UserFacingCoordTests
     [Test]
     public void ParseWithTrailingDotAndWhitespace()
     {
-        Assert.IsTrue(UserFacingCoord.TryParse("1.5N.  ", out var result));
+        ClassicAssert.IsTrue(UserFacingCoord.TryParse("1.5N.  ", out var result));
         Assert.That(result.Value, Is.EqualTo(1.5));
         Assert.That(result.Direction, Is.EqualTo(Direction.N));
         Assert.That(result.ToString(), Is.EqualTo("1.5N"));
@@ -48,7 +49,7 @@ public class UserFacingCoordTests
     [Test]
     public void ParseWithTrailingComma()
     {
-        Assert.IsTrue(UserFacingCoord.TryParse("1.5N,", out var result));
+        ClassicAssert.IsTrue(UserFacingCoord.TryParse("1.5N,", out var result));
         Assert.That(result.Value, Is.EqualTo(1.5));
         Assert.That(result.Direction, Is.EqualTo(Direction.N));
         Assert.That(result.ToString(), Is.EqualTo("1.5N"));

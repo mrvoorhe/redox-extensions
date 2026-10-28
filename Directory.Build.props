@@ -10,4 +10,13 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <!-- Deploy builds pass PlatformTarget=x86 (see deploy.bat).  MSBuild's incremental
+       compile check ignores PlatformTarget, so x86 builds get their own bin/obj to keep
+       them from mixing with the default AnyCPU builds the tests use. -->
+  <PropertyGroup Condition="'$(PlatformTarget)' == 'x86'">
+    <RedoxPlatformDir>x86\</RedoxPlatformDir>
+    <BaseOutputPath>bin\x86\</BaseOutputPath>
+    <IntermediateOutputPath>obj\x86\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
 </Project>

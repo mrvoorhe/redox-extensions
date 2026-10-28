@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Commands;
 
@@ -31,11 +32,11 @@ public abstract class AbstractForeignCommandTests
 
         bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-        Assert.IsTrue(isCommand);
+        ClassicAssert.IsTrue(isCommand);
 
-        Assert.AreEqual("test", result.Name);
-        Assert.AreEqual(0, result.Arguments.Count);
-        Assert.AreEqual(text, result.RawValue);
+        ClassicAssert.AreEqual("test", result.Name);
+        ClassicAssert.AreEqual(0, result.Arguments.Count);
+        ClassicAssert.AreEqual(text, result.RawValue);
 
         this.CommonFromSelfCommandAsserts(result);
     }
@@ -47,12 +48,12 @@ public abstract class AbstractForeignCommandTests
 
         bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-        Assert.IsTrue(isCommand);
+        ClassicAssert.IsTrue(isCommand);
 
-        Assert.AreEqual("test", result.Name);
-        Assert.AreEqual(1, result.Arguments.Count);
-        Assert.AreEqual("one", result.Arguments[0]);
-        Assert.AreEqual(text, result.RawValue);
+        ClassicAssert.AreEqual("test", result.Name);
+        ClassicAssert.AreEqual(1, result.Arguments.Count);
+        ClassicAssert.AreEqual("one", result.Arguments[0]);
+        ClassicAssert.AreEqual(text, result.RawValue);
 
         this.CommonFromSelfCommandAsserts(result);
     }
@@ -64,14 +65,14 @@ public abstract class AbstractForeignCommandTests
 
         bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-        Assert.IsTrue(isCommand);
+        ClassicAssert.IsTrue(isCommand);
 
-        Assert.AreEqual("test", result.Name);
-        Assert.AreEqual(3, result.Arguments.Count);
-        Assert.AreEqual("one", result.Arguments[0]);
-        Assert.AreEqual("two", result.Arguments[1]);
-        Assert.AreEqual("three", result.Arguments[2]);
-        Assert.AreEqual(text, result.RawValue);
+        ClassicAssert.AreEqual("test", result.Name);
+        ClassicAssert.AreEqual(3, result.Arguments.Count);
+        ClassicAssert.AreEqual("one", result.Arguments[0]);
+        ClassicAssert.AreEqual("two", result.Arguments[1]);
+        ClassicAssert.AreEqual("three", result.Arguments[2]);
+        ClassicAssert.AreEqual(text, result.RawValue);
 
         this.CommonFromSelfCommandAsserts(result);
     }
@@ -87,11 +88,11 @@ public abstract class AbstractForeignCommandTests
 
         bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-        Assert.IsTrue(isCommand);
+        ClassicAssert.IsTrue(isCommand);
 
-        Assert.AreEqual("test", result.Name);
-        Assert.AreEqual(0, result.Arguments.Count);
-        Assert.AreEqual(text, result.RawValue);
+        ClassicAssert.AreEqual("test", result.Name);
+        ClassicAssert.AreEqual(0, result.Arguments.Count);
+        ClassicAssert.AreEqual(text, result.RawValue);
 
         this.CommonFromOtherCommandAsserts(result, "Big Ted");
     }
@@ -103,12 +104,12 @@ public abstract class AbstractForeignCommandTests
 
         bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-        Assert.IsTrue(isCommand);
+        ClassicAssert.IsTrue(isCommand);
 
-        Assert.AreEqual("test", result.Name);
-        Assert.AreEqual(1, result.Arguments.Count);
-        Assert.AreEqual("one", result.Arguments[0]);
-        Assert.AreEqual(text, result.RawValue);
+        ClassicAssert.AreEqual("test", result.Name);
+        ClassicAssert.AreEqual(1, result.Arguments.Count);
+        ClassicAssert.AreEqual("one", result.Arguments[0]);
+        ClassicAssert.AreEqual(text, result.RawValue);
 
         this.CommonFromOtherCommandAsserts(result, "Big Ted");
     }
@@ -120,14 +121,14 @@ public abstract class AbstractForeignCommandTests
 
         bool isCommand = CommandHelpers.TryParse(text, out var result);
 
-        Assert.IsTrue(isCommand);
+        ClassicAssert.IsTrue(isCommand);
 
-        Assert.AreEqual("test", result.Name);
-        Assert.AreEqual(3, result.Arguments.Count);
-        Assert.AreEqual("one", result.Arguments[0]);
-        Assert.AreEqual("two", result.Arguments[1]);
-        Assert.AreEqual("three", result.Arguments[2]);
-        Assert.AreEqual(text, result.RawValue);
+        ClassicAssert.AreEqual("test", result.Name);
+        ClassicAssert.AreEqual(3, result.Arguments.Count);
+        ClassicAssert.AreEqual("one", result.Arguments[0]);
+        ClassicAssert.AreEqual("two", result.Arguments[1]);
+        ClassicAssert.AreEqual("three", result.Arguments[2]);
+        ClassicAssert.AreEqual(text, result.RawValue);
 
         this.CommonFromOtherCommandAsserts(result, "Big Ted");
     }
@@ -146,29 +147,29 @@ public abstract class AbstractForeignCommandTests
     /// <param name="result"></param>
     private void CommonFromSelfCommandAsserts(ICommand result)
     {
-        Assert.AreEqual(CommandHelpers.DefaultYouValue, result.SourceCharacter);
-        Assert.IsTrue(result.FromSelf);
-        Assert.AreEqual(this.ExpectedChannel, result.Channel);
-        Assert.AreEqual(this.UsesChannelTag, result.UsesChannelTag);
-        Assert.AreEqual(this.ChannelTag, result.ChannelTag);
+        ClassicAssert.AreEqual(CommandHelpers.DefaultYouValue, result.SourceCharacter);
+        ClassicAssert.IsTrue(result.FromSelf);
+        ClassicAssert.AreEqual(this.ExpectedChannel, result.Channel);
+        ClassicAssert.AreEqual(this.UsesChannelTag, result.UsesChannelTag);
+        ClassicAssert.AreEqual(this.ChannelTag, result.ChannelTag);
 
-        Assert.AreEqual(CommandType.Foreign, result.CommandType);
-        Assert.AreEqual(TargetType.All, result.CommandTargetType);
-        Assert.AreEqual(this.UsesExplicitTargettingTag, result.UsesExplicitTargettingTag);
-        Assert.AreEqual(this.ExplicitTargettingTag, result.ExplicitTargettingTag);
+        ClassicAssert.AreEqual(CommandType.Foreign, result.CommandType);
+        ClassicAssert.AreEqual(TargetType.All, result.CommandTargetType);
+        ClassicAssert.AreEqual(this.UsesExplicitTargettingTag, result.UsesExplicitTargettingTag);
+        ClassicAssert.AreEqual(this.ExplicitTargettingTag, result.ExplicitTargettingTag);
     }
 
     private void CommonFromOtherCommandAsserts(ICommand result, string sourceName)
     {
-        Assert.AreEqual(sourceName, result.SourceCharacter);
-        Assert.IsFalse(result.FromSelf);
-        Assert.AreEqual(this.ExpectedChannel, result.Channel);
-        Assert.AreEqual(this.UsesChannelTag, result.UsesChannelTag);
-        Assert.AreEqual(this.ChannelTag, result.ChannelTag);
+        ClassicAssert.AreEqual(sourceName, result.SourceCharacter);
+        ClassicAssert.IsFalse(result.FromSelf);
+        ClassicAssert.AreEqual(this.ExpectedChannel, result.Channel);
+        ClassicAssert.AreEqual(this.UsesChannelTag, result.UsesChannelTag);
+        ClassicAssert.AreEqual(this.ChannelTag, result.ChannelTag);
 
-        Assert.AreEqual(CommandType.Foreign, result.CommandType);
-        Assert.AreEqual(TargetType.All, result.CommandTargetType);
-        Assert.AreEqual(this.UsesExplicitTargettingTag, result.UsesExplicitTargettingTag);
-        Assert.AreEqual(this.ExplicitTargettingTag, result.ExplicitTargettingTag);
+        ClassicAssert.AreEqual(CommandType.Foreign, result.CommandType);
+        ClassicAssert.AreEqual(TargetType.All, result.CommandTargetType);
+        ClassicAssert.AreEqual(this.UsesExplicitTargettingTag, result.UsesExplicitTargettingTag);
+        ClassicAssert.AreEqual(this.ExplicitTargettingTag, result.ExplicitTargettingTag);
     }
 }

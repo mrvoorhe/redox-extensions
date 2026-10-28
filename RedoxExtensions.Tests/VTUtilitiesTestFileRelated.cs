@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Tests.TestUtilities;
 using RedoxExtensions.VirindiInterop;
@@ -30,7 +31,7 @@ public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
         // Test
         var result = VTUtilities.GetFollowNavForCharacter("Redox");
 
-        Assert.AreEqual("FollowRedox.nav", result);
+        ClassicAssert.AreEqual("FollowRedox.nav", result);
     }
 
     [Test]
@@ -41,7 +42,7 @@ public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
         // Test
         var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
 
-        Assert.AreEqual("FollowRockdownGuy.nav", result);
+        ClassicAssert.AreEqual("FollowRockdownGuy.nav", result);
     }
 
     [Test]
@@ -52,6 +53,6 @@ public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
         // Test
         var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
 
-        Assert.AreEqual("FollowGuy.nav", result);
+        ClassicAssert.AreEqual("FollowGuy.nav", result);
     }
 }

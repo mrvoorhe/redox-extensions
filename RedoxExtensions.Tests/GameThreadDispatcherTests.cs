@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Dispatching;
 using RedoxExtensions.Dispatching.Legacy;
@@ -26,12 +27,12 @@ public class GameThreadDispatcherTests
             actionCalled = true;
         });
 
-        Assert.AreEqual(1, dispatcher.QueueCount);
+        ClassicAssert.AreEqual(1, dispatcher.QueueCount);
 
         // Fire the render event to simulate what decal would do
         fakeDecalEventsProxy.FireRenderFrame(new EventArgs());
 
-        Assert.IsTrue(actionCalled);
-        Assert.AreEqual(0, dispatcher.QueueCount);
+        ClassicAssert.IsTrue(actionCalled);
+        ClassicAssert.AreEqual(0, dispatcher.QueueCount);
     }
 }

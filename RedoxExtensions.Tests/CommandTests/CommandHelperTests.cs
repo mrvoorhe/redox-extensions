@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Commands;
 using RedoxLib.General;
@@ -20,21 +21,21 @@ public class CommandHelperTests
     public void CreateExtensionsCommand_NoArgs()
     {
         var result = CommandHelpers.CreateRedoxExtensionsCommandText("test");
-        Assert.AreEqual("/re test", result);
+        ClassicAssert.AreEqual("/re test", result);
     }
 
     [Test]
     public void CreateExtensionsCommand_WithSingleArg()
     {
         var result = CommandHelpers.CreateRedoxExtensionsCommandText("test", "one");
-        Assert.AreEqual("/re test one", result);
+        ClassicAssert.AreEqual("/re test one", result);
     }
 
     [Test]
     public void CreateExtensionsCommand_WithManyArgs()
     {
         var result = CommandHelpers.CreateRedoxExtensionsCommandText("test", "one", "two", "three");
-        Assert.AreEqual("/re test one two three", result);
+        ClassicAssert.AreEqual("/re test one two three", result);
     }
 
     #endregion
@@ -45,21 +46,21 @@ public class CommandHelperTests
     public void CreateFellowCommand_NoArgs()
     {
         var result = CommandHelpers.CreateRedoxFellowCommandText("test");
-        Assert.AreEqual("/rf test", result);
+        ClassicAssert.AreEqual("/rf test", result);
     }
 
     [Test]
     public void CreateFellowCommand_WithSingleArg()
     {
         var result = CommandHelpers.CreateRedoxFellowCommandText("test", "one");
-        Assert.AreEqual("/rf test one", result);
+        ClassicAssert.AreEqual("/rf test one", result);
     }
 
     [Test]
     public void CreateFellowCommand_WithManyArgs()
     {
         var result = CommandHelpers.CreateRedoxFellowCommandText("test", "one", "two", "three");
-        Assert.AreEqual("/rf test one two three", result);
+        ClassicAssert.AreEqual("/rf test one two three", result);
     }
 
     #endregion
@@ -72,21 +73,21 @@ public class CommandHelperTests
     public void CreateForeignCommandText_NoArgs()
     {
         var result = CommandHelpers.CreateForeignCommandText("test");
-        Assert.AreEqual("^test", result);
+        ClassicAssert.AreEqual("^test", result);
     }
 
     [Test]
     public void CreateForeignCommandText_WithSingleArg()
     {
         var result = CommandHelpers.CreateForeignCommandText("test", "one");
-        Assert.AreEqual("^test one", result);
+        ClassicAssert.AreEqual("^test one", result);
     }
 
     [Test]
     public void CreateForeignCommandText_WithManyArgs()
     {
         var result = CommandHelpers.CreateForeignCommandText("test", "one", "two", "three");
-        Assert.AreEqual("^test one|two|three", result);
+        ClassicAssert.AreEqual("^test one|two|three", result);
     }
 
     #endregion
@@ -97,21 +98,21 @@ public class CommandHelperTests
     public void CreateForeignSlaveOnlyCommandText_NoArgs()
     {
         var result = CommandHelpers.CreateForeignSlaveOnlyCommandText("test");
-        Assert.AreEqual("#test", result);
+        ClassicAssert.AreEqual("#test", result);
     }
 
     [Test]
     public void CreateForeignSlaveOnlyCommandText_WithSingleArg()
     {
         var result = CommandHelpers.CreateForeignSlaveOnlyCommandText("test", "one");
-        Assert.AreEqual("#test one", result);
+        ClassicAssert.AreEqual("#test one", result);
     }
 
     [Test]
     public void CreateForeignSlaveOnlyCommandText_WithManyArgs()
     {
         var result = CommandHelpers.CreateForeignSlaveOnlyCommandText("test", "one", "two", "three");
-        Assert.AreEqual("#test one|two|three", result);
+        ClassicAssert.AreEqual("#test one|two|three", result);
     }
 
     #endregion
@@ -122,21 +123,21 @@ public class CommandHelperTests
     public void CreateForeignMasterOnlyCommandText_NoArgs()
     {
         var result = CommandHelpers.CreateForeignMasterOnlyCommandText("test");
-        Assert.AreEqual("$test", result);
+        ClassicAssert.AreEqual("$test", result);
     }
 
     [Test]
     public void CreateForeignMasterOnlyCommandText_WithSingleArg()
     {
         var result = CommandHelpers.CreateForeignMasterOnlyCommandText("test", "one");
-        Assert.AreEqual("$test one", result);
+        ClassicAssert.AreEqual("$test one", result);
     }
 
     [Test]
     public void CreateForeignMasterOnlyCommandText_WithManyArgs()
     {
         var result = CommandHelpers.CreateForeignMasterOnlyCommandText("test", "one", "two", "three");
-        Assert.AreEqual("$test one|two|three", result);
+        ClassicAssert.AreEqual("$test one|two|three", result);
     }
 
     #endregion
@@ -153,7 +154,7 @@ public class CommandHelperTests
         var result = CommandHelpers.AppendMetaData(commandString, "meta1", "meta2");
 
         var expectedResult = commandString + " (meta1|meta2)";
-        Assert.AreEqual(expectedResult, result);
+        ClassicAssert.AreEqual(expectedResult, result);
     }
 
     [Test]
@@ -165,14 +166,14 @@ public class CommandHelperTests
 
         var result = CommandHelpers.StripMetaData(commandStringWithMeta, out var meta);
 
-        Assert.AreEqual(commandString, result);
+        ClassicAssert.AreEqual(commandString, result);
 
         var metaAsList = meta.ToList();
 
-        Assert.AreEqual("arg1", metaAsList[0]);
-        Assert.AreEqual("arg2", metaAsList[1]);
+        ClassicAssert.AreEqual("arg1", metaAsList[0]);
+        ClassicAssert.AreEqual("arg2", metaAsList[1]);
 
-        Assert.AreEqual(2, metaAsList.Count);
+        ClassicAssert.AreEqual(2, metaAsList.Count);
     }
 
     [Test]
@@ -182,11 +183,11 @@ public class CommandHelperTests
 
         var result = CommandHelpers.StripMetaData(commandString, out var meta);
 
-        Assert.AreEqual(commandString, result);
+        ClassicAssert.AreEqual(commandString, result);
 
         var metaAsList = meta.ToList();
 
-        Assert.AreEqual(0, metaAsList.Count);
+        ClassicAssert.AreEqual(0, metaAsList.Count);
     }
 
     #endregion
@@ -198,8 +199,8 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitCommandAndArguments("test");
 
-        Assert.AreEqual("test", result.Item1);
-        Assert.AreEqual(string.Empty, result.Item2);
+        ClassicAssert.AreEqual("test", result.Item1);
+        ClassicAssert.AreEqual(string.Empty, result.Item2);
     }
 
     [Test]
@@ -207,8 +208,8 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitCommandAndArguments("test arg1 arg2");
 
-        Assert.AreEqual("test", result.Item1);
-        Assert.AreEqual("arg1 arg2", result.Item2);
+        ClassicAssert.AreEqual("test", result.Item1);
+        ClassicAssert.AreEqual("arg1 arg2", result.Item2);
     }
 
     [Test]
@@ -216,8 +217,8 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitCommandAndArguments("!test");
 
-        Assert.AreEqual("!test", result.Item1);
-        Assert.AreEqual(string.Empty, result.Item2);
+        ClassicAssert.AreEqual("!test", result.Item1);
+        ClassicAssert.AreEqual(string.Empty, result.Item2);
     }
 
     [Test]
@@ -225,15 +226,15 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitCommandAndArguments("!test arg1|arg2");
 
-        Assert.AreEqual("!test", result.Item1);
-        Assert.AreEqual("arg1|arg2", result.Item2);
+        ClassicAssert.AreEqual("!test", result.Item1);
+        ClassicAssert.AreEqual("arg1|arg2", result.Item2);
     }
 
     [Test]
     public void Test_SplitDirectEntryArguments_EmptyString()
     {
         var result = CommandHelpers.SplitDirectEntryArguments(string.Empty);
-        Assert.AreEqual(string.Empty, result);
+        ClassicAssert.AreEqual(string.Empty, result);
     }
 
     [Test]
@@ -241,9 +242,9 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitDirectEntryArguments(CommandHelpers.CollapseDirectEntryCommandArguments(ListOperations.Create("arg1"))).ToList();
 
-        Assert.AreEqual("arg1", result[0]);
+        ClassicAssert.AreEqual("arg1", result[0]);
 
-        Assert.AreEqual(1, result.Count);
+        ClassicAssert.AreEqual(1, result.Count);
     }
 
     [Test]
@@ -251,18 +252,18 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitDirectEntryArguments(CommandHelpers.CollapseDirectEntryCommandArguments(ListOperations.Create("arg1", "arg2", "arg3"))).ToList();
 
-        Assert.AreEqual("arg1", result[0]);
-        Assert.AreEqual("arg2", result[1]);
-        Assert.AreEqual("arg3", result[2]);
+        ClassicAssert.AreEqual("arg1", result[0]);
+        ClassicAssert.AreEqual("arg2", result[1]);
+        ClassicAssert.AreEqual("arg3", result[2]);
 
-        Assert.AreEqual(3, result.Count);
+        ClassicAssert.AreEqual(3, result.Count);
     }
 
     [Test]
     public void Test_SplitForeignArguments_EmptyString()
     {
         var result = CommandHelpers.SplitForeignArguments(string.Empty);
-        Assert.AreEqual(string.Empty, result);
+        ClassicAssert.AreEqual(string.Empty, result);
     }
 
     [Test]
@@ -270,9 +271,9 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitForeignArguments(CommandHelpers.CollapseForeignCommandArguments(ListOperations.Create("arg1"))).ToList();
 
-        Assert.AreEqual("arg1", result[0]);
+        ClassicAssert.AreEqual("arg1", result[0]);
 
-        Assert.AreEqual(1, result.Count);
+        ClassicAssert.AreEqual(1, result.Count);
     }
 
     [Test]
@@ -280,11 +281,11 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.SplitForeignArguments(CommandHelpers.CollapseForeignCommandArguments(ListOperations.Create("arg1", "arg2", "arg3"))).ToList();
 
-        Assert.AreEqual("arg1", result[0]);
-        Assert.AreEqual("arg2", result[1]);
-        Assert.AreEqual("arg3", result[2]);
+        ClassicAssert.AreEqual("arg1", result[0]);
+        ClassicAssert.AreEqual("arg2", result[1]);
+        ClassicAssert.AreEqual("arg3", result[2]);
 
-        Assert.AreEqual(3, result.Count);
+        ClassicAssert.AreEqual(3, result.Count);
     }
 
     [Test]
@@ -292,8 +293,8 @@ public class CommandHelperTests
     {
         var result = CommandHelpers.StripTargetTypeFromForeignCommand(CommandHelpers.CreateForeignCommandText("test", "arg1"), out var targetType);
 
-        Assert.AreEqual("test arg1", result);
-        Assert.AreEqual(TargetType.All, targetType);
+        ClassicAssert.AreEqual("test arg1", result);
+        ClassicAssert.AreEqual(TargetType.All, targetType);
     }
 
     #endregion
@@ -308,7 +309,7 @@ public class CommandHelperTests
 
         var convertedCmdText = CommandHelpers.ConvertToForeignCommandText(rfCommand);
 
-        Assert.AreEqual("!test", convertedCmdText);
+        ClassicAssert.AreEqual("!test", convertedCmdText);
     }
 
     [Test]
@@ -320,7 +321,7 @@ public class CommandHelperTests
 
         var convertedCmdText = CommandHelpers.ConvertToForeignCommandText(rfCommand, "arg3", "arg4");
 
-        Assert.AreEqual("!test arg1|arg2|arg3|arg4", convertedCmdText);
+        ClassicAssert.AreEqual("!test arg1|arg2|arg3|arg4", convertedCmdText);
     }
 
     [Test]
@@ -331,7 +332,7 @@ public class CommandHelperTests
 
         var convertedCmdText = CommandHelpers.ConvertToForeignCommandText(rfCommand, TargetType.SlavesOnly);
 
-        Assert.AreEqual("#test", convertedCmdText);
+        ClassicAssert.AreEqual("#test", convertedCmdText);
     }
 
     #endregion

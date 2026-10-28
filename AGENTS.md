@@ -9,7 +9,12 @@ Decal Plugin for the game Asheron's Call
 
 ## Testing
 
-* TODO : Need to update, fix, and document
+* Tests use NUnit 5, target net10.0, and run on macOS/Linux/Windows with `dotnet test RedoxExtensions.slnx` (or `test.pl`).
+* Plugin assemblies stay on net35 and must not be retargeted.  They build AnyCPU by default so the 64-bit test host can load them.
+* Deploy builds (`copy_dlls_debug.bat` / `copy_dlls_release.bat` -> `deploy.bat`) build the solution with `-p:PlatformTarget=x86`, which `Directory.Build.props` redirects to `bin\x86\<Config>` and `obj\x86\<Config>` so x86 and AnyCPU builds never share output.
+* `External/Decal/bin/Decal.Adapter.dll` and `External/Virindi/utank2-i.dll` are compile-time copies patched to clear the 32BITREQUIRED flag.  Re-run `perl External/clear_32bit_required.pl <dll>` after updating them.
+* Known failures: `PipelineDispatcherTests` (WinForms `Timer` isn't available on .NET 10) and a number of stale tests.
+* Existing tests use `ClassicAssert` (NUnit.Framework.Legacy).  Prefer `Assert.That` for new tests.
 
 
 ## Other Plugins we can assume are available at runtime.

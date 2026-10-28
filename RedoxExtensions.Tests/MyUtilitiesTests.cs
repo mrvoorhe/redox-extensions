@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Mine;
 using RedoxExtensions.Settings;
 
@@ -33,14 +34,13 @@ public class MyUtilitiesTests
     [TestCase("A3-C1", 2)]
     public void TestGetNpcSleepDelayFactor(string characterName, int expectedResult)
     {
-        Assert.AreEqual(expectedResult, MyUtilities.GetNpcSleepDelayFactor(characterName));
+        ClassicAssert.AreEqual(expectedResult, MyUtilities.GetNpcSleepDelayFactor(characterName));
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void TestGetNpcSleepDelayFactorThrowsWhenUnknownCharacter()
     {
-        MyUtilities.GetNpcSleepDelayFactor("Unknown Character");
+        Assert.Throws<InvalidOperationException>(() => MyUtilities.GetNpcSleepDelayFactor("Unknown Character"));
     }
 
     [TestCase("A1-C1", 10)]
@@ -50,33 +50,32 @@ public class MyUtilitiesTests
     [TestCase("A3-C1", 20)]
     public void TestGetFormationRange(string characterName, int expectedResult)
     {
-        Assert.AreEqual(expectedResult, MyUtilities.GetFormationRange(characterName, "formation1"));
+        ClassicAssert.AreEqual(expectedResult, MyUtilities.GetFormationRange(characterName, "formation1"));
     }
 
     [Test]
     public void TestGetFormationRangeInputIsCaseInsensitive()
     {
-        Assert.AreEqual(10, MyUtilities.GetFormationRange("A1-C1", "FORMATION1"));
+        ClassicAssert.AreEqual(10, MyUtilities.GetFormationRange("A1-C1", "FORMATION1"));
     }
 
     [Test]
     public void TestGetFormationRangeUsesDefaultIfUnknownCharacter()
     {
-        Assert.AreEqual(5, MyUtilities.GetFormationRange("Unknown Character", "formation1"));
+        ClassicAssert.AreEqual(5, MyUtilities.GetFormationRange("Unknown Character", "formation1"));
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void TestGetFormationRangeThrowsIfUnknownFormation()
     {
-        MyUtilities.GetFormationRange("A1-C1", "Unknown Formation");
+        Assert.Throws<InvalidOperationException>(() => MyUtilities.GetFormationRange("A1-C1", "Unknown Formation"));
     }
 
     [TestCase("A1-C1")]
     [TestCase("A3-C1")]
     public void TestEnableLootForFormation(string characterName)
     {
-        Assert.IsTrue(MyUtilities.EnableLootForFormation(characterName, "formation1"));
+        ClassicAssert.IsTrue(MyUtilities.EnableLootForFormation(characterName, "formation1"));
     }
 
     [TestCase("A1-C1", MyMainProfiles.Normal, "Normal")]
@@ -86,7 +85,7 @@ public class MyUtilitiesTests
     public void TestLookupProfileName(string characterName, MyMainProfiles profile, string expectedResult)
     {
         var result = MyUtilities.LookupProfileName(characterName, profile);
-        Assert.AreEqual(expectedResult, result);
+        ClassicAssert.AreEqual(expectedResult, result);
     }
 
     #region Helpers

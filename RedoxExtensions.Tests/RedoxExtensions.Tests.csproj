@@ -2,15 +2,18 @@
 
   <PropertyGroup>
     <ProjectGuid>{C852B825-206E-4D2D-A259-7C87FE32EFF4}</ProjectGuid>
-    <TargetFramework>net45</TargetFramework>
-    <PlatformTarget>x86</PlatformTarget>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);NU1702</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="NUnit" Version="5.0.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" />
+    <PackageReference Include="System.Security.Permissions" Version="10.0.13" />
     <Reference Include="Decal.Adapter">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Decal\bin\Decal.Adapter.dll</HintPath>
@@ -23,10 +26,6 @@
     <Reference Include="MagTools">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\MagTools\MagTools.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\NUnit\bin\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
 

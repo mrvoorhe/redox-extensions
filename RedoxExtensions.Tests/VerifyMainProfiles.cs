@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.Mine;
 using RedoxExtensions.VirindiInterop;
@@ -18,7 +19,7 @@ namespace Characher1Tools.Tests;
 [TestFixture]
 public class VerifyMainProfiles
 {
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void TestSetup()
     {
         // TODO : Refactor to be account independent
@@ -34,25 +35,25 @@ public class VerifyMainProfiles
     {
         // TODO : Refactor to be account independent or remove entirely
         var expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher1", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher2", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher7", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher4", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher5", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher6", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Normal.ToString(), "Characher8", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
     }
 
     [Test]
@@ -61,25 +62,25 @@ public class VerifyMainProfiles
     {
         // TODO : Refactor to be account independent or remove entirely
         var expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher1", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher2", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher7", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher4", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher5", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher6", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Light.ToString(), "Characher8", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
     }
 
     [Test]
@@ -88,13 +89,13 @@ public class VerifyMainProfiles
     {
         // TODO : Refactor to be account independent or remove entirely
         var expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher2", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher5", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher8", "Frostfell");
-        Assert.IsTrue(File.Exists(expectedFilePath));
+        ClassicAssert.IsTrue(File.Exists(expectedFilePath));
     }
 
     [Test]
@@ -103,15 +104,15 @@ public class VerifyMainProfiles
     {
         // TODO : Refactor to be account independent or remove entirely
         var expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher1", "Frostfell");
-        Assert.IsFalse(File.Exists(expectedFilePath));
+        ClassicAssert.IsFalse(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher7", "Frostfell");
-        Assert.IsFalse(File.Exists(expectedFilePath));
+        ClassicAssert.IsFalse(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher4", "Frostfell");
-        Assert.IsFalse(File.Exists(expectedFilePath));
+        ClassicAssert.IsFalse(File.Exists(expectedFilePath));
 
         expectedFilePath = VTUtilities.GetCharacterSpecificProfileFullFilePath(MyMainProfiles.Support.ToString(), "Characher6", "Frostfell");
-        Assert.IsFalse(File.Exists(expectedFilePath));
+        ClassicAssert.IsFalse(File.Exists(expectedFilePath));
     }
 }

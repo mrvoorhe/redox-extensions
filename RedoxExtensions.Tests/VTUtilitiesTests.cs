@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using RedoxExtensions.VirindiInterop;
 
@@ -16,7 +17,7 @@ public class VTUtilitiesTests
     {
         bool result = VTUtilities.TryParseOptionOutput("Hello World", out var keyValue);
 
-        Assert.IsFalse(result);
+        ClassicAssert.IsFalse(result);
     }
 
     [Test]
@@ -24,10 +25,10 @@ public class VTUtilitiesTests
     {
         bool result = VTUtilities.TryParseOptionOutput("[VTank] Option EnableLooting = False", out var keyValue);
 
-        Assert.IsTrue(result);
+        ClassicAssert.IsTrue(result);
 
-        Assert.AreEqual(VTOptionNames.EnableLooting, keyValue.Key);
-        Assert.AreEqual("False", keyValue.Value);
+        ClassicAssert.AreEqual(VTOptionNames.EnableLooting, keyValue.Key);
+        ClassicAssert.AreEqual("False", keyValue.Value);
     }
 
     [Test]
@@ -35,7 +36,7 @@ public class VTUtilitiesTests
     {
         var result = VTUtilities.HumanRangeToVTRange(10);
 
-        Assert.Greater(result, 0);
-        Assert.Less(result, 1);
+        ClassicAssert.Greater(result, 0);
+        ClassicAssert.Less(result, 1);
     }
 }

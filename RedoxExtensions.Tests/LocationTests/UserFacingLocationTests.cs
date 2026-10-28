@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RedoxExtensions.Location;
 
 namespace RedoxExtensions.Tests.LocationTests;
@@ -16,7 +17,7 @@ public class UserFacingLocationTests
     {
         var ns = new UserFacingCoord(10.5, Direction.N);
         var ew = new UserFacingCoord(90.3, Direction.E);
-        Assert.IsTrue(UserFacingLocation.TryParse($"{ns} {ew}", out var result));
+        ClassicAssert.IsTrue(UserFacingLocation.TryParse($"{ns} {ew}", out var result));
         Assert.That(result.NorthSouth, Is.EqualTo(ns));
         Assert.That(result.EastWest, Is.EqualTo(ew));
     }
@@ -26,7 +27,7 @@ public class UserFacingLocationTests
     {
         var ns = new UserFacingCoord(10.5, Direction.N);
         var ew = new UserFacingCoord(90.3, Direction.E);
-        Assert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}", out var result));
+        ClassicAssert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}", out var result));
         Assert.That(result.NorthSouth, Is.EqualTo(ns));
         Assert.That(result.EastWest, Is.EqualTo(ew));
     }
@@ -36,7 +37,7 @@ public class UserFacingLocationTests
     {
         var ns = new UserFacingCoord(10.5, Direction.N);
         var ew = new UserFacingCoord(90.3, Direction.E);
-        Assert.IsTrue(UserFacingLocation.TryParse($"{ns},{ew}", out var result));
+        ClassicAssert.IsTrue(UserFacingLocation.TryParse($"{ns},{ew}", out var result));
         Assert.That(result.NorthSouth, Is.EqualTo(ns));
         Assert.That(result.EastWest, Is.EqualTo(ew));
     }
@@ -46,7 +47,7 @@ public class UserFacingLocationTests
     {
         var ns = new UserFacingCoord(10.5, Direction.N);
         var ew = new UserFacingCoord(90.3, Direction.E);
-        Assert.IsTrue(UserFacingLocation.TryParse($"  {ns}   {ew}   ", out var result));
+        ClassicAssert.IsTrue(UserFacingLocation.TryParse($"  {ns}   {ew}   ", out var result));
         Assert.That(result.NorthSouth, Is.EqualTo(ns));
         Assert.That(result.EastWest, Is.EqualTo(ew));
     }
@@ -60,7 +61,7 @@ public class UserFacingLocationTests
     {
         var ns = new UserFacingCoord(10.5, Direction.N);
         var ew = new UserFacingCoord(90.3, Direction.E);
-        Assert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}.", out var result));
+        ClassicAssert.IsTrue(UserFacingLocation.TryParse($"{ns}, {ew}.", out var result));
         Assert.That(result.NorthSouth, Is.EqualTo(ns));
         Assert.That(result.EastWest, Is.EqualTo(ew));
     }
