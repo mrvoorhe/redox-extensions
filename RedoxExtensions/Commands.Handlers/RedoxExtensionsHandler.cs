@@ -117,6 +117,20 @@ namespace RedoxExtensions.Commands.Handlers
                     REPlugin.Instance.MonitorManager.Banking.Report(s => REPlugin.Instance.Chat.WriteLine(s));
                     return true;
 
+                case "runchain":
+                    if (command.Arguments.Count == 0)
+                    {
+                        REPlugin.Instance.Chat.WriteLine("Usage : /re runchain <chain name>");
+                        return true;
+                    }
+
+                    REPlugin.Instance.MonitorManager.MetaChain.Start(command.Arguments[0]);
+                    return true;
+
+                case "stopchain":
+                    REPlugin.Instance.MonitorManager.MetaChain.Stop();
+                    return true;
+
                 case "clearqueue":
                     // Clears the dispatch pipeline queue
                     REPlugin.Instance.Dispatch.Pipeline.Clear();
@@ -179,7 +193,9 @@ namespace RedoxExtensions.Commands.Handlers
             chat.WriteLine("  showcolors [on|off]     - Toggles color info on object ID (no arg = flip).");
             chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
             chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
-            chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
+            chat.WriteLine("  runchain <chain name>   - Runs the metas listed in MetaChainList-[char-]<chain>.txt.");
+            chat.WriteLine("  stopchain               - Stops the running meta chain.");
+            chat.WriteLine("  clearqueue             - Clears the dispatch pipeline queue.");
             chat.WriteLine("  face <target>           - Faces the given object.");
             chat.WriteLine("  goto <target>           - Travels to the given object.");
             chat.WriteLine("  pets <args>             - Processes a pets command.");

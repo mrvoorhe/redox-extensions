@@ -19,6 +19,11 @@ namespace RedoxExtensions.MagToolsInterop
             MagTools.PluginCore.Current.ProcessMTCommand(string.Format("/mt fellow create {0}", name));
         }
 
+        internal static void QuitFellow()
+        {
+            MagTools.PluginCore.Current.ProcessMTCommand("/mt fellow quit");
+        }
+
         internal static void RecruitFellow(string characterName)
         {
             MagTools.PluginCore.Current.ProcessMTCommand(string.Format("/mt fellow recruit {0}", characterName));
