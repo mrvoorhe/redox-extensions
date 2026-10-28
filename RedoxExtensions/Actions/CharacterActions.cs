@@ -55,11 +55,25 @@ public static class CharacterActions
             return;
         }
 
-        if (!VTActions.MetaProfileExists(normalizedMetaName))
+        var matches = VTActions.FindMetaProfiles(normalizedMetaName);
+        if (matches.Count == 0)
         {
-            chat.WriteLine("[RE] StartMeta : could not find meta file {0}.met", normalizedMetaName);
+            chat.WriteLine("[RE] StartMeta : could not find a meta file matching {0}", normalizedMetaName);
             return;
         }
+
+        if (matches.Count > 1)
+        {
+            chat.WriteLine("[RE] StartMeta : {0} meta files matched {1} :", matches.Count, normalizedMetaName);
+            foreach (var match in matches)
+            {
+                chat.WriteLine("[RE]   {0}.met", match);
+            }
+
+            return;
+        }
+
+        var resolvedMetaName = matches[0];
 
         if (!VTActions.LoadSmartSettingsProfile(StartMetaSettingsProfile))
         {
@@ -67,7 +81,7 @@ public static class CharacterActions
             return;
         }
 
-        chat.WriteLine("[RE] StartMeta : {0}", normalizedMetaName);
+        chat.WriteLine("[RE] StartMeta : {0}", resolvedMetaName);
 
         VTActions.StopVT();
         VTActions.DisableNav();
@@ -82,17 +96,17 @@ public static class CharacterActions
         MTActions.QuitFellow();
 
         Continuations.DelayedContinuation.ContinueAfterDelayOnGameThread(
-            createState => RunStartMetaStage("start", () => StartMetaStart(normalizedMetaName)),
+            createState => RunStartMetaStage("start", () => StartMetaStart(resolvedMetaName)),
             MillisecondsDelayBeforeCreatingFellow,
             null);
     }
 
-    private static void StartMetaStart(string normalizedMetaName)
+    private static void StartMetaStart(string metaName)
     {
         REPlugin.Instance.Chat.WriteLine("[RE] StartMeta : loading meta and creating fellowship {0}", StartMetaFellowName);
 
         VTActions.SetAttackRange(StartMetaAttackRange);
-        VTActions.LoadMetaProfile(normalizedMetaName);
+        VTActions.LoadMetaProfile(metaName);
         VTActions.EnableMeta();
         VTActions.StartVT();
 
