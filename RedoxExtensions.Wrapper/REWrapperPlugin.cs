@@ -4,6 +4,7 @@ using System.Text;
 
 using Decal.Adapter;
 
+using RedoxExtensions.Wrapper.AgentBridge;
 using RedoxExtensions.Wrapper.Diagnostics;
 using Decal.Adapter.Wrappers;
 
@@ -28,6 +29,8 @@ public class REWrapperPlugin : PluginBase, IPluginServices
 
     private WrapperCommandListener _wrapperCommandListener;
 
+    private AgentBridgeSession _agentBridgeSession;
+
     #region Internal Static Properties
 
     internal static REWrapperPlugin Instance => _instance;
@@ -44,6 +47,14 @@ public class REWrapperPlugin : PluginBase, IPluginServices
 
     public ErrorLogger Error => this._errorLogger;
 
+    internal bool IsWrappedPluginLoaded => this._wrappedPlugin != null;
+
+    internal AgentMode AgentMode => this._agentBridgeSession?.Mode ?? AgentMode.Off;
+
+    internal int AgentPort => this._agentBridgeSession?.Port ?? 0;
+
+    internal int AgentConnectionCount => this._agentBridgeSession?.ConnectionCount ?? 0;
+
     #region Public Methods
 
     /// <summary>
@@ -56,6 +67,7 @@ public class REWrapperPlugin : PluginBase, IPluginServices
     {
         try
         {
+            AgentBridgeService.Publish("plugin", message, color);
             this.Host.Actions.AddChatText(message, color, chatWindow);
         }
         catch (Exception e)
@@ -116,7 +128,40 @@ public class REWrapperPlugin : PluginBase, IPluginServices
         this._wrappedPlugin.WrappedStartup(this, this._pluginBaseEventsHelper);
     }
 
+    internal void ReloadWrappedPlugin()
+    {
+        this.Debug.WriteLine("Reloading...");
+
+        this.UnloadWrappedPlugin();
+        this.LoadWrappedPlugin();
+
+        this.Debug.WriteLine("Reload Complete");
+    }
+
+    internal void SetAgentMode(AgentMode mode)
+    {
+        if (mode == AgentMode.Off)
+        {
+            this.StopAgentBridge();
+            return;
+        }
+
+        if (this._agentBridgeSession == null)
+            this._agentBridgeSession = new AgentBridgeSession(this, mode);
+        else
+            this._agentBridgeSession.Mode = mode;
+    }
+
     #endregion
+
+    private void StopAgentBridge()
+    {
+        if (this._agentBridgeSession == null)
+            return;
+
+        this._agentBridgeSession.Dispose();
+        this._agentBridgeSession = null;
+    }
 
     protected override void Shutdown()
     {
@@ -128,6 +173,8 @@ public class REWrapperPlugin : PluginBase, IPluginServices
 
             this.ClientDispatch -= RTWrapperPlugin_ClientDispatch;
             this.ServerDispatch -= RTWrapperPlugin_ServerDispatch;
+
+            this.StopAgentBridge();
 
             this._wrappedPlugin.WrappedShutdown();
             this._wrappedPlugin = null;
@@ -173,6 +220,8 @@ public class REWrapperPlugin : PluginBase, IPluginServices
     {
         if (this.Chat != null)
             this.Chat.WriteLine("***Closing Down****");
+
+        this.StopAgentBridge();
 
         if (this._wrapperCommandListener != null)
         {

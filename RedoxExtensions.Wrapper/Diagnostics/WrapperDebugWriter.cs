@@ -96,6 +96,8 @@ public class WrapperDebugWriter
 
         // Log to file as well
         this.LogLine(text);
+
+        AgentBridge.AgentBridgeService.Publish(AgentBridge.EventJournal.KindDebug, this.FormatWithPrefix(text));
     }
 
     public void WriteLine(string text, params object[] args)

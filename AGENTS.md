@@ -16,6 +16,18 @@ Decal Plugin for the game Asheron's Call
 * Known failures: `PipelineDispatcherTests` (WinForms `Timer` isn't available on .NET 10) and a number of stale tests.
 * Existing tests use `ClassicAssert` (NUnit.Framework.Legacy).  Prefer `Assert.That` for new tests.
 
+### Testing in the running game (Windows only)
+
+When the user has enabled the agent bridge in game (`/re agent on|rw`), `rectl.cmd` can read game state and send commands.
+See `docs/design/Feature-AgentBridge.md`.
+
+* `rectl.cmd dev` deploys with `copy_dlls_debug.bat` and reloads the plugin.  Use it after changing plugin code.
+  Changes to `RedoxExtensions.Wrapper` need a client restart.
+* `rectl.cmd exec <command> --wait <regex>` runs a command and waits for the output.  `rectl.cmd state` and
+  `rectl.cmd events` show what happened.
+* These are real characters on a public server.  Only send the commands the task needs, and never ask the user to
+  enable `full` mode unless the task really requires it.
+
 
 ## Other Plugins we can assume are available at runtime.
 

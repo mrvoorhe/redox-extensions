@@ -80,7 +80,7 @@ pixels or sniffing UDP from outside would be harder and less reliable.
 
 * `rectl dev`: runs `copy_dlls_debug.bat`, then `exec "/re reload"`, waits for "Reload Complete", then
   optionally runs a smoke scenario.
-* `deploy.bat` needs a `nopause` argument or environment variable so it can run non-interactively.
+* `deploy.bat` must not pause, so it can run non-interactively.
 * Scenario scripts (exec, then wait, then assert) can be replayed, for example: record a short route and
   diff the `.nav` file.
 
@@ -135,14 +135,59 @@ Needs Windows and a live client:
 * `deploy.bat` changes
 * Measuring memory in acclient
 
-## First slice
+## First slice (implemented)
 
-1. Wrapper transport with `ping`, `exec` and `reload`, plus the discovery file and instance selection.
-2. Plugin handlers for `state`, `events` and `wait`, with a ring buffer of chat and RE debug lines.
-3. `rectl` with matching verbs and `dev`, plus `nopause` for `deploy.bat`.
-4. `/re agent on|off|rw`, documented under `docs/ref/InGameCommands`.
+What was built, and where it differs from the design above:
 
-After that: network message journaling, `world`, screenshots, and the MCP wrapper.
+* Everything except the `state` handler lives in `RedoxExtensions.Wrapper/AgentBridge`, including `exec` and the
+  event journal, so commands and history keep working through `/re reload`.  The wrapper doesn't use Newtonsoft
+  (it would lock the DLL in the install directory and could load a second copy), so it has its own small `MiniJson`.
+* The plugin registers `state` in `RedoxExtensions/AgentBridge/AgentHandlers.cs` when it initializes, and removes it
+  in `CloseDown`.
+* Event kinds: `chat` (Decal `ChatBoxMessage`), `plugin` (text RE and the wrapper write to chat), `debug` (every
+  `WrapperDebugWriter.WriteLine`, which includes the plugin's `DebugWriter`) and `command` (each `exec`).
+* `exec` refuses `/re reload|load|unload|agent` (also when wrapped in `/ub delay`).  Use the `reload` request.
+* `deploy.bat` no longer pauses, and returns exit code 1 when no install directory is found.
+* `rectl.cmd` at the repo root builds the CLI quietly and runs it, so stdout is pure JSON.
+
+## Usage
+
+In game:
+
+| Command | Effect |
+|---|---|
+| `/re agent` | Show status (mode, port, connections) |
+| `/re agent on` | Enable read-only: `ping`, `state`, `events`, `wait` |
+| `/re agent rw` | Also allow `exec` and `reload`, except the blocked commands in `AgentPolicy` |
+| `/re agent full` | Also allow the blocked commands |
+| `/re agent off` | Stop the server, free the journal, delete the discovery file |
+
+From a terminal on the same machine (`rectl help` for everything):
+
+```
+rectl list
+rectl state
+rectl exec /re recordroute start --wait "recording" --kinds plugin,chat
+rectl events --since 120 --kinds chat
+rectl wait "Route saved" --timeout 30000
+rectl dev
+```
+
+The tool finds the install directory from `REDOX_EXTENSIONS_INSTALL`, then the same known paths `deploy.bat` checks.
+Use `--dir` or `REDOX_AGENT_DIR` to point it at a discovery directory directly.
+
+Exit codes: 0 means success, 1 means the request failed or a wait timed out, 2 means a usage error or no
+single client could be picked.
+
+## Still to check on Windows
+
+* `CharFilterVitalType` and `CharacterFilter.Health/Stamina/Mana` return what the `state` handler assumes (current
+  vs. max).
+* Whether `Host.Actions.AddChatText` also raises `ChatBoxMessage`.  If it does, RE output shows up as both `plugin`
+  and `chat` events.
+* `GetVTOptions` inside `state` works when called from RenderFrame and doesn't spam chat.
+* A Windows Firewall prompt on the first enable (loopback-only binding shouldn't trigger one).
+* `reload` finishes within the 10 second game-thread timeout.  `rectl reload` polls `ping` if it doesn't.
 
 ## Verification
 

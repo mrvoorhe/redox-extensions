@@ -184,6 +184,7 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
     {
         try
         {
+            Wrapper.AgentBridge.AgentBridgeService.Publish("plugin", message, color);
             this.Actions.AddChatText(message, color, chatWindow);
         }
         catch (Exception e)
@@ -361,6 +362,8 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
                     Dispatch.LegacyGameThread.QueueDelayedAction(() => VirindiInterop.VWTActions.Apply(ActiveSettings.Instance.DefaultVTWindowProfile), 5000);
                 }
 
+                AgentBridge.AgentHandlers.Register();
+
                 this.Chat.WriteLine("***Initialization Complete****");
             }
             finally
@@ -440,6 +443,8 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
             try
             {
                 this.Chat.WriteLine("***Closing Down****");
+
+                AgentBridge.AgentHandlers.Unregister();
 
                 //if (this._hackyDelayedRetryInitTimer != null)
                 //{

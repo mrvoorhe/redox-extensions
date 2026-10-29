@@ -5,6 +5,7 @@ RedoxExtensions/obj
 RedoxLib.Tests/obj
 RedoxLib/obj
 RedoxFilter/obj
+RedoxExtensions.AgentCli/obj
 bin
 TestResult.xml
 .vs/config/applicationhost.config

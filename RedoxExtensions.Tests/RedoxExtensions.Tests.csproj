@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RedoxExtensions.AgentCli\RedoxExtensions.AgentCli.csproj" />
     <ProjectReference Include="..\RedoxExtensions.Wrapper\RedoxExtensions.Wrapper.csproj" />
     <ProjectReference Include="..\RedoxExtensions\RedoxExtensions.csproj" />
     <ProjectReference Include="..\RedoxLib\RedoxLib.csproj" />

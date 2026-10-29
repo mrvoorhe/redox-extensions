@@ -21,7 +21,7 @@ if exist "%REDOX_EXTENSIONS_INSTALL%" (
     echo.
     echo No Redox Extensions Install Directory Found
     echo.
-    goto :end
+    exit /b 1
 )
 if errorlevel 1 goto :copyfailed
 goto :end
@@ -50,15 +50,12 @@ exit /b 0
 echo.
 echo Build failed, nothing was copied
 echo.
-pause
 exit /b 1
 
 :copyfailed
 echo.
 echo Copy failed
 echo.
-pause
 exit /b 1
 
 :end
-pause

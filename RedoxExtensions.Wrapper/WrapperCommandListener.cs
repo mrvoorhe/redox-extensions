@@ -4,6 +4,8 @@ using System.Text;
 
 using Decal.Adapter;
 
+using RedoxExtensions.Wrapper.AgentBridge;
+
 namespace RedoxExtensions.Wrapper;
 
 /// <summary>
@@ -33,7 +35,14 @@ internal class WrapperCommandListener : IDisposable
     {
         REWrapperPlugin.Instance.Debug.WriteLine($"Processing Command : {command}");
 
-        switch (command.ToLower())
+        var lowered = command.ToLower();
+        if (lowered == "agent" || lowered.StartsWith("agent "))
+        {
+            HandleAgentCommand(lowered.Substring("agent".Length).Trim());
+            return true;
+        }
+
+        switch (lowered)
         {
             case "unload":
                 REWrapperPlugin.Instance.UnloadWrappedPlugin();
@@ -42,12 +51,7 @@ internal class WrapperCommandListener : IDisposable
                 REWrapperPlugin.Instance.LoadWrappedPlugin();
                 return true;
             case "reload":
-                REWrapperPlugin.Instance.Debug.WriteLine("Reloading...");
-
-                REWrapperPlugin.Instance.UnloadWrappedPlugin();
-                REWrapperPlugin.Instance.LoadWrappedPlugin();
-
-                REWrapperPlugin.Instance.Debug.WriteLine("Reload Complete");
+                REWrapperPlugin.Instance.ReloadWrappedPlugin();
                 return true;
             default:
                 if (explicitWrapperCommand)
@@ -58,6 +62,33 @@ internal class WrapperCommandListener : IDisposable
 
                 return false;
         }
+    }
+
+    private static void HandleAgentCommand(string arg)
+    {
+        var plugin = REWrapperPlugin.Instance;
+
+        if (arg.Length == 0 || arg == "status")
+        {
+            if (plugin.AgentMode == AgentMode.Off)
+                plugin.Chat.WriteLine("Agent bridge is off.  Usage: /re agent on|rw|full|off");
+            else
+                plugin.Chat.WriteLine("Agent bridge is {0} on port {1} ({2} connected)", AgentPolicy.ModeName(plugin.AgentMode), plugin.AgentPort, plugin.AgentConnectionCount);
+            return;
+        }
+
+        if (!AgentPolicy.TryParseMode(arg, out var mode))
+        {
+            plugin.Chat.WriteLine("Unknown agent mode '{0}'.  Usage: /re agent on|rw|full|off", arg);
+            return;
+        }
+
+        plugin.SetAgentMode(mode);
+
+        if (mode == AgentMode.Off)
+            plugin.Chat.WriteLine("Agent bridge off");
+        else
+            plugin.Chat.WriteLine("Agent bridge {0} on port {1}", AgentPolicy.ModeName(mode), plugin.AgentPort);
     }
 
     #endregion

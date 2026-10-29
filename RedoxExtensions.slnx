@@ -11,4 +11,7 @@
     <Project Path="RedoxExtensions.Tests/RedoxExtensions.Tests.csproj" />
     <Project Path="RedoxLib.Tests/RedoxLib.Tests.csproj" />
   </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="RedoxExtensions.AgentCli/RedoxExtensions.AgentCli.csproj" />
+  </Folder>
 </Solution>
