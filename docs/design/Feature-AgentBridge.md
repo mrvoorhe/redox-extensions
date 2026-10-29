@@ -191,11 +191,78 @@ single client could be picked.
 
 ## Verification
 
-* Unit tests (net10): protocol, token, ring buffer, `wait`, instance selection, safety policy.
+* Unit tests (net10): `dotnet test RedoxExtensions.slnx --filter "FullyQualifiedName~AgentBridge"`.  87 tests in
+  `RedoxExtensions.Tests/AgentBridge/`, all passing as of `db32452`.  `CliTests` run the real CLI against a real
+  loopback server with a fake game host.  The full suite has 27 failures that predate this feature (stale tests).
 * On Windows, with two clients logged in:
-  * `/re agent on rw` on one client, then `rectl state` should pick it automatically.
+  * `/re agent rw` on one client, then `rectl state` should pick it automatically.
   * Enable on the second client: `rectl state` should error and list both, and `rectl -c <name> state` should work.
-  * `rectl exec "/re help"` followed by `rectl wait chat ...` should complete a round trip.
+  * `rectl exec /re help --wait <some text from the help output>` should complete a round trip.
   * `rectl dev` should survive the reload.
   * `/re agent off` should make `rectl` refuse.
   * Compare acclient private bytes before and after enabling.
+
+## Handoff notes
+
+Notes for picking this up on the Windows machine, where there's no history of the Mac session that built it.
+
+### State as of `db32452` (branch `gamedata`)
+
+* The design doc (`e05be91`) and first slice (`db32452`) are committed.  All of it was written and unit-tested on
+  macOS.  None of it has run inside acclient yet.
+* Wrapper code is in `RedoxExtensions.Wrapper/AgentBridge/`:
+  * `AgentBridgeSession`: the Decal-bound part
+  * `AgentRequestProcessor`: request routing
+  * `AgentBridgeServer`: TCP
+  * `AgentPolicy`: modes, blocked commands, rate limit
+  * `EventJournal`, `GameThreadQueue`, `AgentDiscovery`, `MiniJson`, `AgentHandlerRegistry`
+  * `AgentBridgeService`: the static entry point the plugin and debug writers call
+* Hooks into existing code:
+  * `REWrapperPlugin.SetAgentMode` / `ReloadWrappedPlugin`
+  * `WrapperCommandListener.HandleAgentCommand`
+  * `WrapperDebugWriter.WriteLine`, which publishes `debug` events
+  * `WriteToChat` in both `REWrapperPlugin` and `REPlugin`, which publishes `plugin` events
+  * `REPlugin.Initialize` / `CloseDown`, which register and unregister `AgentHandlers`
+* The CLI is `RedoxExtensions.AgentCli` (assembly `rectl`).  `rectl.cmd` runs the AnyCPU build from
+  `bin\Debug\net10.0`.  The x86 deploy build puts its copy under `bin\x86`, and that copy isn't used.
+
+### First Windows session, in order
+
+1. Run `copy_dlls_debug.bat`, then restart the client.  The wrapper changed, and `/re reload` doesn't reload the wrapper.
+2. In game, run `/re agent rw`.  Expect "Agent bridge rw on port N" in chat and
+   `<install>\Logs\agent-bridge\<pid>.json` on disk.
+3. Run `rectl.cmd ping`, then `rectl.cmd state`.  Check the vitals and Virindi values against the game
+   (see "Still to check on Windows").
+4. Run `rectl.cmd events --kinds chat,plugin`.  Check whether RE output appears twice.  If it does, decide whether to
+   drop `plugin` or filter `chat`.
+5. Run `rectl.cmd exec /re help --wait <text from the help output>`, then `rectl.cmd dev` after a trivial plugin
+   change.
+6. Enable a second client and check the selection rules: no flag should list both clients, `-c` and `--pid` should
+   each pick one.
+7. Record acclient private bytes with the bridge off, then after `/re agent rw` and a few minutes of play.
+   Update "Memory budget" with the real numbers.
+
+### Decisions worth keeping
+
+* The transport stays in the wrapper so it survives `/re reload`.  Keep it small and stable, because every
+  wrapper change costs a client restart.  New features should be plugin handlers registered through
+  `AgentBridgeService.Handlers`.  They run on the game thread and receive and return plain
+  `Dictionary<string, object>` / `List<object>` / primitives, since no types are shared across the reload boundary.
+* No Newtonsoft in the wrapper (see "First slice").
+* The blocked-command list in `AgentPolicy` only uses commands documented under `docs/ref/InGameCommands`, per
+  AGENTS.md.  Add new entries from those docs, not from memory.
+* `exec` returns `seq`, the journal position before the command ran.  Pass it as `since` to `wait` so output that
+  arrives before the wait starts isn't missed.  `rectl exec --wait` already does this.
+* Reading the character name or server from a connection thread isn't safe.  `AgentBridgeSession` caches them when
+  it starts.  Anything else that touches Decal has to go through `InvokeOnGameThread`.
+* `VTNavRouteTests` was switched to `ClassicAssert` because it no longer compiled under NUnit 5 and blocked the
+  whole test project.
+
+### Next steps after the Windows check
+
+* `world` handler: WorldFilter objects and inventory, paged
+* Network message journaling from `ServerDispatch` / `ClientDispatch`, limited by an allowlist of message types
+* `rectl screenshot` using `PrintWindow`.  It should encode PNG itself with `ZLibStream`, to avoid needing
+  System.Drawing.
+* An MCP stdio wrapper around the same client
+* Optionally, a JSONL file for the journal
