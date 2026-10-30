@@ -7,6 +7,11 @@ namespace RedoxExtensions.Continuations;
 
 public class DelayedContinuation
 {
+    // A System.Threading.Timer that nothing references can be garbage collected before it fires.
+    // Callers usually discard the returned continuation, so keep pending ones alive here until they run.
+    private static readonly HashSet<DelayedContinuation> _pending = new();
+    private static readonly object _pendingLock = new();
+
     private readonly Action<object> _onEventAction;
     private readonly Timer _timeoutTimer;
     private readonly object _stateTag;
@@ -17,6 +22,11 @@ public class DelayedContinuation
         this._onEventAction = onEventAction;
         this._stateTag = stateTag;
         this._invokeActioOnGameThread = invokeActioOnGameThread;
+
+        lock (_pendingLock)
+        {
+            _pending.Add(this);
+        }
 
         this._timeoutTimer = new Timer(this.TimerCallback, stateTag, millisecondsDelay, Timeout.Infinite);
     }
@@ -39,6 +49,11 @@ public class DelayedContinuation
 
     private void TimerCallback(object state)
     {
+        lock (_pendingLock)
+        {
+            _pending.Remove(this);
+        }
+
         REPlugin.Instance.InvokeOperationSafely(() =>
         {
             if (this._invokeActioOnGameThread)

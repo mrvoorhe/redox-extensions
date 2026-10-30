@@ -126,6 +126,10 @@ internal static class RedoxExtensionsHandler
                 ProcessRecordRoute(command);
                 return true;
 
+            case "startmeta":
+                ProcessStartMeta(command);
+                return true;
+
             case "track":
                 REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                 return true;
@@ -251,6 +255,17 @@ internal static class RedoxExtensionsHandler
         recorder.Start(routeName, routeType);
     }
 
+    private static void ProcessStartMeta(ICommand command)
+    {
+        if (command.Arguments.Count == 0)
+        {
+            REPlugin.Instance.Chat.WriteLine("Usage : /re startmeta <name>");
+            return;
+        }
+
+        Actions.CharacterActions.StartMeta(command.Arguments[0]);
+    }
+
     private static void DisplayHelp()
     {
         var chat = REPlugin.Instance.Chat;
@@ -275,6 +290,7 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  unstuckdetect|usdetect [on|off] [min] - Toggles automatic unstuck after [min] idle minutes (default 1).");
         chat.WriteLine("  recordroute|rr <name> [circular|linear|once] - Records a VT nav route while you move (default circular).");
         chat.WriteLine("  recordroute|rr [stop]   - Stops recording and loads the route in VT.");
+        chat.WriteLine("  startmeta <name>        - Loads Normal profile, resets VT/fellow state, loads and starts the named meta (exact name, or a unique partial match).");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
         chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");

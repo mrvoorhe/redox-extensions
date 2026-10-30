@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using RedoxExtensions.Core;
@@ -126,6 +127,11 @@ internal static class VTActions
     internal static void SetBoostNavPriority(bool enabled)
     {
         VTUtilities.SetOption(VTOptionNames.NavPriorityBoost, enabled);
+    }
+
+    internal static void SetIdlePeaceMode(bool enabled)
+    {
+        VTUtilities.SetOption(VTOptionNames.IdlePeaceMode, enabled);
     }
 
     internal static void SetAttackRange(string rangeValue)
@@ -253,7 +259,52 @@ internal static class VTActions
 
     internal static void LoadMetaProfile(string metaName)
     {
-        ACUtilities.ProcessArbitraryCommand($"/vt meta load {metaName}");
+        ACUtilities.ProcessArbitraryCommand($"/vt meta load {NormalizeMetaName(metaName)}");
+    }
+
+    /// <summary>
+    /// VT wants meta names without the .met extension, so trim and remove the extension if it's defined
+    /// </summary>
+    internal static string NormalizeMetaName(string metaName)
+    {
+        var trimmed = metaName.Trim();
+        return trimmed.EndsWith(".met", StringComparison.OrdinalIgnoreCase)
+            ? trimmed.Substring(0, trimmed.Length - ".met".Length)
+            : trimmed;
+    }
+
+    /// <summary>
+    /// Finds the meta profiles in the VTank directory that match the given name.  See <see cref="MatchMetaNames"/>
+    /// </summary>
+    internal static List<string> FindMetaProfiles(string metaName)
+    {
+        // Filter on the extension ourselves.  Windows treats "*.met" as also matching longer extensions such as ".meta"
+        var availableMetaNames = Directory.GetFiles(VTUtilities.VTankDirectory, "*.met")
+            .Where(path => Path.GetExtension(path).Equals(".met", StringComparison.OrdinalIgnoreCase))
+            .Select(Path.GetFileNameWithoutExtension);
+
+        return MatchMetaNames(availableMetaNames, metaName);
+    }
+
+    /// <summary>
+    /// An exact (case-insensitive) match wins.  Otherwise every meta name containing <paramref name="metaName"/> matches,
+    /// so that sorting prefixes don't need to be typed.
+    /// </summary>
+    internal static List<string> MatchMetaNames(IEnumerable<string> availableMetaNames, string metaName)
+    {
+        var normalizedMetaName = NormalizeMetaName(metaName);
+        var available = availableMetaNames.ToList();
+
+        var exactMatches = available.Where(name => name.Equals(normalizedMetaName, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (exactMatches.Count > 0)
+        {
+            return exactMatches;
+        }
+
+        return available
+            .Where(name => name.IndexOf(normalizedMetaName, StringComparison.OrdinalIgnoreCase) >= 0)
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     internal static void SetMetaState(string stateName)
