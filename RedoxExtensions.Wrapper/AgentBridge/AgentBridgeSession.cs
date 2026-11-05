@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 
 using Decal.Adapter;
 
+using RedoxExtensions.Wrapper.Diagnostics;
+
 namespace RedoxExtensions.Wrapper.AgentBridge;
 
 /// <summary>
@@ -51,6 +53,8 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
         this._plugin.CoreManager.ChatBoxMessage += this.CoreManager_ChatBoxMessage;
 
         AgentBridgeService.SetJournal(this._journal);
+
+        this.StartChatTextCapture();
     }
 
     public AgentMode Mode
@@ -69,6 +73,7 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
 
     public void Dispose()
     {
+        ChatTextCapture.Listener = null;
         AgentBridgeService.SetJournal(null);
 
         this._plugin.CoreManager.RenderFrame -= this.CoreManager_RenderFrame;
@@ -109,10 +114,30 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
             ["server"] = this._server,
             ["pluginLoaded"] = this._plugin.IsWrappedPluginLoaded,
             ["startedUtc"] = this._startedUtc,
+            ["chatCapture"] = ChatTextCapture.IsInstalled,
         };
     }
 
     #endregion
+
+    private void StartChatTextCapture()
+    {
+        try
+        {
+            ChatTextCapture.EnsureInstalled(this._plugin.PluginHost.Actions);
+        }
+        catch (Exception e)
+        {
+            // The bridge still works, it just only sees our own chat output (see REWrapperPlugin.WriteToChat).
+            this._plugin.Error.LogError(e);
+            this._journal.Publish(EventJournal.KindDebug, $"Chat text capture unavailable: {e.Message}");
+            return;
+        }
+
+        var journal = this._journal;
+        ChatTextCapture.Listener = (text, color, target) =>
+            journal.Publish(target == WrapperDebugWriter.DEBUG_CHAT ? EventJournal.KindDebug : EventJournal.KindPlugin, text, color);
+    }
 
     private void WriteDiscovery()
     {

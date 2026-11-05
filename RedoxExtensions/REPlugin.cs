@@ -184,10 +184,7 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
     {
         try
         {
-            var kind = chatWindow == Wrapper.Diagnostics.WrapperDebugWriter.DEBUG_CHAT
-                ? Wrapper.AgentBridge.EventJournal.KindDebug
-                : "plugin";
-            Wrapper.AgentBridge.AgentBridgeService.Publish(kind, message, color);
+            // The agent bridge journals this through its AddChatText hook (Wrapper ChatTextCapture).
             this.Actions.AddChatText(message, color, chatWindow);
         }
         catch (Exception e)

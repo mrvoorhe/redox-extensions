@@ -67,7 +67,9 @@ public class REWrapperPlugin : PluginBase, IPluginServices
     {
         try
         {
-            AgentBridgeService.Publish(chatWindow == WrapperDebugWriter.DEBUG_CHAT ? EventJournal.KindDebug : "plugin", message, color);
+            // ChatTextCapture sees this (and every other plugin's chat output) when it's installed.
+            if (!ChatTextCapture.IsInstalled)
+                AgentBridgeService.Publish(chatWindow == WrapperDebugWriter.DEBUG_CHAT ? EventJournal.KindDebug : EventJournal.KindPlugin, message, color);
             this.Host.Actions.AddChatText(message, color, chatWindow);
         }
         catch (Exception e)

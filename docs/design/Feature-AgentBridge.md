@@ -144,8 +144,9 @@ What was built, and where it differs from the design above:
   (it would lock the DLL in the install directory and could load a second copy), so it has its own small `MiniJson`.
 * The plugin registers `state` in `RedoxExtensions/AgentBridge/AgentHandlers.cs` when it initializes, and removes it
   in `CloseDown`.
-* Event kinds: `chat` (Decal `ChatBoxMessage`), `plugin` (text RE and the wrapper write to chat), `debug` (every
-  `WrapperDebugWriter.WriteLine`, which includes the plugin's `DebugWriter`) and `command` (each `exec`).
+* Event kinds: `chat` (Decal `ChatBoxMessage`), `plugin` (text any plugin writes to chat, see "Capturing other
+  plugins' chat output"), `debug` (text written to the debug chat window, plus `WrapperDebugWriter.WriteLine` in
+  Release builds) and `command` (each `exec`).
 * `exec` refuses `/re reload|load|unload|agent` (also when wrapped in `/ub delay`).  Use the `reload` request.
 * `deploy.bat` no longer pauses, and returns exit code 1 when no install directory is found.
 * `rectl.cmd` at the repo root builds the CLI quietly and runs it, so stdout is pure JSON.
@@ -213,10 +214,37 @@ Still open:
 * VT state.  `utank2-i.dll` exposes `uTank2.PluginCore.PC.GetExternalInterface()` returning
   `cExternalInterfaceTrustedRelay` (`GetSetting`, `MacroEnabled`, `GetNavProfile`, `GetSettingsProfile`,
   `NavCurrent`, ...).  Not tried yet, because it's unknown whether VT shows a permission prompt.
-* The journal fills fast: about 1,300 events in 3 minutes of combat, mostly `DebugWriter.WriteObject(CreateObjectEventArgs)`
-  (4 lines per object, and the only `WriteObject` without a `DebugLevel` check), so 5,000 entries is about 12 minutes.
-  The same calls are why `RT_Debug_<char>.txt` reaches 1.6 GB.
 * Selection rules with two clients, and memory (step 6 and 7 below).
+
+Removed: `CreateObject` debug logging.  It ignored `DebugLevel`, filled the journal (about 1,300 events in 3 minutes of
+combat) and grew `RT_Debug_<char>.txt` to 1.6 GB.
+
+## Capturing other plugins' chat output
+
+Plugins write with Decal's `IACHooks.AddChatText` / `AddChatTextRaw`.  That draws straight into the chat UI and doesn't
+raise `ChatBoxMessage`, so VT, UB, MagTools and RE output never reached the journal through Decal events.  UB's chat
+logger has the same limit (it's built on `ChatTextInterceptEventArgs`), and VCS only exposes `FilterOutputText`, a way to
+send text, not to see it.
+
+`RedoxExtensions.Wrapper/AgentBridge/ChatTextCapture` patches those two slots of the hooks object's COM vtable:
+
+* Every plugin uses Decal's one hooks object, so one patch sees all of them, RE included.
+* Slots come from Decal's real `IACHooks` type at runtime (metadata order after the 7 IUnknown/IDispatch slots:
+  `AddChatText` = 11, `AddChatTextRaw` = 12), cross-checked against `Marshal.GetComSlotForMethodInfo`.  If anything
+  doesn't match, nothing is patched and a `debug` event says why.
+* The hook reports the text, then calls whatever was in the slot before, so another plugin hooking the same slot (before
+  or after us) keeps working.
+* Installed on the first `/re agent on` and never removed.  Removing it could cut out a plugin that hooked after us.
+  With the bridge off it only forwards the call.
+* Text to the debug chat window (target 4) is journaled as `debug`, everything else as `plugin`.  There's no source
+  plugin field.  Plugins usually prefix their output (`[VTank]`, `[UB]`, `RT`).
+* `ping` reports `chatCapture: true` when it's installed.  Without it, only the wrapper's own chat output is journaled.
+* Not seen: calls made late-bound through `IDispatch::Invoke`, and anything a plugin draws into its own window (VVS
+  consoles) without going through `AddChatText`.
+
+Needs a client restart (wrapper change).  The wrapper DLL is locked while any client is running, so all clients have to
+be closed for `deploy.bat` to copy it.  To verify: `rectl ping` shows `chatCapture: true`, then
+`rectl exec "/vt opt get EnableCombat" --wait "EnableCombat" --kinds plugin` should match VT's reply.
 
 ## Verification
 

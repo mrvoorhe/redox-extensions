@@ -44,6 +44,7 @@ public class EventJournal
 {
     public const string KindChat = "chat";
     public const string KindDebug = "debug";
+    public const string KindPlugin = "plugin";
     public const string KindCommand = "command";
 
     private readonly object _lock = new();
