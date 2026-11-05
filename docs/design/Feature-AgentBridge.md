@@ -229,6 +229,21 @@ UB HUDs, chat).  It runs in the CLI process, so nothing changes in acclient, and
 * `object` request: `objectId` (not `id`, which is the request id).  Returns the summary fields plus `category`,
   `behavior`, `type` and every `long`, `double`, `string` and `bool` value Decal has, keyed by `*ValueKey` name.
 
+`rectl move <name-regex> --to <container id>` moves matching inventory items into the main pack (the character's id) or
+a side pack.  The plugin's `move` handler sends one move and refuses anything outside the character's own containers,
+equipped items and packs.  The CLI confirms each item's new container before sending the next and stops at the first
+failure.  `move` needs `rw`.  The wrapper only checks read access for plugin handlers, so `move` reads the mode from
+the discovery file itself (`RequireWriteMode`).  That check belongs in `AgentRequestProcessor` at the next wrapper
+change.
+
+* `Actions.MoveItem(id, dest)` (two arguments, `MoveItemEx`) sends nothing on this client.  The four-argument
+  `MoveItem(id, pack, 0, false)` sends game action 25 (put item in container) and works.
+* Side packs on this server hold 102 items (Decal's `ItemSlots`), not the usual 24.
+* There's no way yet to tell which side pack is "pack N" in the inventory window: Decal leaves `Slot` empty for packs
+  and `OpenedContainer` stays 0 for your own packs.  Ask the user to click the pack, then read `selection` from `state`
+  (VT may change the selection while fighting).
+* Checked on Virmar: 41 Titan Mana Charges moved into a side pack in 7 seconds.
+
 Checked in game on Virmar: nearby doors, a player and a monster with distances and coordinates; 297 inventory items
 paged; equipped bow and arrows show `wielder`; `object` returns the key dump; a bad id or `--near far` gives an error and
 exit code 1.

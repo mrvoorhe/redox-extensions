@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading;
 
@@ -241,6 +242,82 @@ public class CliTests
         Assert.That(objectId, Is.EqualTo(-263199647));
         Assert.That(badExit, Is.EqualTo(Cli.ExitUsage));
         Assert.That(badError, Does.Contain("object needs one object id"));
+    }
+
+    [Test]
+    public void MoveMovesEachMatchConfirmsAndSkipsItemsAlreadyThere()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var containers = new Dictionary<long, long> { [1] = 50, [2] = 60, [3] = 50 };
+        var moveRequests = new List<long>();
+        RegisterFakeInventory(bridge, containers, moveRequests, failOn: null);
+
+        var (exit, output, error) = this.Run("move", "Charge", "--to", "60");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var result = JsonNode.Parse(output);
+        Assert.That(result["matched"].GetValue<int>(), Is.EqualTo(3));
+        Assert.That(result["moved"].GetValue<int>(), Is.EqualTo(2));
+        Assert.That(result["alreadyThere"].GetValue<int>(), Is.EqualTo(1));
+        Assert.That(moveRequests, Is.EqualTo(new long[] { 1, 3 }));
+        Assert.That(containers.Values, Is.All.EqualTo(60));
+    }
+
+    [Test]
+    public void MoveStopsAtTheFirstRefusal()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var containers = new Dictionary<long, long> { [1] = 50, [2] = 50, [3] = 50 };
+        var moveRequests = new List<long>();
+        RegisterFakeInventory(bridge, containers, moveRequests, failOn: 2);
+
+        var (exit, output, _) = this.Run("move", "Charge", "--to", "60");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitFailed));
+        var result = JsonNode.Parse(output);
+        Assert.That(result["moved"].GetValue<int>(), Is.EqualTo(1));
+        Assert.That(result["failed"]["objectId"].GetValue<long>(), Is.EqualTo(2));
+        Assert.That(result["failed"]["error"].GetValue<string>(), Does.Contain("equipped"));
+        Assert.That(moveRequests, Is.EqualTo(new long[] { 1, 2 }));
+    }
+
+    [Test]
+    public void MoveNeedsANameAndDestination()
+    {
+        this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+
+        var (exit, _, error) = this.Run("move", "Charge");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(error, Does.Contain("--to"));
+    }
+
+    private static void RegisterFakeInventory(FakeBridge bridge, Dictionary<long, long> containers, List<long> moveRequests, long? failOn)
+    {
+        bridge.Handlers.Register("world", request => RedoxExtensions.AgentBridge.WorldQuery.Parse(request).Apply(
+            containers.Select(kv => new RedoxExtensions.AgentBridge.WorldItem
+            {
+                Id = (int)kv.Key,
+                Name = "Titan Mana Charge",
+                ObjectClass = "ManaStone",
+                Container = (int)kv.Value,
+            }).ToList()));
+
+        bridge.Handlers.Register("move", request =>
+        {
+            var id = MiniJson.GetLong(request, "objectId").Value;
+            moveRequests.Add(id);
+            if (id == failOn)
+                throw new ArgumentException($"Item {id} is equipped");
+            containers[id] = MiniJson.GetLong(request, "container").Value;
+            return null;
+        });
+
+        bridge.Handlers.Register("object", request =>
+        {
+            var id = MiniJson.GetLong(request, "objectId").Value;
+            return new Dictionary<string, object> { ["id"] = id, ["container"] = containers[id] };
+        });
     }
 
     [Test]

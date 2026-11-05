@@ -41,6 +41,10 @@ public class Cli
           inventory [name-regex] [--class <c1,c2>] [--container <id>] [--offset <n>] [--limit <n>]
                                        Inventory and equipped items, by name
           object <id>                  Every value Decal has for one object
+          move <name-regex> --to <container id>
+                                       Move matching inventory items into your main pack (your character id) or a
+                                       side pack, one at a time, confirming each.  Needs rw.  state's
+                                       openedContainer is the pack open in the inventory window.
           net [off] [--server <types>] [--client <types>]
                                        Show or set which network messages are journaled as "net" events.  Types
                                        are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
@@ -119,6 +123,7 @@ public class Cli
                 "object" => this.Object(instance, parsed),
                 "net" => this.Net(instance, parsed),
                 "screenshot" => this.Screenshot(instance, parsed),
+                "move" => this.Move(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
                 "events" => this.Events(instance, parsed),
                 "wait" => this.Wait(instance, parsed, timeoutMs),
@@ -190,6 +195,104 @@ public class Cli
         }
 
         return this.Simple(instance, "object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
+    }
+
+    private const int MoveConfirmTimeoutMs = 5000;
+    private const int MoveConfirmPollMs = 150;
+
+    /// <summary>
+    /// Moves every inventory item whose name matches into one container, one at a time.  Each move is confirmed by
+    /// watching the item's container before the next is sent.  Stops at the first failure.
+    /// </summary>
+    private int Move(BridgeInstance instance, Arguments parsed)
+    {
+        var name = string.Join(" ", parsed.Positionals);
+        var to = parsed.GetLong("to");
+        if (name.Length == 0 || to == null)
+        {
+            this._err.WriteLine("move needs a name regex and --to <container id>, e.g. rectl move \"^Titan Mana Charge$\" --to -265987263");
+            return ExitUsage;
+        }
+
+        using var client = Connect(instance, DefaultWaitTimeoutMs);
+
+        var items = new List<JsonNode>();
+        var offset = 0;
+        while (true)
+        {
+            var page = client.Send("world", new Dictionary<string, JsonNode>
+            {
+                ["scope"] = "inventory",
+                ["name"] = name,
+                ["offset"] = offset,
+                ["limit"] = 200,
+            });
+            if (!IsOk(page))
+                return this.Report(page);
+
+            foreach (var item in page["result"]["objects"].AsArray())
+                items.Add(item);
+
+            if (page["result"]["nextOffset"] is JsonValue next)
+                offset = next.GetValue<int>();
+            else
+                break;
+        }
+
+        var moved = 0;
+        var alreadyThere = 0;
+        JsonObject failure = null;
+
+        foreach (var item in items)
+        {
+            var id = item["id"].GetValue<long>();
+            if (item["container"]?.GetValue<long>() == to)
+            {
+                alreadyThere++;
+                continue;
+            }
+
+            var response = client.Send("move", new Dictionary<string, JsonNode> { ["objectId"] = id, ["container"] = to.Value });
+            if (!IsOk(response))
+            {
+                failure = new JsonObject { ["objectId"] = id, ["error"] = response["error"]?.GetValue<string>() };
+                break;
+            }
+
+            if (!this.WaitForContainer(client, id, to.Value))
+            {
+                failure = new JsonObject { ["objectId"] = id, ["error"] = $"Still not in {to} after {MoveConfirmTimeoutMs} ms" };
+                break;
+            }
+
+            moved++;
+        }
+
+        var result = new JsonObject
+        {
+            ["matched"] = items.Count,
+            ["moved"] = moved,
+            ["alreadyThere"] = alreadyThere,
+            ["container"] = to.Value,
+        };
+        if (failure != null)
+            result["failed"] = failure;
+
+        this.WriteJson(result);
+        return failure == null ? ExitOk : ExitFailed;
+    }
+
+    private bool WaitForContainer(BridgeClient client, long objectId, long container)
+    {
+        var deadline = DateTime.UtcNow.AddMilliseconds(MoveConfirmTimeoutMs);
+        while (DateTime.UtcNow < deadline)
+        {
+            Thread.Sleep(MoveConfirmPollMs);
+            var response = client.Send("object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
+            if (IsOk(response) && response["result"]["container"]?.GetValue<long>() == container)
+                return true;
+        }
+        return false;
     }
 
     private int Screenshot(BridgeInstance instance, Arguments parsed)
@@ -468,6 +571,7 @@ public class Cli
             ["--client"] = "client",
             ["--out"] = "out",
             ["--scale"] = "scale",
+            ["--to"] = "to",
         };
 
         private readonly Dictionary<string, string> _options = new();

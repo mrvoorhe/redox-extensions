@@ -16,6 +16,7 @@ internal static class AgentHandlers
     private const string WorldCmd = "world";
     private const string ObjectCmd = "object";
     private const string NetCmd = "net";
+    private const string MoveCmd = "move";
 
     public static void Register()
     {
@@ -23,6 +24,7 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Register(WorldCmd, World);
         AgentBridgeService.Handlers.Register(ObjectCmd, Object);
         AgentBridgeService.Handlers.Register(NetCmd, NetCapture.Configure);
+        AgentBridgeService.Handlers.Register(MoveCmd, Move);
     }
 
     public static void Unregister()
@@ -31,6 +33,72 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Unregister(WorldCmd);
         AgentBridgeService.Handlers.Unregister(ObjectCmd);
         AgentBridgeService.Handlers.Unregister(NetCmd);
+        AgentBridgeService.Handlers.Unregister(MoveCmd);
+    }
+
+    /// <summary>
+    /// Asks the server to move one item between the character's own containers.  Returns once the request is sent;
+    /// the caller confirms by watching the item's container.  Refuses anything that could take an item out of the
+    /// character's inventory: the item must be in the main pack or a side pack, not equipped, and the destination
+    /// must be the character or one of its side packs.
+    /// </summary>
+    private static object Move(IDictionary<string, object> request)
+    {
+        RequireWriteMode();
+
+        var plugin = REPlugin.Instance;
+        var selfId = plugin.CharacterFilter.Id;
+
+        var objectId = (int)(MiniJson.GetLong(request, "objectId") ?? throw new ArgumentException("move needs an objectId"));
+        var destinationId = (int)(MiniJson.GetLong(request, "container") ?? throw new ArgumentException("move needs a container"));
+
+        var item = plugin.WorldFilter[objectId] ?? throw new ArgumentException($"No object with id {objectId}");
+        if (!IsOwnContainer(item.Container, selfId))
+            throw new ArgumentException($"{item.Name} ({objectId}) isn't in your main pack or a side pack");
+        if (item.Values(LongValueKey.EquippedSlots, 0) > 0 || item.Values(LongValueKey.Wielder, 0) != 0)
+            throw new ArgumentException($"{item.Name} ({objectId}) is equipped");
+        if (item.ObjectClass == ObjectClass.Container)
+            throw new ArgumentException("Moving packs isn't supported");
+        if (!IsOwnContainer(destinationId, selfId))
+            throw new ArgumentException($"Container {destinationId} isn't your main pack or one of your side packs");
+
+        if (item.Container == destinationId)
+            return new Dictionary<string, object> { ["objectId"] = objectId, ["container"] = destinationId, ["alreadyThere"] = true };
+
+        // The classic Hooks.MoveItem.  The two-argument overload (MoveItemEx) sent nothing at all on this client.
+        plugin.Actions.MoveItem(objectId, destinationId, 0, false);
+        return new Dictionary<string, object> { ["objectId"] = objectId, ["container"] = destinationId, ["requested"] = true };
+    }
+
+    /// <summary>
+    /// The wrapper only checks read access before calling plugin handlers, so a handler that changes game state checks
+    /// the mode itself, from the discovery file the wrapper keeps current.
+    /// TODO: move this into AgentRequestProcessor (handlers declaring they write) at the next wrapper change.
+    /// </summary>
+    private static void RequireWriteMode()
+    {
+        string mode = null;
+        try
+        {
+            var path = AgentDiscovery.FilePathFor(AgentDiscovery.DefaultDirectory, System.Diagnostics.Process.GetCurrentProcess().Id);
+            mode = MiniJson.GetString(MiniJson.Parse(System.IO.File.ReadAllText(path)) as IDictionary<string, object>, "mode");
+        }
+        catch (Exception)
+        {
+            // Treated as read-only below.
+        }
+
+        if (mode != "rw" && mode != "full")
+            throw new InvalidOperationException($"This needs '/re agent rw' (bridge mode is {mode ?? "unknown"})");
+    }
+
+    private static bool IsOwnContainer(int containerId, int selfId)
+    {
+        if (containerId == selfId)
+            return true;
+
+        var container = REPlugin.Instance.WorldFilter[containerId];
+        return container != null && container.ObjectClass == ObjectClass.Container && container.Container == selfId;
     }
 
     /// <summary>
@@ -157,6 +225,7 @@ internal static class AgentHandlers
             ["busyStateId"] = actions.BusyStateId,
             ["combatMode"] = actions.CombatMode.ToString(),
             ["selection"] = actions.CurrentSelection,
+            ["openedContainer"] = actions.OpenedContainer,
         };
 
         // VT state is left out for now.  VTUtilities.GetVTOptions listens on CommandLineText for VT's
