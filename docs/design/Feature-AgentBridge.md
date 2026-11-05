@@ -242,9 +242,13 @@ send text, not to see it.
 * Not seen: calls made late-bound through `IDispatch::Invoke`, and anything a plugin draws into its own window (VVS
   consoles) without going through `AddChatText`.
 
-Needs a client restart (wrapper change).  The wrapper DLL is locked while any client is running, so all clients have to
-be closed for `deploy.bat` to copy it.  To verify: `rectl ping` shows `chatCapture: true`, then
-`rectl exec "/vt opt get EnableCombat" --wait "EnableCombat" --kinds plugin` should match VT's reply.
+Verified in game on 2026-11-05: `rectl ping` shows `chatCapture: true`, and
+`rectl exec "/vt opt get EnableCombat" --wait "EnableCombat" --kinds plugin` matched `[VTank] Option EnableCombat = True`.
+VT's startup messages were captured too, and RE's own output showed up once.
+
+* Target 4 is just the window RE uses for debug output.  Another plugin writing there (VT writes some messages to
+  several windows) is also tagged `debug`.
+* Changing the wrapper needs every client closed, since the wrapper DLL is locked while any client is running.
 
 ## Verification
 
