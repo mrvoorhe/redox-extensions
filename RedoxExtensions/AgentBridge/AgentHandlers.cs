@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using Decal.Adapter.Wrappers;
 
-using RedoxExtensions.VirindiInterop;
 using RedoxExtensions.Wrapper.AgentBridge;
 
 namespace RedoxExtensions.AgentBridge;
@@ -63,14 +62,10 @@ internal static class AgentHandlers
             ["selection"] = actions.CurrentSelection,
         };
 
-        try
-        {
-            result["vt"] = VTUtilities.GetVTOptions(VTOptionNames.AllStateOptions);
-        }
-        catch (Exception e)
-        {
-            result["vt"] = new Dictionary<string, object> { ["error"] = e.Message };
-        }
+        // VT state is left out for now.  VTUtilities.GetVTOptions listens on CommandLineText for VT's
+        // "[VTank] Option" replies, which VT doesn't raise there, so it always came back empty.  The real
+        // source is uTank2 PluginCore.GetExternalInterface(); see "Still to check on Windows" in
+        // docs/design/Feature-AgentBridge.md.
 
         return result;
     }
