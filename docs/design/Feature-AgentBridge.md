@@ -231,8 +231,11 @@ UB HUDs, chat).  It runs in the CLI process, so nothing changes in acclient, and
 
 `rectl move <name-regex> --to <container id>` moves matching inventory items into the main pack (the character's id) or
 a side pack.  The plugin's `move` handler sends one move and refuses anything outside the character's own containers,
-equipped items and packs.  The CLI confirms each item's new container before sending the next and stops at the first
-failure.  `move` needs `rw`.  The wrapper only checks read access for plugin handlers, so `move` reads the mode from
+equipped items and packs.  The CLI confirms each move (up to 15 s) before sending the next and stops at the first
+failure.  Stacks can merge into a stack already in the destination: the moved item disappears, or the server tops up
+the destination stack and leaves the rest behind with a new stack size.  Both count as `merged`, and the CLI re-scans
+and moves what's left (up to 5 passes).  Found on Rockdown, where a 5 s timeout and no merge handling stopped the run
+about a dozen times while sorting 160 items.  `move` needs `rw`.  The wrapper only checks read access for plugin handlers, so `move` reads the mode from
 the discovery file itself (`RequireWriteMode`).  That check belongs in `AgentRequestProcessor` at the next wrapper
 change.
 

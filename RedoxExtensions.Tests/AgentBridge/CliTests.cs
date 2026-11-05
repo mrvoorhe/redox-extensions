@@ -282,6 +282,83 @@ public class CliTests
     }
 
     [Test]
+    public void MoveCountsAStackThatMergesAwayAsMerged()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var stacks = new Dictionary<long, (long Container, int Stack)> { [1] = (50, 10), [2] = (60, 20) };
+        RegisterFakeStacks(bridge, stacks, onMove: (id, to) =>
+        {
+            stacks[2] = (to, stacks[2].Stack + stacks[id].Stack);
+            stacks.Remove(id);
+        });
+
+        var (exit, output, error) = this.Run("move", "Scarab", "--to", "60");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var result = JsonNode.Parse(output);
+        Assert.That(result["moved"].GetValue<int>(), Is.EqualTo(0));
+        Assert.That(result["merged"].GetValue<int>(), Is.EqualTo(1));
+        Assert.That(result["alreadyThere"].GetValue<int>(), Is.EqualTo(1));
+        Assert.That(stacks[2].Stack, Is.EqualTo(30));
+    }
+
+    [Test]
+    public void MoveMovesTheRemainderAPartialMergeLeavesBehind()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var stacks = new Dictionary<long, (long Container, int Stack)> { [1] = (50, 10), [2] = (60, 95) };
+        RegisterFakeStacks(bridge, stacks, onMove: (id, to) =>
+        {
+            // The first move tops the destination stack up to 100 and leaves the rest where it was.
+            if (stacks[2].Stack < 100)
+            {
+                var room = 100 - stacks[2].Stack;
+                stacks[2] = (to, 100);
+                stacks[id] = (stacks[id].Container, stacks[id].Stack - room);
+            }
+            else
+            {
+                stacks[id] = (to, stacks[id].Stack);
+            }
+        });
+
+        var (exit, output, error) = this.Run("move", "Scarab", "--to", "60");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var result = JsonNode.Parse(output);
+        Assert.That(result["moved"].GetValue<int>(), Is.EqualTo(1));
+        Assert.That(result["merged"].GetValue<int>(), Is.EqualTo(1));
+        Assert.That(stacks[1], Is.EqualTo((60L, 5)));
+    }
+
+    private static void RegisterFakeStacks(FakeBridge bridge, Dictionary<long, (long Container, int Stack)> stacks, Action<long, long> onMove)
+    {
+        bridge.Handlers.Register("world", request => RedoxExtensions.AgentBridge.WorldQuery.Parse(request).Apply(
+            stacks.Select(kv => new RedoxExtensions.AgentBridge.WorldItem
+            {
+                Id = (int)kv.Key,
+                Name = "Mana Scarab",
+                ObjectClass = "SpellComponent",
+                Container = (int)kv.Value.Container,
+                StackCount = kv.Value.Stack,
+            }).ToList()));
+
+        bridge.Handlers.Register("move", request =>
+        {
+            onMove(MiniJson.GetLong(request, "objectId").Value, MiniJson.GetLong(request, "container").Value);
+            return null;
+        });
+
+        bridge.Handlers.Register("object", request =>
+        {
+            var id = MiniJson.GetLong(request, "objectId").Value;
+            if (!stacks.TryGetValue(id, out var entry))
+                throw new ArgumentException($"No object with id {id}");
+            return new Dictionary<string, object> { ["id"] = id, ["container"] = entry.Container, ["stack"] = entry.Stack };
+        });
+    }
+
+    [Test]
     public void MoveResolvesPackSlotsAndMain()
     {
         var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);

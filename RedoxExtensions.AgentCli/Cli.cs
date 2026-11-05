@@ -196,12 +196,16 @@ public class Cli
         return this.Simple(instance, "object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
     }
 
-    private const int MoveConfirmTimeoutMs = 5000;
+    private const int MoveConfirmTimeoutMs = 15000;
     private const int MoveConfirmPollMs = 150;
+    private const int MoveMaxPasses = 5;
+
+    private enum MoveOutcome { Arrived, Merged, TimedOut }
 
     /// <summary>
     /// Moves every inventory item whose name matches into one container, one at a time.  Each move is confirmed by
-    /// watching the item's container before the next is sent.  Stops at the first failure.
+    /// watching the item before the next is sent.  Repeats until nothing matching is left outside the destination
+    /// (stack merges can leave a remainder behind).  Stops at the first failure.
     /// </summary>
     private int Move(BridgeInstance instance, Arguments parsed)
     {
@@ -222,62 +226,66 @@ public class Cli
             return resolveError.StartsWith("--to") ? ExitUsage : ExitFailed;
         }
 
-        var items = new List<JsonNode>();
-        var offset = 0;
-        while (true)
-        {
-            var page = client.Send("world", new Dictionary<string, JsonNode>
-            {
-                ["scope"] = "inventory",
-                ["name"] = name,
-                ["offset"] = offset,
-                ["limit"] = 200,
-            });
-            if (!IsOk(page))
-                return this.Report(page);
-
-            foreach (var item in page["result"]["objects"].AsArray())
-                items.Add(item);
-
-            if (page["result"]["nextOffset"] is JsonValue next)
-                offset = next.GetValue<int>();
-            else
-                break;
-        }
-
         var moved = 0;
+        var merged = 0;
         var alreadyThere = 0;
+        int? matched = null;
         JsonObject failure = null;
 
-        foreach (var item in items)
+        // Stacks can merge with a stack already in the destination.  The moved item then disappears, or the server
+        // tops up the destination stack and leaves the rest behind with a new stack size.  Either counts as merged,
+        // and the next pass picks up whatever is still outside the destination.
+        for (var pass = 0; pass < MoveMaxPasses && failure == null; pass++)
         {
-            var id = item["id"].GetValue<long>();
-            if (item["container"]?.GetValue<long>() == to)
+            var items = this.FindInventory(client, name, out var queryError);
+            if (items == null)
+                return this.Report(queryError);
+
+            var pending = items.Where(item => item["container"]?.GetValue<long>() != to).ToList();
+            if (matched == null)
             {
-                alreadyThere++;
-                continue;
+                matched = items.Count;
+                alreadyThere = items.Count - pending.Count;
             }
 
-            var response = client.Send("move", new Dictionary<string, JsonNode> { ["objectId"] = id, ["container"] = to.Value });
-            if (!IsOk(response))
+            if (pending.Count == 0)
+                break;
+
+            if (pass == MoveMaxPasses - 1)
             {
-                failure = new JsonObject { ["objectId"] = id, ["error"] = response["error"]?.GetValue<string>() };
+                failure = new JsonObject { ["error"] = $"{pending.Count} item(s) still not in {to} after {MoveMaxPasses} passes" };
                 break;
             }
 
-            if (!this.WaitForContainer(client, id, to.Value))
+            foreach (var item in pending)
             {
-                failure = new JsonObject { ["objectId"] = id, ["error"] = $"Still not in {to} after {MoveConfirmTimeoutMs} ms" };
-                break;
-            }
+                var id = item["id"].GetValue<long>();
+                var response = client.Send("move", new Dictionary<string, JsonNode> { ["objectId"] = id, ["container"] = to.Value });
+                if (!IsOk(response))
+                {
+                    failure = new JsonObject { ["objectId"] = id, ["error"] = response["error"]?.GetValue<string>() };
+                    break;
+                }
 
-            moved++;
+                var outcome = this.WaitForMove(client, id, to.Value, StackOf(item));
+                if (outcome == MoveOutcome.TimedOut)
+                {
+                    failure = new JsonObject { ["objectId"] = id, ["error"] = $"Still not in {to} after {MoveConfirmTimeoutMs} ms" };
+                    break;
+                }
+
+                if (outcome == MoveOutcome.Arrived)
+                    moved++;
+                else
+                    merged++;
+            }
         }
 
         var result = new JsonObject
         {
-            ["matched"] = items.Count,
+            ["matched"] = matched ?? 0,
             ["moved"] = moved,
+            ["merged"] = merged,
             ["alreadyThere"] = alreadyThere,
             ["container"] = to.Value,
         };
@@ -334,17 +342,65 @@ public class Cli
         return null;
     }
 
-    private bool WaitForContainer(BridgeClient client, long objectId, long container)
+    /// <summary>All inventory items matching the name regex, across pages.  Null (with the failed response) on error.</summary>
+    private List<JsonNode> FindInventory(BridgeClient client, string name, out JsonObject error)
+    {
+        error = null;
+        var items = new List<JsonNode>();
+        var offset = 0;
+        while (true)
+        {
+            var page = client.Send("world", new Dictionary<string, JsonNode>
+            {
+                ["scope"] = "inventory",
+                ["name"] = name,
+                ["offset"] = offset,
+                ["limit"] = 200,
+            });
+            if (!IsOk(page))
+            {
+                error = page;
+                return null;
+            }
+
+            foreach (var item in page["result"]["objects"].AsArray())
+                items.Add(item);
+
+            if (page["result"]["nextOffset"] is JsonValue next)
+                offset = next.GetValue<int>();
+            else
+                return items;
+        }
+    }
+
+    /// <summary>Stack size as the bridge reports it; "stack" is left out for single items.</summary>
+    private static int StackOf(JsonNode item) => item["stack"]?.GetValue<int>() ?? 1;
+
+    /// <summary>
+    /// Watches one moved item until it's in the destination (arrived), is gone or has a different stack size
+    /// (merged), or the timeout runs out.
+    /// </summary>
+    private MoveOutcome WaitForMove(BridgeClient client, long objectId, long container, int stack)
     {
         var deadline = DateTime.UtcNow.AddMilliseconds(MoveConfirmTimeoutMs);
         while (DateTime.UtcNow < deadline)
         {
             Thread.Sleep(MoveConfirmPollMs);
             var response = client.Send("object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
-            if (IsOk(response) && response["result"]["container"]?.GetValue<long>() == container)
-                return true;
+            if (!IsOk(response))
+            {
+                if (response["error"]?.GetValue<string>()?.Contains("No object with id") == true)
+                    return MoveOutcome.Merged;
+                continue;
+            }
+
+            var result = response["result"];
+            if (result["container"]?.GetValue<long>() == container)
+                return MoveOutcome.Arrived;
+            if (StackOf(result) != stack)
+                return MoveOutcome.Merged;
         }
-        return false;
+        return MoveOutcome.TimedOut;
     }
 
     private int Screenshot(BridgeInstance instance, Arguments parsed)
