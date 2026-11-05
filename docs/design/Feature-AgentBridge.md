@@ -206,8 +206,10 @@ Fixed along the way:
 * `rectl dev` ran `copy_dlls_debug.bat` by name, which fails when `NoDefaultCurrentDirectoryInExePath` is set (it is
   in Claude Code's shell).  It now uses the full path.
 * `deploy.bat` failed with a sharing violation on `RedoxLib.dll`, which running clients keep locked.  It now copies
-  `RedoxLib`, `RedoxFilter` and the wrapper with `xcopy /D`, so unchanged files are skipped.  A changed `RedoxLib`
-  still fails the deploy (it needs a client restart).
+  `RedoxLib`, `RedoxFilter` and the wrapper with `xcopy /D`, so files that weren't rebuilt are skipped.  Debug builds
+  aren't deterministic (full PDBs), so a rebuilt but unchanged `RedoxLib` still looks new.  A locked `RedoxLib` or
+  `RedoxFilter` is now a warning, like the wrapper.  If `RedoxLib` really changed, the plugin reload fails to load
+  and the clients need a restart.
 
 Still open:
 

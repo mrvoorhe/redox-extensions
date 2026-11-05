@@ -37,9 +37,19 @@ if "%~3"=="yes" (
 )
 xcopy /Y "%SOURCE%\RedoxExtensions.dll" "%DEST%\" || exit /b 1
 xcopy /Y "%SOURCE%\RedoxExtensions.pdb" "%DEST%\" || exit /b 1
-rem These stay loaded (locked) while a client runs, so /D skips them unless they actually changed.
-xcopy /Y /D "%SOURCE%\RedoxLib.*" "%DEST%\" || exit /b 1
-xcopy /Y /D "%SOURCE%\RedoxFilter.*" "%DEST%\" || exit /b 1
+rem These stay loaded (locked) while a client runs.  /D skips them when they weren't rebuilt, but Debug builds aren't
+rem deterministic (full PDBs), so any rebuild looks like a change.  Warn instead of failing; the plugin reload reports
+rem a load error if RedoxLib really changed.
+xcopy /Y /D "%SOURCE%\RedoxLib.*" "%DEST%\" || (
+    echo.
+    echo WARNING: RedoxLib not copied ^(in use by a running client^).  If RedoxLib changed, restart the clients.
+    echo.
+)
+xcopy /Y /D "%SOURCE%\RedoxFilter.*" "%DEST%\" || (
+    echo.
+    echo WARNING: RedoxFilter not copied ^(in use by a running client^)
+    echo.
+)
 xcopy /Y /D "%SOURCE%\RedoxExtensions.Wrapper.*" "%DEST%\" || (
     echo.
     echo WARNING: RedoxExtensions.Wrapper not copied ^(in use by Decal?^)
