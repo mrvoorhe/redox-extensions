@@ -67,7 +67,7 @@ public class REWrapperPlugin : PluginBase, IPluginServices
     {
         try
         {
-            AgentBridgeService.Publish("plugin", message, color);
+            AgentBridgeService.Publish(chatWindow == WrapperDebugWriter.DEBUG_CHAT ? EventJournal.KindDebug : "plugin", message, color);
             this.Host.Actions.AddChatText(message, color, chatWindow);
         }
         catch (Exception e)

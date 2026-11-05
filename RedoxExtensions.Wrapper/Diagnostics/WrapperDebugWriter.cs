@@ -91,13 +91,14 @@ public class WrapperDebugWriter
     public void WriteLine(string text)
     {
 #if DEBUG
+        // WriteToChat publishes debug-window text to the agent bridge as a "debug" event.
         this._pluginServices.WriteToChat(this.FormatWithPrefix(text), DEFAULT_MESSAGE_COLOR, DEBUG_CHAT);
+#else
+        AgentBridge.AgentBridgeService.Publish(AgentBridge.EventJournal.KindDebug, this.FormatWithPrefix(text));
 #endif
 
         // Log to file as well
         this.LogLine(text);
-
-        AgentBridge.AgentBridgeService.Publish(AgentBridge.EventJournal.KindDebug, this.FormatWithPrefix(text));
     }
 
     public void WriteLine(string text, params object[] args)
