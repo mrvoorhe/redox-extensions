@@ -169,23 +169,6 @@ public class DebugWriter : Wrapper.Diagnostics.WrapperDebugWriter
         this.WriteLoggable(obj.MinimumRequiredDebugLevel(), obj.ToLoggableFormat);
     }
 
-    internal void WriteObject(CreateObjectEventArgs obj)
-    {
-        lock (this._writeLock)
-        {
-            using (StreamWriter stream = new StreamWriter(this._currentPath, true))
-            {
-                this.LogRawMessage(this.FormatWithPrefix("CreateObjectEventArgs"), stream);
-                this.LogRawMessage($"  New (WObj) = {obj.New.Name}", stream);
-                this.LogRawMessage($"    Id = {obj.New.Id}", stream);
-
-                //this.WriteCurrentStateStuff(stream, false);
-
-                this.LogRawMessage("", stream);
-            }
-        }
-    }
-
     internal void WriteObject(ChangeObjectEventArgs obj)
     {
         if (ActiveSettings.Instance.DebugLevel == DebugLevel.None)

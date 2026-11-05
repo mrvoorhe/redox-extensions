@@ -219,8 +219,6 @@ public class DecalEventsProxy : IDecalEventsProxy, IDisposable
     {
         REPlugin.Instance.InvokeOperationSafely(() =>
         {
-            REPlugin.Instance.Debug.WriteObject(e);
-
             this.CreateObject?.Invoke(sender, e);
         });
     }
