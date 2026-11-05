@@ -179,15 +179,44 @@ Use `--dir` or `REDOX_AGENT_DIR` to point it at a discovery directory directly.
 Exit codes: 0 means success, 1 means the request failed or a wait timed out, 2 means a usage error or no
 single client could be picked.
 
-## Still to check on Windows
+## Windows checks
 
-* `CharFilterVitalType` and `CharacterFilter.Health/Stamina/Mana` return what the `state` handler assumes (current
-  vs. max).
-* Whether `Host.Actions.AddChatText` also raises `ChatBoxMessage`.  If it does, RE output shows up as both `plugin`
-  and `chat` events.
-* `GetVTOptions` inside `state` works when called from RenderFrame and doesn't spam chat.
-* A Windows Firewall prompt on the first enable (loopback-only binding shouldn't trigger one).
-* `reload` finishes within the 10 second game-thread timeout.  `rectl reload` polls `ping` if it doesn't.
+Checked on 2026-11-05 with one client (Virmar):
+
+* Vitals: `CharacterFilter.Health/Stamina/Mana` are current values and `EffectiveVital[...]` are max, as assumed.
+* `Host.Actions.AddChatText` does not raise `ChatBoxMessage`, so RE output is only a `plugin` event, never also `chat`.
+  The same means other plugins' `AddChatText` output (VT, UB, MagTools) never reaches the journal.
+* No firewall prompt on enable.
+* `rectl dev` deploys, reloads and reconnects well within the timeout.
+* `exec /re help --wait ...` round trip works.
+
+Fixed along the way:
+
+* `/re agent ...` also printed "RT Unknown Command".  Decal raises `CommandLineText` for every subscriber regardless of
+  `Eat`, so the plugin's `/re` handler also saw it, and it returned `false`, which reset the wrapper's `Eat`.  The
+  plugin now claims `agent` as a no-op.  (`load`/`unload`/`reload` dodge this only because the plugin isn't
+  subscribed at that moment.)
+* `state` no longer includes `vt`.  `VTUtilities.GetVTOptions` waits for VT's `[VTank] Option ...` reply on
+  `CommandLineText`, which never arrives (no "Captured VT Option" line in any character's log), so it always
+  returned `{}`.  This affects existing callers too (`UnstuckActions`, `VTStateScope`, `VTSettingsSnapshot`).
+* Text written to the debug chat window is journaled as `debug`, not `plugin`.  `WrapperDebugWriter.WriteLine`
+  publishes its own `debug` event only in Release builds, where it doesn't write to chat.  (This wrapper part
+  needs a client restart.  Until then wrapper debug lines show up as both `plugin` and `debug`.)
+* `rectl dev` ran `copy_dlls_debug.bat` by name, which fails when `NoDefaultCurrentDirectoryInExePath` is set (it is
+  in Claude Code's shell).  It now uses the full path.
+* `deploy.bat` failed with a sharing violation on `RedoxLib.dll`, which running clients keep locked.  It now copies
+  `RedoxLib`, `RedoxFilter` and the wrapper with `xcopy /D`, so unchanged files are skipped.  A changed `RedoxLib`
+  still fails the deploy (it needs a client restart).
+
+Still open:
+
+* VT state.  `utank2-i.dll` exposes `uTank2.PluginCore.PC.GetExternalInterface()` returning
+  `cExternalInterfaceTrustedRelay` (`GetSetting`, `MacroEnabled`, `GetNavProfile`, `GetSettingsProfile`,
+  `NavCurrent`, ...).  Not tried yet, because it's unknown whether VT shows a permission prompt.
+* The journal fills fast: about 1,300 events in 3 minutes of combat, mostly `DebugWriter.WriteObject(CreateObjectEventArgs)`
+  (4 lines per object, and the only `WriteObject` without a `DebugLevel` check), so 5,000 entries is about 12 minutes.
+  The same calls are why `RT_Debug_<char>.txt` reaches 1.6 GB.
+* Selection rules with two clients, and memory (step 6 and 7 below).
 
 ## Verification
 
