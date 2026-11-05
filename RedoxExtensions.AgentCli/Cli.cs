@@ -41,10 +41,9 @@ public class Cli
           inventory [name-regex] [--class <c1,c2>] [--container <id>] [--offset <n>] [--limit <n>]
                                        Inventory and equipped items, by name
           object <id>                  Every value Decal has for one object
-          move <name-regex> --to <container id>
-                                       Move matching inventory items into your main pack (your character id) or a
-                                       side pack, one at a time, confirming each.  Needs rw.  state's
-                                       openedContainer is the pack open in the inventory window.
+          move <name-regex> --to <main|pack<N>|container id>
+                                       Move matching inventory items into your main pack or a side pack (pack0 is
+                                       the first in the inventory window), one at a time, confirming each.  Needs rw.
           net [off] [--server <types>] [--client <types>]
                                        Show or set which network messages are journaled as "net" events.  Types
                                        are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
@@ -207,14 +206,21 @@ public class Cli
     private int Move(BridgeInstance instance, Arguments parsed)
     {
         var name = string.Join(" ", parsed.Positionals);
-        var to = parsed.GetLong("to");
-        if (name.Length == 0 || to == null)
+        var toText = parsed.Get("to");
+        if (name.Length == 0 || string.IsNullOrEmpty(toText))
         {
-            this._err.WriteLine("move needs a name regex and --to <container id>, e.g. rectl move \"^Titan Mana Charge$\" --to -265987263");
+            this._err.WriteLine("move needs a name regex and --to <main|pack<N>|container id>, e.g. rectl move \"^Titan Mana Charge$\" --to pack0");
             return ExitUsage;
         }
 
         using var client = Connect(instance, DefaultWaitTimeoutMs);
+
+        long? to = this.ResolveContainer(client, toText, out var resolveError);
+        if (to == null)
+        {
+            this._err.WriteLine(resolveError);
+            return resolveError.StartsWith("--to") ? ExitUsage : ExitFailed;
+        }
 
         var items = new List<JsonNode>();
         var offset = 0;
@@ -280,6 +286,52 @@ public class Cli
 
         this.WriteJson(result);
         return failure == null ? ExitOk : ExitFailed;
+    }
+
+    /// <summary>
+    /// "main" is the character, "pack&lt;N&gt;" the side pack at slot N (0 = first in the inventory window, the same
+    /// order mudsort uses), anything else a container id.
+    /// </summary>
+    private long? ResolveContainer(BridgeClient client, string text, out string error)
+    {
+        error = null;
+        var lowered = text.Trim().ToLowerInvariant();
+
+        if (lowered == "main")
+        {
+            var state = client.Send("state");
+            if (!IsOk(state))
+            {
+                error = state["error"]?.GetValue<string>() ?? "state failed";
+                return null;
+            }
+            return state["result"]["character"]["id"].GetValue<long>();
+        }
+
+        if (lowered.StartsWith("pack") && int.TryParse(lowered.Substring(4), out var slot))
+        {
+            var packs = client.Send("world", new Dictionary<string, JsonNode> { ["scope"] = "inventory", ["class"] = "Container", ["limit"] = 200 });
+            if (!IsOk(packs))
+            {
+                error = packs["error"]?.GetValue<string>() ?? "world failed";
+                return null;
+            }
+
+            foreach (var pack in packs["result"]["objects"].AsArray())
+            {
+                if (pack["slot"]?.GetValue<int>() == slot)
+                    return pack["id"].GetValue<long>();
+            }
+
+            error = $"No side pack in slot {slot}";
+            return null;
+        }
+
+        if (long.TryParse(text, out var id))
+            return id;
+
+        error = $"--to must be main, pack<N> or a container id, not '{text}'";
+        return null;
     }
 
     private bool WaitForContainer(BridgeClient client, long objectId, long container)

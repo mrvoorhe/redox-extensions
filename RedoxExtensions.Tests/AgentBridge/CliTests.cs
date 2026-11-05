@@ -282,6 +282,43 @@ public class CliTests
     }
 
     [Test]
+    public void MoveResolvesPackSlotsAndMain()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var targets = new List<long>();
+        bridge.Handlers.Register("state", _ => new Dictionary<string, object>
+        {
+            ["character"] = new Dictionary<string, object> { ["id"] = 999 },
+        });
+        bridge.Handlers.Register("world", request =>
+        {
+            var query = RedoxExtensions.AgentBridge.WorldQuery.Parse(request);
+            return query.Apply(new[]
+            {
+                new RedoxExtensions.AgentBridge.WorldItem { Id = 70, Name = "Pack", ObjectClass = "Container", Container = 999, Slot = 1 },
+                new RedoxExtensions.AgentBridge.WorldItem { Id = 80, Name = "Pack", ObjectClass = "Container", Container = 999, Slot = 0 },
+                new RedoxExtensions.AgentBridge.WorldItem { Id = 5, Name = "Charge", ObjectClass = "ManaStone", Container = 70 },
+            });
+        });
+        bridge.Handlers.Register("move", request =>
+        {
+            targets.Add(MiniJson.GetLong(request, "container").Value);
+            throw new ArgumentException("stop here");
+        });
+
+        this.Run("move", "Charge", "--to", "pack0");
+        this.Run("move", "Charge", "--to", "main");
+        var (missingExit, _, missingError) = this.Run("move", "Charge", "--to", "pack7");
+        var (badExit, _, badError) = this.Run("move", "Charge", "--to", "somewhere");
+
+        Assert.That(targets, Is.EqualTo(new long[] { 80, 999 }));
+        Assert.That(missingExit, Is.EqualTo(Cli.ExitFailed));
+        Assert.That(missingError, Does.Contain("No side pack in slot 7"));
+        Assert.That(badExit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(badError, Does.Contain("--to must be"));
+    }
+
+    [Test]
     public void MoveNeedsANameAndDestination()
     {
         this.StartBridge(100, "Alpha", AgentMode.ReadWrite);

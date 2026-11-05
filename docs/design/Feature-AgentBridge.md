@@ -239,9 +239,11 @@ change.
 * `Actions.MoveItem(id, dest)` (two arguments, `MoveItemEx`) sends nothing on this client.  The four-argument
   `MoveItem(id, pack, 0, false)` sends game action 25 (put item in container) and works.
 * Side packs on this server hold 102 items (Decal's `ItemSlots`), not the usual 24.
-* There's no way yet to tell which side pack is "pack N" in the inventory window: Decal leaves `Slot` empty for packs
-  and `OpenedContainer` stays 0 for your own packs.  Ask the user to click the pack, then read `selection` from `state`
-  (VT may change the selection while fighting).
+* `--to main` is the main pack and `--to pack<N>` the side pack at slot N (0 = first in the inventory window).  The
+  order comes from `Values(LongValueKey.Slot)`, which Decal computes on request, so it's not in `LongKeys` and the
+  `object` dump doesn't show it.  `world`/`inventory` report it as `slot` for anything in a container.  Found by
+  decompiling mudsort, whose `/ms set dest pack N` picks the pack with `Slot + 1 == N`; checked on Virmar against the
+  pack the user clicked as pack 0.  (`OpenedContainer` stays 0 for your own packs.)
 * Checked on Virmar: 41 Titan Mana Charges moved into a side pack in 7 seconds.
 
 Checked in game on Virmar: nearby doors, a player and a monster with distances and coordinates; 297 inventory items

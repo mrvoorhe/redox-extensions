@@ -21,6 +21,9 @@ internal sealed class WorldItem
     public int StackCount { get; set; }
     public bool HasIdData { get; set; }
 
+    /// <summary>Position in its container (side packs: 0 is the first pack in the inventory window), or -1.</summary>
+    public int Slot { get; set; } = -1;
+
     /// <summary>Meters from the character.  Landscape only.</summary>
     public double? Distance { get; set; }
     public double? NorthSouth { get; set; }
@@ -41,6 +44,8 @@ internal sealed class WorldItem
             json["wielder"] = this.Wielder;
         if (this.StackCount > 1)
             json["stack"] = this.StackCount;
+        if (this.Slot >= 0)
+            json["slot"] = this.Slot;
         if (this.HasIdData)
             json["hasIdData"] = true;
         if (this.Distance.HasValue)

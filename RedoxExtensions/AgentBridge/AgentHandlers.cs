@@ -172,6 +172,11 @@ internal static class AgentHandlers
             HasIdData = wo.HasIdData,
         };
 
+        // Slot is computed by Decal, so it isn't in LongKeys and the object dump never shows it.  Side packs use it
+        // for their order in the inventory window (mudsort's "pack N" is the pack with Slot N - 1).
+        if (wo.Container != 0)
+            item.Slot = wo.Values(LongValueKey.Slot, -1);
+
         if (selfId != 0 && wo.Id != 0 && wo.Id != selfId && wo.Container == 0)
         {
             item.Distance = REPlugin.Instance.WorldFilter.Distance(selfId, wo.Id) * 240;
