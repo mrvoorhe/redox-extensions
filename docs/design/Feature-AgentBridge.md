@@ -214,7 +214,13 @@ Still open:
 * VT state.  `utank2-i.dll` exposes `uTank2.PluginCore.PC.GetExternalInterface()` returning
   `cExternalInterfaceTrustedRelay` (`GetSetting`, `MacroEnabled`, `GetNavProfile`, `GetSettingsProfile`,
   `NavCurrent`, ...).  Not tried yet, because it's unknown whether VT shows a permission prompt.
-* Selection rules with two clients, and memory (step 6 and 7 below).
+* Memory (step 7 below).  With Virmar and Woodford both enabled, private bytes were 635 and 620 MB, but that can't
+  be compared with the bridge-off reading from earlier (different session and uptime), so it doesn't isolate the
+  bridge's cost.
+
+Selection rules, checked with Virmar and Woodford both in `rw`: no flag lists both and exits 2, `-c wood` (prefix,
+case-insensitive), `-c Virmar` and `--pid` each pick the right client, and an unknown `-c` lists both and exits 2.
+Each client installs its own chat capture (`chatCapture: true` on both).
 
 Removed: `CreateObject` debug logging.  It ignored `DebugLevel`, filled the journal (about 1,300 events in 3 minutes of
 combat) and grew `RT_Debug_<char>.txt` to 1.6 GB.
