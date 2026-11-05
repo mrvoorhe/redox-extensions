@@ -172,6 +172,11 @@ internal static class RedoxExtensionsHandler
                 Actions.SimpleActions.TeleportInto(command);
                 return true;
 
+            // Handled by the wrapper (WrapperCommandListener).  Decal raises CommandLineText for every
+            // subscriber regardless of Eat, so claim it here to avoid "Unknown Command" and un-eating it.
+            case "agent":
+                return true;
+
             default:
                 REPlugin.Instance.Chat.WriteLine("Unknown Command : {0} ", command.RawValue);
                 return false;
