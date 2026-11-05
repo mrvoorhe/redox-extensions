@@ -168,6 +168,9 @@ From a terminal on the same machine (`rectl help` for everything):
 ```
 rectl list
 rectl state
+rectl world --class Monster --near 60
+rectl inventory "^Aetheria$" --limit 20
+rectl object -263546213
 rectl exec /re recordroute start --wait "recording" --kinds plugin,chat
 rectl events --since 120 --kinds chat
 rectl wait "Route saved" --timeout 30000
@@ -179,6 +182,25 @@ Use `--dir` or `REDOX_AGENT_DIR` to point it at a discovery directory directly.
 
 Exit codes: 0 means success, 1 means the request failed or a wait timed out, 2 means a usage error or no
 single client could be picked.
+
+### World and inventory
+
+`world` and `object` are plugin handlers (`RedoxExtensions/AgentBridge/AgentHandlers.cs`), so changing them only needs
+`rectl dev`.  The filtering and paging is in `WorldQuery`, which has no Decal dependency and is unit-tested.
+
+* `world` request: `scope` (`landscape`, the default, or `inventory`), `name` (case-insensitive regex), `class`
+  (`ObjectClass` names, list or comma-separated), `container` (id), `maxDistance` (meters), `offset`, `limit` (default
+  50, max 200, which keeps a response under the 85 KB large object heap threshold).
+* Landscape is sorted by distance, closest first.  Inventory (which includes equipped items) is sorted by name.
+* Each object has `id`, `name` and `class`, and `container`, `wielder`, `stack`, `hasIdData`, `distance` (meters), `ns`
+  and `ew` when they apply.  The character itself and anything in a container have no distance.
+* The response has `total` (matches before paging) and `nextOffset` when there are more.
+* `object` request: `objectId` (not `id`, which is the request id).  Returns the summary fields plus `category`,
+  `behavior`, `type` and every `long`, `double`, `string` and `bool` value Decal has, keyed by `*ValueKey` name.
+
+Checked in game on Virmar: nearby doors, a player and a monster with distances and coordinates; 297 inventory items
+paged; equipped bow and arrows show `wielder`; `object` returns the key dump; a bad id or `--near far` gives an error and
+exit code 1.
 
 ## Windows checks
 
@@ -329,7 +351,6 @@ Notes for picking this up on the Windows machine, where there's no history of th
 
 ### Next steps after the Windows check
 
-* `world` handler: WorldFilter objects and inventory, paged
 * Network message journaling from `ServerDispatch` / `ClientDispatch`, limited by an allowlist of message types
 * `rectl screenshot` using `PrintWindow`.  It should encode PNG itself with `ZLibStream`, to avoid needing
   System.Drawing.

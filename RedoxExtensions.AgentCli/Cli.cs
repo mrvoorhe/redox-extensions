@@ -35,7 +35,12 @@ public class Cli
         Commands:
           list                         Clients with the bridge enabled
           ping                         Bridge status for the selected client
-          state                        Character, vitals, location, busy state and VT state
+          state                        Character, vitals, location and busy state
+          world [name-regex] [--class <c1,c2>] [--near <meters>] [--container <id>] [--offset <n>] [--limit <n>]
+                                       Nearby objects, closest first (paged, --limit up to 200)
+          inventory [name-regex] [--class <c1,c2>] [--container <id>] [--offset <n>] [--limit <n>]
+                                       Inventory and equipped items, by name
+          object <id>                  Every value Decal has for one object
           exec <text> [--wait <regex>] [--kinds <k1,k2>]
                                        Run a chat command as if typed, optionally wait for a matching event
           events [--since <seq>] [--kinds <k1,k2>] [--max <n>]
@@ -103,6 +108,9 @@ public class Cli
             {
                 "ping" => this.Simple(instance, "ping", null),
                 "state" => this.Simple(instance, "state", null),
+                "world" => this.World(instance, parsed, "landscape"),
+                "inventory" => this.World(instance, parsed, "inventory"),
+                "object" => this.Object(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
                 "events" => this.Events(instance, parsed),
                 "wait" => this.Wait(instance, parsed, timeoutMs),
@@ -144,6 +152,36 @@ public class Cli
     {
         using var client = Connect(instance, DefaultWaitTimeoutMs);
         return this.Report(client.Send(cmd, fields));
+    }
+
+    private int World(BridgeInstance instance, Arguments parsed, string scope)
+    {
+        var fields = new Dictionary<string, JsonNode> { ["scope"] = scope };
+        if (parsed.Positionals.Count > 0)
+            fields["name"] = string.Join(" ", parsed.Positionals);
+        if (parsed.Get("class") is { } classes)
+            fields["class"] = KindsArray(classes);
+        if (parsed.GetLong("container") is { } container)
+            fields["container"] = container;
+        if (parsed.Get("near") is { } near)
+            fields["maxDistance"] = near;
+        if (parsed.GetInt("offset") is { } offset)
+            fields["offset"] = offset;
+        if (parsed.GetInt("limit") is { } limit)
+            fields["limit"] = limit;
+
+        return this.Simple(instance, "world", fields);
+    }
+
+    private int Object(BridgeInstance instance, Arguments parsed)
+    {
+        if (parsed.Positionals.Count != 1 || !long.TryParse(parsed.Positionals[0], out var objectId))
+        {
+            this._err.WriteLine("object needs one object id, e.g. rectl object -263199647");
+            return ExitUsage;
+        }
+
+        return this.Simple(instance, "object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
     }
 
     private int Exec(BridgeInstance instance, Arguments parsed, int timeoutMs)
@@ -361,6 +399,11 @@ public class Cli
             ["--since"] = "since",
             ["--max"] = "max",
             ["--repo"] = "repo",
+            ["--class"] = "class",
+            ["--container"] = "container",
+            ["--near"] = "near",
+            ["--offset"] = "offset",
+            ["--limit"] = "limit",
         };
 
         private readonly Dictionary<string, string> _options = new();

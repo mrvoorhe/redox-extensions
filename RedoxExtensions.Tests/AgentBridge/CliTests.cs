@@ -196,6 +196,54 @@ public class CliTests
     }
 
     [Test]
+    public void WorldSendsFiltersThatWorldQueryApplies()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadOnly);
+        IDictionary<string, object> received = null;
+        bridge.Handlers.Register("world", request =>
+        {
+            received = request;
+            return RedoxExtensions.AgentBridge.WorldQuery.Parse(request).Apply(new[]
+            {
+                new RedoxExtensions.AgentBridge.WorldItem { Id = 1, Name = "Drudge Sneaker", ObjectClass = "Monster", Distance = 20 },
+                new RedoxExtensions.AgentBridge.WorldItem { Id = 2, Name = "Drudge Ravener", ObjectClass = "Monster", Distance = 5 },
+                new RedoxExtensions.AgentBridge.WorldItem { Id = 3, Name = "Drudge Charm", ObjectClass = "Misc", Distance = 1 },
+            });
+        });
+
+        var (exit, output, error) = this.Run("world", "drudge", "--class", "Monster", "--near", "30", "--limit", "1");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(MiniJson.GetString(received, "scope"), Is.EqualTo("landscape"));
+        Assert.That(MiniJson.GetString(received, "maxDistance"), Is.EqualTo("30"));
+        var result = JsonNode.Parse(output);
+        Assert.That(result["total"].GetValue<int>(), Is.EqualTo(2));
+        Assert.That(result["objects"][0]["name"].GetValue<string>(), Is.EqualTo("Drudge Ravener"));
+        Assert.That(result["nextOffset"].GetValue<int>(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void InventoryUsesInventoryScopeAndObjectSendsObjectId()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadOnly);
+        var scopes = new List<string>();
+        long? objectId = null;
+        bridge.Handlers.Register("world", request => { scopes.Add(MiniJson.GetString(request, "scope")); return null; });
+        bridge.Handlers.Register("object", request => { objectId = MiniJson.GetLong(request, "objectId"); return null; });
+
+        var (inventoryExit, _, _) = this.Run("inventory");
+        var (objectExit, _, objectError) = this.Run("object", "-263199647");
+        var (badExit, _, badError) = this.Run("object", "abc");
+
+        Assert.That(inventoryExit, Is.EqualTo(Cli.ExitOk));
+        Assert.That(scopes, Is.EqualTo(new[] { "inventory" }));
+        Assert.That(objectExit, Is.EqualTo(Cli.ExitOk), objectError);
+        Assert.That(objectId, Is.EqualTo(-263199647));
+        Assert.That(badExit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(badError, Does.Contain("object needs one object id"));
+    }
+
+    [Test]
     public void BadOptionValueIsUsageError()
     {
         var (exit, _, error) = this.Run("ping", "--pid", "abc");
