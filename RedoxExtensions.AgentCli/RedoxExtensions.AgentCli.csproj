@@ -9,4 +9,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="RedoxExtensions.Tests" />
+  </ItemGroup>
+
 </Project>

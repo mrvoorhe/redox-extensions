@@ -50,6 +50,9 @@ public class Cli
                                        Recent events (kinds: chat, plugin, debug, command, net)
           wait <regex> [--since <seq>] [--kinds <k1,k2>]
                                        Wait for an event matching regex
+          screenshot [--out <path>] [--scale <n>]
+                                       Save the client's window as PNG, shrunk n times (default %TEMP%\rectl\<character>-<time>.png).
+                                       The window can be behind others but not minimized.
           reload                       Reload the plugin and wait until it's back
           dev [--repo <path>]          copy_dlls_debug.bat, then reload
           raw <json>                   Send a raw request (token is added)
@@ -115,6 +118,7 @@ public class Cli
                 "inventory" => this.World(instance, parsed, "inventory"),
                 "object" => this.Object(instance, parsed),
                 "net" => this.Net(instance, parsed),
+                "screenshot" => this.Screenshot(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
                 "events" => this.Events(instance, parsed),
                 "wait" => this.Wait(instance, parsed, timeoutMs),
@@ -186,6 +190,37 @@ public class Cli
         }
 
         return this.Simple(instance, "object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
+    }
+
+    private int Screenshot(BridgeInstance instance, Arguments parsed)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            this._err.WriteLine("screenshot uses PrintWindow and only works on Windows.");
+            return ExitUsage;
+        }
+
+        var path = parsed.Get("out") ?? Path.Combine(
+            Path.GetTempPath(), "rectl", $"{instance.Character}-{DateTime.Now:yyyyMMdd-HHmmss}.png");
+
+        try
+        {
+            var (width, height) = ScreenCapture.CaptureToPng(instance.Pid, path, parsed.GetInt("scale") ?? 1);
+            this.WriteJson(new JsonObject
+            {
+                ["path"] = Path.GetFullPath(path),
+                ["width"] = width,
+                ["height"] = height,
+                ["character"] = instance.Character,
+                ["pid"] = instance.Pid,
+            });
+            return ExitOk;
+        }
+        catch (Exception e) when (e is InvalidOperationException or ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            this._err.WriteLine($"Screenshot of {instance.Character} (pid {instance.Pid}) failed: {e.Message}");
+            return ExitFailed;
+        }
     }
 
     private int Net(BridgeInstance instance, Arguments parsed)
@@ -431,6 +466,8 @@ public class Cli
             ["--limit"] = "limit",
             ["--server"] = "server",
             ["--client"] = "client",
+            ["--out"] = "out",
+            ["--scale"] = "scale",
         };
 
         private readonly Dictionary<string, string> _options = new();

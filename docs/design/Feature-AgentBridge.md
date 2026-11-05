@@ -203,6 +203,17 @@ Values are as Decal decodes them, so codes like `event` and `action` are decimal
 (F7B0) arrive several times a second in combat, so turn capture off when done or it pushes older events out of the
 journal.
 
+### Screenshots
+
+`rectl screenshot [--out <path>] [--scale <n>]` captures the selected client's window (main window of its pid) with
+`PrintWindow(PW_CLIENTONLY | PW_RENDERFULLCONTENT)`, which gets the Direct3D scene and every overlay (VVS views, VT and
+UB HUDs, chat).  It runs in the CLI process, so nothing changes in acclient, and encodes PNG itself with `ZLibStream`.
+
+* The window can be behind other windows, but not minimized.  Minimized windows aren't drawn, and the command says so.
+* At 2560x1431, full size is about 6 MB and `--scale 2` (block averaging) about 1.7 MB.  At half size chat and large
+  panels are readable, small HUD text isn't.
+* Default path: `%TEMP%\rectl\<character>-<time>.png`.  The JSON output has the path and size.
+
 ### World and inventory
 
 `world` and `object` are plugin handlers (`RedoxExtensions/AgentBridge/AgentHandlers.cs`), so changing them only needs
@@ -371,7 +382,5 @@ Notes for picking this up on the Windows machine, where there's no history of th
 
 ### Next steps after the Windows check
 
-* `rectl screenshot` using `PrintWindow`.  It should encode PNG itself with `ZLibStream`, to avoid needing
-  System.Drawing.
 * An MCP stdio wrapper around the same client
 * Optionally, a JSONL file for the journal
