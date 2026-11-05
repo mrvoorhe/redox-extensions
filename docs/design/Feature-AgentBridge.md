@@ -266,10 +266,11 @@ Fixed along the way:
 
 Still open:
 
-* VT state.  `utank2-i.dll` exposes `uTank2.PluginCore.PC.GetExternalInterface()` returning
-  `cExternalInterfaceTrustedRelay` (`GetSetting`, `MacroEnabled`, `GetNavProfile`, `GetSettingsProfile`,
-  `NavCurrent`, ...).  Not tried yet, because it's unknown whether VT shows a permission prompt.
-* Memory (step 7 below).  With Virmar and Woodford both enabled, private bytes were 635 and 620 MB, but that can't
+* VT state (see "What's left" under "Handoff notes").  `utank2-i.dll` also exposes
+  `uTank2.PluginCore.PC.GetExternalInterface()` returning `cExternalInterfaceTrustedRelay` (`GetSetting`,
+  `MacroEnabled`, `GetNavProfile`, `GetSettingsProfile`, `NavCurrent`, ...).  Not tried, because it's unknown whether
+  VT shows a permission prompt.
+* Memory (see "What's left").  With Virmar and Woodford both enabled, private bytes were 635 and 620 MB, but that can't
   be compared with the bridge-off reading from earlier (different session and uptime), so it doesn't isolate the
   bridge's cost.
 
@@ -313,56 +314,85 @@ VT's startup messages were captured too, and RE's own output showed up once.
 
 ## Verification
 
-* Unit tests (net10): `dotnet test RedoxExtensions.slnx --filter "FullyQualifiedName~AgentBridge"`.  87 tests in
-  `RedoxExtensions.Tests/AgentBridge/`, all passing as of `db32452`.  `CliTests` run the real CLI against a real
-  loopback server with a fake game host.  The full suite has 27 failures that predate this feature (stale tests).
-* On Windows, with two clients logged in:
-  * `/re agent rw` on one client, then `rectl state` should pick it automatically.
-  * Enable on the second client: `rectl state` should error and list both, and `rectl -c <name> state` should work.
-  * `rectl exec /re help --wait <some text from the help output>` should complete a round trip.
-  * `rectl dev` should survive the reload.
-  * `/re agent off` should make `rectl` refuse.
-  * Compare acclient private bytes before and after enabling.
+* Unit tests (net10): `dotnet test RedoxExtensions.slnx --filter "FullyQualifiedName~AgentBridge"`.  112 tests in
+  `RedoxExtensions.Tests/AgentBridge/`, all passing as of `79d2c8d`.  `CliTests` run the real CLI against a real
+  loopback server with a fake game host.  `ChatTextCaptureTests` patch a fake vtable in unmanaged memory.  The full
+  suite has failures that predate this feature (stale tests, `PipelineDispatcherTests`).
+* In game, everything in "Windows checks", "Capturing other plugins' chat output", "Network messages", "Screenshots"
+  and "World and inventory" was checked on 2026-11-05 with Virmar and Woodford.
 
 ## Handoff notes
 
-Notes for picking this up on the Windows machine, where there's no history of the Mac session that built it.
+### Where it stands (2026-11-05, branch `gamedata`, last commit `79d2c8d`, not pushed)
 
-### State as of `db32452` (branch `gamedata`)
+Implementation is paused here.  Everything below is committed and the working tree is clean.
 
-* The design doc (`e05be91`) and first slice (`db32452`) are committed.  All of it was written and unit-tested on
-  macOS.  None of it has run inside acclient yet.
-* Wrapper code is in `RedoxExtensions.Wrapper/AgentBridge/`:
-  * `AgentBridgeSession`: the Decal-bound part
-  * `AgentRequestProcessor`: request routing
-  * `AgentBridgeServer`: TCP
-  * `AgentPolicy`: modes, blocked commands, rate limit
-  * `EventJournal`, `GameThreadQueue`, `AgentDiscovery`, `MiniJson`, `AgentHandlerRegistry`
-  * `AgentBridgeService`: the static entry point the plugin and debug writers call
-* Hooks into existing code:
-  * `REWrapperPlugin.SetAgentMode` / `ReloadWrappedPlugin`
-  * `WrapperCommandListener.HandleAgentCommand`
-  * `WrapperDebugWriter.WriteLine`, which publishes `debug` events
-  * `WriteToChat` in both `REWrapperPlugin` and `REPlugin`, which publishes `plugin` events
-  * `REPlugin.Initialize` / `CloseDown`, which register and unregister `AgentHandlers`
-* The CLI is `RedoxExtensions.AgentCli` (assembly `rectl`).  `rectl.cmd` runs the AnyCPU build from
-  `bin\Debug\net10.0`.  The x86 deploy build puts its copy under `bin\x86`, and that copy isn't used.
+Done and checked in game:
 
-### First Windows session, in order
+* Bridge, discovery, selection rules (`-c` prefix, `--pid`, refusal with several clients), `exec` + `wait`, `rectl dev`.
+* Chat capture of every plugin through the `AddChatText` vtable hook (wrapper; needed a client restart, done).
+* `world` / `inventory` / `object` (plugin handlers).
+* `net` capture of chosen message types (plugin).
+* `rectl screenshot` (CLI only).
 
-1. Run `copy_dlls_debug.bat`, then restart the client.  The wrapper changed, and `/re reload` doesn't reload the wrapper.
-2. In game, run `/re agent rw`.  Expect "Agent bridge rw on port N" in chat and
-   `<install>\Logs\agent-bridge\<pid>.json` on disk.
-3. Run `rectl.cmd ping`, then `rectl.cmd state`.  Check the vitals and Virindi values against the game
-   (see "Still to check on Windows").
-4. Run `rectl.cmd events --kinds chat,plugin`.  Check whether RE output appears twice.  If it does, decide whether to
-   drop `plugin` or filter `chat`.
-5. Run `rectl.cmd exec /re help --wait <text from the help output>`, then `rectl.cmd dev` after a trivial plugin
-   change.
-6. Enable a second client and check the selection rules: no flag should list both clients, `-c` and `--pid` should
-   each pick one.
-7. Record acclient private bytes with the bridge off, then after `/re agent rw` and a few minutes of play.
-   Update "Memory budget" with the real numbers.
+Live state when paused: Virmar (pid 57256) and Woodford (pid 12384) were both in `rw` mode on the current build, net
+capture off.  The bridge is per session, so it's off after a client restart until `/re agent on|rw` is run again.
+
+Commits this session, oldest first:
+
+| Commit | What |
+|---|---|
+| `5c844ca` | Plugin claims `/re agent` so it doesn't print "Unknown Command" |
+| `98a94ab` | `rectl dev` runs `copy_dlls_debug.bat` by full path |
+| `ab146dc` | `deploy.bat` skips unchanged locked DLLs (`xcopy /D`) |
+| `9ab86cc` | `state` drops the always-empty `vt` field |
+| `3f0aaed` | Debug chat window output journaled as `debug` |
+| `d16a928` | Doc: first Windows checks |
+| `cc6e1cd` | Remove per-object `CreateObject` debug logging (1.6 GB logs) |
+| `4318196` | Chat capture of all plugins (`ChatTextCapture`, `VTableSlotPatch`) |
+| `9a3add0`, `b02df03` | Doc: capture and two-client checks |
+| `decf796` | `deploy.bat` warns instead of failing on a locked `RedoxLib` / `RedoxFilter` |
+| `88dadec` | `world`, `inventory`, `object` |
+| `a2adc29` | `net` capture |
+| `79d2c8d` | `rectl screenshot` |
+
+### What's left, and what each needs
+
+| Item | Needs a client restart? | Notes |
+|---|---|---|
+| Fix `VTUtilities.GetVTOptions` / `VTCaptureContext` | Yes (wrapper) | VT's `/vt opt get` replies come through `AddChatText`, which only the wrapper's `ChatTextCapture` sees.  The plugin needs a way to subscribe, e.g. a public multi-listener event on `AgentBridgeService` that works even with the bridge off (install the hook at wrapper startup, or on first subscription).  Then `GetVTOptions` can wait for the `[VTank] Option` lines, `state` can get `vt` back, and `UnstuckActions`, `VTStateScope` and `VTSettingsSnapshot` start working.  Alternative without the hook: `uTank2.PluginCore.PC.GetExternalInterface()` (unknown whether VT prompts for permission). |
+| Memory numbers | Yes (wrapper) | Add `GC.GetTotalMemory(false)` and the journal count to `ping`, then compare before and after `/re agent rw` on one client.  Process private bytes are too noisy (475-635 MB between clients) to show a few MB. |
+| MCP stdio server | No (CLI only) | Wrap the same client code as MCP tools.  Best done now that the command set has settled. |
+| JSONL journal file | Yes if in the wrapper | Optional. |
+
+Batch the two wrapper items into one restart.
+
+### Things that will trip up the next session
+
+* **Wrapper changes need every client closed.**  The wrapper DLL is locked while any client is running, so
+  `deploy.bat` can't copy it (it only warns).  Plugin changes only need `rectl -c <name> dev`.  With several clients
+  enabled, `dev` and `reload` need `-c`, and each client has to be reloaded separately to pick up a plugin change.
+* **Plugin code must not call new wrapper APIs until the wrapper is redeployed and clients restarted.**  A plugin built
+  against a newer wrapper runs against the old one after `rectl dev` and fails with `MissingMethodException`.
+* **`NoDefaultCurrentDirectoryInExePath=1` is set in Claude Code's shell**, so `cmd /c something.bat` doesn't find
+  scripts in the current directory.  Use full paths (`& "F:\...\copy_dlls_debug.bat"`).
+* **`deploy.bat` warnings about `RedoxLib` / `RedoxExtensions.Wrapper` not being copied are normal** when clients are
+  running and those projects were only rebuilt (Debug builds aren't byte-identical).
+* **Screenshots need a window that isn't minimized.**  The user minimizes clients, so ask them to restore one.
+* **net35 limits**: no `ValueTuple` in plugin or wrapper code, no `Marshal.GetComSlotForMethodInfo` on .NET 10 (tests).
+* **Request field `id` is the request id**, echoed in the response.  Handler parameters need other names (`objectId`).
+* **Python isn't installed.**  Use PowerShell, the Bash tool with standard tools, or the edit tools.
+
+### Code map
+
+* Wrapper (`RedoxExtensions.Wrapper/AgentBridge/`, restart to change): `AgentBridgeSession` (Decal-bound, starts chat
+  capture), `AgentRequestProcessor` (routing; unknown commands go to plugin handlers), `AgentBridgeServer` (TCP),
+  `AgentPolicy`, `EventJournal`, `GameThreadQueue`, `AgentDiscovery`, `MiniJson`, `AgentHandlerRegistry`,
+  `AgentBridgeService` (static entry point), `ChatTextCapture` + `VTableSlotPatch` (the `AddChatText` hook).
+* Plugin (`RedoxExtensions/AgentBridge/`, `rectl dev` to change): `AgentHandlers` (`state`, `world`, `object`, `net`),
+  `WorldQuery`, `NetCapture`.  `NetCapture` is called from `Core/DecalEventsProxy.cs`.
+* CLI (`RedoxExtensions.AgentCli`, assembly `rectl`, no client change): `Cli`, `InstanceLocator`, `BridgeClient`,
+  `ScreenCapture`.  `rectl.cmd` builds it quietly and runs the AnyCPU build from `bin\Debug\net10.0`.
 
 ### Decisions worth keeping
 
@@ -377,10 +407,8 @@ Notes for picking this up on the Windows machine, where there's no history of th
   arrives before the wait starts isn't missed.  `rectl exec --wait` already does this.
 * Reading the character name or server from a connection thread isn't safe.  `AgentBridgeSession` caches them when
   it starts.  Anything else that touches Decal has to go through `InvokeOnGameThread`.
+* The chat hook is never removed once installed (see "Capturing other plugins' chat output").
+* Pure logic (filtering, formatting, parsing) is kept free of Decal types so it can be unit-tested on net10:
+  `WorldQuery`, `NetCapture.Format` via `INetFields`, `ScreenCapture.WritePng`.
 * `VTNavRouteTests` was switched to `ClassicAssert` because it no longer compiled under NUnit 5 and blocked the
   whole test project.
-
-### Next steps after the Windows check
-
-* An MCP stdio wrapper around the same client
-* Optionally, a JSONL file for the journal
