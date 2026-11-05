@@ -276,6 +276,7 @@ public class DecalEventsProxy : IDecalEventsProxy, IDisposable
         {
             //RTPlugin.Instance.Debug.WriteObject(e, "ServerDispatch");
 
+            AgentBridge.NetCapture.OnServerDispatch(e);
             this.ServerDispatch?.Invoke(sender, e);
         });
     }
@@ -286,6 +287,7 @@ public class DecalEventsProxy : IDecalEventsProxy, IDisposable
         {
             //RTPlugin.Instance.Debug.WriteObject(e, "ClientDispatch");
 
+            AgentBridge.NetCapture.OnClientDispatch(e);
             this.ClientDispatch?.Invoke(sender, e);
         });
     }

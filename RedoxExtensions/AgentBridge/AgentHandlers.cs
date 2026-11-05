@@ -15,12 +15,14 @@ internal static class AgentHandlers
     private const string StateCmd = "state";
     private const string WorldCmd = "world";
     private const string ObjectCmd = "object";
+    private const string NetCmd = "net";
 
     public static void Register()
     {
         AgentBridgeService.Handlers.Register(StateCmd, State);
         AgentBridgeService.Handlers.Register(WorldCmd, World);
         AgentBridgeService.Handlers.Register(ObjectCmd, Object);
+        AgentBridgeService.Handlers.Register(NetCmd, NetCapture.Configure);
     }
 
     public static void Unregister()
@@ -28,6 +30,7 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Unregister(StateCmd);
         AgentBridgeService.Handlers.Unregister(WorldCmd);
         AgentBridgeService.Handlers.Unregister(ObjectCmd);
+        AgentBridgeService.Handlers.Unregister(NetCmd);
     }
 
     /// <summary>

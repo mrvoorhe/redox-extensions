@@ -41,10 +41,13 @@ public class Cli
           inventory [name-regex] [--class <c1,c2>] [--container <id>] [--offset <n>] [--limit <n>]
                                        Inventory and equipped items, by name
           object <id>                  Every value Decal has for one object
+          net [off] [--server <types>] [--client <types>]
+                                       Show or set which network messages are journaled as "net" events.  Types
+                                       are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
           exec <text> [--wait <regex>] [--kinds <k1,k2>]
                                        Run a chat command as if typed, optionally wait for a matching event
           events [--since <seq>] [--kinds <k1,k2>] [--max <n>]
-                                       Recent events (kinds: chat, plugin, debug, command)
+                                       Recent events (kinds: chat, plugin, debug, command, net)
           wait <regex> [--since <seq>] [--kinds <k1,k2>]
                                        Wait for an event matching regex
           reload                       Reload the plugin and wait until it's back
@@ -111,6 +114,7 @@ public class Cli
                 "world" => this.World(instance, parsed, "landscape"),
                 "inventory" => this.World(instance, parsed, "inventory"),
                 "object" => this.Object(instance, parsed),
+                "net" => this.Net(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
                 "events" => this.Events(instance, parsed),
                 "wait" => this.Wait(instance, parsed, timeoutMs),
@@ -182,6 +186,27 @@ public class Cli
         }
 
         return this.Simple(instance, "object", new Dictionary<string, JsonNode> { ["objectId"] = objectId });
+    }
+
+    private int Net(BridgeInstance instance, Arguments parsed)
+    {
+        var fields = new Dictionary<string, JsonNode>();
+        foreach (var positional in parsed.Positionals)
+        {
+            if (!positional.Equals("off", StringComparison.OrdinalIgnoreCase))
+            {
+                this._err.WriteLine($"Unknown net argument '{positional}'.  Use: rectl net [off] [--server <types>] [--client <types>]");
+                return ExitUsage;
+            }
+            fields["off"] = true;
+        }
+
+        if (parsed.Get("server") is { } server)
+            fields["server"] = KindsArray(server);
+        if (parsed.Get("client") is { } client)
+            fields["client"] = KindsArray(client);
+
+        return this.Simple(instance, "net", fields);
     }
 
     private int Exec(BridgeInstance instance, Arguments parsed, int timeoutMs)
@@ -404,6 +429,8 @@ public class Cli
             ["--near"] = "near",
             ["--offset"] = "offset",
             ["--limit"] = "limit",
+            ["--server"] = "server",
+            ["--client"] = "client",
         };
 
         private readonly Dictionary<string, string> _options = new();

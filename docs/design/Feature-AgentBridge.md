@@ -183,6 +183,26 @@ Use `--dir` or `REDOX_AGENT_DIR` to point it at a discovery directory directly.
 Exit codes: 0 means success, 1 means the request failed or a wait timed out, 2 means a usage error or no
 single client could be picked.
 
+### Network messages
+
+`rectl net --server F7B0,F74E --client F7B1` picks the decoded message types to journal as `net` events (`rectl net`
+shows the selection, `rectl net off` stops it, `all` takes every type in that direction).  Nothing is captured until
+then, and the selection is plugin state, so it resets on `/re reload`.  `NetCapture` is called from the plugin's
+`ServerDispatch` / `ClientDispatch` handlers, so it's a plugin change, not a wrapper one.
+
+Each message is written generically from Decal's decoded fields (`messages.xml` names), nested structs in braces up to
+two levels, cut at 400 characters:
+
+```
+S F7B0 character=1342207843 sequence=3271 event=436 attacker=Ancient Honey Bee
+C F7B1 sequence=3480 action=63315
+S F7B0 ... event=201 object=-262189320 flags=261 success=0 dwordCount=5 dwords={ 0={ key=2 value=9 } ... }
+```
+
+Values are as Decal decodes them, so codes like `event` and `action` are decimal (201 = 0x00C9).  Game events
+(F7B0) arrive several times a second in combat, so turn capture off when done or it pushes older events out of the
+journal.
+
 ### World and inventory
 
 `world` and `object` are plugin handlers (`RedoxExtensions/AgentBridge/AgentHandlers.cs`), so changing them only needs
@@ -351,7 +371,6 @@ Notes for picking this up on the Windows machine, where there's no history of th
 
 ### Next steps after the Windows check
 
-* Network message journaling from `ServerDispatch` / `ClientDispatch`, limited by an allowlist of message types
 * `rectl screenshot` using `PrintWindow`.  It should encode PNG itself with `ZLibStream`, to avoid needing
   System.Drawing.
 * An MCP stdio wrapper around the same client
