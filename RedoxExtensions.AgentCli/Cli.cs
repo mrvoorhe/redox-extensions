@@ -247,7 +247,8 @@ public class Cli
             return ExitUsage;
         }
 
-        var startInfo = new ProcessStartInfo("cmd.exe", "/c copy_dlls_debug.bat")
+        // Full path: cmd.exe won't look in the current directory when NoDefaultCurrentDirectoryInExePath is set.
+        var startInfo = new ProcessStartInfo("cmd.exe", $"/c \"\"{Path.Combine(repo, "copy_dlls_debug.bat")}\"\"")
         {
             WorkingDirectory = repo,
             UseShellExecute = false,
