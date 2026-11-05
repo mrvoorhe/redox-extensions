@@ -37,9 +37,10 @@ if "%~3"=="yes" (
 )
 xcopy /Y "%SOURCE%\RedoxExtensions.dll" "%DEST%\" || exit /b 1
 xcopy /Y "%SOURCE%\RedoxExtensions.pdb" "%DEST%\" || exit /b 1
-xcopy /Y "%SOURCE%\RedoxLib.*" "%DEST%\" || exit /b 1
-xcopy /Y "%SOURCE%\RedoxFilter.*" "%DEST%\" || exit /b 1
-xcopy /Y "%SOURCE%\RedoxExtensions.Wrapper.*" "%DEST%\" || (
+rem These stay loaded (locked) while a client runs, so /D skips them unless they actually changed.
+xcopy /Y /D "%SOURCE%\RedoxLib.*" "%DEST%\" || exit /b 1
+xcopy /Y /D "%SOURCE%\RedoxFilter.*" "%DEST%\" || exit /b 1
+xcopy /Y /D "%SOURCE%\RedoxExtensions.Wrapper.*" "%DEST%\" || (
     echo.
     echo WARNING: RedoxExtensions.Wrapper not copied ^(in use by Decal?^)
     echo.
