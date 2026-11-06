@@ -1,0 +1,48 @@
+# Abandoned Mines start -> Town Network -> Mayoi -> Help Wanted -> under the pillar in Jam.
+# Same as TestGoToJamBridge.spec up to the Help Wanted portal; then, at the bottom of the shaft, turn 45 degrees left
+# of the arrival heading (180 -> 135) and jump down to the pillar.  A full running jump: it overshoots by ~13 m on the
+# pillar floor and walks back, which is reliable; a walking jump (shift True) landed on a ledge 18 m up and got stuck.
+type once
+chat /ub usei Town Network Sending Gem
+pause 5000
+pt 00070145 70.0 -80.0 0
+pt 00070156 78.13 -73.66 0
+pt 00070156 82.43 -70.79 0
+pt 00070164 90.08 -70.67 0
+pt 00070164 94.10 -70.29 0
+pt 0007016E 95.77 -69.42 0
+pt 0007016D 97.72 -62.50 0
+pt 0007016D 99.70 -58.82 0
+pt 0007016D 103.60 -58.75 0
+pt 00070172 110.06 -58.10 0
+pt 00070172 110.81 -56.53 0
+portal -101.491666666667 -96.5723725001017 -0.000262499845121056 Mayoi Portal
+pause 5000
+pt E6320021 107.42 10.76 29.91
+pt E6320021 104.51 10.89 29.42
+pt E6320019 92.21 14.44 28.00
+pt E6320019 82.17 19.52 28.00
+pt E632001A 74.28 26.95 28.00
+pt E6320012 68.64 38.34 28.00
+pt E6320013 64.50 48.16 27.96
+pt E6320013 58.11 57.62 25.60
+pt E6320013 50.73 67.38 23.16
+pt E632000C 44.29 75.82 22.96
+pt E632000C 37.32 84.50 25.13
+pt E632000C 30.08 93.52 27.38
+pt E6320005 23.42 102.16 25.15
+pt E6320005 16.77 110.96 18.16
+pt E6320006 9.40 120.54 12.37
+pt E6320006 1.63 127.39 14.84
+pt E532003E 186.71 132.97 18.81
+pt E532003E 179.49 138.60 23.51
+pt E532003E 172.40 143.50 27.59
+pt E5320037 162.90 148.35 28.00
+pt E5320037 150.45 145.95 28.00
+pt E5320036 149.39 142.68 28.00
+portal 81.8789291381836 -61.3628124872843 0.116895832121372 Help Wanted
+pause 5000
+# Jam dungeon: fall through the shaft, then jump SE from the bottom
+pt 01A3017D 49.88 -49.53 -89.99
+jump 01A3017D 49.88 -49.53 -89.99 135 False 500
+pt 01A30115 53.33 -53.16 -108.00
