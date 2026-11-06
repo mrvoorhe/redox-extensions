@@ -65,6 +65,9 @@ find a meta in the VT folder that uses it, `vtmeta.load` it and copy the encodin
   delete the stray file.
 * A profile load changes options (EnableCombat, EnableNav, ...).  Wait a couple of seconds after it
   (`seconds_in_state(2)`) before rules that set options, or the profile can undo them.
+* A profile that turns nav on while waiting makes the character walk toward whatever nav was loaded before (seen:
+  20 m the wrong way in Abandoned Mines).  Turn nav off on entering the state and again at `seconds_in_state(1)`,
+  after the profile has loaded; the next state turns it on with its own nav.
 * `/vt setattackbar <0..1>` sets attack power.  The Farm profile has `AutoAttackPower` False; with it True, VT probably
   manages the bar itself (not tested).
 * Only use commands documented under `docs/ref/InGameCommands` in chat actions (AGENTS.md).

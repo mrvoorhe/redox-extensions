@@ -17,8 +17,10 @@ JAM = 0x01A30000          # the Jam dungeon landblock
 
 rules = [
     # Load the character's "Farm" profile (--Rockdown_InfiniteLeaftide_Farm.usd).  It turns combat on, so wait for it
-    # before the next state changes options.
-    ('Default', m.always(), m.chat('/vt settings loadchar Farm')),
+    # before the next state changes options.  It also turns nav on while the previous nav is still loaded, so turn nav
+    # off again once it has loaded, or he walks toward that nav until the next state loads its own.
+    ('Default', m.always(), m.all_a(m.opt('EnableNav', False), m.chat('/vt settings loadchar Farm'))),
+    ('Default', m.seconds_in_state(1), m.opt('EnableNav', False)),
     ('Default', m.all_c(m.seconds_in_state(2), m.landcell(BRIDGE_CELL)), m.set_state('Farm')),
     ('Default', m.all_c(m.seconds_in_state(2), m.not_c(m.landcell(BRIDGE_CELL))), m.set_state('GoToBridge')),
 
