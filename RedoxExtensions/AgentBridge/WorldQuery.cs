@@ -16,6 +16,9 @@ internal sealed class WorldItem
     public int Id { get; set; }
     public string Name { get; set; }
     public string ObjectClass { get; set; }
+
+    /// <summary>Numeric <c>ObjectClass</c>, as VT nav files store it (Portal 14, Npc 37).</summary>
+    public int ObjectClassId { get; set; }
     public int Container { get; set; }
     public int Wielder { get; set; }
     public int StackCount { get; set; }
@@ -29,6 +32,9 @@ internal sealed class WorldItem
     public double? NorthSouth { get; set; }
     public double? EastWest { get; set; }
 
+    /// <summary>Height in nav units (raw Z / 240), as VT stores an object's position in a nav "use" node.</summary>
+    public double? NavZ { get; set; }
+
     public Dictionary<string, object> ToJson()
     {
         var json = new Dictionary<string, object>
@@ -36,6 +42,7 @@ internal sealed class WorldItem
             ["id"] = this.Id,
             ["name"] = this.Name,
             ["class"] = this.ObjectClass,
+            ["classId"] = this.ObjectClassId,
         };
 
         if (this.Container != 0)
@@ -54,6 +61,10 @@ internal sealed class WorldItem
         {
             json["ns"] = Math.Round(this.NorthSouth.Value, 2);
             json["ew"] = Math.Round(this.EastWest.Value, 2);
+
+            // Full precision [ew, ns, z], what a nav "use" node needs to find the object
+            if (this.NavZ.HasValue)
+                json["nav"] = new List<object> { this.EastWest.Value, this.NorthSouth.Value, this.NavZ.Value };
         }
 
         return json;

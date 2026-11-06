@@ -97,9 +97,19 @@ public class WorldQueryTests
     {
         var json = new WorldItem { Id = 5, Name = "Bow", ObjectClass = "MissileWeapon", StackCount = 1, Distance = 12.3456, NorthSouth = 1.23456, EastWest = -2.5 }.ToJson();
 
-        Assert.That(json.Keys, Is.EquivalentTo(new[] { "id", "name", "class", "distance", "ns", "ew" }));
+        Assert.That(json.Keys, Is.EquivalentTo(new[] { "id", "name", "class", "classId", "distance", "ns", "ew" }));
         Assert.That(json["distance"], Is.EqualTo(12.3));
         Assert.That(json["ns"], Is.EqualTo(1.23));
+    }
+
+    [Test]
+    public void ObjectJsonHasFullPrecisionNavCoordinatesWhenZIsKnown()
+    {
+        var json = new WorldItem { Id = 5, Name = "Help Wanted", ObjectClass = "Portal", ObjectClassId = 14, NorthSouth = -61.3628124872843, EastWest = 81.8789291381836, NavZ = 0.116895832121372 }.ToJson();
+
+        Assert.That(json["classId"], Is.EqualTo(14));
+        Assert.That(json["ew"], Is.EqualTo(81.88));
+        Assert.That(json["nav"], Is.EqualTo(new List<object> { 81.8789291381836, -61.3628124872843, 0.116895832121372 }));
     }
 
     [Test]

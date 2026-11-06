@@ -166,6 +166,7 @@ internal static class AgentHandlers
             Id = wo.Id,
             Name = wo.Name,
             ObjectClass = wo.ObjectClass.ToString(),
+            ObjectClassId = (int)wo.ObjectClass,
             Container = wo.Container,
             Wielder = wo.Values(LongValueKey.Wielder, 0),
             StackCount = wo.Values(LongValueKey.StackCount, 0),
@@ -187,6 +188,10 @@ internal static class AgentHandlers
                 item.NorthSouth = coords.NorthSouth;
                 item.EastWest = coords.EastWest;
             }
+
+            var raw = wo.RawCoordinates();
+            if (raw != null)
+                item.NavZ = raw.Z / 240.0;
         }
 
         return item;
