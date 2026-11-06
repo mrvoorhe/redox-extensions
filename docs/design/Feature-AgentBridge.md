@@ -178,6 +178,8 @@ rectl dev
 ```
 
 The tool finds the install directory from `REDOX_EXTENSIONS_INSTALL`, then the same known paths `deploy.bat` checks.
+`rectl paths` prints it, the discovery directory and the VirindiTank folder (`VT_DIR`, else
+`<install>\..\VirindiPlugins\VirindiTank`, the plugin's default), so tools don't need hard-coded paths.
 Use `--dir` or `REDOX_AGENT_DIR` to point it at a discovery directory directly.
 
 Exit codes: 0 means success, 1 means the request failed or a wait timed out, 2 means a usage error or no

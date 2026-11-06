@@ -41,17 +41,32 @@ public class InstanceLocator
         if (!string.IsNullOrEmpty(agentDir))
             return agentDir;
 
+        var install = ResolveInstallDirectory(getEnv);
+        return install == null ? null : Path.Combine(install, "Logs", "agent-bridge");
+    }
+
+    /// <summary>The RedoxExtensions install directory: REDOX_EXTENSIONS_INSTALL, else the first known path that exists.</summary>
+    public static string ResolveInstallDirectory(Func<string, string> getEnv)
+    {
         var install = getEnv("REDOX_EXTENSIONS_INSTALL");
         if (!string.IsNullOrEmpty(install))
-            return Path.Combine(install, "Logs", "agent-bridge");
+            return install;
 
-        foreach (var known in KnownInstallDirectories)
-        {
-            if (System.IO.Directory.Exists(known))
-                return Path.Combine(known, "Logs", "agent-bridge");
-        }
+        return KnownInstallDirectories.FirstOrDefault(System.IO.Directory.Exists);
+    }
 
-        return null;
+    /// <summary>
+    /// The VirindiTank folder (navs, metas, profiles): VT_DIR, else &lt;install&gt;\..\VirindiPlugins\VirindiTank, the same
+    /// default the plugin uses (VTUtilities.VTankDirectory).
+    /// </summary>
+    public static string ResolveVTankDirectory(Func<string, string> getEnv)
+    {
+        var vt = getEnv("VT_DIR");
+        if (!string.IsNullOrEmpty(vt))
+            return vt;
+
+        var install = ResolveInstallDirectory(getEnv);
+        return install == null ? null : Path.GetFullPath(Path.Combine(install, "..", "VirindiPlugins", "VirindiTank"));
     }
 
     public List<BridgeInstance> FindAll()

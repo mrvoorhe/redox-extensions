@@ -34,6 +34,7 @@ public class Cli
 
         Commands:
           list                         Clients with the bridge enabled
+          paths                        Install, discovery and VirindiTank directories (VT_DIR overrides the last)
           ping                         Bridge status for the selected client
           state                        Character, vitals, location and busy state
           world [name-regex] [--class <c1,c2>] [--near <meters>] [--container <id>] [--offset <n>] [--limit <n>]
@@ -101,6 +102,8 @@ public class Cli
 
         if (parsed.Command == "list")
             return this.List(locator);
+        if (parsed.Command == "paths")
+            return this.Paths(locator);
 
         var instance = locator.Select(parsed.Get("character"), parsed.GetInt("pid"), out var selectError);
         if (instance == null)
@@ -158,6 +161,19 @@ public class Cli
         }).ToArray());
         this.WriteJson(array);
         return ExitOk;
+    }
+
+    private int Paths(InstanceLocator locator)
+    {
+        var vt = InstanceLocator.ResolveVTankDirectory(this._getEnv);
+        this.WriteJson(new JsonObject
+        {
+            ["install"] = InstanceLocator.ResolveInstallDirectory(this._getEnv),
+            ["discovery"] = locator.Directory,
+            ["vt"] = vt,
+            ["vtExists"] = vt != null && System.IO.Directory.Exists(vt),
+        });
+        return vt == null ? ExitFailed : ExitOk;
     }
 
     private int Simple(BridgeInstance instance, string cmd, Dictionary<string, JsonNode> fields)

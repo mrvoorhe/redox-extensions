@@ -40,6 +40,27 @@ public class CliTests
     }
 
     [Test]
+    public void PathsDerivesTheVTankDirectoryFromTheInstallDirectory()
+    {
+        var install = Path.Combine(this._directory, "Games", "RedoxExtensions");
+        var env = new Dictionary<string, string> { ["REDOX_EXTENSIONS_INSTALL"] = install };
+        var output = new StringWriter();
+        var exit = new Cli(output, new StringWriter(), name => env.TryGetValue(name, out var v) ? v : null).Run(new[] { "paths" });
+
+        var json = JsonNode.Parse(output.ToString());
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk));
+        Assert.That(json["install"].GetValue<string>(), Is.EqualTo(install));
+        Assert.That(json["discovery"].GetValue<string>(), Is.EqualTo(Path.Combine(install, "Logs", "agent-bridge")));
+        Assert.That(json["vt"].GetValue<string>(), Is.EqualTo(Path.Combine(this._directory, "Games", "VirindiPlugins", "VirindiTank")));
+        Assert.That(json["vtExists"].GetValue<bool>(), Is.False);
+
+        env["VT_DIR"] = this._directory;
+        output = new StringWriter();
+        new Cli(output, new StringWriter(), name => env.TryGetValue(name, out var v) ? v : null).Run(new[] { "paths" });
+        Assert.That(JsonNode.Parse(output.ToString())["vtExists"].GetValue<bool>(), Is.True);
+    }
+
+    [Test]
     public void AutoSelectsTheOnlyEnabledClient()
     {
         this.StartBridge(100, "Alpha", AgentMode.ReadOnly);
