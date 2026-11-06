@@ -68,6 +68,13 @@ find a meta in the VT folder that uses it, `vtmeta.load` it and copy the encodin
 * A profile that turns nav on while waiting makes the character walk toward whatever nav was loaded before (seen:
   20 m the wrong way in Abandoned Mines).  Turn nav off on entering the state and again at `seconds_in_state(1)`,
   after the profile has loaded; the next state turns it on with its own nav.
+* Don't use one `LandCellE` to mean "arrived at the spot": a spot on a cell boundary can end the route in the
+  next cell, and the meta never leaves its travel state (combat stays off).  Use a distance expression instead, as
+  in `tools/vt/examples/aFJamPillar.py`: squared flat distance in nav units from `coordinategetwe/ns[getplayercoordinates[]]`
+  plus a height check with `coordinategetz` (nav units, z / 240).  Needs `/ub opt set VTank.PatchExpressionEngine true`.
+* Expression engine gaps found on this server (test with `/vt mexec <expr>`, VT prints `[VTank] Result: ...`):
+  no `sqrt` and no `getplayerlandblock` (both in the UB docs), `<-0.4` is rejected (write `z+0.4<0`), and a
+  backtick string sent through `/vt mexec` fails to parse.
 * `/vt setattackbar <0..1>` sets attack power.  The Farm profile has `AutoAttackPower` False; with it True, VT probably
   manages the bar itself (not tested).
 * Only use commands documented under `docs/ref/InGameCommands` in chat actions (AGENTS.md).
