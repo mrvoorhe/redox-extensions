@@ -72,9 +72,13 @@ find a meta in the VT folder that uses it, `vtmeta.load` it and copy the encodin
   next cell, and the meta never leaves its travel state (combat stays off).  Use a distance expression instead, as
   in `tools/vt/examples/aFJamPillar.py`: squared flat distance in nav units from `coordinategetwe/ns[getplayercoordinates[]]`
   plus a height check with `coordinategetz` (nav units, z / 240).  Needs `/ub opt set VTank.PatchExpressionEngine true`.
-* Expression engine gaps found on this server (test with `/vt mexec <expr>`, VT prints `[VTank] Result: ...`):
-  no `sqrt` and no `getplayerlandblock` (both in the UB docs), `<-0.4` is rejected (write `z+0.4<0`), and a
-  backtick string sent through `/vt mexec` fails to parse.
+* Test expressions with `/ub mexec <expr>` (UB prints `[UB] Result: [type] value`).  `/vt mexec` always uses VT's
+  own engine, even with the patch on, so UB functions (`getquestktprogress`, `setpvar`, `sqrt`,
+  `getplayerlandblock`, ...) report "unknown function" there, and `<-0.4` and backtick strings fail to parse.  Under
+  `/ub mexec` all of these work.  The patch covers expressions inside metas, so a meta can use them.
+* Kill tasks: `getquestktprogress[flag]` / `getquestktrequired[flag]` read `/myquests` data, which doesn't update as
+  you kill: run `/ub myquests` (hidden output, "[UB] Quest data updated.") to refresh.  A flag that doesn't exist
+  gives required 0.  Find flag names by diffing `/myquests` output before and after talking to the NPCs.
 * `/vt setattackbar <0..1>` sets attack power.  The Farm profile has `AutoAttackPower` False; with it True, VT probably
   manages the bar itself (not tested).
 * Only use commands documented under `docs/ref/InGameCommands` in chat actions (AGENTS.md).
