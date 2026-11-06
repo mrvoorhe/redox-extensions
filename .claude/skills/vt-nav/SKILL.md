@@ -77,8 +77,8 @@ Each node: type, ew, ns, z, `0`, then by type:
 | 3 | pause | milliseconds |
 | 4 | chat command | text |
 | 5 | open vendor | vendor id, name |
-| 6 | use portal / NPC | name, ObjectClass (14 portal, 37 NPC), `True`, object ew, ns, z |
-| 7 | (unknown, same layout as 6) | as 6 |
+| 6 | use portal / NPC, wait for the teleport | name, ObjectClass (14 portal, 37 NPC), `True`, object ew, ns, z |
+| 7 | talk to an NPC, then go on | as 6 |
 | 9 | jump | heading, shift `True`/`False`, milliseconds (as `/vt addnavjump` writes it) |
 
 * Nav coords: `ew = ((landblockX - 127) * 192 + x - 84) / 240`, same for ns with landblockY and y, `z = z / 240`
@@ -95,3 +95,6 @@ Each node: type, ew, ns, z, `0`, then by type:
   belong to the old side; the recorder drops them, check by hand when editing.
 * After a teleport VT waits on the pause node; 5000 ms after gems and portals worked.
 * A portal NPC like "Help Wanted" may take ~5 s and be used twice; one use node is enough.
+* Quest/task NPCs need a talk node (spec `talk`, type 7).  On a type 6 node (spec `npc`) VT uses the NPC every
+  ~3 s waiting for a teleport and never moves on.  The recorder writes `talk` for NPCs; change a teleporting NPC
+  to `npc` by hand.  A talk node may still use the NPC 2-5 times; harmless.

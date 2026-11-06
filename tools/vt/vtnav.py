@@ -12,7 +12,10 @@ node may be "type circular|linear|once" (default once):
     chat <text>                                         chat command, e.g. chat /ub usei Town Network Sending Gem
     pause <ms>
     portal <ew> <ns> <z> <name>                         use a portal (object class 14); ew/ns/z are the OBJECT's nav coords
-    npc <ew> <ns> <z> <name>                            use an NPC (object class 37)
+    talk <ew> <ns> <z> <name>                           talk to an NPC (object class 37, node type 7): VT uses it once
+                                                        and moves on.  Use this for quest/task NPCs.
+    npc <ew> <ns> <z> <name>                            use an NPC that teleports you (class 37, node type 6, like
+                                                        "Help Wanted").  VT keeps using it until the teleport.
     use <class> <ew> <ns> <z> <name>                    use any object with an explicit ObjectClass number
     vendor <id> <name>                                  open a vendor
     jump <landcell hex> <x> <y> <z> <heading> <shift True|False> <ms>   jump from a game position
@@ -21,9 +24,11 @@ import sys
 
 HEADER = 'uTank2 NAV 1.2'
 ROUTE_TYPES = {'circular': 1, 'linear': 2, 'once': 4}
-NODE_NAMES = {0: 'point', 2: 'recall', 3: 'pause', 4: 'chat', 5: 'vendor', 6: 'use', 7: 'type7', 9: 'jump'}
+NODE_NAMES = {0: 'point', 2: 'recall', 3: 'pause', 4: 'chat', 5: 'vendor', 6: 'use', 7: 'talk', 9: 'jump'}
 # Lines after the 5 common ones (type, ew, ns, z, 0), by node type.  Only types seen in real files are listed.
-# Type 2 holds one number, probably a spell id (2645 in ZTouTou.nav; named recall here, not verified).  Type 7 has the same layout as 6 (seen once, on an NPC); what VT does differently with it isn't known.
+# Type 2 holds one number, probably a spell id (2645 in ZTouTou.nav; named recall here, not verified).
+# Type 7 has the same layout as 6.  6 (portal/NPC) waits for a teleport: on a task NPC VT used him every 3 s and never
+# moved on.  7 (NPC talk, as in ZTouTou.nav's Royal Guard nodes) uses the NPC and goes to the next node.
 EXTRA_LINES = {0: 0, 2: 1, 3: 1, 4: 1, 5: 2, 6: 6, 7: 6, 9: 3}
 PORTAL_CLASS, NPC_CLASS = 14, 37
 
@@ -72,9 +77,10 @@ class Route:
     def chat(self, text): self.nodes.append(Node(4, extra=[text])); return self
     def vendor(self, vendor_id, name): self.nodes.append(Node(5, extra=[int(vendor_id), name])); return self
 
-    def use(self, name, object_class, ew, ns, z):
-        """Walk to and use a portal/NPC.  VT finds the object by name, class and these coordinates."""
-        self.nodes.append(Node(6, extra=[name, int(object_class), 'True', float(ew), float(ns), float(z)]))
+    def use(self, name, object_class, ew, ns, z, node_type=6):
+        """Walk to and use a portal/NPC.  VT finds the object by name, class and these coordinates.
+        node_type 6 waits for a teleport; 7 talks to an NPC and moves on."""
+        self.nodes.append(Node(node_type, extra=[name, int(object_class), 'True', float(ew), float(ns), float(z)]))
         return self
 
     def jump(self, ew, ns, z, heading, shift=False, ms=500):
@@ -137,6 +143,8 @@ def build_spec(text):
             route.pause(int(a[0]))
         elif op in ('portal', 'npc'):
             route.use(' '.join(a[3:]), PORTAL_CLASS if op == 'portal' else NPC_CLASS, *map(float, a[:3]))
+        elif op == 'talk':
+            route.use(' '.join(a[3:]), NPC_CLASS, *map(float, a[:3]), node_type=7)
         elif op == 'use':
             route.use(' '.join(a[4:]), int(a[0]), *map(float, a[1:4]))
         elif op == 'vendor':

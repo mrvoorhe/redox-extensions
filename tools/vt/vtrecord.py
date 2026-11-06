@@ -39,7 +39,7 @@ from vtnav import nav_coord, fmt
 
 USE_ITEM, USE_WITH_TARGET, JUMP = 0x36, 0x35, 0xF61B
 PORTAL_PAUSE_MS = 5000
-CLASS_KINDS = {14: 'portal', 37: 'npc'}
+CLASS_KINDS = {14: 'portal', 37: 'talk'}  # an NPC that teleports you (Help Wanted) needs "npc" instead: fix by hand
 TELEPORT_METERS = 30      # a bigger horizontal jump between two samples is a teleport (falls are vertical)
 PORTAL_WAIT_SECONDS = 20  # stop waiting for the teleport after a portal use (it failed or never happened)
 
