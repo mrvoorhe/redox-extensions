@@ -10,9 +10,15 @@ States (modelled on aKTTouTou / aKTHoshino):
   Default -> RK1-start -> RK2-getq (gem, portals, talk to the 9 NPCs, use their contracts)
   -> RK3-gotohunt -> RK4-huntloop <-> RK5-stabbin -> RK6-turnin (the getq route again) -> ** Chain **
 
-The hunt ends when every task's kill counter is full (getquestktprogress >= getquestktrequired, refreshed with
-/ub myquests every REFRESH_SECONDS) or after HUNT_SECONDS.  A task that wasn't handed out (cooldown) has no counter, so its
-required count is 0 and it doesn't hold the hunt up.  The Rare Boss task is left out: it needs a rare spawn.
+The hunt ends when every task is done, or after HUNT_SECONDS.  A task is done when:
+* the server says so while hunting: "You have killed N <mobs>! Your task is complete!" (repeated on every later kill)
+  sets the task's RKDone* variable, or
+* the /ub myquests refresh sent after picking up the tasks shows it full (getquestktprogress >= getquestktrequired).
+  This covers tasks finished on an earlier day, and tasks that weren't handed out (cooldown): those have no
+  counter, so their required count is 0.
+/myquests lists every quest the character has (~700 lines), so it's only sent after getting the tasks and after
+the turn-in, plus every REFRESH_SECONDS while hunting if that's set.  The Rare Boss task is left out: it needs a
+rare spawn.
 Quest functions need VTank.PatchExpressionEngine; test them with /ub mexec (not /vt mexec).
 """
 import os, sys
@@ -23,24 +29,28 @@ import vtmeta as m
 
 VT = sys.argv[1] if len(sys.argv) > 1 else rectl.vt_dir()
 HUNT_SECONDS = 900     # give up hunting and turn in after this long
-REFRESH_SECONDS = 240  # /ub myquests interval while hunting; each refresh prints hundreds of chat lines
+REFRESH_SECONDS = None # /ub myquests interval while hunting (backup for missed kill lines); None = never
 TURNIN_SECONDS = 240   # the getq route takes ~2 minutes; also the limit for walking down to the loop
 CHAIN = 'aKTNeftet'    # meta to load after turn-in; None stops there
 TARGET_RANGE = 40      # meters: fight task monsters this close to the loop
 
-# Kill counters from /myquests (diffed before/after talking to the NPCs).  Rares (killtaskrynthidrares0813) left out.
-TASK_FLAGS = [
-    'killtaskrynthidcrystals',        # Lohrn, 6 Rynthid Crystals
-    'killtaskrynthidsorcerers0813',   # Wido, 15 (Raging) Rynthid Sorcerers
-    'killtaskrynthidrifts0813',       # Rhys, 10 Rift of ...
-    'killtaskrynthidragers0813',      # Ranulf, 15 Rynthid Ragers
-    'killtaskrynthidslayers0813',     # Sylvanus, 15 Rynthid Slayers
-    'killtaskrynthidminions0813',     # Marcus, 25 Rynthid Minions / Minions of Rage
-    'rynthidcowkillcount',            # Royal Guard, 25 Rynthid Cows
-    'killtaskrynthidwisps0813',       # Tillahan, 3 Empowered ... Wisps
+# (quest flag from /myquests, done variable, plural mob names in the server's kill message).  Variants in one group
+# share the task's counter.  Names are from the kill lines seen on 2026-11-07.  Rares (killtaskrynthidrares0813,
+# Rynthid Berserkers / Ravagers) left out.
+TASKS = [
+    ('killtaskrynthidcrystals',      'RKDoneCrystals',  'Rynthid Crystals'),               # Lohrn, 6
+    ('killtaskrynthidsorcerers0813', 'RKDoneSorcerers', '(Raging )?Rynthid Sorcerers'),    # Wido, 15
+    ('killtaskrynthidrifts0813',     'RKDoneRifts',     'Rift of [A-Za-z ]+'),             # Rhys, 10 (4 kinds)
+    ('killtaskrynthidragers0813',    'RKDoneRagers',    'Rynthid Ragers'),                 # Ranulf, 15
+    ('killtaskrynthidslayers0813',   'RKDoneSlayers',   'Rynthid Slayers'),                # Sylvanus, 15
+    ('killtaskrynthidminions0813',   'RKDoneMinions',   'Rynthid Minion(s| of Rages)'),    # Marcus, 25
+    ('rynthidcowkillcount',          'RKDoneCows',      'Rynthid Cows'),                   # Royal Guard, 25
+    ('killtaskrynthidwisps0813',     'RKDoneWisps',     'Empowered [A-Za-z]+ Wisps'),      # Tillahan, 3 (3 kinds)
 ]
+def task_complete(names):
+    return f'^You have killed [0-9]+ {names}! Your task is complete!'
 ALL_DONE = 'isrefreshingquests[]==0&&' + '&&'.join(
-    f'getquestktprogress[{f}]>=getquestktrequired[{f}]' for f in TASK_FLAGS)
+    f'(getvar[{v}]==1||getquestktprogress[{f}]>=getquestktrequired[{f}])' for f, v, _ in TASKS)
 
 # Monsters that count for a task (names from a world scan and the kill messages).  The "Discorporate Rynthid of ..."
 # types don't count for anything.  Rynthid Berserker is the Rare Boss task ("Rynthid Berserkers! Your task is
@@ -63,11 +73,16 @@ def nav(name):
 def travel():
     return [m.opt('EnableCombat', False), m.opt('EnableLooting', False), m.opt('EnableNav', True)]
 
+def kill_lines(state):
+    """Mark each task done when the server says it's complete."""
+    return [(state, m.chat_message(task_complete(names)), m.expr_a(f'setvar[{v},1]')) for _, v, names in TASKS]
+
 def hunt_checks(state):
-    """Rules shared by the hunting states: refresh quest data, finish, give up."""
-    return [
+    """Rules shared by the hunting states: task completions, (optional) refresh, finish, give up."""
+    refresh = [] if not REFRESH_SECONDS else [
         (state, m.expr_c(REFRESH_DUE),
-         m.all_a(m.chat('/ub myquests'), m.expr_a('setvar[RKQuestSW,stopwatchstart[stopwatchcreate[]]]'))),
+         m.all_a(m.chat('/ub myquests'), m.expr_a('setvar[RKQuestSW,stopwatchstart[stopwatchcreate[]]]')))]
+    return kill_lines(state) + refresh + [
         (state, m.all_c(m.seconds_in_state(5), m.expr_c(ALL_DONE)),
          m.all_a(*travel(), m.chat('/vt echo Rynthid: all tasks done, turning in'), m.set_state('RK6-turnin'))),
         (state, m.expr_c(HUNT_TIMEOUT),
@@ -83,7 +98,9 @@ rules = [
     ('RK1-start', m.always(), m.all_a(
         *travel(), m.opt('EnableBuffing', True), m.opt('IdlePeaceMode', False), m.opt('NavPriorityBoost', False),
         m.chat('/ub opt set VTank.PatchExpressionEngine True'), m.chat('/vt opt set attackdistance .1667'),
-        m.chat('/vt setattackbar 0.1'))),
+        m.chat('/vt setattackbar 0.1'),
+        # Forget completions from an earlier run; the refresh after getting the tasks has the server's counts
+        *[m.expr_a(f'clearvar[{v}]') for _, v, _ in TASKS])),
     ('RK1-start', m.seconds_in_state(3), m.set_state('RK2-getq')),
 
     # Gem, two portals, then each NPC.  Done at the end of the route, next to the NPCs.
