@@ -80,6 +80,18 @@ class RouteTests(unittest.TestCase):
                       'Recall', 'Dead'):
                 self.assertIn(s, states)
 
+    def test_measured_door_moves_the_spot(self):
+        cell = 0x576602B8
+        ew, ns, z = farmspot.vtnav.nav_coord(cell, 395.0, -70.2, 0)  # straight ahead (east), 5 m out
+        far = farmspot.vtnav.nav_coord(cell, 390.0, -77.0, 0)       # behind the character: not this spot's
+        d = farmspot.Dungeon(name='aT', landblock=LB, here='.', doors=[(ew, ns, z), far])
+        cp = {'k': 3, 'kind': 'SR', 'fwd': (1.0, 0.0), 'pt': (cell, 390.0, -70.0, 0.0)}
+        s, r = farmspot.spots_of(d, cp)
+        self.assertEqual(s['door'], f'door {ew!r} {ns!r} {z!r}')
+        self.assertAlmostEqual(s['x'], 395.0 + d.side_offset - d.side_door)  # same distance past the door
+        self.assertAlmostEqual(r['y'], -76.0)  # no measured door south within side_offset: the estimate
+        self.assertIn('-30.', r['door'])
+
     def test_checkpoint_without_direction_is_an_error(self):
         with tempfile.TemporaryDirectory() as here:
             p = os.path.join(here, 'r.spec')

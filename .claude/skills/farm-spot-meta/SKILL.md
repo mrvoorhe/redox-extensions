@@ -62,6 +62,14 @@ Copy `examples/aFBreach.py` to `examples/<Name>.py` and set the `Dungeon` fields
   spot's door, 2.3 m; `None` if side spots have no door), `side_radius` / `fixed_radius` (another player that close
   holds the spot).  Measure them: positions of players at the spots (`rectl -c <Char> world --class Player --near 60`
   while walking, or during the recording) and of the doors (`--class Door`).  Ask the user if the layout is unclear.
+* Measure the doors: run a `--test none` build (a full pass, no farming) with
+  `py tools/vt/farmspot.py doors <Char> tools/vt/examples/<Name>-doors.spec <landblock hex>` in the background.
+  The client only sees nearby doors, so it has to walk the whole route.  With `<Name>-doors.spec` present, each
+  spot behind a door uses the nearest measured door in its direction instead of `side_door`: in Breach Zero the
+  side doors were 1.8-2.9 m out but one straight-ahead door was 5.5 m, so the estimate missed it, the character
+  "arrived" outside the closed door and fought the wall.  The build prints a note for spots with no measured door.
+* Some doors really are locked (Breach Zero 11S: using it does nothing, the `*Stuck` states repeat).  The user's
+  call there was to drop the spot: remove its letter from the checkpoint line.
 * Doors: check what kind they are (`rectl object <id>`).  Breach Zero's are flagged Locked, so VT's `OpenDoors`
   skips them, and a nav use node toggles them for ever; the `door` lines (a UB `actiontryuseitem` chat node, from a
   point 1 m in front) work.  If VT's `OpenDoors` works in a new dungeon, it may be simpler; test before choosing.

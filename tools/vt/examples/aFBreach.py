@@ -13,7 +13,8 @@ Virmar) passes 21 checkpoints; side spots are behind doors.  Players behind a cl
 client, so the check works from the hallway.
 
 Spot coordinates: side spots are 6 m from the hallway centre (every player seen during the recording stood within
-0.3-3.6 m of the estimate); a fixed spot is where the user stood.  The side doors measured 2.1-2.6 m from the centre.
+0.3-3.6 m of the estimate); a fixed spot is where the user stood.  Doors are measured (aFBreach-doors.spec); 11S
+(behind a door that is really locked) is left out.
 
 Doors: Breach Zero's doors are flagged Locked (lockpick 50), so VT's OpenDoors skips them ("No usable lockpicks
 found"), but using one opens it, so the navs use them with UB (farmspot.door_lines).

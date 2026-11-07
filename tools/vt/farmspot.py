@@ -1,6 +1,7 @@
 """Farm-spot metas: go to a dungeon, walk a route past checkpoints, farm at the first spot without another player.
 
     py tools/vt/farmspot.py route <recording dir> <Name> [--out-dir <dir>] [--min-move 4]
+    py tools/vt/farmspot.py doors <Char> <Name>-doors.spec <landblock hex> [--seconds 600]
 
 route: turns a vtrecord.py recording with the user's chat markers into <Name>-goto.spec and <Name>-route.spec
 (default: next to the recording) for a meta script like examples/aFBreach.py.  Markers (any chat channel):
@@ -17,6 +18,10 @@ stood when the marker was sent.  <kind> is fixed, or letters L R S; dx dy is the
 checkpoint (snapped to an axis when within 25 degrees), which says where left, right and straight are.  Door uses
 (object class 26) become "door <ew> <ns> <z>" lines, which the meta turns into a UB use of that door.  Read both
 specs before building: fix typos the parser missed, drop points that aren't part of the route.
+
+doors: while the character walks the whole route (e.g. a --test none build), records every door the client sees.
+Spots behind a door then use the measured door instead of an estimate: the side doors are 2.1-2.6 m from the
+hallway centre in Breach Zero, but a door straight ahead was 4.7 m.  Stop it early by creating <spec>.stop.
 
 As a library (see examples/aFBreach.py):
 
@@ -71,6 +76,11 @@ class Dungeon:
     goto_timeout: int = 180
     walk_timeout: int = 90
     go_timeout: int = 30
+    doors: list = None           # measured doors [(ew, ns, z)]; default: <here>/<name>-doors.spec if it exists
+
+    def __post_init__(self):
+        if self.doors is None:
+            self.doors = read_doors(self.spec('doors'))
 
     def spec(self, part):
         return os.path.join(self.here, f'{self.name}-{part}.spec')
@@ -81,6 +91,12 @@ class Dungeon:
 def pt_line(p):
     cell, x, y, z = p
     return f'pt {cell:08X} {x:.2f} {y:.2f} {z:.2f}'
+
+
+def game_xy(cell, ew, ns):
+    """Nav (ew, ns) to the local x, y of the landblock of `cell` (the inverse of vtnav.nav_coord)."""
+    lbx, lby = (cell >> 24) & 0xFF, (cell >> 16) & 0xFF
+    return ew * 240 - (lbx - 127) * 192 + 84, ns * 240 - (lby - 127) * 192 + 84
 
 
 def parse_pt(line):
@@ -157,8 +173,7 @@ def save_nav(dirname, name, lines, route_type='once'):
             ew, ns = map(float, line.split()[1:3])
             if prev:
                 cell, px, py, pz = prev
-                lbx, lby = (cell >> 24) & 0xFF, (cell >> 16) & 0xFF
-                dx, dy = ew * 240 - (lbx - 127) * 192 + 84, ns * 240 - (lby - 127) * 192 + 84
+                dx, dy = game_xy(cell, ew, ns)
                 d = math.hypot(px - dx, py - dy)
                 if d > 1.0:
                     spec.append(pt_line((cell, dx + (px - dx) / d, dy + (py - dy) / d, pz)))
@@ -174,8 +189,31 @@ def save_nav(dirname, name, lines, route_type='once'):
 
 # ---------------------------------------------------------------- meta
 
+def read_doors(path):
+    """Measured doors from a doors spec ("door <ew> <ns> <z>" lines, from `farmspot.py doors`): [(ew, ns, z)]."""
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding='utf-8') as f:
+        return [tuple(map(float, l.split()[1:4])) for l in f if l.startswith('door ')]
+
+
+def side_door(d, cell, cx, cy, vx, vy):
+    """The measured door in direction (vx, vy) from the checkpoint: the nearest one between 0.5 m and side_offset
+    out, within 1.5 m of that line.  Returns (distance out, ew, ns, z) or None."""
+    best = None
+    for ew, ns, z in d.doors:
+        x, y = game_xy(cell, ew, ns)
+        t = (x - cx) * vx + (y - cy) * vy
+        off = abs((x - cx) * vy - (y - cy) * vx)
+        if 0.5 < t < d.side_offset and off < 1.5 and (best is None or t < best[0]):
+            best = (t, ew, ns, z)
+    return best
+
+
 def spots_of(d, cp):
-    """The spots at a checkpoint: name, position, radius, and for a side spot the door line (or None)."""
+    """The spots at a checkpoint: name, position, radius, and for a side spot the door line (or None).  With measured
+    doors, a side spot behind a door is side_offset - side_door past it (as with the estimate), however far out the
+    door is; without them, the door is estimated side_door out."""
     k, (cell, cx, cy, cz) = cp['k'], cp['pt']
     if cp['kind'] == 'fixed':
         return [{'name': f'{k:02d}', 'x': cx, 'y': cy, 'r': d.fixed_radius, 'fixed': True, 'pt': cp['pt']}]
@@ -186,11 +224,18 @@ def spots_of(d, cp):
     spots = []
     for side in cp['kind']:
         vx, vy = vec[side]
-        door = None
-        if d.side_door is not None:
+        door, out = None, d.side_offset
+        found = side_door(d, cell, cx, cy, vx, vy) if d.doors else None
+        if found:
+            t, ew, ns, z = found
+            door = f'door {ew!r} {ns!r} {z!r}'
+            out = t + d.side_offset - (d.side_door or 0)
+        elif d.side_door is not None:
+            if d.doors:
+                print(f'note: spot {k:02d}{side}: no measured door, using the estimate')
             ew, ns, z = vtnav.nav_coord(cell, cx + vx * d.side_door, cy + vy * d.side_door, cz)
             door = f'door {ew!r} {ns!r} {z!r}'
-        x, y = cx + vx * d.side_offset, cy + vy * d.side_offset
+        x, y = cx + vx * out, cy + vy * out
         spots.append({'name': f'{k:02d}{side}', 'x': x, 'y': y, 'r': d.side_radius, 'fixed': False, 'door': door,
                       'pt': (cell, x, y, cz)})
     return spots
@@ -461,6 +506,36 @@ def _door(line):
     return line
 
 
+def collect_doors(char, path, landblock, seconds, interval=2.0):
+    """Adds every door the client sees in the landblock to the doors spec at `path` (keeping what's there), polling
+    while the character walks, until `seconds` pass or <path>.stop exists."""
+    import time, rectl
+    doors = {}
+    if os.path.exists(path):
+        with open(path, encoding='utf-8') as f:
+            for l in f:
+                if l.startswith('door '):
+                    doors[int(l.split('#')[1])] = tuple(map(float, l.split()[1:4]))
+    t0, n0 = time.time(), len(doors)
+    while time.time() - t0 < seconds and not os.path.exists(path + '.stop'):
+        try:
+            if rectl.landcell(rectl.state(char)) & 0xFFFF0000 == landblock:
+                for o in rectl.run(char, 'world', '--class', 'Door', '--near', 1000, '--limit', 1000).get('objects', []):
+                    if o['id'] not in doors:
+                        doors[o['id']] = tuple(o['nav'])
+                        print(f'{len(doors)} doors (new: {o["id"]})', flush=True)
+        except Exception as e:  # portal loads etc.
+            print('error:', e, flush=True)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write('# Doors measured with farmspot.py doors; spots behind a door use the nearest one\n')
+            for i, (ew, ns, z) in sorted(doors.items()):
+                f.write(f'door {fmt(ew)} {fmt(ns)} {fmt(z)}    #{i}\n')
+        time.sleep(interval)
+    if os.path.exists(path + '.stop'):
+        os.remove(path + '.stop')
+    print(f'{len(doors)} doors ({len(doors) - n0} new) in {path}')
+
+
 def cli(argv):
     import vtrecord
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -470,7 +545,15 @@ def cli(argv):
     r.add_argument('name')
     r.add_argument('--out-dir')
     r.add_argument('--min-move', type=float, default=4.0)
+    dr = sub.add_parser('doors')
+    dr.add_argument('char')
+    dr.add_argument('spec', help='<Name>-doors.spec to write (doors already in it are kept)')
+    dr.add_argument('landblock', help='hex, e.g. 57660000')
+    dr.add_argument('--seconds', type=float, default=600)
     a = ap.parse_args(argv)
+    if a.cmd == 'doors':
+        collect_doors(a.char, a.spec, int(a.landblock, 16), a.seconds)
+        return
     rd = lambda f: vtrecord.read_jsonl(os.path.join(a.dir, f))
     goto, route, notes = route_specs(rd('positions.jsonl'), rd('actions.jsonl'), rd('chat.jsonl'), a.min_move)
     out = a.out_dir or a.dir
