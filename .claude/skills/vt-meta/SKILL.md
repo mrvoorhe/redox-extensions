@@ -6,7 +6,8 @@ description: Build, read and test Virindi Tank (VT) metas (.met) for the user's 
 # VT metas
 
 Tools are in `tools/vt` (Python 3; run with `py`).  For navs (recording, building, the nav format, the in-game
-test loop) see the `vt-nav` skill; a meta that travels usually needs a nav built that way first.
+test loop) see the `vt-nav` skill; a meta that travels usually needs a nav built that way first.  For a meta that
+looks for a free farming spot in a busy dungeon, see the `farm-spot-meta` skill (`farmspot.py`).
 
 The VT folder is the user's VirindiTank directory (`py tools/vt/rectl.py vt-dir` prints it).  Read existing metas there before designing one:
 the `aKT*` / `aQD*` metas are the user's own and show their conventions.  Never overwrite a file without asking.
