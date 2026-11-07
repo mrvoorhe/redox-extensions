@@ -144,7 +144,8 @@ What was built, and where it differs from the design above:
   (it would lock the DLL in the install directory and could load a second copy), so it has its own small `MiniJson`.
 * The plugin registers `state` in `RedoxExtensions/AgentBridge/AgentHandlers.cs` when it initializes, and removes it
   in `CloseDown`.
-* Event kinds: `chat` (Decal `ChatBoxMessage`), `plugin` (text any plugin writes to chat, see "Capturing other
+* Event kinds: `chat` (Decal `ChatBoxMessage`, minus `[General]`, `[Allegiance]` and `[Trade]` channel chat, see
+  `ChatChannelFilter`), `plugin` (text any plugin writes to chat, see "Capturing other
   plugins' chat output"), `debug` (text written to the debug chat window, plus `WrapperDebugWriter.WriteLine` in
   Release builds) and `command` (each `exec`).
 * `exec` refuses `/re reload|load|unload|agent` (also when wrapped in `/ub delay`).  Use the `reload` request.

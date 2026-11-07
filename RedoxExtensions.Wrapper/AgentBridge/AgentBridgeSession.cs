@@ -159,7 +159,11 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
 
     private void CoreManager_ChatBoxMessage(object sender, ChatTextInterceptEventArgs e)
     {
-        this._plugin.InvokeOperationSafely(() => this._journal.Publish(EventJournal.KindChat, e.Text?.TrimEnd('\n', '\r'), e.Color));
+        this._plugin.InvokeOperationSafely(() =>
+        {
+            if (!ChatChannelFilter.IsIgnored(e.Text))
+                this._journal.Publish(EventJournal.KindChat, e.Text?.TrimEnd('\n', '\r'), e.Color);
+        });
     }
 
     #region Decal Chat Dispatch (same approach as RedoxExtensions.Core.DecalProxy, copied from MagTools)
