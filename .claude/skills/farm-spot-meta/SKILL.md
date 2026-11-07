@@ -81,7 +81,8 @@ Build: `py tools/vt/examples/<Name>.py`, then `py tools/vt/vtmeta.py dump "<VT f
 `/vt meta load <Name>`, `EnableMeta` True, `/vt start`; follow `[VTank] Meta transitioning to state:` lines in
 `rectl -c <Char> events --kinds plugin` and the position (`rectl state`).  `/vt stop` before every rebuild, or the
 old meta keeps running.  Test builds: `py tools/vt/examples/<Name>.py --test <spots>` writes `<Name>-test.met` where
-only the listed spots can count as free (`none`, `side`, or names like `10R,17S`); delete it afterwards.
+only the listed spots can count as free (`none`, `side`, or names like `10R,17S`), or `tour`; delete it
+afterwards.
 
 | Scenario | How | Expect |
 |---|---|---|
@@ -89,9 +90,17 @@ only the listed spots can count as free (`none`, `side`, or names like `10R,17S`
 | Taken spots skipped | real players, or `--test <a later spot>` | Check states move on |
 | Side spot through its door | `--test <a free side spot>` | Go<spot> opens the door, stands in the spot, kills |
 | Every spot taken | `--test none` | full pass, Recall (gem), Walk01 again |
+| Every spot reachable | `--test tour` | TourAt<spot> for each spot in order (recall between), then TourDone |
 | Restart on a spot | `/vt meta load` while farming | Default -> Farm<spot> |
 | Restart mid-dungeon | load away from spots and entrance | Default -> Recall |
 | Alone in a fellowship | (the user's farm setup) | `/ub fellow quit` 3 s into Farm |
+
+The tour ignores other players: it walks into every spot, waits 3 s with combat off, recalls and goes for the next.
+The UB variable `fsTour` holds the next spot's number (1 = first in route order): `/ub mexec setvar[fsTour,N]`
+starts at spot N (e.g. to retry one), `/ub mexec clearvar[fsTour]` starts over.  A spot it can't reach ends in
+TourFail<spot>; check whether a player is farming there before blaming the route (their monsters in the doorway
+block an approach with combat off; the real meta skips that spot anyway).  A full tour of ~30 spots takes a while:
+follow it with a script that prints each TourAt/TourFail with the position and the Stuck count.
 
 `*Stuck` states are the door watchdog (a door someone left open, closed by our use); a few per pass are normal.
 Many in one place means a missing door line or a waypoint that needs moving.  Death and someone taking a spot
