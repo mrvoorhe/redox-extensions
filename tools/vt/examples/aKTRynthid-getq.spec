@@ -55,14 +55,18 @@ chat /ub usei Contract for Kill: Rynthid Rifts
 pause 1000
 pt 30320014 58.36 87.82 132.00
 pt 30320014 57.85 90.62 132.00
-# Ranulf: 15 Rynthid Ragers
+# Ranulf: 15 Rynthid Ragers (contract?  not seen yet; the use does nothing if there isn't one)
 talk -63.31530833244324 -61.55817041397095 0.5501207987467448 Ranulf
-pause 2000
+pause 3000
+chat /ub usei Contract for Kill: Rynthid Ragers
+pause 1000
 pt 30320014 57.50 92.06 132.00
 pt 30320014 59.31 92.91 132.00
-# Sylvanus: 15 Rynthid Slayers
+# Sylvanus: 15 Rynthid Slayers (contract)
 talk -63.30078333218892 -61.558232084910074 0.5501207987467448 Sylvanus
-pause 2000
+pause 3000
+chat /ub usei Contract for Kill: Rynthid Slayers
+pause 1000
 pt 30320014 62.80 93.81 132.00
 # Marcus: 25 Rynthid Minions (contract)
 talk -63.285528326034544 -61.55595458348592 0.5501207987467448 Marcus

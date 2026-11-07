@@ -10,6 +10,9 @@ States (modelled on aKTTouTou / aKTHoshino):
   Default -> RK1-start -> RK2-getq (gem, portals, talk to the 9 NPCs, use their contracts)
   -> RK3-gotohunt -> RK4-huntloop <-> RK5-stabbin -> RK6-turnin (the getq route again) -> ** Chain **
 
+Leftover "Contract for Kill: ..." items are used (which deletes them) every few seconds in RK3, RK4 and RK6, and
+the turn-in waits for them, up to TURNIN_SECONDS.  Not in RK5, where uses get dropped during combat.
+
 The hunt ends when every task is done, or after HUNT_SECONDS.  A task is done when:
 * the server says so while hunting: "You have killed N <mobs>! Your task is complete!" (repeated on every later kill)
   sets the task's RKDone* variable, or
@@ -64,6 +67,14 @@ def near(ew, ns, meters):
 AT_NPCS = near(-63.217, -61.588, 15)     # end of the getq route, next to the NPCs
 AT_LOOP = near(-65.214, -62.011, 30)     # end of the gotoloop route, by RynthidHunt.nav's first point
 
+# "Contract for Kill: ..." items the NPCs hand out.  The getq nav uses each one after its NPC, but a use sent while
+# the character is busy is dropped silently, which left contracts in the pack.  Using one (even a duplicate of a contract
+# already taken) deletes it.  No ^ anchor: UB expressions reject it.
+HAS_CONTRACTS = 'getitemcountininventorybynamerx[Contract for Kill]>0'
+CONTRACT_RETRY_SECONDS = 3
+CONTRACT_DUE = (f'{HAS_CONTRACTS}&&ifthen[testvar[RKContractSW],'
+                f'`stopwatchelapsedseconds[$RKContractSW]>={CONTRACT_RETRY_SECONDS}`,`1`]')
+
 HUNT_TIMEOUT = f'ifthen[testvar[RKHuntSW],`stopwatchelapsedseconds[$RKHuntSW]>={HUNT_SECONDS}`,`0`]'
 REFRESH_DUE = f'ifthen[testvar[RKQuestSW],`stopwatchelapsedseconds[$RKQuestSW]>={REFRESH_SECONDS}`,`0`]'
 
@@ -76,6 +87,12 @@ def travel():
 def kill_lines(state):
     """Mark each task done when the server says it's complete."""
     return [(state, m.chat_message(task_complete(names)), m.expr_a(f'setvar[{v},1]')) for _, v, names in TASKS]
+
+def use_contracts(state):
+    """Use leftover contracts one at a time, retrying every CONTRACT_RETRY_SECONDS until none are left."""
+    return [(state, m.expr_c(CONTRACT_DUE),
+             m.all_a(m.chat('/ub usepi Contract for Kill'),
+                     m.expr_a('setvar[RKContractSW,stopwatchstart[stopwatchcreate[]]]')))]
 
 def hunt_checks(state):
     """Rules shared by the hunting states: task completions, (optional) refresh, finish, give up."""
@@ -113,6 +130,7 @@ rules = [
 
     # Walk down to the hunting loop
     ('RK3-gotohunt', m.always(), m.all_a(*travel(), nav('aKTRynthid-gotoloop.nav'))),
+    *use_contracts('RK3-gotohunt'),
     ('RK3-gotohunt', m.any_c(m.expr_c(AT_LOOP), m.all_c(m.seconds_in_state(10), m.nav_empty())),
      m.all_a(m.expr_a('setvar[RKHuntSW,stopwatchstart[stopwatchcreate[]]]'), m.set_state('RK4-huntloop'))),
     ('RK3-gotohunt', m.died(), m.set_state('RK7-dead')),
@@ -127,6 +145,7 @@ rules = [
     ('RK4-huntloop', m.monster_count(TARGETS, 1, TARGET_RANGE),
      m.all_a(m.opt('EnableCombat', True), m.set_state('RK5-stabbin'))),
     *hunt_checks('RK4-huntloop'),
+    *use_contracts('RK4-huntloop'),
 
     ('RK5-stabbin', m.monster_count(TARGETS, 1, TARGET_RANGE), m.opt('EnableCombat', True)),
     ('RK5-stabbin', m.all_c(m.no_monsters_within(5), m.not_c(m.monster_count(TARGETS, 1, TARGET_RANGE))),
@@ -134,9 +153,11 @@ rules = [
     ('RK5-stabbin', m.seconds_in_state_persist(90), m.all_a(m.opt('EnableCombat', False), m.set_state('RK4-huntloop'))),
     *hunt_checks('RK5-stabbin'),
 
-    # Turn in: the getq route again (the NPCs reward finished tasks)
+    # Turn in: the getq route again (the NPCs reward finished tasks).  Done once no contracts are left in the pack.
     ('RK6-turnin', m.always(), m.all_a(*travel(), nav('aKTRynthid-getq.nav'))),
-    ('RK6-turnin', m.any_c(m.all_c(m.seconds_in_state(20), m.nav_empty(), m.expr_c(AT_NPCS)),
+    *use_contracts('RK6-turnin'),
+    ('RK6-turnin', m.any_c(m.all_c(m.seconds_in_state(20), m.nav_empty(), m.expr_c(AT_NPCS),
+                                   m.not_c(m.expr_c(HAS_CONTRACTS))),
                            m.seconds_in_state(TURNIN_SECONDS)),
      m.all_a(m.opt('EnableNav', False), m.chat('/ub myquests'),
              m.expr_a('setvar[RKQuestSW,stopwatchstart[stopwatchcreate[]]]'), m.chat('/b d'),
