@@ -32,8 +32,7 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
     private int _pendingBusyState = int.MaxValue;
     private int _pendingBusyStateId = int.MaxValue;
 
-    private string _pendingGiveItemTargetName = null;
-    private GiveItemOutcome _pendingGiveItemOutcome = GiveItemOutcome.Undefined;
+    private readonly PendingGiveItemFailure _pendingGiveItemFailure = new();
     private IWorldObject _pendingGiveItemCapturedWorldObject = null;
 
     private JumpRecorder _jumpRecorder;
@@ -225,6 +224,7 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
                 // Cache the object name now, when giving to NPC's, the object will be gone by the time we handle the end event
                 // so we won't be able to get the name then.  Strangely, when giving to player, you can still get to the WorldObject
                 this._pendingGiveItemCapturedWorldObject = this._pendingBusyStateId.ToWorldObject().Capture();
+                this._pendingGiveItemFailure.Reset();
                 this._giveItemPending.Set();
 
                 var beginGiveEventArgs = new BeginGiveItemEventArgs(this._pendingBusyStateId);
@@ -272,11 +272,17 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
                     // so since no one else took care of it, we should fire a failed End now
                     if (this._giveItemPending.WaitOne(0))
                     {
-                        var tmpEventArgs = new EndGiveItemEventArgs(null, string.Empty, GiveItemOutcome.FailedUnknown);
-                        REPlugin.Instance.Debug.WriteObject(eventArgs);
-                        this.EndGiveItem?.Invoke(sender, tmpEventArgs);
+                        // Use whatever we learned about the failure (ex: a refuse emote) even if the
+                        // "can't be given" status text never showed up.  Falls back to FailedUnknown.
+                        this._pendingGiveItemFailure.Complete(out var targetName, out var outcome);
+
+                        var tmpEventArgs = new EndGiveItemEventArgs(this._pendingGiveItemCapturedWorldObject, targetName, outcome);
+                        REPlugin.Instance.Debug.WriteObject(tmpEventArgs);
 
                         this._giveItemPending.Reset();
+                        this._pendingGiveItemCapturedWorldObject = null;
+
+                        this.EndGiveItem?.Invoke(sender, tmpEventArgs);
                     }
 
                     break;
@@ -386,26 +392,20 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
             this.YourTooBusy?.Invoke(sender, eventArgs);
         }
 
+        // Ex: The Aged Legendary Key can't be given
+        // The target name and the reason come from the status message or chat line that arrived before this.
         if (this._giveItemPending.WaitOne(0) && e.IsCantBeGiven())
         {
-            if (string.IsNullOrEmpty(this._pendingGiveItemTargetName))
-            {
-                throw new InvalidOperationException("Expected to have a target name at this point, but we do not.");
-            }
+            this._pendingGiveItemFailure.Complete(out var targetName, out var outcome);
 
-            if (this._pendingGiveItemOutcome == GiveItemOutcome.Undefined)
-            {
-                throw new InvalidOperationException("Expected to know the outcome of the give at this point");
-            }
-
-            var eventArgs = new EndGiveItemEventArgs(this._pendingBusyStateId.ToWorldObject().Capture(), this._pendingGiveItemTargetName, this._pendingGiveItemOutcome);
+            var eventArgs = new EndGiveItemEventArgs(this._pendingGiveItemCapturedWorldObject, targetName, outcome);
 
             REPlugin.Instance.Debug.WriteObject(eventArgs);
 
-            this.EndGiveItem?.Invoke(sender, eventArgs);
-
             this._giveItemPending.Reset();
-            this._pendingGiveItemOutcome = GiveItemOutcome.Undefined;
+            this._pendingGiveItemCapturedWorldObject = null;
+
+            this.EndGiveItem?.Invoke(sender, eventArgs);
         }
     }
 
@@ -424,6 +424,13 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
     {
         if (this._giveItemPending.WaitOne(0))
         {
+            // Ex: You allow Fiun Ruun to examine your Gem of Attribute Enlightenment.
+            //     The NPC handles the give with its refuse emote.  A "can't be given" status text follows.
+            if (this._pendingGiveItemFailure.RecordChat(e.Text))
+            {
+                return;
+            }
+
             // Ex: You give Kreap Invitation Ithaenc Cathedral.
             // Ex: You give Kreap Velvet Baggy Pants.
             //         WorldObject Name will = Baggy Pants
@@ -474,24 +481,7 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
     {
         if (this._giveItemPending.WaitOne(0))
         {
-            if (e.Type == (int)StatusMessageType.UnableToGiveItemBusy)
-            {
-                // Ex:
-                //[RT-DEBUG] StatusMessageEventArgs
-                //    Text = Town Crier
-                //    Type = 30
-                this._pendingGiveItemTargetName = e.Text;
-                this._pendingGiveItemOutcome = GiveItemOutcome.FailedBusy;
-            }
-            else if (e.Type == (int)StatusMessageType.UnableToGiveItemCannotCarryAnymore)
-            {
-                // Ex:
-                //[RT-DEBUG] StatusMessageEventArgs
-                //    Text = Trophy Cache
-                //    Type = 43
-                this._pendingGiveItemTargetName = e.Text;
-                this._pendingGiveItemOutcome = GiveItemOutcome.FailedCannotCarryAnymore;
-            }
+            this._pendingGiveItemFailure.RecordStatusMessage(e.Type, e.Text);
         }
     }
 

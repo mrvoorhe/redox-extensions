@@ -11,5 +11,11 @@ public enum GiveItemOutcome
     Successful,
     FailedUnknown,
     FailedCannotCarryAnymore,
-    FailedBusy
+    FailedBusy,
+
+    /// <summary>
+    /// The NPC examined the item with its refuse emote instead of accepting the give.  The emote may still
+    /// have taken the item ("You hand over ...").
+    /// </summary>
+    Refused
 }

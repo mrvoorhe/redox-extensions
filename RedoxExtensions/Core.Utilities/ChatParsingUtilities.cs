@@ -27,6 +27,8 @@ public static class ChatParsingUtilities
 
     private const string CannotCarryAnymore = "cannot carry anymore.";
     private const string YouGive = "You give";
+    private const string YouAllow = "You allow ";
+    private const string ToExamineYour = " to examine your ";
     private const string YouSayComma = "You say,";
 
     private const string VIPrefix = "[VI]";
@@ -271,6 +273,32 @@ public static class ChatParsingUtilities
     public static bool IsCannotCarryAnymore(string text) => text.EndsWith(CannotCarryAnymore);
 
     public static bool IsYouGive(string text) => text.StartsWith(YouGive);
+
+    /// <summary>
+    /// Sent instead of "You give ..." when an NPC handles a give with its refuse emote.  The NPC may still
+    /// take the item through the emote ("You hand over ...").
+    /// ex: Text = You allow Fiun Ruun to examine your Gem of Attribute Enlightenment.
+    /// </summary>
+    public static bool IsYouAllowToExamine(string text, out string targetName, out string itemName)
+    {
+        targetName = string.Empty;
+        itemName = string.Empty;
+
+        if (text == null || !text.StartsWith(YouAllow))
+        {
+            return false;
+        }
+
+        var separatorIndex = text.IndexOf(ToExamineYour, YouAllow.Length, StringComparison.Ordinal);
+        if (separatorIndex <= YouAllow.Length)
+        {
+            return false;
+        }
+
+        targetName = text.Substring(YouAllow.Length, separatorIndex - YouAllow.Length);
+        itemName = text.Substring(separatorIndex + ToExamineYour.Length).Trim().TrimEnd('.');
+        return true;
+    }
 
     #endregion
 
