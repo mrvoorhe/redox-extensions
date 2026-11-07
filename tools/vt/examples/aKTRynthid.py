@@ -11,7 +11,7 @@ States (modelled on aKTTouTou / aKTHoshino):
   -> RK3-gotohunt -> RK4-huntloop <-> RK5-stabbin -> RK6-turnin (the getq route again) -> ** Chain **
 
 The hunt ends when every task's kill counter is full (getquestktprogress >= getquestktrequired, refreshed with
-/ub myquests every minute) or after HUNT_SECONDS.  A task that wasn't handed out (cooldown) has no counter, so its
+/ub myquests every REFRESH_SECONDS) or after HUNT_SECONDS.  A task that wasn't handed out (cooldown) has no counter, so its
 required count is 0 and it doesn't hold the hunt up.  The Rare Boss task is left out: it needs a rare spawn.
 Quest functions need VTank.PatchExpressionEngine; test them with /ub mexec (not /vt mexec).
 """
@@ -23,6 +23,7 @@ import vtmeta as m
 
 VT = sys.argv[1] if len(sys.argv) > 1 else rectl.vt_dir()
 HUNT_SECONDS = 900     # give up hunting and turn in after this long
+REFRESH_SECONDS = 240  # /ub myquests interval while hunting; each refresh prints hundreds of chat lines
 TURNIN_SECONDS = 240   # the getq route takes ~2 minutes
 CHAIN = None           # meta to load after turn-in, e.g. 'aKTTouTou'; None stops there
 
@@ -53,7 +54,7 @@ AT_NPCS = near(-63.217, -61.588, 15)     # end of the getq route, next to the NP
 AT_LOOP = near(-65.214, -62.011, 30)     # end of the gotoloop route, by RynthidHunt.nav's first point
 
 HUNT_TIMEOUT = f'ifthen[testvar[RKHuntSW],`stopwatchelapsedseconds[$RKHuntSW]>={HUNT_SECONDS}`,`0`]'
-REFRESH_DUE = 'ifthen[testvar[RKQuestSW],`stopwatchelapsedseconds[$RKQuestSW]>=60`,`0`]'
+REFRESH_DUE = f'ifthen[testvar[RKQuestSW],`stopwatchelapsedseconds[$RKQuestSW]>={REFRESH_SECONDS}`,`0`]'
 
 def nav(name):
     return m.embed_nav(os.path.join(VT, name))
