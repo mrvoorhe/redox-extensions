@@ -24,8 +24,9 @@ import vtmeta as m
 VT = sys.argv[1] if len(sys.argv) > 1 else rectl.vt_dir()
 HUNT_SECONDS = 900     # give up hunting and turn in after this long
 REFRESH_SECONDS = 240  # /ub myquests interval while hunting; each refresh prints hundreds of chat lines
-TURNIN_SECONDS = 240   # the getq route takes ~2 minutes
-CHAIN = None           # meta to load after turn-in, e.g. 'aKTTouTou'; None stops there
+TURNIN_SECONDS = 240   # the getq route takes ~2 minutes; also the limit for walking down to the loop
+CHAIN = 'aKTNeftet'    # meta to load after turn-in; None stops there
+TARGET_RANGE = 40      # meters: fight task monsters this close to the loop
 
 # Kill counters from /myquests (diffed before/after talking to the NPCs).  Rares (killtaskrynthidrares0813) left out.
 TASK_FLAGS = [
@@ -81,7 +82,7 @@ rules = [
 
     ('RK1-start', m.always(), m.all_a(
         *travel(), m.opt('EnableBuffing', True), m.opt('IdlePeaceMode', False), m.opt('NavPriorityBoost', False),
-        m.chat('/ub opt set VTank.PatchExpressionEngine True'), m.chat('/vt opt set attackdistance .12'),
+        m.chat('/ub opt set VTank.PatchExpressionEngine True'), m.chat('/vt opt set attackdistance .1667'),
         m.chat('/vt setattackbar 0.1'))),
     ('RK1-start', m.seconds_in_state(3), m.set_state('RK2-getq')),
 
@@ -96,20 +97,22 @@ rules = [
     # Walk down to the hunting loop
     ('RK3-gotohunt', m.always(), m.all_a(*travel(), nav('aKTRynthid-gotoloop.nav'))),
     ('RK3-gotohunt', m.any_c(m.expr_c(AT_LOOP), m.all_c(m.seconds_in_state(10), m.nav_empty())),
-     m.set_state('RK4-huntloop')),
+     m.all_a(m.expr_a('setvar[RKHuntSW,stopwatchstart[stopwatchcreate[]]]'), m.set_state('RK4-huntloop'))),
     ('RK3-gotohunt', m.died(), m.set_state('RK7-dead')),
+    ('RK3-gotohunt', m.seconds_in_state(TURNIN_SECONDS),
+     m.all_a(m.chat('/vt echo Rynthid: going to the hunt took too long, starting over'), m.set_state('RK1-start'))),
     # Every task on cooldown (no counters after the refresh RK2 sent): nothing to hunt or turn in
     ('RK3-gotohunt', m.all_c(m.seconds_in_state(8), m.expr_c(ALL_DONE)),
      m.all_a(m.opt('EnableNav', False), m.chat('/vt echo Rynthid: no open tasks'), m.set_state('** Chain **'))),
 
     # Patrol the loop with combat off; fight when a task monster is close
     ('RK4-huntloop', m.always(), m.all_a(*travel(), nav('RynthidHunt.nav'))),
-    ('RK4-huntloop', m.monster_count(TARGETS, 1, 30),
+    ('RK4-huntloop', m.monster_count(TARGETS, 1, TARGET_RANGE),
      m.all_a(m.opt('EnableCombat', True), m.set_state('RK5-stabbin'))),
     *hunt_checks('RK4-huntloop'),
 
-    ('RK5-stabbin', m.monster_count(TARGETS, 1, 30), m.opt('EnableCombat', True)),
-    ('RK5-stabbin', m.all_c(m.no_monsters_within(5), m.not_c(m.monster_count(TARGETS, 1, 30))),
+    ('RK5-stabbin', m.monster_count(TARGETS, 1, TARGET_RANGE), m.opt('EnableCombat', True)),
+    ('RK5-stabbin', m.all_c(m.no_monsters_within(5), m.not_c(m.monster_count(TARGETS, 1, TARGET_RANGE))),
      m.all_a(m.opt('EnableCombat', False), m.set_state('RK4-huntloop'))),
     ('RK5-stabbin', m.seconds_in_state_persist(90), m.all_a(m.opt('EnableCombat', False), m.set_state('RK4-huntloop'))),
     *hunt_checks('RK5-stabbin'),
@@ -118,7 +121,9 @@ rules = [
     ('RK6-turnin', m.always(), m.all_a(*travel(), nav('aKTRynthid-getq.nav'))),
     ('RK6-turnin', m.any_c(m.all_c(m.seconds_in_state(20), m.nav_empty(), m.expr_c(AT_NPCS)),
                            m.seconds_in_state(TURNIN_SECONDS)),
-     m.all_a(m.opt('EnableNav', False), m.chat('/ub myquests'), m.chat('/b d'), m.set_state('** Chain **'))),
+     m.all_a(m.opt('EnableNav', False), m.chat('/ub myquests'),
+             m.expr_a('setvar[RKQuestSW,stopwatchstart[stopwatchcreate[]]]'), m.chat('/b d'),
+             m.set_state('** Chain **'))),
 
     # Died: wait for the lifestone, then start over (the NPCs just report progress for tasks already taken)
     ('RK7-dead', m.seconds_in_state(20), m.set_state('RK1-start')),
