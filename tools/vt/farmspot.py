@@ -243,11 +243,17 @@ def spots_of(d, cp):
 
 def build_rules(d, navdir, test=None):
     """test: None, or the spots that may count as free ('none', 'side', or names like 10R,17S); every other spot
-    counts as taken, to test the skip and recall paths while players decide which spots are free."""
+    counts as taken, to test the skip and recall paths while players decide which spots are free.
+
+    test 'tour' visits every spot in route order, to check each can be reached: walk in, wait 3 s with combat off
+    (TourAt<spot>), recall, go for the next, whether or not another player is there.  A spot it
+    can't reach is TourFail<spot>.  The variable fsTour holds the number of the next spot; TourDone at the end.
+    Clear it (/ub mexec clearvar[fsTour]) to start a tour over."""
     lb = d.landblock
+    tour = test == 'tour'
 
     def allowed(s):
-        return test is None or test == 'side' and not s['fixed'] or s['name'] in test.split(',')
+        return test in (None, 'tour') or test == 'side' and not s['fixed'] or s['name'] in test.split(',')
 
     def free(s):
         return m.expr_c(others_at(lb, s['x'], s['y'], s['r']) + '<1') if allowed(s) else m.never()
@@ -263,6 +269,9 @@ def build_rules(d, navdir, test=None):
     for cp in cps:
         cp['spots'] = spots_of(d, cp)
     all_spots = [s for cp in cps for s in cp['spots'] if allowed(s)]  # a test build only resumes its spots
+    for n, s in enumerate(all_spots, 1):
+        s['n'] = n
+    resume = [] if tour else all_spots  # a tour doesn't resume: it recalls and goes for the next spot
 
     if d.entry:
         ex, ey = d.entry
@@ -278,7 +287,7 @@ def build_rules(d, navdir, test=None):
     def died(state):
         return (state, m.died(), m.all_a(m.clear_watchdog(), m.set_state('Dead')))
 
-    def moving(name, nav_path, arrived, then, timeout):
+    def moving(name, nav_path, arrived, then, timeout, fail='Recall'):
         """Travel with a nav, opening doors that are in the way.  <name> loads the nav and goes to <name>Mv, which
         doesn't reload it.  <name>Mv's watchdog fires when he moves less than 2 m in 8 s: <name>Stuck uses the
         nearest door within 4 m and goes back to <name>Mv, and VT carries on along the same nav.  After 5 tries,
@@ -290,12 +299,12 @@ def build_rules(d, navdir, test=None):
                                        m.expr_a('setvar[faStuck,0]'), m.embed_nav(nav_path), m.set_state(mv))),
             (mv, m.always(), m.watchdog(stuck, 2, 8)),
             (mv, arrived, leave(then)),
-            (mv, m.seconds_in_state(timeout), leave('Recall')),  # moving but not getting there
+            (mv, m.seconds_in_state(timeout), leave(fail)),  # moving but not getting there
             died(mv),
             (stuck, m.always(), m.all_a(m.clear_watchdog(), m.expr_a('setvar[faStuck,getvar[faStuck]+1]'),
                                         m.expr_a(USE_NEAR_DOOR))),
             (stuck, m.all_c(m.seconds_in_state(2), m.expr_c('getvar[faStuck]<5')), m.set_state(mv)),
-            (stuck, m.all_c(m.seconds_in_state(2), m.expr_c('getvar[faStuck]>4')), m.set_state('Recall')),
+            (stuck, m.all_c(m.seconds_in_state(2), m.expr_c('getvar[faStuck]>4')), m.set_state(fail)),
             died(stuck),
         ]
 
@@ -303,16 +312,17 @@ def build_rules(d, navdir, test=None):
         # Settings first: the profile may turn combat and nav on, so keep nav off until it has loaded
         ('Default', m.always(), m.all_a(m.clear_watchdog(), m.opt('EnableNav', False),
                                         m.chat('/ub opt set VTank.PatchExpressionEngine true'),
-                                        m.chat(f'/vt settings loadchar {d.profile}'))),
+                                        m.chat(f'/vt settings loadchar {d.profile}'),
+                                        *([m.expr_a('ifthen[testvar[fsTour]==0,`setvar[fsTour,1]`]')] if tour else []))),
         ('Default', m.seconds_in_state(1), m.opt('EnableNav', False)),
         ('Default', m.all_c(m.seconds_in_state(2), m.not_c(there)), m.set_state('GoTo')),
         ('Default', m.all_c(m.seconds_in_state(2), there, at_entry), m.set_state('Walk01')),
     ]
     # Restarted in a spot: farm it again
-    for s in all_spots:
+    for s in resume:
         rules.append(('Default', m.all_c(m.seconds_in_state(2), at(s['x'], s['y'])), m.set_state(f'Farm{s["name"]}')))
     rules.append(('Default', m.all_c(m.seconds_in_state(2), there, m.not_c(at_entry),
-                                     *[m.not_c(at(s['x'], s['y'])) for s in all_spots]),
+                                     *[m.not_c(at(s['x'], s['y'])) for s in resume]),
                   m.set_state('Recall')))
 
     # To the dungeon entrance, not fighting
@@ -326,16 +336,26 @@ def build_rules(d, navdir, test=None):
     for i, cp in enumerate(cps):
         k, (cell, cx, cy, cz) = cp['k'], cp['pt']
         walk, check = f'Walk{k:02d}', f'Check{k:02d}'
-        nxt = f'Walk{k + 1:02d}' if i + 1 < len(cps) else 'Recall'
+        nxt = f'Walk{k + 1:02d}' if i + 1 < len(cps) else ('TourDone' if tour else 'Recall')
         leg = save_nav(navdir, f'{d.name}-leg{k:02d}.nav', cp['leg'])
         rules += moving(walk, leg, at(cx, cy), check, d.walk_timeout)
-        # Look at each spot in order; give the client 2 s to see who's there.  Conditions are exclusive.
-        taken_before = []
-        for s in cp['spots']:
-            target = f'Farm{s["name"]}' if s['fixed'] else f'Go{s["name"]}'
-            rules.append((check, m.all_c(m.seconds_in_state(2), *taken_before, free(s)), m.set_state(target)))
-            taken_before.append(taken(s))
-        rules.append((check, m.all_c(m.seconds_in_state(2), *taken_before), m.set_state(nxt)))
+        if tour:
+            # Only the spot whose number is in fsTour, whoever is there (reachability, not who holds it); past
+            # this checkpoint's spots, walk on
+            for s in cp['spots']:
+                target = f'Farm{s["name"]}' if s['fixed'] else f'Go{s["name"]}'
+                mine = m.expr_c(f'getvar[fsTour]=={s["n"]}')
+                rules.append((check, m.all_c(m.seconds_in_state(2), mine), m.set_state(target)))
+            last = max(s['n'] for s in cp['spots'])
+            rules.append((check, m.all_c(m.seconds_in_state(2), m.expr_c(f'getvar[fsTour]>{last}')), m.set_state(nxt)))
+        else:
+            # Look at each spot in order; give the client 2 s to see who's there.  Conditions are exclusive.
+            taken_before = []
+            for s in cp['spots']:
+                target = f'Farm{s["name"]}' if s['fixed'] else f'Go{s["name"]}'
+                rules.append((check, m.all_c(m.seconds_in_state(2), *taken_before, free(s)), m.set_state(target)))
+                taken_before.append(taken(s))
+            rules.append((check, m.all_c(m.seconds_in_state(2), *taken_before), m.set_state(nxt)))
         rules.append(died(check))
 
         for s in cp['spots']:
@@ -343,7 +363,22 @@ def build_rules(d, navdir, test=None):
             if not s['fixed']:
                 lines = [pt_line(cp['pt'])] + ([s['door']] if s['door'] else []) + [pt_line(s['pt'])]
                 gonav = save_nav(navdir, f'{d.name}-go{s["name"]}.nav', lines)
-                rules += moving(f'Go{s["name"]}', gonav, at(s['x'], s['y']), farm, d.go_timeout)
+                rules += moving(f'Go{s["name"]}', gonav, at(s['x'], s['y']), farm, d.go_timeout,
+                                fail=f'TourFail{s["name"]}' if tour else 'Recall')
+            if tour:
+                done = 'TourDone' if s['n'] == len(all_spots) else 'Recall'
+                at_s, fail_s = f'TourAt{s["name"]}', f'TourFail{s["name"]}'
+                rules += [
+                    (farm, m.always(), m.set_state(at_s)),
+                    (at_s, m.always(), m.all_a(m.opt('EnableNav', False), m.opt('EnableCombat', False))),
+                    (at_s, m.seconds_in_state(3), m.all_a(m.expr_a('setvar[fsTour,getvar[fsTour]+1]'),
+                                                          m.set_state(done))),
+                    died(at_s),
+                    (fail_s, m.always(), m.all_a(m.opt('EnableNav', False),
+                                                 m.expr_a('setvar[fsTour,getvar[fsTour]+1]'))),
+                    (fail_s, m.seconds_in_state(1), m.set_state(done)),
+                ]
+                continue
             hold = save_nav(navdir, f'{d.name}-hold{s["name"]}.nav', [pt_line(s['pt'])], route_type='circular')
             rules += [
                 (farm, m.always(), m.all_a(m.embed_nav(hold), m.opt('EnableNav', True), m.opt('EnableCombat', True),
@@ -362,6 +397,9 @@ def build_rules(d, navdir, test=None):
         died('Recall'),
         ('Dead', m.seconds_in_state(20), m.set_state('Default')),
     ]
+    if tour:
+        rules.append(('TourDone', m.always(), m.all_a(m.opt('EnableNav', False), m.opt('EnableCombat', False),
+                                                      m.expr_a('clearvar[fsTour]'))))
     return rules
 
 
