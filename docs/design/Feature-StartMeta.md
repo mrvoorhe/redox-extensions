@@ -2,6 +2,8 @@ I want you to implement a command that will initialize some state, load a meta, 
 
 `/re startmeta <name>` where `<name>` is the name of the meta file without it's `.met` file extension.
 
+`/re sm <name>` is a short alias for `/re startmeta <name>`.
+
 Here is the sequence of things to initialize before loading the meta.
 
 - Load the profile called `Normal`
