@@ -38,6 +38,8 @@ The meta:
              (walk in, through its door) or, for a fixed spot, FarmNN.  All taken -> the next walk, or Recall after
              the last checkpoint.
   Farm<spot> one-point circular nav on the spot, nav and combat on, attack bar; quits a fellowship it's alone in.
+             With fellow_invite set, in a fellowship: /fship landblock 5 s in, then every fellow_invite seconds
+             (stopwatch fsInviteSW), to recruit players who come into the area.
   Recall     the recall gem; at the entrance -> Walk01.
   Dead       20 s, then Default (which travels back).
 Travel states have a watchdog: moving less than 2 m in 8 s (a door that someone left open and our use closed)
@@ -76,6 +78,7 @@ class Dungeon:
     goto_timeout: int = 180
     walk_timeout: int = 90
     go_timeout: int = 30
+    fellow_invite: int = None    # seconds: /fship landblock this often while farming in a fellowship; None: never
     doors: list = None           # measured doors [(ew, ns, z)]; default: <here>/<name>-doors.spec if it exists
 
     def __post_init__(self):
@@ -389,6 +392,17 @@ def build_rules(d, navdir, test=None):
                 died(farm),
                 (farm, m.not_c(there), m.set_state('Default')),  # left the dungeon: go back
             ]
+            if d.fellow_invite:
+                # Invite the landblock into the fellowship on arrival (after the alone-in-it quit at 3 s), then
+                # every fellow_invite seconds.  Rules fire when their condition becomes true; restarting the
+                # stopwatch makes the second one false again.
+                invite = m.all_a(m.chat('/fship landblock'), m.expr_a('setvar[fsInviteSW,stopwatchstart[stopwatchcreate[]]]'))
+                rules += [
+                    (farm, m.all_c(m.seconds_in_state(5), m.expr_c('getfellowshipcount[]>1')), invite),
+                    (farm, m.all_c(m.seconds_in_state(6), m.expr_c(
+                        'getfellowshipcount[]>1&&ifthen[testvar[fsInviteSW],'
+                        f'`stopwatchelapsedseconds[$fsInviteSW]>={d.fellow_invite}`,`1`]')), invite),
+                ]
 
     # Every spot taken (or stuck): back to the entrance and look again
     rules += [
