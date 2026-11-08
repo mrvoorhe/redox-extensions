@@ -47,5 +47,13 @@ class AnalyzeTests(unittest.TestCase):
             {'runs': [run], 'metas': [], 'incidents': [], 'positions': [], 'warns': []}))
 
 
+    def test_run_time_meta_name_is_not_a_meta(self):
+        t0 = dt.datetime(2026, 11, 8, 6, 0).astimezone()
+        recs = [chat(t0, '[VTank] Meta executing action: Chat Command: /vt meta load aFarm', 'plugin'),
+                chat(t0, "[VTank] Meta executing action: ExprAct chatbox[`/vt meta load zFarm`+wobjectgetname["
+                         "wobjectgetplayer[]]]", 'plugin'),
+                chat(t0, "[VTank] Meta executing action: ExprAct chatbox[`/vt meta load aFBreach`]", 'plugin')]
+        self.assertEqual([m for _, m in metachain.analyze(recs, info={})['metas']], ['aFarm', 'aFBreach'])
+
 if __name__ == '__main__':
     unittest.main()

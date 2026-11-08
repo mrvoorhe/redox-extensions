@@ -201,7 +201,8 @@ def cmd_record(a):
 KILL_RE = re.compile(r"^You have killed (\d+) (.+?)! (?:You must kill (\d+)|Your task is complete)")
 OUTOF_RE = re.compile(r"^You've killed (\d+) out of (\d+) (.+?)\.?$")
 TRANS_RE = re.compile(r'Meta transitioning to state: (.+)$')
-LOAD_RE = re.compile(r'/vt meta load ([^,;}\]\']+?)\s*(?:[,;}\]\']|$)')
+# A name built at run time (`/vt meta load zFarm`+wobjectgetname[...]) is not a meta name, so it doesn't match.
+LOAD_RE = re.compile(r'/vt meta load ([^,;}\]\'`]+?)\s*(?:[,;}\]\']|`(?!\+)|$)')
 START_RE = re.compile(r'\[RE\] StartMeta : (\S+)')
 HUNTSW_RE = re.compile(r'setvar\[(\w*HuntSW),stopwatchstart')
 LIMIT_MSG_RE = re.compile(r'(\w+): (\d+) minute hunt limit reached')
