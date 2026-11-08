@@ -72,7 +72,7 @@ class Dungeon:
     side_radius: float = 4.5     # another player this close to a side spot has it
     fixed_radius: float = 6.0    # ... to a fixed spot
     arrive: float = 3.0          # meters: "at" a checkpoint or spot
-    attack_bar: float = 0.3
+    attack_bar: float = None     # /vt setattackbar <value> at each spot; None leaves the profile's attack power
     goto_timeout: int = 180
     walk_timeout: int = 90
     go_timeout: int = 30
@@ -380,9 +380,11 @@ def build_rules(d, navdir, test=None):
                 ]
                 continue
             hold = save_nav(navdir, f'{d.name}-hold{s["name"]}.nav', [pt_line(s['pt'])], route_type='circular')
+            start = [m.embed_nav(hold), m.opt('EnableNav', True), m.opt('EnableCombat', True)]
+            if d.attack_bar is not None:
+                start.append(m.chat(f'/vt setattackbar {d.attack_bar}'))
             rules += [
-                (farm, m.always(), m.all_a(m.embed_nav(hold), m.opt('EnableNav', True), m.opt('EnableCombat', True),
-                                           m.chat(f'/vt setattackbar {d.attack_bar}'))),
+                (farm, m.always(), m.all_a(*start)),
                 (farm, m.all_c(m.seconds_in_state(3), m.expr_c('getfellowshipcount[]==1')), m.chat('/ub fellow quit')),
                 died(farm),
                 (farm, m.not_c(there), m.set_state('Default')),  # left the dungeon: go back
