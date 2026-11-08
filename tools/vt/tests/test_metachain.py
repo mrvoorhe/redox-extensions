@@ -15,6 +15,12 @@ class StartPlanTests(unittest.TestCase):
         self.assertEqual([t.strftime('%H:%M') for _, t in plan], ['07:00', '07:15', '07:30'])
         self.assertEqual([c for c, _ in plan], ['A', 'B', 'C'])
 
+    def test_recorder_per_character_from_its_start(self):
+        plan = metachain.plan_starts(['A', 'B'], dt.datetime(2026, 11, 9, 6, 0), 15)
+        self.assertEqual(metachain.record_plan(plan, 3), [
+            ('A', '2026-11-09T05:59:00', '2026-11-09T09:00:00'),
+            ('B', '2026-11-09T06:14:00', '2026-11-09T09:15:00')])
+
     def test_clock_time_is_next_occurrence(self):
         t = metachain.parse_when('00:00')
         self.assertTrue(dt.timedelta(0) < t - dt.datetime.now() + dt.timedelta(minutes=1) <= dt.timedelta(days=1))

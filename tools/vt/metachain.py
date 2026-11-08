@@ -1,6 +1,7 @@
 """Start a meta chain on several characters at set times, record what happens, and turn the recording into data.
 
     py tools/vt/metachain.py start <chain> <Char> [<Char> ...] [--at HH:MM|YYYY-MM-DDTHH:MM] [--stagger 15] [--log f]
+                                   [--record <outdir> [--record-hours 3]]
     py tools/vt/metachain.py record <Char> <outdir> [--start HH:MM|ISO] [--stop HH:MM|ISO | --hours 8]
     py tools/vt/metachain.py analyze <outdir>/<Char>.jsonl [--since ISO] [--json out.json]
 
@@ -8,6 +9,8 @@ start: sends `/re startmeta <chain>` once to each character, in the order given.
 07:00, the next time that comes round), each later one --stagger minutes after the one before it.  If a character's
 client can't be reached at its time, it retries every 30 s for up to 15 minutes.  Once the bridge has accepted the
 command it is never sent again, so a chain starts at most once per character.  Needs the bridge in `rw` mode.
+With --record, it also runs one `record` per character, from a minute before that character's start for
+--record-hours, and exits only when they have all finished.
 
 record: read-only, never sends a game command.  From --start (default now) to --stop, it polls `rectl events` every
 3 s and `rectl state` every 30 s and appends everything to <outdir>/<Char>.jsonl.  It follows the character across
@@ -88,10 +91,14 @@ def cmd_start(a):
     command = f'/re startmeta {a.chain}'
     plan = plan_starts(a.chars, parse_when(a.at, '07:00'), a.stagger)
     log = JsonlLog(a.log, echo=True)
-    log.write({'what': 'armed', 'command': command, 'plan': [(c, t.isoformat(timespec='seconds')) for c, t in plan]})
+    recs = record_plan(plan, a.record_hours) if a.record else []
+    log.write({'what': 'armed', 'command': command, 'plan': [(c, t.isoformat(timespec='seconds')) for c, t in plan],
+               **({'record': a.record, 'recorders': recs} if a.record else {})})
     if a.dry_run:
         return 0
     rectl.ensure_built()
+    recorders = [subprocess.Popen([sys.executable, os.path.abspath(__file__), 'record', c, a.record,
+                                   '--start', b, '--stop', e]) for c, b, e in recs]
     for char, when in plan:
         while now() < when:
             time.sleep(min(20, max(0.2, (when - now()).total_seconds())))
@@ -111,7 +118,17 @@ def cmd_start(a):
                 break
             time.sleep(30)
     log.write({'what': 'done'})
+    for p in recorders:  # stay alive until the recordings are complete, so whoever runs this knows when to analyze
+        p.wait()
+    if recorders:
+        log.write({'what': 'recorders-done', 'record': a.record})
     return 0
+
+
+def record_plan(plan, hours):
+    """One recorder per character, from a minute before its start (to catch the StartMeta line) for `hours`."""
+    return [(c, (t - dt.timedelta(minutes=1)).isoformat(timespec='seconds'),
+             (t + dt.timedelta(hours=hours)).isoformat(timespec='seconds')) for c, t in plan]
 
 
 # ---------------------------------------------------------------- record
@@ -120,7 +137,7 @@ def snapshot_metas(dest):
     """Dumps every installed .met to dest/<name>.txt once, so analyze sees the metas as they were on the day."""
     if os.path.isdir(dest):
         return
-    os.makedirs(dest)
+    os.makedirs(dest, exist_ok=True)  # recorders started together may race here
     vt = rectl.vt_dir()
     for f in sorted(os.listdir(vt)):
         if f.lower().endswith('.met'):
@@ -520,6 +537,8 @@ def main(argv):
     s.add_argument('--stagger', type=float, default=15, help='minutes between characters (default 15)')
     s.add_argument('--log', help='append a JSON line per step to this file')
     s.add_argument('--dry-run', action='store_true', help='print the plan and exit')
+    s.add_argument('--record', metavar='OUTDIR', help='also record each character into OUTDIR, from its start')
+    s.add_argument('--record-hours', type=float, default=3, help='how long each recorder runs (default 3)')
     s = sub.add_parser('record')
     s.add_argument('char')
     s.add_argument('outdir')

@@ -31,12 +31,18 @@ The characters are real, on a public server.  This sends exactly one command per
    ```
    This prints each character's start time.  Tell the user the times and wait for their OK, unless they already
    gave exact times and characters.
-4. **Arm it.**  Run this with the Bash tool's `run_in_background`, and keep its log in the scratchpad:
+4. **Arm it, with recording.**  Run this with the Bash tool's `run_in_background`, and keep its log and recordings in
+   the scratchpad:
    ```
-   py tools/vt/metachain.py start <chain> <Char1> <Char2> ... [--at ...] --log <scratch>/start.jsonl
+   py tools/vt/metachain.py start <chain> <Char1> <Char2> ... [--at ...] --log <scratch>/start.jsonl --record <scratch>/run-<date>
    ```
+   * Always pass `--record`, unasked: the user analyzes runs afterwards, and the bridge journal alone loses the
+     chain (a relog empties it and about an hour of farming fills it).
    * It sleeps until each time, sends the command, and waits for the plugin's `[RE] StartMeta : <chain>` line.
-   * It exits after the last character, writing `{"what": "done"}`.
+   * Each character's recorder (read-only, see `meta-chain-monitor`) runs from a minute before its start for
+     `--record-hours` (default 3).
+   * It writes `{"what": "done"}` after the last start, then `{"what": "recorders-done"}` and exits when the
+     recordings are complete.  Then `analyze` each `<Char>.jsonl`.
    * It runs inside this Claude session, so the session must stay open until then.  Say so.
 5. **Report the outcome** when the background job finishes: read the log.
    * `"accepted": true` with `wait.matched` means the chain started.
@@ -49,8 +55,8 @@ The characters are real, on a public server.  This sends exactly one command per
 
 * Once a chain has started, don't send anything else to that character unless the user asks.  In particular, don't
   "help" a meta that looks stuck.
-* To watch the chain and collect timing and kill-task data, use the `meta-chain-monitor` skill.  Start its
-  recorders before the first start time.
+* `--record` covers recording.  Use the `meta-chain-monitor` skill to analyze the recordings and write the report,
+  or to watch the chain live.
 * A full `daily` chain took about 85 minutes per character on 2026-11-07 (Daily → Attributes4.0 → HowardTheMad →
   LaLaRing → 5 kill-task metas → aQD9ELerRhan → farming).  With a 15-minute stagger, the characters are in different
   parts of the chain at any time.
