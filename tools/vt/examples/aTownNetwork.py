@@ -82,9 +82,22 @@ NAMES = {
     'Portal to Kara': ['kara'],
     'Portal to Kryst': ['kryst'],
     'Freehold Portal': ['freehold', 'free'],
+    'Linvak Extas': ['linvak extas', 'extas'],
+    'Korway': ['korway'],
 }
-# Not included: "Quest Explorer Portal Week46" (changes weekly), and Linvak Extas and Korway, which are on a lower
-# floor under the south room that a nav couldn't get down to.
+# Not included: "Quest Explorer Portal Week46" (changes weekly).
+
+# Linvak Extas and Korway are on a lower floor (z -6) under the south room.  The stairs go down southward from the
+# north side of the pit, east of the bar.  Recorded from the user walking it on Woodford 2026-11-08.
+STAIRS = [(70, -100), (70, -113), (70.5, -128.5), (70.6, -134.4), (75.4, -145.9), (74.2, -152.4), (71.1, -153.7),
+          (69.2, -154.5), (69.7, -156.1, -0.7), (70.3, -162.0, -5.2), (70.3, -164.3, -6.0)]
+LOWER = {
+    # Korway is in an alcove behind a brick corner at about (74.7, -161.3): pass it well to the west and north, and end
+    # where the portal is in a straight line (the first version hugged the corner and stuck there using the portal).
+    'east': [(72.5, -164.1, -6.0), (73.0, -161.5, -6.0), (73.3, -159.3, -6.0), (75.5, -159.3, -6.0),
+             (77.3, -160.3, -6.0)],
+    'west': [(72.9, -164.0, -6.0), (66.8, -163.5, -6.0), (66.3, -160.1, -6.0), (64.5, -159.8, -6.0)],   # Linvak Extas
+}
 
 
 def local(ew, ns):
@@ -92,9 +105,11 @@ def local(ew, ns):
     return ew * 240 + 84 - (0 - 127) * 192, ns * 240 + 84 - (7 - 127) * 192
 
 
-def route_points(x, y):
-    """Waypoints (local x, y) from the Annex landing to about 3 m in front of the portal at (x, y)."""
-    if -45 < y:                                   # north wing
+def route_points(x, y, z=0.0):
+    """Waypoints (local x, y[, z]) from the Annex landing to about 3 m in front of the portal at (x, y, z)."""
+    if z < -3:                                    # lower floor under the south room
+        return STAIRS + LOWER['east' if x > 70 else 'west']
+    if -45 < y:                                 # north wing
         base = [(70, -60), (70, -45)]
         if y > -6:                                # end wall: Plateau, Fort Tethana (west side), Stonehold (east side)
             if x < 75:
@@ -146,8 +161,8 @@ def name_regex(names):
 
 def nav_for(portal, ew, ns, z):
     r = vtnav.Route(4).pause(2000)
-    for (px, py) in [(70, -80)] + route_points(*local(ew, ns)):
-        r.point_at(LB, px, py, 0)
+    for p in [(70, -80)] + route_points(*local(ew, ns), z * 240):
+        r.point_at(LB, p[0], p[1], p[2] if len(p) > 2 else 0)
     r.use(portal, vtnav.PORTAL_CLASS, ew, ns, z)
     return r
 
@@ -195,7 +210,7 @@ def main(argv):
     if argv[:1] == ['--list']:
         for p in NAMES:
             x, y = local(*portals[p][:2])
-            print(f'!{NAMES[p][0]:<20} {p:<34} ({x:6.1f},{y:6.1f})  via {route_points(x, y)}')
+            print(f'!{NAMES[p][0]:<20} {p:<34} ({x:6.1f},{y:6.1f})  via {route_points(x, y, portals[p][2] * 240)}')
         return
     if argv:
         vt = argv[0]
