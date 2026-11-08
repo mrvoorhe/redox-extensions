@@ -206,6 +206,7 @@ LOAD_RE = re.compile(r'/vt meta load ([^,;}\]\'`]+?)\s*(?:[,;}\]\']|`(?!\+)|$)')
 START_RE = re.compile(r'\[RE\] StartMeta : (\S+)')
 HUNTSW_RE = re.compile(r'setvar\[(\w*HuntSW),stopwatchstart')
 LIMIT_MSG_RE = re.compile(r'(\w+): (\d+) minute hunt limit reached')
+COIN_RE = re.compile(r'^(.+?) gives you ([\d,]+) ((?:Weakly )?Enlightened Coins?)\.?$')
 MYQ_RE = re.compile(r'^(\w+) - (\d+) solves \(\d+\) "[^"]*" (\d+) 0$')
 DEATH_RE = re.compile(r"(You have died|You died|killed you|You have been killed|You've been killed)", re.I)
 WARN_RE = re.compile(r'(Exception|\[VTank\].*(error|warning|fail|could not|unable|bugged)|took too long|'
@@ -298,7 +299,7 @@ def analyze(recs, since=None, info=None, dump_dir=None):
                 names.add(m.group(1).strip().strip('`'))
         info = meta_info(sorted(names), dump_dir)
     meta, state = None, None
-    runs, cur, metas_seen, incidents, positions, warns = [], None, [], [], [], []
+    runs, cur, metas_seen, incidents, positions, warns, coins = [], None, [], [], [], [], []
     for r in recs:
         t = ev_time(r)
         if since and t < since:
@@ -344,6 +345,9 @@ def analyze(recs, since=None, info=None, dump_dir=None):
             warns.append((t, meta, state, text[:200]))
         if kind == 'chat' and DEATH_RE.search(text):
             incidents.append({'time': t, 'meta': meta, 'state': state, 'what': 'death?', 'text': text[:200]})
+        m = COIN_RE.search(text) if kind == 'chat' else None
+        if m:  # "<NPC or mob> gives you N Enlightened Coins.", from turn-ins and kill rewards
+            coins.append((t, meta, m.group(1), int(m.group(2).replace(',', '')), m.group(3).rstrip('s') + 's'))
         if cur is None:
             continue
         if HUNTSW_RE.search(text) and cur['huntStart'] is None and 'executing action' in text:
@@ -386,7 +390,18 @@ def analyze(recs, since=None, info=None, dump_dir=None):
             cur['notes'].append((t, text))
         elif ' tells you, "' in text and (not cur['npc'] or cur['npc'][-1][1] != text[:220]):
             cur['npc'].append((t, text[:220]))
-    return {'runs': runs, 'metas': metas_seen, 'incidents': incidents, 'positions': positions, 'warns': warns}
+    return {'runs': runs, 'metas': metas_seen, 'incidents': incidents, 'positions': positions, 'warns': warns,
+            'coins': coins}
+
+
+def coin_totals(coins):
+    """(currency, meta, giver) -> [times given, total], plus currency -> total."""
+    by, tot = OrderedDict(), OrderedDict()
+    for _, meta, giver, n, cur in coins:
+        k = by.setdefault((cur, meta, giver), [0, 0])
+        k[0], k[1] = k[0] + 1, k[1] + n
+        tot[cur] = tot.get(cur, 0) + n
+    return by, tot
 
 
 def mins(a, b):
@@ -462,6 +477,13 @@ def report(res):
                 seen.add(x)
                 out.append(f"* NPC {t:%H:%M:%S} {x}")
         out.append('')
+    by, tot = coin_totals(res.get('coins', []))
+    out.append('### Coins received')
+    out.append('* totals: ' + ('; '.join(f'{c} {n:,}' for c, n in tot.items()) if tot else 'none'))
+    if by:
+        out += ['', '| currency | meta | from | times | total |', '|---|---|---|---|---|']
+        out += [f'| {c} | {m} | {g} | {k} | {n:,} |' for (c, m, g), (k, n) in by.items()]
+    out.append('')
     out.append('### Incidents')
     for i in res['incidents']:
         out.append(f"* {i['time']:%H:%M:%S} {i['what']} meta={i['meta']} state={i['state']} {i.get('text', '')}")

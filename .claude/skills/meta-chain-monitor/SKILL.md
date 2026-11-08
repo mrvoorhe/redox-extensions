@@ -48,6 +48,7 @@ a meta looks stuck: the user wants to see how robust the metas are on their own.
    * chain timing per meta
    * per KT meta: limit, used, timed out or not, tasks open at timeout with counts, slowest finished task
    * per-task detail
+   * coins received, per meta and in total
    * incidents and meta gaps
    * a timeout recommendation table: current limit, suggested limit, why
 
@@ -71,6 +72,10 @@ a meta looks stuck: the user wants to see how robust the metas are on their own.
 * **Timeouts:** the hunt timeout is `stopwatchelapsedseconds[$<X>HuntSW]>=N`.  On timeout the meta echoes
   `<Name>: N minute hunt limit reached`, which is the authoritative limit for that day.  The stopwatch includes the
   walk to the hunt area (0.3 to 0.9 minutes).
+* **Coins:** `<NPC or mob> gives you N Enlightened Coins.` (also `Weakly Enlightened Coins`) comes from turn-ins and
+  kill-task rewards.  `analyze` totals them per meta and giver under "Coins received".  Count coins from these lines,
+  not from `[BANK] Enlightened Coins:` changes: coins sit in inventory until the meta runs `/b d`, so a bank jump
+  also includes coins picked up earlier.
 * **`/ub myquests`** output is hidden in game, but every line still lands in the bridge journal (about 700 lines).
   The analyzer only keeps the flags the meta reads.
 * **Journal:** the ring holds 5000 events, and `--since` is inclusive (pass `next`).  A 3 s poll easily keeps up.

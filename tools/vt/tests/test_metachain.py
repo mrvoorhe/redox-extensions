@@ -46,7 +46,6 @@ class AnalyzeTests(unittest.TestCase):
         self.assertIn('Tasks with kills but not complete at end of hunt: 1', metachain.report(
             {'runs': [run], 'metas': [], 'incidents': [], 'positions': [], 'warns': []}))
 
-
     def test_run_time_meta_name_is_not_a_meta(self):
         t0 = dt.datetime(2026, 11, 8, 6, 0).astimezone()
         recs = [chat(t0, '[VTank] Meta executing action: Chat Command: /vt meta load aFarm', 'plugin'),
@@ -54,6 +53,26 @@ class AnalyzeTests(unittest.TestCase):
                          "wobjectgetplayer[]]]", 'plugin'),
                 chat(t0, "[VTank] Meta executing action: ExprAct chatbox[`/vt meta load aFBreach`]", 'plugin')]
         self.assertEqual([m for _, m in metachain.analyze(recs, info={})['metas']], ['aFarm', 'aFBreach'])
+
+    def test_coins_counted_per_meta_and_giver(self):
+        t0 = dt.datetime(2026, 11, 8, 6, 0).astimezone()
+        s = lambda sec: t0 + dt.timedelta(seconds=sec)
+        recs = [
+            chat(s(0), '[VTank] Meta executing action: ChatCommand /vt meta load Daily', 'plugin'),
+            chat(s(10), 'Factory Foreman gives you 15 Enlightened Coins.'),
+            chat(s(20), 'Factory Foreman gives you 1,000 Enlightened Coins.'),
+            chat(s(30), '[VTank] Meta executing action: ChatCommand /vt meta load Farm', 'plugin'),
+            chat(s(40), 'Pyro Capped Hunter gives you 1 Enlightened Coin.'),
+            chat(s(50), 'Kinoko gives you 2 Weakly Enlightened Coins.'),
+            chat(s(60), '[BANK] Enlightened Coins: 638'),
+        ]
+        res = metachain.analyze(recs, info={})
+        by, tot = metachain.coin_totals(res['coins'])
+        self.assertEqual(tot, {'Enlightened Coins': 1016, 'Weakly Enlightened Coins': 2})
+        self.assertEqual(by[('Enlightened Coins', 'Daily', 'Factory Foreman')], [2, 1015])
+        self.assertEqual(by[('Enlightened Coins', 'Farm', 'Pyro Capped Hunter')], [1, 1])
+        self.assertIn('Enlightened Coins 1,016', metachain.report(dict(res, runs=[])))
+
 
 if __name__ == '__main__':
     unittest.main()
