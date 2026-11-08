@@ -14,13 +14,14 @@ import vtmeta as m
 VT = sys.argv[1] if len(sys.argv) > 1 else rectl.vt_dir()
 JAM = 0x01A30000  # the Jam dungeon landblock
 
-# "At the pillar": within 4 m (flat) of JamUnderPillar.nav's point (28.2285N, 100.9278W) and down on its floor.
+# "At the pillar": within 4 m (flat) of JamUnderPillar.nav's point (28.2383N, 100.9380W) and down on its floor.
+# Moved 3.4 m NW from (28.2285N, 100.9278W), which was too far from the spawn for the attack range.
 # The spot is on a cell boundary, so a LandCellE check missed it (the route ended 1.9 m away, in the next cell).
 # Squared distance in nav units because sqrt isn't available, and "z + 0.4 < 0" because the parser rejects "<-".
 # z is in nav units: the pillar floor is -0.45 (-108 m), the bottom of the shaft -0.375 (-90 m).
 # UB functions need VTank.PatchExpressionEngine, which Default turns on.
 _WE, _NS = 'coordinategetwe[getplayercoordinates[]]', 'coordinategetns[getplayercoordinates[]]'
-AT_PILLAR = (f'({_WE}+100.9278)*({_WE}+100.9278)+({_NS}-28.2285)*({_NS}-28.2285)<{(4 / 240) ** 2:.6f}'
+AT_PILLAR = (f'({_WE}+100.9380)*({_WE}+100.9380)+({_NS}-28.2383)*({_NS}-28.2383)<{(4 / 240) ** 2:.6f}'
              '&&coordinategetz[getplayercoordinates[]]+0.4<0')
 
 rules = [
