@@ -16,3 +16,4 @@ TestResult.xml
 .DS_Store
 *.DotSettings.user
 *.orig
+/Installs/
