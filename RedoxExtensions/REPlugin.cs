@@ -380,6 +380,8 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
 
                 AgentBridge.AgentHandlers.Register();
 
+                this.RunSwitchHandoffCommand();
+
                 this.Chat.WriteLine("***Initialization Complete****");
             }
             finally
@@ -396,6 +398,28 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
     //{
     //    this.InvokeOperationSafely(this.TryInitializeExternalPluginDependencies);
     //}
+
+    // Long enough for VT and UB to finish starting after login.
+    private const int MillisecondsDelayBeforeSwitchHandoffCommand = 5000;
+
+    private void RunSwitchHandoffCommand()
+    {
+        var character = this.CharacterFilter;
+        string command;
+        try
+        {
+            if (!new SwitchHandoff().TryTake(character.Server, character.AccountName, character.Name, SwitchHandoff.DefaultMaxAge, out command))
+                return;
+        }
+        catch (Exception e)
+        {
+            ExceptionUtilities.HandleUnexpectedException(e);
+            return;
+        }
+
+        this.Chat.WriteLine("[RE] Running switch handoff command : {0}", command);
+        Dispatch.LegacyGameThread.QueueDelayedAction(() => ACUtilities.ProcessArbitraryCommand(command), MillisecondsDelayBeforeSwitchHandoffCommand);
+    }
 
     private void TryInitializeExternalPluginDependencies()
     {

@@ -59,6 +59,13 @@ public static class CharacterActions
 
         chat.WriteLine(command == null ? "[RE] Switching to {0}" : "[RE] Switching to {0}, then running : {1}", target, command);
 
+        var character = REPlugin.Instance.CharacterFilter;
+        var handoff = new Core.SwitchHandoff();
+        if (command == null)
+            handoff.Clear(character.Server, character.AccountName, target);
+        else
+            handoff.Save(character.Server, character.AccountName, target, command);
+
         ACUtilities.ProcessArbitraryCommand("/mf lnc set " + target);
         Continuations.DelayedContinuation.ContinueAfterDelayOnGameThread(_ => SimpleActions.Logout(), MillisecondsDelayBeforeSwitchLogout, null);
     }
