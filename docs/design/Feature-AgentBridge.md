@@ -169,6 +169,7 @@ From a terminal on the same machine (`rectl help` for everything):
 ```
 rectl list
 rectl state
+rectl characters
 rectl world --class Monster --near 60
 rectl inventory "^Aetheria$" --limit 20
 rectl object -263546213
