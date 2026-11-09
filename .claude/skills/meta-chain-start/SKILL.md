@@ -16,6 +16,10 @@ them out of each other's way in game: the chain metas share NPCs, portals and hu
 
 The characters are real, on a public server.  This sends exactly one command per character and nothing else.
 
+This needs the Claude session to stay open until the last start.  If the user wants a start that repeats every day,
+or that doesn't depend on this session, use the `scheduled-commands` skill (`rectl schedule add ... --repeat daily`)
+instead.  It doesn't record, though.
+
 ## Steps
 
 1. **Check the bridge.**  `rectl list` must show every character, each in mode `rw`.  If one is missing or read-only,
