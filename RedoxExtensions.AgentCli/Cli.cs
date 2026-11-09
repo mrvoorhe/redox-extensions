@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace RedoxExtensions.AgentCli;
 
-public class Cli
+public partial class Cli
 {
     public const int ExitOk = 0;
     public const int ExitFailed = 1;
@@ -60,6 +60,13 @@ public class Cli
           reload                       Reload the plugin and wait until it's back
           dev [--repo <path>]          copy_dlls_debug.bat, then reload
           raw <json>                   Send a raw request (token is added)
+          schedule add <command> --at <time> [--repeat once|daily] [--grace <min>]
+                                       Schedule a chat command on the -c character (exact name; the bridge isn't
+                                       needed).  <time>: HH:MM (next time it comes round), 'tomorrow HH:MM',
+                                       YYYY-MM-DDTHH:MM or +<n>m.  Runs up to --grace minutes late (default 15).
+          schedule list                All characters' scheduled commands, or only -c's
+          schedule remove|enable|disable <id>
+                                       Change one of -c's scheduled commands
 
         If exactly one client has the bridge enabled it's used automatically.
         """;
@@ -68,13 +75,15 @@ public class Cli
     private readonly TextWriter _err;
     private readonly Func<string, string> _getEnv;
     private readonly Func<int, bool> _isAlive;
+    private readonly Func<DateTime> _now;
 
-    public Cli(TextWriter output, TextWriter error, Func<string, string> getEnv = null, Func<int, bool> isAlive = null)
+    public Cli(TextWriter output, TextWriter error, Func<string, string> getEnv = null, Func<int, bool> isAlive = null, Func<DateTime> now = null)
     {
         this._out = output;
         this._err = error;
         this._getEnv = getEnv ?? Environment.GetEnvironmentVariable;
         this._isAlive = isAlive;
+        this._now = now ?? (() => DateTime.Now);
     }
 
     public int Run(string[] args)
@@ -104,6 +113,8 @@ public class Cli
             return this.List(locator);
         if (parsed.Command == "paths")
             return this.Paths(locator);
+        if (parsed.Command == "schedule")
+            return this.Schedule(locator, parsed);
 
         var instance = locator.Select(parsed.Get("character"), parsed.GetInt("pid"), out var selectError);
         if (instance == null)
@@ -696,6 +707,9 @@ public class Cli
             ["--out"] = "out",
             ["--scale"] = "scale",
             ["--to"] = "to",
+            ["--at"] = "at",
+            ["--repeat"] = "repeat",
+            ["--grace"] = "grace",
         };
 
         private readonly Dictionary<string, string> _options = new();

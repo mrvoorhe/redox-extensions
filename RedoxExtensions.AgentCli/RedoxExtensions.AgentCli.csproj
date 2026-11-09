@@ -7,10 +7,16 @@
     <RootNamespace>RedoxExtensions.AgentCli</RootNamespace>
     <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>
+    <DefineConstants>$(DefineConstants);REDOX_AGENTCLI</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="RedoxExtensions.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The schedule file model and due rules, shared with the plugin. -->
+    <Compile Include="..\RedoxExtensions\Scheduling\ScheduledCommand.cs" Link="Shared\ScheduledCommand.cs" />
   </ItemGroup>
 
 </Project>
