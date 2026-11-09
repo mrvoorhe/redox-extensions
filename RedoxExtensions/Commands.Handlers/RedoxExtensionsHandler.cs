@@ -131,6 +131,11 @@ internal static class RedoxExtensionsHandler
                 ProcessStartMeta(command);
                 return true;
 
+            case "schedule":
+            case "sched":
+                ProcessSchedule(command);
+                return true;
+
             case "track":
                 REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                 return true;
@@ -272,6 +277,41 @@ internal static class RedoxExtensionsHandler
         Actions.CharacterActions.StartMeta(command.Arguments[0]);
     }
 
+    private static void ProcessSchedule(ICommand command)
+    {
+        var scheduler = REPlugin.Instance.MonitorManager.Scheduler;
+        var chat = REPlugin.Instance.Chat;
+
+        if (command.Arguments.Count > 0)
+        {
+            if (command.Arguments[0].Trim().Equals("reload", StringComparison.OrdinalIgnoreCase))
+            {
+                scheduler.RequestReload();
+                chat.WriteLine("[RE] Schedule : reloading {0}", scheduler.FilePath);
+            }
+            else
+            {
+                chat.WriteLine("Usage : /re schedule|sched [reload]");
+            }
+
+            return;
+        }
+
+        var entries = scheduler.Snapshot();
+        var now = DateTime.Now;
+        chat.WriteLine("[RE] Schedule : {0} entr{1} in {2}", entries.Count, entries.Count == 1 ? "y" : "ies", scheduler.FilePath);
+        foreach (var entry in entries)
+        {
+            var next = Scheduling.ScheduleRules.NextRun(entry, now);
+            chat.WriteLine("  {0} {1} {2} next {3} : {4}",
+                entry.Id,
+                entry.Repeat,
+                Scheduling.ScheduleRules.Status(entry, now),
+                next.HasValue ? next.Value.ToString("yyyy-MM-dd HH:mm") : "-",
+                entry.Command);
+        }
+    }
+
     private static void DisplayHelp()
     {
         var chat = REPlugin.Instance.Chat;
@@ -297,6 +337,7 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  recordroute|rr <name> [circular|linear|once] - Records a VT nav route while you move (default circular).");
         chat.WriteLine("  recordroute|rr [stop]   - Stops recording and loads the route in VT.");
         chat.WriteLine("  startmeta|sm <name>     -Loads Normal profile, resets VT/fellow state, loads and starts the named meta (exact name, or a unique partial match).");
+        chat.WriteLine("  schedule|sched [reload] - Lists this character's scheduled commands (edit them with rectl schedule).");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
         chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
