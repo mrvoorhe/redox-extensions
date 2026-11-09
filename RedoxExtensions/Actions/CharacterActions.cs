@@ -38,6 +38,31 @@ public static class CharacterActions
         VTActions.StartVT();
     }
 
+    // Gives Mag-Filter's /mf lnc set time to take effect before the logout starts.
+    private const int MillisecondsDelayBeforeSwitchLogout = 1000;
+
+    internal static void SwitchCharacter(IList<string> args)
+    {
+        REPlugin.Instance.Dispatch.LegacyGameThread.QueueAction(() => SwitchCharacterNow(args));
+    }
+
+    private static void SwitchCharacterNow(IList<string> args)
+    {
+        var chat = REPlugin.Instance.Chat;
+        var names = GetAccountCharacters().ConvertAll(c => c.Name);
+
+        if (!AccountCharacters.TryMatchSwitchArguments(args, names, REPlugin.Instance.CharacterFilter.Name, out var target, out var command, out var error))
+        {
+            chat.WriteLine("[RE] Switch : {0}", error);
+            return;
+        }
+
+        chat.WriteLine(command == null ? "[RE] Switching to {0}" : "[RE] Switching to {0}, then running : {1}", target, command);
+
+        ACUtilities.ProcessArbitraryCommand("/mf lnc set " + target);
+        Continuations.DelayedContinuation.ContinueAfterDelayOnGameThread(_ => SimpleActions.Logout(), MillisecondsDelayBeforeSwitchLogout, null);
+    }
+
     private const string StartMetaSettingsProfile = "Normal";
     private const string StartMetaLootProfile = "QuestLoot.utl";
     private const string StartMetaFellowName = "X";

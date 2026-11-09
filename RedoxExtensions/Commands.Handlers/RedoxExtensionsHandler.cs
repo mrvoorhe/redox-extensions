@@ -135,6 +135,9 @@ internal static class RedoxExtensionsHandler
             case "sched":
                 ProcessSchedule(command);
                 return true;
+            case "switch":
+                Actions.CharacterActions.SwitchCharacter(command.Arguments);
+                return true;
 
             case "track":
                 REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
@@ -338,6 +341,7 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  recordroute|rr [stop]   - Stops recording and loads the route in VT.");
         chat.WriteLine("  startmeta|sm <name>     -Loads Normal profile, resets VT/fellow state, loads and starts the named meta (exact name, or a unique partial match).");
         chat.WriteLine("  schedule|sched [reload] - Lists this character's scheduled commands (edit them with rectl schedule).");
+        chat.WriteLine("  switch <name> [command] - Logs out and logs in <name> on this account (via Mag-Filter), then runs [command] on it.");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
         chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");
