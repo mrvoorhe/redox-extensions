@@ -218,6 +218,29 @@ public class CliTests
     }
 
     [Test]
+    public void CharactersReturnsTheAccountList()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadOnly);
+        bridge.Handlers.Register("characters", _ => new Dictionary<string, object>
+        {
+            ["account"] = "acct",
+            ["current"] = "Alpha",
+            ["characters"] = new List<object>
+            {
+                new Dictionary<string, object> { ["name"] = "Alpha", ["id"] = 1, ["index"] = 0 },
+                new Dictionary<string, object> { ["name"] = "Beta", ["id"] = 2, ["index"] = 1 },
+            },
+        });
+
+        var (exit, output, error) = this.Run("characters");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var result = JsonNode.Parse(output);
+        Assert.That(result["account"].GetValue<string>(), Is.EqualTo("acct"));
+        Assert.That(result["characters"][1]["name"].GetValue<string>(), Is.EqualTo("Beta"));
+    }
+
+    [Test]
     public void WorldSendsFiltersThatWorldQueryApplies()
     {
         var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadOnly);

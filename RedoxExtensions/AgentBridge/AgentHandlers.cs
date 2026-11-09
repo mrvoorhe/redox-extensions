@@ -17,6 +17,7 @@ internal static class AgentHandlers
     private const string ObjectCmd = "object";
     private const string NetCmd = "net";
     private const string MoveCmd = "move";
+    private const string CharactersCmd = "characters";
 
     public static void Register()
     {
@@ -25,6 +26,7 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Register(ObjectCmd, Object);
         AgentBridgeService.Handlers.Register(NetCmd, NetCapture.Configure);
         AgentBridgeService.Handlers.Register(MoveCmd, Move);
+        AgentBridgeService.Handlers.Register(CharactersCmd, Characters);
     }
 
     public static void Unregister()
@@ -34,6 +36,7 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Unregister(ObjectCmd);
         AgentBridgeService.Handlers.Unregister(NetCmd);
         AgentBridgeService.Handlers.Unregister(MoveCmd);
+        AgentBridgeService.Handlers.Unregister(CharactersCmd);
     }
 
     /// <summary>
@@ -198,6 +201,22 @@ internal static class AgentHandlers
     }
 
     private static string KeyName(Type keyEnum, int key) => Enum.GetName(keyEnum, key) ?? key.ToString();
+
+    private static object Characters(IDictionary<string, object> request)
+    {
+        var character = REPlugin.Instance.CharacterFilter;
+        var characters = new List<object>();
+        foreach (var c in Actions.CharacterActions.GetAccountCharacters())
+            characters.Add(c.ToJson());
+
+        return new Dictionary<string, object>
+        {
+            ["account"] = character.AccountName,
+            ["server"] = character.Server,
+            ["current"] = character.Name,
+            ["characters"] = characters,
+        };
+    }
 
     private static object State(IDictionary<string, object> request)
     {

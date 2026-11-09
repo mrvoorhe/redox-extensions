@@ -37,6 +37,7 @@ public partial class Cli
           paths                        Install, discovery and VirindiTank directories (VT_DIR overrides the last)
           ping                         Bridge status for the selected client
           state                        Character, vitals, location and busy state
+          characters                   Account, server and the characters on the selected client's account
           world [name-regex] [--class <c1,c2>] [--near <meters>] [--container <id>] [--offset <n>] [--limit <n>]
                                        Nearby objects, closest first (paged, --limit up to 200)
           inventory [name-regex] [--class <c1,c2>] [--container <id>] [--offset <n>] [--limit <n>]
@@ -131,6 +132,7 @@ public partial class Cli
             {
                 "ping" => this.Simple(instance, "ping", null),
                 "state" => this.Simple(instance, "state", null),
+                "characters" => this.Simple(instance, "characters", null),
                 "world" => this.World(instance, parsed, "landscape"),
                 "inventory" => this.World(instance, parsed, "inventory"),
                 "object" => this.Object(instance, parsed),

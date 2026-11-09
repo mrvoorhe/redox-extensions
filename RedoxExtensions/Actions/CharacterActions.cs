@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Decal.Adapter.Wrappers;
+
+using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.MagToolsInterop;
 using RedoxExtensions.Mine;
 using RedoxExtensions.VirindiInterop;
@@ -13,6 +16,14 @@ namespace RedoxExtensions.Actions;
 /// </summary>
 public static class CharacterActions
 {
+    internal static List<AccountCharacter> GetAccountCharacters()
+    {
+        var characters = new List<AccountCharacter>();
+        foreach (AccountCharInfo info in REPlugin.Instance.CharacterFilter.Characters)
+            characters.Add(new AccountCharacter { Name = info.Name, Id = info.Id, Index = info.Index });
+        return AccountCharacters.SortedByName(characters);
+    }
+
     public static void PullLegendaryKeys()
     {
         VTActions.StopVT();
