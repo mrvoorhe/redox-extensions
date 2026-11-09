@@ -45,4 +45,4 @@ pause 5000
 # Jam dungeon: fall through the shaft, then jump SE from the bottom
 pt 01A3017D 49.88 -49.53 -89.99
 jump 01A3017D 49.88 -49.53 -89.99 135 False 500
-pt 01A30115 53.33 -53.16 -108.00
+pt 01A3011B 50.88 -50.81 -107.99
