@@ -9,3 +9,4 @@ Markdown renderings of the in-game chat commands provided by the Mag-Tools plugi
 | File | Description |
 | --- | --- |
 | [mt-commands.md](mt-commands.md) | Mag-Tools `/mt` commands: client control, input, movement, fellowships, casting, item use, trade, vendors, and options. |
+| [mf-commands.md](mf-commands.md) | Mag-Filter `/mf` commands: logging in the next character, login message queues, default login character. |
