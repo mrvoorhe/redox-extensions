@@ -57,7 +57,10 @@ The spec format is in the `vtnav.py` docstring.  `tools/vt/examples/TestGoToJamB
 2. If a meta is loaded and enabled, it will take over: `/vt opt set EnableMeta False` for the test, and restore it.
 3. `/vt nav load <Name>` (prints nothing), `/vt opt set EnableNav True`, `/vt start`.
 4. `py tools/vt/vtfollow.py <Character> --nav <file.nav>` watches until the last waypoint (exit 0 ARRIVED, 1 STUCK or
-   TIMEOUT).  It prints positions; a stall of ~10 s after each teleport is the pause node, not a problem.
+   TIMEOUT).  It turns on the motion monitor and stops on its first `stuck` event, usually 2-3 s after the character
+   hits something, and prints that event (cell, position, heading, intent).  Use that, not screenshots, to find where
+   a route gets stuck; take a screenshot only when you need to see what is in the way.  The ~10 s stall after each
+   teleport is the pause node and isn't reported as stuck.
 5. Afterwards put things back: EnableNav / EnableMeta as they were, reload the meta or nav the user had, delete test
    navs.  Say what you changed.
 

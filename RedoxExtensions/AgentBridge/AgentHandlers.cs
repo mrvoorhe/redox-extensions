@@ -17,6 +17,7 @@ internal static class AgentHandlers
     private const string ObjectCmd = "object";
     private const string NetCmd = "net";
     private const string MoveCmd = "move";
+    private const string MotionCmd = "motion";
 
     public static void Register()
     {
@@ -25,6 +26,7 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Register(ObjectCmd, Object);
         AgentBridgeService.Handlers.Register(NetCmd, NetCapture.Configure);
         AgentBridgeService.Handlers.Register(MoveCmd, Move);
+        AgentBridgeService.Handlers.Register(MotionCmd, MotionMonitor.Configure);
     }
 
     public static void Unregister()
@@ -34,6 +36,8 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Unregister(ObjectCmd);
         AgentBridgeService.Handlers.Unregister(NetCmd);
         AgentBridgeService.Handlers.Unregister(MoveCmd);
+        AgentBridgeService.Handlers.Unregister(MotionCmd);
+        MotionMonitor.Stop();
     }
 
     /// <summary>
@@ -237,6 +241,9 @@ internal static class AgentHandlers
             ["selection"] = actions.CurrentSelection,
             ["openedContainer"] = actions.OpenedContainer,
         };
+
+        if (MotionMonitor.Summary() is { } motion)
+            result["motion"] = motion;
 
         // VT state is left out for now.  VTUtilities.GetVTOptions listens on CommandLineText for VT's
         // "[VTank] Option" replies, which VT doesn't raise there, so it always came back empty.  The real

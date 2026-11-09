@@ -48,10 +48,14 @@ public class Cli
           net [off] [--server <types>] [--client <types>]
                                        Show or set which network messages are journaled as "net" events.  Types
                                        are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
+          motion [on|off] [--stuck <seconds>] [--min-speed <m/s>] [--min-move <m>]
+                                       Show or set the motion monitor, which journals "motion" events: idle,
+                                       moving, stuck (trying to move but not moving for --stuck seconds, default
+                                       2.5) and portal.  Wait for one with: wait "^stuck" --kinds motion
           exec <text> [--wait <regex>] [--kinds <k1,k2>]
                                        Run a chat command as if typed, optionally wait for a matching event
           events [--since <seq>] [--kinds <k1,k2>] [--max <n>]
-                                       Recent events (kinds: chat, plugin, debug, command, net)
+                                       Recent events (kinds: chat, plugin, debug, command, net, motion)
           wait <regex> [--since <seq>] [--kinds <k1,k2>]
                                        Wait for an event matching regex
           screenshot [--out <path>] [--scale <n>]
@@ -124,6 +128,7 @@ public class Cli
                 "inventory" => this.World(instance, parsed, "inventory"),
                 "object" => this.Object(instance, parsed),
                 "net" => this.Net(instance, parsed),
+                "motion" => this.Motion(instance, parsed),
                 "screenshot" => this.Screenshot(instance, parsed),
                 "move" => this.Move(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
@@ -471,6 +476,35 @@ public class Cli
         return this.Simple(instance, "net", fields);
     }
 
+    private int Motion(BridgeInstance instance, Arguments parsed)
+    {
+        var fields = new Dictionary<string, JsonNode>();
+        foreach (var positional in parsed.Positionals)
+        {
+            switch (positional.ToLowerInvariant())
+            {
+                case "on":
+                    fields["on"] = true;
+                    break;
+                case "off":
+                    fields["off"] = true;
+                    break;
+                default:
+                    this._err.WriteLine($"Unknown motion argument '{positional}'.  Use: rectl motion [on|off] [--stuck <seconds>] [--min-speed <m/s>] [--min-move <m>]");
+                    return ExitUsage;
+            }
+        }
+
+        if (parsed.GetDouble("stuck") is { } stuck)
+            fields["stuckSeconds"] = stuck;
+        if (parsed.GetDouble("minSpeed") is { } minSpeed)
+            fields["minSpeed"] = minSpeed;
+        if (parsed.GetDouble("minMove") is { } minMove)
+            fields["minDisplacement"] = minMove;
+
+        return this.Simple(instance, "motion", fields);
+    }
+
     private int Exec(BridgeInstance instance, Arguments parsed, int timeoutMs)
     {
         var text = string.Join(" ", parsed.Positionals);
@@ -696,6 +730,9 @@ public class Cli
             ["--out"] = "out",
             ["--scale"] = "scale",
             ["--to"] = "to",
+            ["--stuck"] = "stuck",
+            ["--min-speed"] = "minSpeed",
+            ["--min-move"] = "minMove",
         };
 
         private readonly Dictionary<string, string> _options = new();
@@ -731,6 +768,10 @@ public class Cli
         public string Get(string name) => this._options.TryGetValue(name, out var value) ? value : null;
 
         public int? GetInt(string name) => this.Get(name) is { } v ? int.TryParse(v, out var i) ? i : throw new ArgumentException($"--{name} must be a number") : null;
+
+        public double? GetDouble(string name) => this.Get(name) is { } v
+            ? double.TryParse(v, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var d) ? d : throw new ArgumentException($"--{name} must be a number")
+            : null;
 
         public long? GetLong(string name) => this.Get(name) is { } v ? long.TryParse(v, out var l) ? l : throw new ArgumentException($"--{name} must be a number") : null;
     }

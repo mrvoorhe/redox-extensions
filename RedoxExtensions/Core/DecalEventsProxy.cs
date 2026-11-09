@@ -288,6 +288,7 @@ public class DecalEventsProxy : IDecalEventsProxy, IDisposable
             //RTPlugin.Instance.Debug.WriteObject(e, "ClientDispatch");
 
             AgentBridge.NetCapture.OnClientDispatch(e);
+            AgentBridge.MotionMonitor.OnClientDispatch(e);
             this.ClientDispatch?.Invoke(sender, e);
         });
     }

@@ -206,6 +206,26 @@ public class CliTests
     }
 
     [Test]
+    public void MotionSendsSwitchAndSettings()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadOnly);
+        IDictionary<string, object> sent = null;
+        bridge.Handlers.Register("motion", request => { sent = request; return new Dictionary<string, object> { ["on"] = true }; });
+
+        var (exit, output, _) = this.Run("motion", "on", "--stuck", "3.5", "--min-speed", "0.8", "--min-move", "1");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk));
+        Assert.That(JsonNode.Parse(output)["on"].GetValue<bool>(), Is.True);
+        Assert.That(sent["on"], Is.EqualTo(true));
+        Assert.That(sent["stuckSeconds"], Is.EqualTo(3.5));
+        Assert.That(sent["minSpeed"], Is.EqualTo(0.8));
+        Assert.That(sent["minDisplacement"], Is.EqualTo(1.0));
+
+        Assert.That(this.Run("motion", "sideways").Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("motion", "--stuck", "soon").Exit, Is.EqualTo(Cli.ExitUsage));
+    }
+
+    [Test]
     public void RawSendsRequestWithToken()
     {
         var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadOnly);

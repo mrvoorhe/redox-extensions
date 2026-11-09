@@ -30,6 +30,9 @@ a meta looks stuck: the user wants to see how robust the metas are on their own.
 
 1. **Before the chain starts:**
    * Check `rectl list` shows each character.  Mode `r` is enough for watching.
+   * Turn on the motion monitor on each character: `rectl -c <Char> motion on`.  It only watches (no game command),
+     and puts `motion` events (`stuck`, `moving`, `idle`, `portal`) in the journal, so stuck periods show up in the
+     log with position and time instead of having to be spotted in screenshots.  It resets on `/re reload`.
    * Pick an output folder in the scratchpad.
    * Start one recorder per character with the Bash tool's `run_in_background`.  Start it about 10 minutes before
      the chain, and stop it well after the chain should end (a daily chain takes about 85 minutes; leave room for

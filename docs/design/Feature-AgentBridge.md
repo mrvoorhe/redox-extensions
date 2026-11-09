@@ -206,6 +206,51 @@ Values are as Decal decodes them, so codes like `event` and `action` are decimal
 (F7B0) arrive several times a second in combat, so turn capture off when done or it pushes older events out of the
 journal.
 
+### Motion
+
+`rectl motion on` starts the motion monitor, which journals `motion` events so an agent can wait for the character to
+get stuck instead of polling `state` or reading screenshots:
+
+```
+rectl motion on [--stuck 2.5] [--min-speed 0.5] [--min-move 0.5]
+rectl wait "^stuck" --kinds motion --timeout 60000
+```
+
+* It samples the position about 10 times a second on `RenderFrame` (`MotionMonitor`) and reads what the client is
+  trying to do from its MoveToState game action (F7B1 / F61C), which the client sends whenever the movement keys
+  change, VT's included (`MoveToStateParser`, from `Message.RawData`).
+* States (`MotionAnalyzer`, no Decal dependency, unit-tested):
+  * `stuck`: trying to move (forward, backward or sidestep) for `--stuck` seconds and less than `--min-move` meters
+    from any position in that time.  Before the first MoveToState it uses "VT is running" as the intent instead
+    (`intent=unknown nav=true`), which also catches VT standing still on purpose, so turn the monitor on early.
+  * `moving`: at least `--min-speed` m/s over the last second.
+  * `idle`: neither.  Trying to move but not yet long enough for `stuck` keeps the previous state, so it doesn't
+    flicker through `idle`.
+  * `portal`: in portal space and for 5 s after.  A jump of more than 20 m between samples (recall) restarts the
+    window.
+* Only changes are journaled, plus a repeat every 10 s while stuck, so a `wait` started late still sees one.  Each
+  event has the cell, position, heading, speed, intent and VT state, and the previous state with how long it lasted:
+  `stuck for=2.6s cell=01A30153 x=50.21 y=-64.52 z=0.00 heading=271 speed=0.0 intent=forward,run nav=true was=moving after=14.2s`
+* `rectl motion` (no arguments) shows the state and the last 5 positions one second apart.  `state` gets a `motion`
+  block while it's on.
+* Plugin state, so it resets on `/re reload`, and changing it only needs `rectl dev`.  The handler only reads, so
+  mode `r` is enough.
+* `tools/vt/vtfollow.py` uses it and falls back to polling on builds without it.
+
+Why not hook rendering?  acclient draws with Direct3D 9 and Decal ships `D3DService`, so hooking `Present` or the
+draw calls is possible, but it yields pixels and triangles, not "the character is trying to run forward and not
+getting anywhere".  Reading the depth buffer back in D3D9 needs format tricks, stalls the GPU and costs memory in a
+client that's short of address space.  If stuck events turn out not to be enough and the agent needs to know what's
+in front of the character, the better source is the collision geometry in `cell.dat` / `portal.dat` (Decal's file
+service), raycast along the heading.
+
+Not checked in game yet:
+
+* That `Message.RawData` starts with the F7B1 type (the parser also accepts it without), and that MoveToState
+  arrives on `ClientDispatch` when VT moves the character.  If it doesn't, events show `intent=unknown` and the VT
+  fallback is used.
+* The thresholds against real runs: a VT route into a wall, normal walking, portals and recalls.
+
 ### Screenshots
 
 `rectl screenshot [--out <path>] [--scale <n>]` captures the selected client's window (main window of its pid) with
