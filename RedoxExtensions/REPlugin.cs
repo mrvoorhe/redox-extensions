@@ -159,8 +159,16 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
 
     public void WrappedShutdown()
     {
-        this.CloseDown();
-        this.Shutdown();
+        // Shutdown must run even if CloseDown fails, or this instance stays subscribed to the
+        // process-wide Decal events and runs Initialize again on the next login.
+        try
+        {
+            this.CloseDown();
+        }
+        finally
+        {
+            this.Shutdown();
+        }
     }
 
 
@@ -242,8 +250,8 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
 
             //WrapperDebugWriter.WriteToStaticLog("RT", "In Shutdown");
 
-            //this.CoreManager.CharacterFilter.LoginComplete -= CharacterFilter_LoginComplete;
-            //this.CoreManager.CharacterFilter.Logoff -= CharacterFilter_Logoff;
+            this.CoreManager.CharacterFilter.LoginComplete -= CharacterFilter_LoginComplete;
+            this.CoreManager.CharacterFilter.Logoff -= CharacterFilter_Logoff;
             this.CoreManager.PluginInitComplete -= CoreManager_PluginInitComplete;
 
             try
@@ -327,6 +335,14 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
 
             try
             {
+                // An instance that never closed down can still hold the provider (RedoxLib is shared
+                // by every loaded copy of the plugin).  Only one instance is active, so take it over.
+                if (PluginProvider.Instance != null && !ReferenceEquals(PluginProvider.Instance, this))
+                {
+                    WrapperDebugWriter.WriteToStaticLog("RT", "Replacing a PluginProvider left by a stale instance");
+                    PluginProvider.Clear();
+                }
+
                 // Cache ourself with the F# layer so that the library code can access decal
                 // singletons
                 PluginProvider.Set(this);
@@ -442,7 +458,8 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
         {
             try
             {
-                this.Chat.WriteLine("***Closing Down****");
+                // Chat is null when Initialize never ran (Decal shut the plugin down before login).
+                this.Chat?.WriteLine("***Closing Down****");
 
                 AgentBridge.AgentHandlers.Unregister();
 
@@ -490,7 +507,10 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
                     this._realPluginBaseEvents = null;
                 }
 
-                PluginProvider.Clear();
+                if (ReferenceEquals(PluginProvider.Instance, this))
+                {
+                    PluginProvider.Clear();
+                }
 
                 this._chatWriter = null;
                 this._debugWriter = null;
@@ -515,6 +535,14 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
         // Unhook from login immediately to help avoid duplicate initialization.
         this.CoreManager.CharacterFilter.LoginComplete -= CharacterFilter_LoginComplete;
 
+        // An instance Decal already shut down (it can start and stop the plugin several times
+        // before login) must not initialize.
+        if (this._shutdownComplete || !this._startupComplete)
+        {
+            WrapperDebugWriter.WriteToStaticLog("RT", "Ignoring LoginComplete on a shut down instance");
+            return;
+        }
+
         this.InvokeOperationSafely(this.Initialize);
 
         this.Debug.WriteLine("Leaving CharacterFilter_LoginComplete");
@@ -524,6 +552,11 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
     {
         // Unhook once we done with the event
         this.CoreManager.CharacterFilter.Logoff -= CharacterFilter_Logoff;
+
+        if (this._shutdownComplete)
+        {
+            return;
+        }
 
         this.InvokeOperationSafely(this.CloseDown);
     }

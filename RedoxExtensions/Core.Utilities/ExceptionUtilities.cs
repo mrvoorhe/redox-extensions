@@ -27,7 +27,17 @@ public static class ExceptionUtilities
 
     public static void HandleUnexpectedException(Exception e)
     {
-        REPlugin.Instance.Error.LogError(e);
+        // Error is null before Initialize and after CloseDown.  Don't let the handler throw and
+        // hide the original exception.
+        var error = REPlugin.Instance?.Error;
+        if (error != null)
+        {
+            error.LogError(e);
+        }
+        else
+        {
+            RedoxExtensions.Wrapper.Diagnostics.WrapperDebugWriter.WriteToStaticLog("RT", e.ToString());
+        }
     }
 
     
