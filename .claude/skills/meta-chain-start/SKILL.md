@@ -35,10 +35,11 @@ instead.  It doesn't record, though.
    ```
    This prints each character's start time.  Tell the user the times and wait for their OK, unless they already
    gave exact times and characters.
-4. **Arm it, with recording.**  Run this with the Bash tool's `run_in_background`, and keep its log and recordings in
-   the scratchpad:
+4. **Arm it, with recording.**  Run this with the Bash tool's `run_in_background`.  The log and recordings go in the
+   user's analysis archive, `../MetaAnalysis/<YYYY-MM-DD>` (next to the repo, one folder per day of the run; add
+   `-2`, `-3` if that day's folder already exists):
    ```
-   py tools/vt/metachain.py start <chain> <Char1> <Char2> ... [--at ...] --log <scratch>/start.jsonl --record <scratch>/run-<date>
+   py tools/vt/metachain.py start <chain> <Char1> <Char2> ... [--at ...] --log ../MetaAnalysis/<date>/start.jsonl --record ../MetaAnalysis/<date>
    ```
    * Always pass `--record`, unasked: the user analyzes runs afterwards, and the bridge journal alone loses the
      chain (a relog empties it and about an hour of farming fills it).

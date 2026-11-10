@@ -30,7 +30,9 @@ a meta looks stuck: the user wants to see how robust the metas are on their own.
 
 1. **Before the chain starts:**
    * Check `rectl list` shows each character.  Mode `r` is enough for watching.
-   * Pick an output folder in the scratchpad.
+   * The output folder is `../MetaAnalysis/<YYYY-MM-DD>` (next to the repo, one folder per day of the run; add `-2`
+     if it already exists).  The user aggregates runs from there, so everything below goes in it: the raw
+     `<Char>.jsonl` recordings, the `metas/` snapshot, `start.jsonl`, and the analysis files.
    * Start one recorder per character with the Bash tool's `run_in_background`.  Start it about 10 minutes before
      the chain, and stop it well after the chain should end (a daily chain takes about 85 minutes; leave room for
      retries and relogs).
@@ -55,6 +57,10 @@ a meta looks stuck: the user wants to see how robust the metas are on their own.
    Base suggested limits on finish times and kill rates (minutes still needed = remaining kills / kills per
    minute).  Say it is one run.  Flag tasks a longer timeout can't fix (unhittable targets, a route that never
    reaches the mob).  Save the report, give the user its path and the headline numbers.
+5. **Files in the day's folder** (keep these names so runs can be aggregated):
+   * `<Char>.analysis.md` and `<Char>.analysis.json`: `analyze <Char>.jsonl --json <Char>.analysis.json > <Char>.analysis.md`
+   * `summary.md`: the cross-character tables (chain timing, KT hunt results, incidents, timeout notes)
+   * notes on anything investigated that day, e.g. `<char>-<problem>.md`
 
 ## Facts learned from the 2026-11-07 run
 
