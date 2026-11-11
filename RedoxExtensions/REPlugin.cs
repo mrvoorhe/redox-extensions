@@ -484,7 +484,7 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
         {
             try
             {
-                // Chat is null when Initialize never ran (Decal shut the plugin down before login).
+                // Null when Initialize never ran, and this must not throw or the wrapper can't unload us.
                 this.Chat?.WriteLine("***Closing Down****");
 
                 AgentBridge.AgentHandlers.Unregister();
