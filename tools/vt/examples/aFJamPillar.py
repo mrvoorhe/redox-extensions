@@ -2,17 +2,19 @@
 
     py tools/vt/examples/aFJamPillar.py [<VT folder>]
 
-A variation of aFJamBridge.py: the same trip (TestGoToJamPillar.nav: same as the bridge route up to the Help Wanted
-portal, then a jump at 135 from the bottom of the shaft) and JamUnderPillar.nav to hold the spot.
+A variation of aFJamBridge.py: the same trip (aFJam-goto.nav, to the drop at the bottom of the shaft; jamturnin.py
+hands in Strawberry Jam Jars to the Factory Foreman there), then aFJamPillar-tail.nav (a jump at 135 from the drop) and
+JamUnderPillar.nav to hold the spot.
 """
 import os, sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import rectl
 import vtmeta as m
+import jamturnin
 
 VT = sys.argv[1] if len(sys.argv) > 1 else rectl.vt_dir()
-JAM = 0x01A30000  # the Jam dungeon landblock
+JAM = jamturnin.JAM
 
 # "At the pillar": within 4 m (flat) of JamUnderPillar.nav's point (28.2383N, 100.9380W) and down on its floor.
 # Moved 3.4 m NW from (28.2285N, 100.9278W), which was too far from the spawn for the attack range.
@@ -31,12 +33,16 @@ rules = [
                                     m.chat('/vt settings loadchar Farm'))),
     ('Default', m.seconds_in_state(1), m.opt('EnableNav', False)),
     ('Default', m.all_c(m.seconds_in_state(2), m.expr_c(AT_PILLAR)), m.set_state('Farm')),
-    ('Default', m.all_c(m.seconds_in_state(2), m.not_c(m.expr_c(AT_PILLAR))), m.set_state('GoToPillar')),
+    ('Default', m.all_c(m.seconds_in_state(2), m.expr_c(jamturnin.AT_DROP)), m.set_state('JamAtDrop')),
+    ('Default', m.all_c(m.seconds_in_state(2), m.not_c(m.expr_c(AT_PILLAR)), m.not_c(m.expr_c(jamturnin.AT_DROP))),
+     m.set_state('JamGoTo')),
 
-    # Travel without fighting
+    # Travel without fighting: to the drop, hand in jam jars (JamGoTo ... JamFace), then from the drop to the pillar
+    *jamturnin.rules('GoToPillar'),
     ('GoToPillar', m.always(), m.all_a(m.opt('EnableCombat', False), m.opt('EnableNav', True),
-                                       m.embed_nav(os.path.join(VT, 'TestGoToJamPillar.nav')))),
+                                       jamturnin.nav('aFJamPillar-tail.nav'))),
     ('GoToPillar', m.expr_c(AT_PILLAR), m.set_state('Farm')),
+    ('GoToPillar', m.died(), m.set_state('Dead')),
 
     # Hold the spot and fight
     ('Farm', m.always(), m.all_a(m.embed_nav(os.path.join(VT, 'JamUnderPillar.nav')), m.opt('EnableNav', True),
