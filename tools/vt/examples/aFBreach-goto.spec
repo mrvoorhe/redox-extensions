@@ -1,6 +1,8 @@
 type once
 chat /ub usei Lifestone Sending Gem
 pause 5000
+chat /vt opt set EnableBuffing true
+chat /vt opt set AttackDistance 0.025
 pt C6A9001C 78.97 81.99 42.01
 pt C6A9001C 75.07 75.37 42.01
 pt C6A90014 68.33 74.94 42.01
