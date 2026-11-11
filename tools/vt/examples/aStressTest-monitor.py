@@ -80,8 +80,13 @@ while not os.path.exists(os.path.join(OUT, 'STOP')):
 
         try:
             if seq is None:
-                r = rectl.run(CHAR, 'events', '--max', '1')
-                seq = r['next']
+                # Skip what's already in the journal: page to the end (events returns the oldest first)
+                seq = 0
+                while True:
+                    r = rectl.run(CHAR, 'events', '--since', seq, '--kinds', 'debug', '--max', '5000')
+                    if r['next'] == seq:
+                        break
+                    seq = r['next']
                 if crashed:
                     say('client back, bridge answering'); crashed = False
             r = rectl.run(CHAR, 'events', '--since', seq, '--kinds', 'plugin,chat', '--max', '500')
