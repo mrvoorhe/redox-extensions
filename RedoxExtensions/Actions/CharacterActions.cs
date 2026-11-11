@@ -18,9 +18,16 @@ public static class CharacterActions
 {
     internal static List<AccountCharacter> GetAccountCharacters()
     {
+        // Decal's IndexedCollection returns a null enumerator, so foreach throws.  Read it by index instead.
+        var infos = REPlugin.Instance.CharacterFilter.Characters;
         var characters = new List<AccountCharacter>();
-        foreach (AccountCharInfo info in REPlugin.Instance.CharacterFilter.Characters)
-            characters.Add(new AccountCharacter { Name = info.Name, Id = info.Id, Index = info.Index });
+        for (var i = 0; i < infos.Count; i++)
+        {
+            var info = infos[i];
+            if (info != null)
+                characters.Add(new AccountCharacter { Name = info.Name, Id = info.Id, Index = info.Index });
+        }
+
         return AccountCharacters.SortedByName(characters);
     }
 
