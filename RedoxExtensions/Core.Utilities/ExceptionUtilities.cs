@@ -7,6 +7,7 @@ using RedoxExtensions.Commands;
 using RedoxExtensions.Data;
 using System.Reflection;
 using System.Diagnostics;
+using RedoxExtensions.Wrapper.Diagnostics;
 
 namespace RedoxExtensions.Core.Utilities;
 
@@ -27,17 +28,13 @@ public static class ExceptionUtilities
 
     public static void HandleUnexpectedException(Exception e)
     {
-        // Error is null before Initialize and after CloseDown.  Don't let the handler throw and
-        // hide the original exception.
+        // Instance or its logger is null on a plugin instance that never initialized or was already shut down.
+        // Throwing here would escape the Decal event handler, so fall back to the static log.
         var error = REPlugin.Instance?.Error;
         if (error != null)
-        {
             error.LogError(e);
-        }
         else
-        {
-            RedoxExtensions.Wrapper.Diagnostics.WrapperDebugWriter.WriteToStaticLog("RT", e.ToString());
-        }
+            WrapperDebugWriter.WriteToStaticLog("RT", "Unhandled (no error logger) : " + e);
     }
 
     
