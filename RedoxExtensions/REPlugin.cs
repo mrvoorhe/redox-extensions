@@ -250,6 +250,8 @@ public class REPlugin : PluginBase, IWrappedPlugin, IPluginServices, IDecalPlugi
 
             //WrapperDebugWriter.WriteToStaticLog("RT", "In Shutdown");
 
+            // These only unhook themselves when they fire, so a reload while logged in left the old instance
+            // subscribed and every stale instance ran Initialize again at the next login.
             this.CoreManager.CharacterFilter.LoginComplete -= CharacterFilter_LoginComplete;
             this.CoreManager.CharacterFilter.Logoff -= CharacterFilter_Logoff;
             this.CoreManager.PluginInitComplete -= CoreManager_PluginInitComplete;
