@@ -20,8 +20,8 @@ entry and echoes "Stress: <state>" for the monitor.  Travel steps re-embed their
 again) at RETRY_SECONDS; a step that doesn't finish by its give-up time echoes "Stress: GIVE UP <state>" and goes
 to S9-lifestone, which starts the cycle over.  Dying goes to S-dead, which waits to arrive in Arwic.
 
-To run it: /vt stop, /vt meta load aStressTest, /vt opt set EnableMeta True, /vt start (start in Arwic or anywhere:
-Default recalls with the Lifestone gem if not in Arwic).  Watch it with aStressTest-monitor.py.
+Run and watch it with tools/vt/stresstest.py (see the stress-test skill).  It can start anywhere: Default recalls
+with the Lifestone gem if not in Arwic, so the character's lifestone must be in Arwic.
 First run 2026-11-10, Rockdown: one full cycle in 563 s (TouTou lap 102 s, Hoshino lap 328 s), no crash.
 
 The walk-only navs are made from the source navs here (talk and pause nodes dropped).  aKTTouTou-*.nav are the
