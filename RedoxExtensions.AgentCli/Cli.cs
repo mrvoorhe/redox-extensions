@@ -68,6 +68,14 @@ public partial class Cli
           schedule list                All characters' scheduled commands, or only -c's
           schedule remove|enable|disable <id>
                                        Change one of -c's scheduled commands
+          metatimeout list             Meta chain watch overrides from Global.json, or merged with -c's file
+                                       (each timeout shows whether it comes from global or the character)
+          metatimeout set <meta> <minutes> [--chain-state <state>]
+                                       Set a meta's timeout (decimals allowed) in Global.json, or -c's file.
+                                       Without --chain-state the plugin looks in the .met for one.
+          metatimeout remove|rm <meta> Remove a meta's timeout from Global.json, or -c's file
+          metatimeout fallback <command>|--clear
+                                       Set (or clear) the command run when a timed out meta can't be moved on
 
         If exactly one client has the bridge enabled it's used automatically.
         """;
@@ -116,6 +124,8 @@ public partial class Cli
             return this.Paths(locator);
         if (parsed.Command == "schedule")
             return this.Schedule(locator, parsed);
+        if (parsed.Command == "metatimeout")
+            return this.MetaTimeout(locator, parsed);
 
         var instance = locator.Select(parsed.Get("character"), parsed.GetInt("pid"), out var selectError);
         if (instance == null)
@@ -712,6 +722,7 @@ public partial class Cli
             ["--at"] = "at",
             ["--repeat"] = "repeat",
             ["--grace"] = "grace",
+            ["--chain-state"] = "chain-state",
         };
 
         private readonly Dictionary<string, string> _options = new();
