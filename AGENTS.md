@@ -43,5 +43,5 @@ See `docs/design/Feature-AgentBridge.md`.
     * Docs Website : https://github.com/Mag-nus/Mag-Plugins/wiki
 
 * Utility Belt
-    * Source : https://gitlab.com/utilitybelt/utilitybelt.gitlab.io specifically the "ILT_Customizations" branch.
+    * Source : https://gitlab.com/Schneebly/utility-belt-leaftide specifically the `main` branch.
     * Docs Website : https://utilitybelt.gitlab.io/docs/overview/
