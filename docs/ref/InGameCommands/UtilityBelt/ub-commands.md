@@ -84,6 +84,7 @@ Chat commands accepted by the UtilityBelt plugin. Type them in the in-game chat 
 | `/ub autovendor cancel` | Cancels the current AutoVendor session. |
 | `/ub vendor open[p] <vendorname\|vendorid\|vendorhex>` | Opens a vendor, with VTank pausing. Example: `/ub vendor open Tunlok Weapons Master`. |
 | `/ub vendor opencancel` | Quietly cancels the last `/ub vendor open*` command. |
+| `/ub vendor addbuy <count> <item>` | Adds `count` of an item from the open vendor to the buy list (count first, unlike `/mt vendor addbuy`). Example: `/ub vendor addbuy 1 Pack`. |
 | `/ub vendor buyall` | Buys everything on the buy list. |
 | `/ub vendor sellall` | Sells everything on the sell list. |
 | `/ub vendor clearbuy` | Clears the buy list. |
