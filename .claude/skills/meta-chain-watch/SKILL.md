@@ -31,7 +31,7 @@ Things to check before changing a value:
 
 * An override only counts when it is **shorter than the main timeout** (60).  Setting a meta above 60 does nothing.
   Don't suggest lowering the main timeout below 60: KinokoPublic2.0 runs up to 48.5 minutes normally.
-* Base new values on the run data in `../MetaAnalysis` (`meta-chain-monitor`): longest normal run x 1.5, rounded up
+* Base new values on the run data in `../MetaAnalysis` (the parent repo's `meta-chain-monitor` skill): longest normal run x 1.5, rounded up
   to 5, at least 10.  For aKT metas, stay above hunt limit + turn-in overhead.  If the user raises a hunt limit in
   a meta, check its override still covers it.
 * Meta names are the names used in `/vt meta load`, matched case-insensitively, without `.met`.

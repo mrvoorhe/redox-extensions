@@ -13,8 +13,9 @@ Decal Plugin for the game Asheron's Call
 * Plugin assemblies stay on net35 and must not be retargeted.  They build AnyCPU by default so the 64-bit test host can load them.
 * Deploy builds (`copy_dlls_debug.bat` / `copy_dlls_release.bat` -> `deploy.bat`) build the solution with `-p:PlatformTarget=x86`, which `Directory.Build.props` redirects to `bin\x86\<Config>` and `obj\x86\<Config>` so x86 and AnyCPU builds never share output.
 * `External/Decal/bin/Decal.Adapter.dll` and `External/Virindi/utank2-i.dll` are compile-time copies patched to clear the 32BITREQUIRED flag.  Re-run `perl External/clear_32bit_required.pl <dll>` after updating them.
-* `tools/vt` (VT nav and meta tooling, Python 3, run with `py`) has its own tests: `py -m unittest discover -s tools/vt/tests`.
-  See the `vt-nav`, `vt-meta`, `farm-spot-meta`, `meta-chain-start`, `meta-chain-monitor`, `meta-chain-watch`, and `stress-test` skills in `.claude/skills`.
+* VT nav and meta tooling, the meta builders and their skills live outside this repo, in the private repo that
+  includes this one as a submodule.  This repo is the plugin and `rectl`.  See the `meta-chain-watch` and
+  `scheduled-commands` skills in `.claude/skills` for the plugin features.
 * Known failures: `PipelineDispatcherTests` (WinForms `Timer` isn't available on .NET 10) and a number of stale tests.
 * Existing tests use `ClassicAssert` (NUnit.Framework.Legacy).  Prefer `Assert.That` for new tests.
 

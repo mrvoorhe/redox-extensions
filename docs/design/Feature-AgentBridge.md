@@ -231,7 +231,7 @@ UB HUDs, chat).  It runs in the CLI process, so nothing changes in acclient, and
   and `ew` when they apply.  The character itself and anything in a container have no distance.
 * Every object also has `classId` (the numeric `ObjectClass`, e.g. Portal 14, Npc 37).  Landscape objects have `nav`,
   `[ew, ns, z]` at full precision with z = raw Z / 240, which is what a VT nav "use" node stores for the object (see
-  `RouteRecorder.AddPortalNpc` and `tools/vt`).
+  `RouteRecorder.AddPortalNpc` and VT nav tooling).
 * The response has `total` (matches before paging) and `nextOffset` when there are more.
 * `object` request: `objectId` (not `id`, which is the request id).  Returns the summary fields plus `category`,
   `behavior`, `type` and every `long`, `double`, `string` and `bool` value Decal has, keyed by `*ValueKey` name.
