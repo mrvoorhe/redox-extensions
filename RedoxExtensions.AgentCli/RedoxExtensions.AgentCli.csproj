@@ -17,6 +17,8 @@
   <ItemGroup>
     <!-- The schedule file model and due rules, shared with the plugin. -->
     <Compile Include="..\RedoxExtensions\Scheduling\ScheduledCommand.cs" Link="Shared\ScheduledCommand.cs" />
+    <!-- The meta chain watch config model and merge rules, shared with the plugin. -->
+    <Compile Include="..\RedoxExtensions\MetaChainWatch\MetaChainWatchConfig.cs" Link="Shared\MetaChainWatchConfig.cs" />
   </ItemGroup>
 
 </Project>
