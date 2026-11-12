@@ -25,6 +25,8 @@ a meta looks stuck: the user wants to see how robust the metas are on their own.
   * Each section has the hunt limit, the timeout time, every kill task (killed/required, finish minute, kills per
     minute), minutes per state, stationary periods, NPC lines and the meta's own `/myquests` flags.
   * It ends with incidents (client lost, journal gaps, deaths) and deduplicated warnings.
+  * Treat `[RE] MetaChainWatch : <meta> timed out ...` and `... running fallback ...` plugin lines as incidents: the
+    meta got stuck and the watcher moved it on (see `meta-chain-watch`).  Report which meta, when and why it stuck.
 
 ## Steps
 

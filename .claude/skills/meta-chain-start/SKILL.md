@@ -62,6 +62,12 @@ instead.  It doesn't record, though.
   "help" a meta that looks stuck.
 * `--record` covers recording.  Use the `meta-chain-monitor` skill to analyze the recordings and write the report,
   or to watch the chain live.
-* A full `daily` chain took about 85 minutes per character on 2026-11-07 (Daily → Attributes4.0 → HowardTheMad →
-  LaLaRing → 5 kill-task metas → aQD9ELerRhan → farming).  With a 15-minute stagger, the characters are in different
+* The `daily` chain order is Daily → Attributes4.0 → zKillTasks → aKTHoshino → aKTRynthid → aKTNeftet → aKTFrozen →
+  aKTTouTou → zDailyQuests → (Rockdown only: ThreeGeneralsPublic) → aQD9ELerRhan → KinokoPublic2.0 → HowardTheMad →
+  LaLaRing → aFarm → zFarm<Char> → aFBreach (Cowhead: aFJamPillar).  zKillTasks, zDailyQuests and aFarm are
+  dispatchers that load the per-character meta (zKillTasks<Char> and so on).  From the 2026-11-09 to 11-12 runs, a
+  full chain takes roughly 2 to 3 hours per character.  With a 15-minute stagger, the characters are in different
   parts of the chain at any time.
+* The plugin's Meta Chain Watch (`meta-chain-watch` skill) moves a stuck meta on to the next one, or sends the
+  character back to farming.  `[RE] MetaChainWatch` lines in the log mean it stepped in.  That is expected; don't
+  send anything on top of it.
