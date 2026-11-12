@@ -35,6 +35,7 @@ BREACH = farmspot.Dungeon(
     side_radius=4.5,       # a player this close to a side spot has it
     fixed_radius=6.0,      # players stood 2-5 m from the user's position at the fixed spots
     fellow_invite=300,     # /fship landblock every 5 minutes while farming in a fellowship
+    idle_peace=False,      # no peace mode when idle once in Breach Zero (user, 2026-11-11)
 )
 
 if __name__ == '__main__':

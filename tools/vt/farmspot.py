@@ -41,6 +41,8 @@ The meta:
              With fellow_invite set, in a fellowship: /fship landblock 5 s in, then every fellow_invite seconds
              (stopwatch fsInviteSW), to recruit players who come into the area.
   Recall     the recall gem; at the entrance -> Walk01.
+  With idle_peace set, Walk01 (the first state in the dungeon) and Farm<spot> set VT's IdlePeaceMode to it; the
+  profile, loaded again by Default, decides it for the trip there.
   Dead       20 s, then Default (which travels back).
 Travel states have a watchdog: moving less than 2 m in 8 s (a door that someone left open and our use closed)
 uses the nearest door within 4 m and carries on along the same nav; after 5 tries, Recall.
@@ -79,6 +81,7 @@ class Dungeon:
     walk_timeout: int = 90
     go_timeout: int = 30
     fellow_invite: int = None    # seconds: /fship landblock this often while farming in a fellowship; None: never
+    idle_peace: bool = None      # IdlePeaceMode in the dungeon (set at Walk01 and Farm<spot>); None leaves the profile's
     doors: list = None           # measured doors [(ew, ns, z)]; default: <here>/<name>-doors.spec if it exists
 
     def __post_init__(self):
@@ -290,7 +293,9 @@ def build_rules(d, navdir, test=None):
     def died(state):
         return (state, m.died(), m.all_a(m.clear_watchdog(), m.set_state('Dead')))
 
-    def moving(name, nav_path, arrived, then, timeout, fail='Recall'):
+    in_dungeon = [] if d.idle_peace is None else [m.opt('IdlePeaceMode', d.idle_peace)]
+
+    def moving(name, nav_path, arrived, then, timeout, fail='Recall', extra=()):
         """Travel with a nav, opening doors that are in the way.  <name> loads the nav and goes to <name>Mv, which
         doesn't reload it.  <name>Mv's watchdog fires when he moves less than 2 m in 8 s: <name>Stuck uses the
         nearest door within 4 m and goes back to <name>Mv, and VT carries on along the same nav.  After 5 tries,
@@ -299,7 +304,8 @@ def build_rules(d, navdir, test=None):
         leave = lambda st: m.all_a(m.clear_watchdog(), m.set_state(st))
         return [
             (name, m.always(), m.all_a(m.opt('EnableCombat', False), m.opt('EnableNav', True),
-                                       m.expr_a('setvar[faStuck,0]'), m.embed_nav(nav_path), m.set_state(mv))),
+                                       *extra, m.expr_a('setvar[faStuck,0]'), m.embed_nav(nav_path),
+                                       m.set_state(mv))),
             (mv, m.always(), m.watchdog(stuck, 2, 8)),
             (mv, arrived, leave(then)),
             (mv, m.seconds_in_state(timeout), leave(fail)),  # moving but not getting there
@@ -341,7 +347,7 @@ def build_rules(d, navdir, test=None):
         walk, check = f'Walk{k:02d}', f'Check{k:02d}'
         nxt = f'Walk{k + 1:02d}' if i + 1 < len(cps) else ('TourDone' if tour else 'Recall')
         leg = save_nav(navdir, f'{d.name}-leg{k:02d}.nav', cp['leg'])
-        rules += moving(walk, leg, at(cx, cy), check, d.walk_timeout)
+        rules += moving(walk, leg, at(cx, cy), check, d.walk_timeout, extra=in_dungeon if i == 0 else ())
         if tour:
             # Only the spot whose number is in fsTour, whoever is there (reachability, not who holds it); past
             # this checkpoint's spots, walk on
@@ -383,7 +389,7 @@ def build_rules(d, navdir, test=None):
                 ]
                 continue
             hold = save_nav(navdir, f'{d.name}-hold{s["name"]}.nav', [pt_line(s['pt'])], route_type='circular')
-            start = [m.embed_nav(hold), m.opt('EnableNav', True), m.opt('EnableCombat', True)]
+            start = [m.embed_nav(hold), m.opt('EnableNav', True), m.opt('EnableCombat', True), *in_dungeon]
             if d.attack_bar is not None:
                 start.append(m.chat(f'/vt setattackbar {d.attack_bar}'))
             rules += [

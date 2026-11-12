@@ -5,6 +5,7 @@ using System.Text;
 using Decal.Adapter;
 
 using RedoxExtensions.Wrapper.AgentBridge;
+using RedoxExtensions.Wrapper.Compatibility;
 using RedoxExtensions.Wrapper.Diagnostics;
 using Decal.Adapter.Wrappers;
 
@@ -192,6 +193,8 @@ public class REWrapperPlugin : PluginBase, IPluginServices
         {
             _instance = this;
 
+            ApplyLargeAddressAlignmentFix();
+
             this.Core.CharacterFilter.LoginComplete += CharacterFilter_LoginComplete;
             this.Core.CharacterFilter.Logoff += CharacterFilter_Logoff;
             this.CoreManager.PluginInitComplete += CoreManager_PluginInitComplete;
@@ -207,6 +210,20 @@ public class REWrapperPlugin : PluginBase, IPluginServices
         });
     }
 
+    // Startup runs before the error logger exists, so a failure here must not escape and stop the plugin loading.
+    private static void ApplyLargeAddressAlignmentFix()
+    {
+        try
+        {
+            LargeAddressAlignmentPatch.Apply(CompatibilitySettings.ReadEnableLargeAddressAlignmentFix());
+            WrapperDebugWriter.WriteToStaticLog("REWrapper", $"Large-address alignment fix: {LargeAddressAlignmentPatch.StatusMessage}");
+        }
+        catch (Exception e)
+        {
+            LargeAddressAlignmentPatch.Fail(e);
+        }
+    }
+
     private void Initialize()
     {
         this._errorLogger = new ErrorLogger(this, "REWrapper");
@@ -215,6 +232,7 @@ public class REWrapperPlugin : PluginBase, IPluginServices
 
         this._wrapperCommandListener = new WrapperCommandListener();
 
+        this.Debug.WriteLine($"Large-address alignment fix: {LargeAddressAlignmentPatch.StatusMessage}");
         this.Chat.WriteLine("***Initialization Complete****");
     }
 

@@ -166,7 +166,7 @@ def call_state(state, return_to): return (5, _kv(('st', _s(state)), ('ret', _s(r
 def return_from_call(): return (6, _i(0))
 def expr_a(expression): return (7, _kv(('e', _s(expression)),))
 def watchdog(state, distance, seconds): return (9, _kv(('s', _s(state)), ('r', _d(distance)), ('t', _d(seconds))))
-def clear_watchdog(): return (10, _i(0))
+def clear_watchdog(): return (10, _kv())  # VT writes an empty k/v table (aQD9ELerRhan)
 
 
 def opt(name, value):
