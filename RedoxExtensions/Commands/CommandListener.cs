@@ -40,6 +40,9 @@ internal class CommandListener : IDisposable
 
     void _decalEventsProxy_CommandLineText(object sender, Decal.Adapter.ChatParserInterceptEventArgs e)
     {
+        // Never eats the text; VT still has to see it.
+        TrackMetaLoad(e.Text);
+
         if (e.Text.StartsWith("/tele "))
         {
             // Our teleport is smarter and it's nice to reuse this short /tele command
@@ -59,6 +62,25 @@ internal class CommandListener : IDisposable
                     e.Eat = Handlers.RedoxFellowHandler.HandleCommand(command);
                     break;
             }
+        }
+    }
+
+    /// <summary>
+    /// Tells the meta chain watch about <c>/vt meta load</c>, whether typed, sent by a VT or UB meta, or sent by our
+    /// own VTActions.LoadMetaProfile (which goes through DispatchChatToBoxWithPluginIntercept, so it comes back here).
+    /// </summary>
+    private static void TrackMetaLoad(string text)
+    {
+        try
+        {
+            if (!MetaChainWatch.MetaLoadCommand.TryParse(text, out var metaName))
+                return;
+
+            REPlugin.Instance?.MonitorManager?.MetaChainWatcher?.OnMetaLoaded(metaName);
+        }
+        catch (Exception ex)
+        {
+            REPlugin.Instance?.Error?.LogError(ex);
         }
     }
 }

@@ -135,6 +135,11 @@ internal static class RedoxExtensionsHandler
             case "sched":
                 ProcessSchedule(command);
                 return true;
+
+            case "metachainwatch":
+            case "mcw":
+                ProcessMetaChainWatch(command);
+                return true;
             case "switch":
                 Actions.CharacterActions.SwitchCharacter(command.Arguments);
                 return true;
@@ -315,6 +320,109 @@ internal static class RedoxExtensionsHandler
         }
     }
 
+    private const string MetaChainWatchPrefix = "[RE] MetaChainWatch : ";
+    private const string MetaChainWatchUsage = "Usage : /re metachainwatch|mcw [on <minutes>|off|status|reload]";
+
+    private static void ProcessMetaChainWatch(ICommand command)
+    {
+        var watcher = REPlugin.Instance.MonitorManager.MetaChainWatcher;
+        var chat = REPlugin.Instance.Chat;
+        var sub = command.Arguments.Count > 0 ? command.Arguments[0].ToLower().Trim() : "status";
+
+        switch (sub)
+        {
+            case "on":
+                {
+                    if (command.Arguments.Count < 2
+                        || !double.TryParse(command.Arguments[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var minutes)
+                        || !(minutes > 0)
+                        || double.IsInfinity(minutes))
+                    {
+                        chat.WriteLine(MetaChainWatchPrefix + "on needs a timeout in minutes greater than 0, e.g. /re metachainwatch on 60");
+                        return;
+                    }
+
+                    var result = watcher.TurnOn(minutes);
+                    if (result.Started)
+                    {
+                        var status = watcher.GetStatus();
+                        chat.WriteLine("{0}on, {1} min (meta: {2})", MetaChainWatchPrefix, FormatMinutes(minutes), status.CurrentMeta ?? "none");
+                    }
+                    else
+                    {
+                        chat.WriteLine("{0}already on, timeout {1} -> {2} min", MetaChainWatchPrefix, FormatMinutes(result.PreviousMinutes), FormatMinutes(minutes));
+                    }
+
+                    return;
+                }
+
+            case "off":
+                chat.WriteLine(watcher.TurnOff().WasOn ? MetaChainWatchPrefix + "off" : MetaChainWatchPrefix + "already off");
+                return;
+
+            case "status":
+                ShowMetaChainWatchStatus(watcher);
+                return;
+
+            case "reload":
+                watcher.RequestReload();
+                chat.WriteLine("{0}reloading {1} and {2}", MetaChainWatchPrefix, watcher.GlobalFilePath, watcher.CharacterFilePath);
+                return;
+
+            default:
+                chat.WriteLine(MetaChainWatchUsage);
+                return;
+        }
+    }
+
+    private static void ShowMetaChainWatchStatus(Listeners.Monitors.MetaChainWatcher watcher)
+    {
+        var chat = REPlugin.Instance.Chat;
+        var status = watcher.GetStatus();
+        var merged = watcher.MergedConfig;
+
+        if (status.IsOn)
+            chat.WriteLine("{0}on, {1} min, {2}", MetaChainWatchPrefix, FormatMinutes(status.MainMinutes), status.Phase);
+        else
+            chat.WriteLine("{0}off", MetaChainWatchPrefix);
+
+        if (status.CurrentMeta == null)
+        {
+            chat.WriteLine("  meta : none seen");
+        }
+        else if (status.IsOn && status.Elapsed.HasValue)
+        {
+            var limit = MetaChainWatch.MetaChainWatchRules.EffectiveLimit(merged, status.CurrentMeta, status.MainMinutes);
+            chat.WriteLine("  meta : {0}, {1} / {2} min{3}",
+                status.CurrentMeta,
+                FormatMinutes(status.Elapsed.Value.TotalMinutes),
+                FormatMinutes(limit.Limit.TotalMinutes),
+                limit.IsOverride ? " (override)" : string.Empty);
+        }
+        else
+        {
+            chat.WriteLine("  meta : {0}, loaded {1} min ago", status.CurrentMeta, FormatMinutes(status.SinceLoad?.TotalMinutes ?? 0));
+        }
+
+        if (status.FallbackDeadline.HasValue)
+            chat.WriteLine("  waiting for the next meta, fallback at {0}", status.FallbackDeadline.Value.ToString("HH:mm:ss"));
+
+        chat.WriteLine("  fallback : {0}", merged.FallbackCommand);
+        chat.WriteLine("  chain states : {0}", string.Join(", ", merged.ChainStates.Select(s => "'" + s + "'").ToArray()));
+        chat.WriteLine("  timeouts : {0}", merged.Timeouts.Count == 0 ? "none" : merged.Timeouts.Count.ToString(CultureInfo.InvariantCulture));
+
+        foreach (var entry in merged.Timeouts.Values.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase))
+        {
+            chat.WriteLine("  {0} : {1} min{2} ({3})",
+                entry.Name,
+                FormatMinutes(entry.Minutes),
+                entry.ChainState != null ? " [" + entry.ChainState + "]" : string.Empty,
+                entry.Source);
+        }
+    }
+
+    private static string FormatMinutes(double minutes) => Listeners.Monitors.MetaChainWatcher.FormatMinutes(minutes);
+
     private static void DisplayHelp()
     {
         var chat = REPlugin.Instance.Chat;
@@ -341,6 +449,8 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  recordroute|rr [stop]   - Stops recording and loads the route in VT.");
         chat.WriteLine("  startmeta|sm <name>     -Loads Normal profile, resets VT/fellow state, loads and starts the named meta (exact name, or a unique partial match).");
         chat.WriteLine("  schedule|sched [reload] - Lists this character's scheduled commands (edit them with rectl schedule).");
+        chat.WriteLine("  metachainwatch|mcw on <min> - Watches the VT meta chain: a meta running past <min> (or its shorter override) goes to its chain state, else the fallback runs.");
+        chat.WriteLine("  metachainwatch|mcw off|status|reload - Stops the watch, shows it and the timeout table (edit with rectl metatimeout), or re-reads the config.");
         chat.WriteLine("  switch <name> [command] - Logs out and logs in <name> on this account (via Mag-Filter), then runs [command] on it.");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
