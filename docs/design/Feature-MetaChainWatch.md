@@ -56,7 +56,7 @@ no chain state, it runs a fallback command (by default `/re sm aFarm`) to send t
 * `Commands/CommandListener.cs` looks for `/vt meta load <name>` (any case or spacing) in `CommandLineText`.  It never
   eats the text, so VT still sees it.  The parser is `MetaChainWatch/MetaLoadCommand.cs`.
 * That covers typed loads, `/re sm` (`VTActions.LoadMetaProfile` goes back through the plugin intercept) and,
-  we expect, VT `ChatCommand` actions and UB `chatbox[]` expressions (see Known gaps).
+  VT `ChatCommand` actions and UB `chatbox[]` expressions (both checked in game).
 * Names are normalized: trimmed, a trailing `.met` removed, and matched case-insensitively.
 * Loads are tracked even while the watch is off.  When `Daily` runs `/re metachainwatch on 60`, the watcher already
   knows the current meta is Daily.
@@ -214,11 +214,24 @@ hunt limit plus turn-in overhead.
 
 ## Chain meta changes
 
-**Pending in-game test.**  These follow the `vt-meta` skill (backup, `tools/vt/vtmeta.py`, dump and check) and are
-made only after the watcher is proven in game.
+Made 2026-11-12 after the in-game test passed (originals kept as `Daily.met.bak` / `aFarm.met.bak` in the VT folder).
 
 * `Daily.met`, Default state: `ChatCommand '/re metachainwatch on 60'` at the start of the existing `All{...}`.
-* `aFarm.met`, Default state: `ChatCommand '/re metachainwatch off'` in the existing Always rule.
+* `aFarm.met`, Default state: `ChatCommand '/re metachainwatch off'` at the start of the existing `All{...}`.
+
+## In-game test (2026-11-12, Woodford)
+
+Throwaway `zzMCW_*` metas (`/vt echo`, `/vt meta load` and `/re metachainwatch` only) plus a `Woodford.json` with
+0.5 min overrides and fallback `/vt meta load zzMCW_End`.  All of this was deleted afterwards.
+
+| Case | Result |
+|---|---|
+| `on 2` from a VT ChatCommand, then the next meta loaded from a ChatCommand | Detected; timing started on the new meta |
+| Override 0.5 min on a stalled meta with `** Chain **` | Timed out at 0.55 min (override), jumped to `** Chain **`, next meta loaded |
+| Override 0.5 min on a meta whose `* Chain *` doesn't load anything | Jumped to `* Chain *`, fallback ran exactly 1 min later |
+| No chain state, main timeout 1 min | Timed out at 1.03 min (default), fallback ran straight away |
+| Load from a UB `chatbox[]` expression | Detected (status showed the new meta, loaded at the right time) |
+| `off` twice | `off`, then `already off` |
 
 ## Known gaps and follow-ups
 
@@ -233,8 +246,5 @@ made only after the watcher is proven in game.
 * **Dispatcher metas have no chain state**, so a dispatcher timeout goes straight to the fallback and skips the rest
   of the chain.  Acceptable for a 5 min hang in something that normally takes under 2 s.
 * **Watch on/off is in memory only** (see In-game commands).
-* **Unproven:** whether VT `ChatCommand` actions and UB `chatbox[]` loads raise `CommandLineText`.  Likely, since
-  `/re` commands from metas already work.  Verify in game first.  The fallback plan is to watch the wrapper's
-  `ChatTextCapture` for `[VTank] Meta executing action: ... /vt meta load X`, which needs a client restart.
 
 The `meta-chain-watch` skill (`.claude/skills/meta-chain-watch`) says how Claude lists and changes the timeouts.
