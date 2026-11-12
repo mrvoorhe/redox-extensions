@@ -44,9 +44,10 @@ rules = [
     ('GoToPillar', m.expr_c(AT_PILLAR), m.set_state('Farm')),
     ('GoToPillar', m.died(), m.set_state('Dead')),
 
-    # Hold the spot and fight
+    # Hold the spot and fight, without dropping to peace mode when idle (user, 2026-11-11)
     ('Farm', m.always(), m.all_a(m.embed_nav(os.path.join(VT, 'JamUnderPillar.nav')), m.opt('EnableNav', True),
-                                 m.opt('EnableCombat', True), m.chat('/vt setattackbar 0.3'))),
+                                 m.opt('EnableCombat', True), m.opt('IdlePeaceMode', False),
+                                 m.chat('/vt setattackbar 0.3'))),
     ('Farm', m.died(), m.set_state('Dead')),
     ('Farm', m.not_c(m.landblock(JAM)), m.set_state('Default')),  # left the dungeon: travel back
 
