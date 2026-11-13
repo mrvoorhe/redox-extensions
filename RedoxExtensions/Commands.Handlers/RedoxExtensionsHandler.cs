@@ -140,6 +140,12 @@ internal static class RedoxExtensionsHandler
             case "mcw":
                 ProcessMetaChainWatch(command);
                 return true;
+
+            case "monsters":
+            case "mon":
+                ProcessMonsters(command);
+                return true;
+
             case "switch":
                 Actions.CharacterActions.SwitchCharacter(command.Arguments);
                 return true;
@@ -421,6 +427,76 @@ internal static class RedoxExtensionsHandler
         }
     }
 
+    private const string MonstersPrefix = "[RE] Monsters : ";
+
+    private static void ProcessMonsters(ICommand command)
+    {
+        var chat = REPlugin.Instance.Chat;
+        if (!MonsterListCommand.TryParse(command.Arguments, out var request, out var error))
+        {
+            chat.WriteLine(MonstersPrefix + error);
+            return;
+        }
+
+        try
+        {
+            switch (request.Action)
+            {
+                case MonsterListAction.List:
+                    {
+                        var entries = VTMonsterList.List();
+                        var profile = VTMonsterList.SettingsProfileName();
+                        chat.WriteLine("{0}{1} entr{2} in {3}",
+                            MonstersPrefix,
+                            entries.Count,
+                            entries.Count == 1 ? "y" : "ies",
+                            string.IsNullOrEmpty(profile) ? "the default settings" : profile);
+                        foreach (var entry in entries.OrderBy(e => e.IsDefault ? 0 : 1))
+                            chat.WriteLine("  {0,2}  {1}", entry.Priority, entry.Name);
+                        return;
+                    }
+
+                case MonsterListAction.Get:
+                    {
+                        var entry = VTMonsterList.Find(request.Name);
+                        if (entry != null)
+                        {
+                            chat.WriteLine("{0}{1} : priority {2}", MonstersPrefix, entry.Name, entry.Priority);
+                            return;
+                        }
+
+                        var fallback = VTMonsterList.Find(VTMonsterList.DefaultEntryName);
+                        chat.WriteLine("{0}'{1}' is not on the monster list{2}",
+                            MonstersPrefix,
+                            request.Name,
+                            fallback != null ? string.Format(" ({0} has priority {1})", VTMonsterList.DefaultEntryName, fallback.Priority) : string.Empty);
+                        return;
+                    }
+
+                case MonsterListAction.Set:
+                    {
+                        var previous = VTMonsterList.SetPriority(request.Name, request.Priority);
+                        var entry = VTMonsterList.Find(request.Name);
+                        chat.WriteLine("{0}{1} : priority {2} -> {3}", MonstersPrefix, entry?.Name ?? request.Name, previous, request.Priority);
+                        return;
+                    }
+
+                case MonsterListAction.Add:
+                    VTMonsterList.Add(request.Name, request.Priority);
+                    chat.WriteLine("{0}added {1}, priority {2}", MonstersPrefix, request.Name, request.Priority);
+                    return;
+
+                case MonsterListAction.Remove:
+                    chat.WriteLine("{0}removed {1}", MonstersPrefix, VTMonsterList.Remove(request.Name));
+                    return;
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            chat.WriteLine(MonstersPrefix + ex.Message);
+        }
+    }
+
     private static string FormatMinutes(double minutes) => Listeners.Monitors.MetaChainWatcher.FormatMinutes(minutes);
 
     private static void DisplayHelp()
@@ -451,7 +527,11 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  schedule|sched [reload] - Lists this character's scheduled commands (edit them with rectl schedule).");
         chat.WriteLine("  metachainwatch|mcw on <min> - Watches the VT meta chain: a meta running past <min> (or its shorter override) goes to its chain state, else the fallback runs.");
         chat.WriteLine("  metachainwatch|mcw off|status|reload - Stops the watch, shows it and the timeout table (edit with rectl metatimeout), or re-reads the config.");
-        chat.WriteLine("  switch <name> [command] - Logs out and logs in <name> on this account (via Mag-Filter), then runs [command] on it.");
+        chat.WriteLine("  monsters|mon [list]     - Lists VT's monster list (the loaded settings profile) with each entry's priority.");
+        chat.WriteLine("  monsters|mon get <name> - Shows a monster list entry's priority.");
+        chat.WriteLine("  monsters|mon set|add <priority> <name> - Changes an entry's priority, or adds an entry (priority -1 to 4).");
+        chat.WriteLine("  monsters|mon remove <name> - Removes an entry.  Edits are saved to the profile like Monsters tab edits.");
+        chat.WriteLine("  switch <name> [command] -Logs out and logs in <name> on this account (via Mag-Filter), then runs [command] on it.");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
         chat.WriteLine("  clearqueue              - Clears the dispatch pipeline queue.");

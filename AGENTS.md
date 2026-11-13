@@ -13,6 +13,8 @@ Decal Plugin for the game Asheron's Call
 * Plugin assemblies stay on net35 and must not be retargeted.  They build AnyCPU by default so the 64-bit test host can load them.
 * Deploy builds (`copy_dlls_debug.bat` / `copy_dlls_release.bat` -> `deploy.bat`) build the solution with `-p:PlatformTarget=x86`, which `Directory.Build.props` redirects to `bin\x86\<Config>` and `obj\x86\<Config>` so x86 and AnyCPU builds never share output.
 * `External/Decal/bin/Decal.Adapter.dll` and `External/Virindi/utank2-i.dll` are compile-time copies patched to clear the 32BITREQUIRED flag.  Re-run `perl External/clear_32bit_required.pl <dll>` after updating them.
+* `utank2-i.dll` is the 2016 VTank build (assembly version 1.0.0.0), the one Utility Belt patches.  `/re monsters` reaches its
+  obfuscated internals by reflection, so don't swap in another build.  See `docs/design/Feature-MonsterList.md`.
 * VT nav and meta tooling, the meta builders and their skills live outside this repo, in the private repo that
   includes this one as a submodule.  This repo is the plugin and `rectl`.  See the `meta-chain-watch` and
   `scheduled-commands` skills in `.claude/skills` for the plugin features.

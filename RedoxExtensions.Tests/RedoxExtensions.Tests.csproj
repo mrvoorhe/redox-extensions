@@ -23,6 +23,10 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\External\Decal\bin\Decal.Interop.Core.DLL</HintPath>
     </Reference>
+    <Reference Include="utank2-i">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\External\Virindi\utank2-i.dll</HintPath>
+    </Reference>
     <Reference Include="MagTools">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\MagTools\MagTools.dll</HintPath>
