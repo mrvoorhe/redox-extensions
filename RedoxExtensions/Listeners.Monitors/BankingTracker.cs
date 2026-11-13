@@ -45,7 +45,7 @@ public class BankingTracker : IDisposable
     /// <summary>
     /// Starts (or resets) tracking.  Records a fresh baseline and the current time.
     /// </summary>
-    public void StartTracking(Action<string> writer)
+    public void StartTracking(Action<string> writer, Action onComplete = null)
     {
         BeginCapture(balances =>
         {
@@ -54,13 +54,15 @@ public class BankingTracker : IDisposable
             this._trackingEnabled = true;
 
             writer?.Invoke("Bank tracking started.");
+            onComplete?.Invoke();
         });
     }
 
     /// <summary>
     /// Re-queries the bank and reports the current balances and their rate of increase.
+    /// <paramref name="onComplete"/> runs after the bank lines are written.
     /// </summary>
-    public void Report(Action<string> writer)
+    public void Report(Action<string> writer, Action onComplete = null)
     {
         if (!this._trackingEnabled)
         {
@@ -68,7 +70,11 @@ public class BankingTracker : IDisposable
             return;
         }
 
-        BeginCapture(balances => WriteReport(balances, writer));
+        BeginCapture(balances =>
+        {
+            WriteReport(balances, writer);
+            onComplete?.Invoke();
+        });
     }
 
     private void BeginCapture(Action<IList<KeyValuePair<string, long>>> onComplete)

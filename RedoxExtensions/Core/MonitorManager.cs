@@ -13,6 +13,7 @@ public class MonitorManager : IDisposable
     private FellowshipMonitor _fellowshipMonitor;
     private WorldMonitor _worldMonitor;
     private BankingTracker _bankingTracker;
+    private RewardTracker _rewardTracker;
     private StuckDetector _stuckDetector;
     private RouteRecorder _routeRecorder;
     private CommandScheduler _scheduler;
@@ -25,6 +26,7 @@ public class MonitorManager : IDisposable
         this._fellowshipMonitor = new FellowshipMonitor();
         this._worldMonitor = new WorldMonitor();
         this._bankingTracker = new BankingTracker();
+        this._rewardTracker = new RewardTracker();
         this._stuckDetector = new StuckDetector();
         this._routeRecorder = new RouteRecorder();
         this._scheduler = new CommandScheduler();
@@ -40,6 +42,8 @@ public class MonitorManager : IDisposable
     public WorldMonitor WorldMonitor => this._worldMonitor;
 
     public BankingTracker Banking => this._bankingTracker;
+
+    public RewardTracker Rewards => this._rewardTracker;
 
     public StuckDetector StuckDetector => this._stuckDetector;
 
@@ -57,6 +61,7 @@ public class MonitorManager : IDisposable
         this._copyCatMaster.Dispose();
         this._fellowshipMonitor.Dispose();
         this._bankingTracker.Dispose();
+        this._rewardTracker.Dispose();
         this._stuckDetector.Dispose();
         this._routeRecorder.Dispose();
         this._scheduler.Dispose();
