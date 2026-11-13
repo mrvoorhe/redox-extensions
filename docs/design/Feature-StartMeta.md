@@ -8,7 +8,8 @@ Here is the sequence of things to initialize before loading the meta.
 
 - Load the profile called `Normal`
 - Stop VT - We don't want it running while we are tweaking with things.  We'll start it later
-- Disable VT nav
+- Disable VT nav and load an empty nav (`zzRedoxEmptyNav.nav`, written to the VT folder when missing), so a
+  route left by the last meta can't carry on
 - Disable VT combat
 - Disable VT loot
 - Enable VT Buff

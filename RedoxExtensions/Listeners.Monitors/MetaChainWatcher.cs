@@ -6,6 +6,7 @@ using System.Threading;
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
 
+using RedoxExtensions.Continuations;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.MetaChainWatch;
 using RedoxExtensions.VirindiInterop;
@@ -23,6 +24,7 @@ namespace RedoxExtensions.Listeners.Monitors;
 public class MetaChainWatcher : IDisposable
 {
     private const string Prefix = "[RE] MetaChainWatch : ";
+    private const int MillisecondsBeforeChainState = 1000;
     private static readonly TimeSpan TickInterval = TimeSpan.FromSeconds(5);
 
     private readonly object _lock = new();
@@ -193,9 +195,17 @@ public class MetaChainWatcher : IDisposable
             REPlugin.Instance.Dispatch.LegacyGameThread.QueueAction(() =>
             {
                 REPlugin.Instance.Chat.WriteLine("{0}{1} -> state '{2}'", Prefix, metaName, chainState);
-                VTActions.SetMetaState(chainState);
-                VTActions.EnableMeta();
-                VTActions.StartVT();
+                VTActions.StopVT();
+                VTActions.ClearNav();
+                DelayedContinuation.ContinueAfterDelayOnGameThread(
+                    _ =>
+                    {
+                        VTActions.SetMetaState(chainState);
+                        VTActions.EnableMeta();
+                        VTActions.StartVT();
+                    },
+                    MillisecondsBeforeChainState,
+                    null);
             });
         }
 
@@ -238,6 +248,7 @@ public class MetaChainWatcher : IDisposable
         REPlugin.Instance.Dispatch.LegacyGameThread.QueueAction(() =>
         {
             REPlugin.Instance.Chat.WriteLine(message);
+            VTActions.ClearNav();
             ACUtilities.ProcessArbitraryCommand(command);
         });
     }

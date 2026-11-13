@@ -134,7 +134,7 @@ public static class CharacterActions
         chat.WriteLine("[RE] StartMeta : {0}", resolvedMetaName);
 
         VTActions.StopVT();
-        VTActions.DisableNav();
+        VTActions.ClearNav();
         VTActions.DisableCombat();
         VTActions.DisableLooting();
         VTActions.EnableBuffing();

@@ -78,15 +78,24 @@ no chain state, it runs a fallback command (by default `/re sm aFarm`) to send t
    * The entry's `chainState` from the table, if it has one.
    * Otherwise scan `<VTankDirectory>\<meta>.met` for a line that is exactly one of the candidate names, in order:
      `** Chain **`, `* Chain *`, `TT-chain`, `Chain`.  These are the names the current metas use.
-3. **Found:** chat `[RE] MetaChainWatch : <meta> -> state '<state>'`, then `/vt setmetastate <state>`, `EnableMeta`
-   on and `/vt start` (existing `VTActions`).  Wait **1 minute** for a different meta to load.
-4. **No state, or no new meta within 1 minute:** run the fallback with `ACUtilities.ProcessArbitraryCommand`.
+3. **Found:** chat `[RE] MetaChainWatch : <meta> -> state '<state>'`, then `/vt stop` and clear the nav (nav off,
+   then `/vt nav load zzRedoxEmptyNav`, a 0-point nav written to the VT folder when missing).  1 s later
+   `/vt setmetastate <state>`, `EnableMeta` on and `/vt start` (existing `VTActions`).  Wait **1 minute** for a
+   different meta to load.
+4. **No state, or no new meta within 1 minute:** clear the nav as in 3, then run the fallback with
+   `ACUtilities.ProcessArbitraryCommand`.
    * `[RE] MetaChainWatch : <meta> no chain state, running fallback : /re sm aFarm`
    * `[RE] MetaChainWatch : <meta> no next meta after state '<state>', running fallback : /re sm aFarm`
 5. Timing restarts after the fallback.  aFarm turns the watch off; if the fallback gets stuck instead, the timeout
    fires again later.
 
 If no meta load has been seen, the meta shows as `(no meta)` and the timeout goes straight to the fallback.
+
+Why the nav is cleared (2026-11-13): Virmar's Attributes4.0 timed out with its 6.4 Temple Jumps nav stuck on a
+`/vt jump`.  The old handoff (`setmetastate`, `/vt start`) did load the next meta, but VT stayed stuck on the jump
+route and no rule that waits on a condition fired in any meta after it.  The fallback's `/re sm aFarm` stopped VT and
+turned nav off, but the farm meta's `/vt settings loadchar Farm` turned nav back on with the same route loaded.  The
+route was still trying the jump 8 hours later.  Stopping VT and loading an empty nav removes the route itself.
 
 ## In-game commands
 

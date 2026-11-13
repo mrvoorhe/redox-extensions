@@ -161,6 +161,31 @@ internal static class VTActions
         ACUtilities.ProcessArbitraryCommand($"/vt nav load {modifiedNavFile}");
     }
 
+    internal const string EmptyNavName = "zzRedoxEmptyNav";
+
+    /// <summary>
+    /// Turns nav off and loads a nav with no points.  Turning nav off alone isn't enough: a meta that loads a settings
+    /// profile can turn it back on, and the old route (e.g. a jump that can't finish) carries on.
+    /// </summary>
+    internal static void ClearNav()
+    {
+        DisableNav();
+
+        var path = Path.Combine(VTUtilities.VTankDirectory, EmptyNavName + VTNavRoute.FileExtension);
+        try
+        {
+            if (!File.Exists(path))
+                new VTNavRoute(VTNavRouteType.Circular).Save(path);
+        }
+        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+        {
+            REPlugin.Instance?.Error?.LogError(e);
+            return;
+        }
+
+        LoadNav(EmptyNavName);
+    }
+
     internal static void FollowCharacter(string characterName, bool boostNav, int followDistance)
     {
         // Just in case, disable nav while we are busy changing the nav file
