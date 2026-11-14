@@ -16,7 +16,7 @@ Decal Plugin for the game Asheron's Call
 * VT nav and meta tooling, the meta builders and their skills live outside this repo, in the private repo that
   includes this one as a submodule.  This repo is the plugin and `rectl`.  See the `meta-chain-watch` and
   `scheduled-commands` skills in `.claude/skills` for the plugin features.
-* Known failures: `PipelineDispatcherTests` (WinForms `Timer` isn't available on .NET 10) and a number of stale tests.
+* Known failures: a number of stale tests (`SettingsTests`, `CommandTests`, `JumpRecorderTests`, `LocationDatabaseTests`).
 * Existing tests use `ClassicAssert` (NUnit.Framework.Legacy).  Prefer `Assert.That` for new tests.
 
 ### Testing in the running game (Windows only)

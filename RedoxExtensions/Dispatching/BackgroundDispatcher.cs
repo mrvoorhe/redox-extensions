@@ -3,33 +3,44 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+using RedoxExtensions.Core;
+using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.Dispatching.Legacy;
 
 namespace RedoxExtensions.Dispatching;
 
 public class BackgroundDispatcher : ILegacyDispatcher, IBasicDispatcher, IDisposable
 {
-    //private const int PulseIntervalInMilliseconds = 1000;
+    /// <summary>
+    /// How long Stop() and Dispose wait for the dispatcher thread.  Dispose runs on the game thread (CloseDown), and
+    /// the thread may be inside a long action (a pipeline action's WaitForOutcome), so it must not wait forever.
+    /// </summary>
+    internal const int DefaultStopTimeoutInMilliseconds = 2000;
 
     private readonly Thread _dispatcherThread;
 
-    //private readonly Timer _dispatcherTimer;
-
     private readonly AutoResetEvent _dispatchEvent = new(false);
     private readonly ManualResetEvent _stopDispatcherEvent = new(false);
-    private readonly ManualResetEvent _dispatcherStoppedEvent = new(false);
 
     private readonly WaitHandle[] _dispatcherWakeEvents;
 
-    private readonly Queue<IDispatchedAction> _actionQueue; 
+    private readonly Queue<IDispatchedAction> _actionQueue;
+
+    // Both are guarded by _actionQueue.  The dispatcher thread also reads _stopRequested without the lock.
+    private volatile bool _stopRequested;
+    private bool _disposed;
 
     public BackgroundDispatcher(ThreadPriority threadPriority)
     {
-        this._dispatcherWakeEvents = new WaitHandle[] { this._dispatchEvent, this._stopDispatcherEvent };
+        // Stop comes first: WaitAny returns the lowest signaled index, so a stop wins over queued work.
+        this._dispatcherWakeEvents = new WaitHandle[] { this._stopDispatcherEvent, this._dispatchEvent };
         this._actionQueue = new Queue<IDispatchedAction>();
 
         this._dispatcherThread = new Thread(this.DispatcherThread);
+        this._dispatcherThread.Name = "RedoxExtensions.BackgroundDispatcher";
         this._dispatcherThread.Priority = threadPriority;
+        // A dispatcher that is never stopped, or doesn't stop in time, must not keep the process alive.
+        this._dispatcherThread.IsBackground = true;
         this._dispatcherThread.Start();
     }
 
@@ -49,6 +60,11 @@ public class BackgroundDispatcher : ILegacyDispatcher, IBasicDispatcher, IDispos
         }
     }
 
+    /// <summary>
+    /// True once the dispatcher thread has exited.  For unit testing.
+    /// </summary>
+    internal bool IsThreadExited => !this._dispatcherThread.IsAlive;
+
     #region ILegacyDistpatcher
 
     public void QueueAction(DispatchedActionDelegate action)
@@ -60,11 +76,19 @@ public class BackgroundDispatcher : ILegacyDispatcher, IBasicDispatcher, IDispos
     {
         lock (this._actionQueue)
         {
-            this._actionQueue.Enqueue(action);
-        }
+            // Work queued during or after shutdown (e.g. by a game event racing CloseDown) is dropped.  The plugin
+            // instance it would run against is going away.
+            if (this._stopRequested)
+            {
+                return;
+            }
 
-        // Set the event so that the dispatcher thread knows there is work to do
-        this._dispatchEvent.Set();
+            this._actionQueue.Enqueue(action);
+
+            // Set the event so that the dispatcher thread knows there is work to do.  Inside the lock so that
+            // Dispose can't close the event in between.
+            this._dispatchEvent.Set();
+        }
     }
 
     public void QueueDelayedAction(DispatchedActionDelegate action, int millisecondsDelay)
@@ -108,79 +132,173 @@ public class BackgroundDispatcher : ILegacyDispatcher, IBasicDispatcher, IDispos
 
     #endregion
 
-    public void Stop()
+    /// <summary>
+    /// Asks the dispatcher thread to exit, drops queued work and waits up to <paramref name="millisecondsTimeout"/>
+    /// for the thread.  Returns true if the thread has exited.  Safe to call more than once, and from the
+    /// dispatcher thread itself (it then doesn't wait).
+    /// </summary>
+    public bool Stop(int millisecondsTimeout)
     {
-        this._stopDispatcherEvent.Set();
+        lock (this._actionQueue)
+        {
+            if (!this._stopRequested)
+            {
+                this._stopRequested = true;
+                this._actionQueue.Clear();
 
-        this._dispatcherStoppedEvent.WaitOne();
+                if (!this._disposed)
+                {
+                    this._stopDispatcherEvent.Set();
+                }
+            }
+        }
 
-        this._dispatcherThread.Join();
+        if (Thread.CurrentThread == this._dispatcherThread)
+        {
+            return false;
+        }
+
+        return this._dispatcherThread.Join(millisecondsTimeout);
     }
+
+    public bool Stop() => this.Stop(DefaultStopTimeoutInMilliseconds);
 
     public void Dispose()
     {
-        this.Stop();
+        bool stopped = this.Stop();
 
-        this._dispatchEvent.Close();
-        this._stopDispatcherEvent.Close();
-        this._dispatcherStoppedEvent.Close();
+        lock (this._actionQueue)
+        {
+            if (this._disposed)
+            {
+                return;
+            }
+
+            this._disposed = true;
+
+            if (!stopped)
+            {
+                // The thread is still inside an action.  It exits when that returns (the stop event is set), so leave
+                // the events open for it rather than close them under it.  It's a background thread, so it can't
+                // hold up the process either way.
+                TryDebugWriteLine("BackgroundDispatcher did not stop in time.  It will exit when its current action ends.");
+                return;
+            }
+
+            this._dispatchEvent.Close();
+            this._stopDispatcherEvent.Close();
+        }
     }
 
     #region Private Methods
 
     private void DispatcherThread()
     {
+        // Nothing may escape this method: an unhandled exception on this thread terminates the whole process (the
+        // game client).  Everything here, the logging included, must work after REPlugin has shut down (Instance is
+        // null) and in unit tests (no REPlugin at all).
         try
         {
             while (true)
             {
                 int eventIndex = WaitHandle.WaitAny(this._dispatcherWakeEvents);
 
-                WaitHandle firedEvent = this._dispatcherWakeEvents[eventIndex];
-
-                if (firedEvent == _stopDispatcherEvent)
+                if (this._dispatcherWakeEvents[eventIndex] == this._stopDispatcherEvent)
                 {
                     return;
                 }
 
-                IDispatchedAction action;
-                lock (this._actionQueue)
+                // Drain the queue.  The dispatch event is auto reset, so one wake can stand for several actions.
+                while (!this._stopRequested)
                 {
-                    action = this.CheckForWork();
-                }
+                    IDispatchedAction action;
+                    lock (this._actionQueue)
+                    {
+                        action = this.CheckForWork();
+                    }
 
-                if (action != null)
-                {
-                    try
+                    if (action == null)
                     {
-                        this.InvokeWork(action);
+                        break;
                     }
-                    finally
-                    {
-                        // Set the event so that if another item is in the queue we process it on the next time around
-                        // in the while loop.
-                        this._dispatchEvent.Set();
-                    }
+
+                    InvokeWork(action);
                 }
             }
         }
         catch (Exception e)
         {
-            REPlugin.Instance.Debug.WriteLine("WARNING - ActionDispatcher has died");
-            REPlugin.Instance.Error.LogError(e);
+            TryDebugWriteLine("WARNING - BackgroundDispatcher has died");
+            LogUnexpectedException(e);
         }
         finally
         {
-            REPlugin.Instance.Debug.WriteLine("ActionDispatcher has exited");
-            this._dispatcherStoppedEvent.Set();
+            TryDebugWriteLine("BackgroundDispatcher has exited");
         }
     }
 
     private IDispatchedAction CheckForWork() => this._actionQueue.Count > 0 ? this._actionQueue.Dequeue() : null;
 
-    private void InvokeWork(IDispatchedAction action)
+    /// <summary>
+    /// Runs one action.  An action that throws is logged and the dispatcher goes on to the next one.  Does what
+    /// REPlugin.InvokeOperationSafely does, without needing REPlugin.Instance, which is null once the plugin has
+    /// shut down (and in unit tests).
+    /// </summary>
+    private static void InvokeWork(IDispatchedAction action)
     {
-        REPlugin.Instance.InvokeOperationSafely(action.Invoke);
+        try
+        {
+            action.Invoke();
+        }
+        catch (DisplayToUserException e)
+        {
+            try
+            {
+                if (REPlugin.Instance != null)
+                {
+                    ExceptionUtilities.HandleDisplayToUserException(e);
+                }
+                else
+                {
+                    LogUnexpectedException(e);
+                }
+            }
+            catch (Exception displayException)
+            {
+                LogUnexpectedException(e);
+                LogUnexpectedException(displayException);
+            }
+        }
+        catch (Exception e)
+        {
+            LogUnexpectedException(e);
+        }
+    }
+
+    private static void LogUnexpectedException(Exception e)
+    {
+        try
+        {
+            // REPlugin's ErrorLogger, or the static log when the plugin is gone.
+            ExceptionUtilities.HandleUnexpectedException(e);
+        }
+        catch
+        {
+            // The log itself failed (e.g. no log folder).  There is nothing left to report it with, and throwing
+            // would take down the client.
+        }
+    }
+
+    private static void TryDebugWriteLine(string message)
+    {
+        try
+        {
+            REPlugin.Instance?.Debug?.WriteLine(message);
+        }
+        catch
+        {
+            // See LogUnexpectedException
+        }
     }
 
     #endregion

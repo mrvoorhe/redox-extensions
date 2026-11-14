@@ -109,6 +109,10 @@ public class PipelineDispatcher : IDisposable
         this.Stop();
 
         this._processQueueTimer.Dispose();
+
+        // Without this every PipelineDispatcher (one per login / plugin reload) left its dispatcher thread running,
+        // still able to run a queued WaitForOutcome after REPlugin had shut down.
+        (this._backgroundDispatcher as IDisposable)?.Dispose();
     }
 
     public void Clear()
