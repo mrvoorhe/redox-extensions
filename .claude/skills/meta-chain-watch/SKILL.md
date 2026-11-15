@@ -43,7 +43,9 @@ Things to check before changing a value:
 
 * `/re metachainwatch` (or `status`) shows on/off, the phase, the current meta with elapsed / limit, the fallback,
   the chain states and the merged table.
-* `on <minutes>`, `off`, `reload`.  On/off is in memory only and resets on a plugin reload or relog.
+* `on <minutes>`, `off`, `reload`.  On/off is saved to `<install>\MetaChainWatch\State\<Character>.json`, so after
+  a crash, relog or plugin reload within 4 hours the watch turns back on by itself (`resumed after restart`), with
+  the meta's run time kept but the downtime not counted.  Don't edit that file.
 
 With the bridge on, read the status with `.\rectl.cmd -c <Character> exec "/re metachainwatch" --wait "fallback :"`.
 Don't send `on` or `off` to a character that is running its chain unless the user asks.

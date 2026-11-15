@@ -20,6 +20,10 @@ namespace RedoxExtensions.Listeners.Monitors;
 /// The config files (&lt;install&gt;\MetaChainWatch\Global.json and &lt;Character&gt;.json) are watched, and the
 /// timeout checks and the .met chain state scan run on a timer thread.  Anything that touches the game is queued to
 /// the game thread.  Every <see cref="MetaChainWatchState"/> call is made under <see cref="_lock"/>.
+///
+/// While on, the watch saves itself to &lt;install&gt;\MetaChainWatch\State\&lt;Character&gt;.json (on every change
+/// and every <see cref="HeartbeatInterval"/>), and the first tick after the plugin starts resumes from it, so a crash
+/// or relog in the middle of a chain doesn't turn the watch off.
 /// </summary>
 public class MetaChainWatcher : IDisposable
 {
@@ -27,14 +31,25 @@ public class MetaChainWatcher : IDisposable
     private const int MillisecondsBeforeChainState = 1000;
     private static readonly TimeSpan TickInterval = TimeSpan.FromSeconds(5);
 
+    /// <summary>How often the state is saved while on, even when nothing changed, so the run time is kept.</summary>
+    private static readonly TimeSpan HeartbeatInterval = TimeSpan.FromSeconds(30);
+
+    /// <summary>A saved state older than this isn't resumed: the chain is long over and someone may be playing by hand.</summary>
+    internal static readonly TimeSpan ResumeMaxAge = TimeSpan.FromHours(4);
+
     private readonly object _lock = new();
     private readonly Timer _timer;
     private readonly MetaChainWatchState _state = new();
     private readonly WatchedFile _globalFile;
     private readonly WatchedFile _characterFile;
+    private readonly string _stateFilePath;
 
     private MergedMetaChainWatchConfig _merged = MetaChainWatchRules.Merge(null, null);
     private bool _forceReload = true;
+    private bool _resumePending = true;
+    private int _savedRevision = -1;
+    private DateTime _lastSaveAt = DateTime.MinValue;
+    private bool _saveErrorLogged;
     private bool _disposed;
     private volatile bool _inPortalSpace;
 
@@ -47,6 +62,7 @@ public class MetaChainWatcher : IDisposable
     {
         this._globalFile = new WatchedFile(MetaChainWatchRules.GlobalFilePath(installDirectory));
         this._characterFile = new WatchedFile(MetaChainWatchRules.CharacterFilePath(installDirectory, characterName));
+        this._stateFilePath = MetaChainWatchRules.StateFilePath(installDirectory, characterName);
         REPlugin.Instance.Events.Decal.ChangePortalMode += Decal_ChangePortalMode;
         this._timer = new Timer(this.Tick, null, TimeSpan.FromSeconds(2), TickInterval);
     }
@@ -54,6 +70,8 @@ public class MetaChainWatcher : IDisposable
     public string GlobalFilePath => this._globalFile.Path;
 
     public string CharacterFilePath => this._characterFile.Path;
+
+    public string StateFilePath => this._stateFilePath;
 
     /// <summary>The merged config as last loaded.  Treat it as read only; a reload replaces it.</summary>
     public MergedMetaChainWatchConfig MergedConfig
@@ -114,7 +132,11 @@ public class MetaChainWatcher : IDisposable
 
         lock (this._lock)
         {
-            // Holding the lock means no tick is half way through its locked part.
+            // Keep the latest run time for the next login.  Holding the lock means no tick is half way through its
+            // locked part.
+            if (!this._disposed && !this._resumePending)
+                this.SaveIfNeeded(DateTime.Now, force: true);
+
             this._disposed = true;
             this._timer.Dispose();
         }
@@ -133,13 +155,16 @@ public class MetaChainWatcher : IDisposable
             if (this._disposed)
                 return;
 
+            if (this._resumePending)
+                this.TryResume();
+
             this.ReloadIfChanged();
 
-            if (this._inPortalSpace)
-                return;
-
             merged = this._merged;
-            action = this._state.Tick(DateTime.Now, merged);
+            action = this._inPortalSpace ? MetaChainWatchAction.None : this._state.Tick(DateTime.Now, merged);
+
+            if (!this._resumePending)
+                this.SaveIfNeeded(DateTime.Now, force: false);
         }
         catch (Exception e)
         {
@@ -261,6 +286,90 @@ public class MetaChainWatcher : IDisposable
     internal static string DisplayName(string metaName) => string.IsNullOrEmpty(metaName) ? "(no meta)" : metaName;
 
     internal static string FormatMinutes(double minutes) => minutes.ToString("0.##", CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Under the lock, on the first tick.  Turns the watch back on from the saved state, if there is a recent one.
+    /// A save that is too old or unreadable is left for <see cref="SaveIfNeeded"/> to delete.  If the file can't be
+    /// read right now, tries again next tick.
+    /// </summary>
+    private void TryResume()
+    {
+        MetaChainWatchSnapshot saved;
+        try
+        {
+            saved = MetaChainWatchFile.LoadState(this._stateFilePath);
+        }
+        catch (IOException)
+        {
+            return;
+        }
+        catch (Exception e) when (e is Newtonsoft.Json.JsonException or FormatException or InvalidCastException or UnauthorizedAccessException)
+        {
+            this._resumePending = false;
+            QueueChat(string.Format("{0}saved state unreadable, staying off : {1} : {2}", Prefix, this._stateFilePath, e.Message));
+            return;
+        }
+
+        this._resumePending = false;
+
+        var now = DateTime.Now;
+        var result = this._state.Resume(saved, now, ResumeMaxAge);
+        if (result.Resumed)
+        {
+            var status = this._state.GetStatus(now);
+            QueueChat(string.Format(
+                "{0}resumed after restart, {1} min (meta: {2}, {3} min in, saved {4} min ago)",
+                Prefix,
+                FormatMinutes(status.MainMinutes),
+                status.CurrentMeta ?? "none",
+                FormatMinutes(status.Elapsed?.TotalMinutes ?? 0),
+                FormatMinutes(Math.Max(0, result.Age.TotalMinutes))));
+
+            // Save the resumed timing straight away.
+            this._savedRevision = -1;
+        }
+        else if (result.Reason == ResumeResult.ReasonStale)
+        {
+            QueueChat(string.Format("{0}saved state from {1} min ago is too old, staying off", Prefix, FormatMinutes(result.Age.TotalMinutes)));
+        }
+        else if (result.Reason == ResumeResult.ReasonInvalid)
+        {
+            QueueChat(string.Format("{0}saved state is invalid, staying off : {1}", Prefix, this._stateFilePath));
+        }
+    }
+
+    /// <summary>
+    /// Under the lock.  Saves the state when it changed or the heartbeat is due, or deletes the saved state when the
+    /// watch is off.  A failed save is retried next tick and logged once.
+    /// </summary>
+    private void SaveIfNeeded(DateTime now, bool force)
+    {
+        var revision = this._state.Revision;
+        var snapshot = this._state.GetSnapshot(now);
+        var due = revision != this._savedRevision || (snapshot != null && (force || now - this._lastSaveAt >= HeartbeatInterval));
+        if (!due)
+            return;
+
+        try
+        {
+            if (snapshot == null)
+                MetaChainWatchFile.DeleteState(this._stateFilePath);
+            else
+                MetaChainWatchFile.SaveState(this._stateFilePath, snapshot);
+
+            this._savedRevision = revision;
+            this._lastSaveAt = now;
+            this._saveErrorLogged = false;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            if (!this._saveErrorLogged)
+            {
+                this._saveErrorLogged = true;
+                REPlugin.Instance?.Error?.LogError(e);
+            }
+        }
+    }
 
     /// <summary>Under the lock.  Reloads either file when its write time changed, then re-merges.</summary>
     private void ReloadIfChanged()

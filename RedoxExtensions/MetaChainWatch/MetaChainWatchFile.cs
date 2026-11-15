@@ -36,7 +36,25 @@ internal static class MetaChainWatchFile
     /// <summary>
     /// Writes to a temp file and swaps it in, so a reader never sees half a file.
     /// </summary>
-    public static void Save(string path, MetaChainWatchFileData data)
+    public static void Save(string path, MetaChainWatchFileData data) => WriteAtomically(path, data);
+
+    /// <summary>The saved watch state (<see cref="MetaChainWatchRules.StateFilePath"/>), or null when there is none.</summary>
+    public static MetaChainWatchSnapshot LoadState(string path)
+    {
+        return File.Exists(path)
+            ? JsonConvert.DeserializeObject<MetaChainWatchSnapshot>(File.ReadAllText(path), Settings)
+            : null;
+    }
+
+    public static void SaveState(string path, MetaChainWatchSnapshot snapshot) => WriteAtomically(path, snapshot);
+
+    public static void DeleteState(string path)
+    {
+        if (File.Exists(path))
+            File.Delete(path);
+    }
+
+    private static void WriteAtomically(string path, object data)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path));
 

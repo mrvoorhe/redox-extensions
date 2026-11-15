@@ -341,7 +341,243 @@ public class MetaChainWatchTests : TemporaryDirectoryPerTestTestSuite
         Assert.That(state.Tick(T0.AddMinutes(30), Config()).Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
     }
 
+    // --- Snapshot and resume ---
+
+    private static readonly TimeSpan MaxAge = TimeSpan.FromHours(4);
+
+    [Test]
+    public void SnapshotIsNullWhenOff()
+    {
+        var state = new MetaChainWatchState();
+        state.OnMetaLoaded("Daily", T0);
+        Assert.That(state.GetSnapshot(T0), Is.Null);
+
+        state.TurnOn(60, T0);
+        state.TurnOff();
+        Assert.That(state.GetSnapshot(T0.AddMinutes(1)), Is.Null);
+    }
+
+    [Test]
+    public void SnapshotHoldsTimingAndMeta()
+    {
+        var state = new MetaChainWatchState();
+        state.OnMetaLoaded("aKTHoshino", T0);
+        state.TurnOn(60, T0.AddMinutes(2));
+
+        var snapshot = state.GetSnapshot(T0.AddMinutes(12));
+        Assert.That(snapshot.IsOn, Is.True);
+        Assert.That(snapshot.MainMinutes, Is.EqualTo(60));
+        Assert.That(snapshot.CurrentMeta, Is.EqualTo("aKTHoshino"));
+        Assert.That(snapshot.SinceLoadMinutes, Is.EqualTo(12).Within(1e-9));
+        Assert.That(snapshot.ElapsedMinutes, Is.EqualTo(10).Within(1e-9));
+        Assert.That(snapshot.SavedAt, Is.EqualTo(T0.AddMinutes(12)));
+    }
+
+    [Test]
+    public void RevisionChangesOnEverythingASnapshotHolds()
+    {
+        var state = new MetaChainWatchState();
+        var revisions = new List<int> { state.Revision };
+        state.OnMetaLoaded("Daily", T0);
+        revisions.Add(state.Revision);
+        state.TurnOn(60, T0);
+        revisions.Add(state.Revision);
+        state.TurnOn(30, T0);
+        revisions.Add(state.Revision);
+        state.TurnOff();
+        revisions.Add(state.Revision);
+
+        Assert.That(revisions, Is.Unique);
+        Assert.That(revisions, Is.Ordered);
+    }
+
+    [Test]
+    public void ResumeCarriesRunTimeButNotDowntime()
+    {
+        var before = new MetaChainWatchState();
+        before.OnMetaLoaded("aKTHoshino", T0);
+        before.TurnOn(60, T0);
+        var saved = before.GetSnapshot(T0.AddMinutes(20)); // crash at 20 min
+
+        var after = new MetaChainWatchState();
+        var relog = T0.AddMinutes(30); // 10 min down
+        var result = after.Resume(saved, relog, MaxAge);
+
+        Assert.That(result.Resumed, Is.True);
+        Assert.That(result.Age, Is.EqualTo(TimeSpan.FromMinutes(10)));
+        Assert.That(after.IsOn, Is.True);
+        Assert.That(after.MainMinutes, Is.EqualTo(60));
+        Assert.That(after.CurrentMeta, Is.EqualTo("aKTHoshino"));
+        Assert.That(after.Phase, Is.EqualTo(MetaChainWatchPhase.Timing));
+        Assert.That(after.GetStatus(relog).Elapsed, Is.EqualTo(TimeSpan.FromMinutes(20)));
+        Assert.That(after.GetStatus(relog).SinceLoad, Is.EqualTo(TimeSpan.FromMinutes(20)));
+
+        var config = Config();
+        Assert.That(after.Tick(relog.AddMinutes(40).AddSeconds(-1), config).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        var timeout = after.Tick(relog.AddMinutes(40), config);
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.MetaName, Is.EqualTo("aKTHoshino"));
+    }
+
+    [Test]
+    public void ResumePastTheLimitWaitsForTheGrace()
+    {
+        var before = new MetaChainWatchState();
+        before.OnMetaLoaded("Attributes4.0", T0);
+        before.TurnOn(60, T0);
+        var saved = before.GetSnapshot(T0.AddMinutes(15));
+        var config = Config(("Attributes4.0", 10, null));
+
+        var after = new MetaChainWatchState();
+        var relog = T0.AddMinutes(20);
+        after.Resume(saved, relog, MaxAge);
+
+        Assert.That(after.Tick(relog.AddSeconds(5), config).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        Assert.That(after.Tick(relog + MetaChainWatchState.ResumeGrace - TimeSpan.FromSeconds(1), config).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        var timeout = after.Tick(relog + MetaChainWatchState.ResumeGrace, config);
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.IsOverride, Is.True);
+    }
+
+    [Test]
+    public void MetaLoadAfterResumeEndsTheGraceAndRestartsTiming()
+    {
+        var before = new MetaChainWatchState();
+        before.OnMetaLoaded("Stuck", T0);
+        before.TurnOn(1, T0);
+        var saved = before.GetSnapshot(T0.AddMinutes(5));
+
+        var after = new MetaChainWatchState();
+        after.Resume(saved, T0.AddMinutes(6), MaxAge);
+        after.OnMetaLoaded("Next", T0.AddMinutes(6).AddSeconds(10));
+
+        Assert.That(after.Tick(T0.AddMinutes(7), Config()).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        var timeout = after.Tick(T0.AddMinutes(7).AddSeconds(10), Config());
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.MetaName, Is.EqualTo("Next"));
+    }
+
+    [Test]
+    public void ResumeKeepsAMetaLoadedBeforeIt()
+    {
+        var saved = new MetaChainWatchSnapshot { IsOn = true, MainMinutes = 60, CurrentMeta = "Old", ElapsedMinutes = 50, SinceLoadMinutes = 50, SavedAt = T0 };
+
+        var state = new MetaChainWatchState();
+        state.OnMetaLoaded("New", T0.AddMinutes(1));
+        Assert.That(state.Resume(saved, T0.AddMinutes(2), MaxAge).Resumed, Is.True);
+
+        Assert.That(state.CurrentMeta, Is.EqualTo("New"));
+        Assert.That(state.GetStatus(T0.AddMinutes(2)).Elapsed, Is.EqualTo(TimeSpan.FromMinutes(1)));
+    }
+
+    [Test]
+    public void ResumeWithNoMetaSeen()
+    {
+        var saved = new MetaChainWatchSnapshot { IsOn = true, MainMinutes = 60, ElapsedMinutes = 5, SavedAt = T0 };
+
+        var state = new MetaChainWatchState();
+        Assert.That(state.Resume(saved, T0.AddMinutes(1), MaxAge).Resumed, Is.True);
+        Assert.That(state.CurrentMeta, Is.Null);
+        Assert.That(state.LoadedAt, Is.Null);
+        Assert.That(state.GetStatus(T0.AddMinutes(1)).Elapsed, Is.EqualTo(TimeSpan.FromMinutes(5)));
+    }
+
+    [Test]
+    public void ResumeIgnoresAStaleSave()
+    {
+        var saved = new MetaChainWatchSnapshot { IsOn = true, MainMinutes = 60, CurrentMeta = "Daily", ElapsedMinutes = 1, SavedAt = T0 };
+
+        var state = new MetaChainWatchState();
+        var result = state.Resume(saved, T0 + MaxAge + TimeSpan.FromSeconds(1), MaxAge);
+        Assert.That(result.Resumed, Is.False);
+        Assert.That(result.Reason, Is.EqualTo(ResumeResult.ReasonStale));
+        Assert.That(state.IsOn, Is.False);
+        Assert.That(state.Phase, Is.EqualTo(MetaChainWatchPhase.Off));
+
+        Assert.That(new MetaChainWatchState().Resume(saved, T0 + MaxAge, MaxAge).Resumed, Is.True, "exactly max age still resumes");
+    }
+
+    [Test]
+    public void ResumeIgnoresNoSaveOrOff()
+    {
+        Assert.That(new MetaChainWatchState().Resume(null, T0, MaxAge).Reason, Is.EqualTo(ResumeResult.ReasonNoSave));
+        Assert.That(new MetaChainWatchState().Resume(new MetaChainWatchSnapshot { IsOn = false, MainMinutes = 60, SavedAt = T0 }, T0, MaxAge).Reason,
+            Is.EqualTo(ResumeResult.ReasonNoSave));
+    }
+
+    [TestCase(0, 1, 0)]
+    [TestCase(-5, 1, 0)]
+    [TestCase(double.NaN, 1, 0)]
+    [TestCase(60, -1, 0)]
+    [TestCase(60, double.NaN, 0)]
+    [TestCase(60, 1, -10)] // saved 10 min in the future
+    public void ResumeIgnoresAnInvalidSave(double mainMinutes, double elapsedMinutes, double savedMinutesAgo)
+    {
+        var saved = new MetaChainWatchSnapshot { IsOn = true, MainMinutes = mainMinutes, ElapsedMinutes = elapsedMinutes, SavedAt = T0.AddMinutes(-savedMinutesAgo) };
+
+        var state = new MetaChainWatchState();
+        var result = state.Resume(saved, T0, MaxAge);
+        Assert.That(result.Resumed, Is.False);
+        Assert.That(result.Reason, Is.EqualTo(ResumeResult.ReasonInvalid));
+        Assert.That(state.IsOn, Is.False);
+    }
+
+    [Test]
+    public void ResumeDoesNothingWhenAlreadyOn()
+    {
+        var saved = new MetaChainWatchSnapshot { IsOn = true, MainMinutes = 30, ElapsedMinutes = 25, SavedAt = T0 };
+
+        var state = new MetaChainWatchState();
+        state.TurnOn(60, T0);
+        var result = state.Resume(saved, T0.AddMinutes(1), MaxAge);
+        Assert.That(result.Resumed, Is.False);
+        Assert.That(result.Reason, Is.EqualTo(ResumeResult.ReasonAlreadyOn));
+        Assert.That(state.MainMinutes, Is.EqualTo(60));
+        Assert.That(state.GetStatus(T0.AddMinutes(1)).Elapsed, Is.EqualTo(TimeSpan.FromMinutes(1)));
+    }
+
     // --- File ---
+
+    [Test]
+    public void StateFileIsInTheStateFolder()
+    {
+        var path = MetaChainWatchRules.StateFilePath(TestTemporaryDirectory, "Bob");
+        Assert.That(path, Is.EqualTo(Path.Combine(TestTemporaryDirectory, "MetaChainWatch", "State", "Bob.json")));
+    }
+
+    [Test]
+    public void StateFileRoundTripsAndDeletes()
+    {
+        var path = MetaChainWatchRules.StateFilePath(TestTemporaryDirectory, "Bob");
+        Assert.That(MetaChainWatchFile.LoadState(path), Is.Null);
+
+        var snapshot = new MetaChainWatchSnapshot
+        {
+            IsOn = true,
+            MainMinutes = 60,
+            CurrentMeta = "Attributes4.0",
+            SinceLoadMinutes = 3.25,
+            ElapsedMinutes = 2.5,
+            SavedAt = T0,
+        };
+        MetaChainWatchFile.SaveState(path, snapshot);
+        MetaChainWatchFile.SaveState(path, snapshot); // the second save replaces the file
+        Assert.That(File.Exists(path + ".tmp"), Is.False);
+        Assert.That(File.ReadAllText(path), Does.Contain("\"currentMeta\": \"Attributes4.0\""));
+
+        var loaded = MetaChainWatchFile.LoadState(path);
+        Assert.That(loaded.IsOn, Is.True);
+        Assert.That(loaded.MainMinutes, Is.EqualTo(60));
+        Assert.That(loaded.CurrentMeta, Is.EqualTo("Attributes4.0"));
+        Assert.That(loaded.SinceLoadMinutes, Is.EqualTo(3.25));
+        Assert.That(loaded.ElapsedMinutes, Is.EqualTo(2.5));
+        Assert.That(loaded.SavedAt, Is.EqualTo(T0));
+
+        MetaChainWatchFile.DeleteState(path);
+        Assert.That(File.Exists(path), Is.False);
+        MetaChainWatchFile.DeleteState(path); // already gone
+    }
+
 
     [Test]
     public void LoadMissingFileReturnsNull()

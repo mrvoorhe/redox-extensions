@@ -131,11 +131,37 @@ Other watcher lines:
   read or changes.
 * `[RE] MetaChainWatch : config file unreadable, ignoring it : <path> : <error>`.  Nothing from that file is used
   until it changes.
+* `[RE] MetaChainWatch : resumed after restart, 60 min (meta: aKTHoshino, 12.4 min in, saved 3 min ago)` (see
+  Surviving a crash).
+* `[RE] MetaChainWatch : saved state from 300 min ago is too old, staying off`, or `saved state is invalid, staying
+  off : <path>` / `saved state unreadable, staying off : <path> : <error>`.
 
 All of these are chat lines, so the agent bridge journals them as `plugin` events.
 
-The on/off state is in memory only.  It doesn't survive a plugin reload or relog, on purpose: a relog breaks the
-chain anyway.
+## Surviving a crash
+
+Added 2026-11-14.  A client crash in the middle of the chain used to turn the watch off, so a meta that got stuck after
+the relog had no backstop.  The watch now saves itself and turns back on when the plugin starts.
+
+* **State file:** `<install>\MetaChainWatch\State\<Character>.json`, written by the plugin only (rectl doesn't use it).
+  It holds `isOn`, `mainMinutes`, `currentMeta`, `sinceLoadMinutes`, `elapsedMinutes` and `savedAt` (local time).
+* **Saving:** on the timer thread, on every change (meta load while on, on, off, timeout change, timing restart after a
+  fallback) and every 30 s while on, plus once more when the plugin shuts down.  Same `.tmp` swap as the config files.
+  Turning the watch off deletes the file.  A failed save is retried every tick and logged once.
+* **Resuming:** the first tick after the plugin starts (login, relog after a crash, plugin reload) reads the file.
+  * The watch turns on with the saved main timeout and meta.  VT reloads its meta at login without a
+    `/vt meta load`, so the saved name is what the watch times.
+  * The meta keeps the run time it had when saved, but the time the client was down doesn't count.  A meta that
+    keeps crashing the client still times out, and a long relog doesn't fire the timeout the moment he logs in.
+  * Nothing times out in the first minute after resuming, so the game and VT can settle.  A meta that was already
+    past its limit (or crashed while waiting for the next meta) times out again after that minute and gets a fresh
+    chain state jump.  A meta load in that minute ends the wait as usual.
+  * A save older than **4 hours** is ignored and deleted: the chain is long over and someone may be playing the
+    character by hand.  An invalid or unreadable save is ignored the same way.
+  * If a meta load was seen before the first tick, that meta is kept and timed from its load.  If `on` ran before
+    the first tick (it can't in practice), the save is ignored.
+* A normal logout during the chain saves too, so logging back in within 4 hours resumes the watch.  aFarm turning the
+  watch off is what ends it.
 
 ## Config files
 
@@ -254,6 +280,7 @@ Throwaway `zzMCW_*` metas (`/vt echo`, `/vt meta load` and `/re metachainwatch` 
   * aQD9ELerRhan can leave a Head or Chest key in the pack.
 * **Dispatcher metas have no chain state**, so a dispatcher timeout goes straight to the fallback and skips the rest
   of the chain.  Acceptable for a 5 min hang in something that normally takes under 2 s.
-* **Watch on/off is in memory only** (see In-game commands).
+* **Resuming isn't tested in game yet.**  Unit tested (`MetaChainWatchTests`, Snapshot and resume); the next real
+  crash during a chain should show the `resumed after restart` line in the journal.
 
 The `meta-chain-watch` skill (`.claude/skills/meta-chain-watch`) says how Claude lists and changes the timeouts.

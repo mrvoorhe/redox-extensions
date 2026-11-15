@@ -83,6 +83,7 @@ public static class MetaChainWatchRules
 {
     public const string DirectoryName = "MetaChainWatch";
     public const string GlobalFileName = "Global.json";
+    public const string StateDirectoryName = "State";
     public const string DefaultFallbackCommand = "/re sm aFarm";
     public const string SourceGlobal = "global";
     public const string SourceCharacter = "character";
@@ -98,6 +99,15 @@ public static class MetaChainWatchRules
     public static string CharacterFilePath(string installDirectory, string characterName)
     {
         return Path.Combine(Path.Combine(installDirectory, DirectoryName), ScheduleRules.SafeFileName(characterName) + ".json");
+    }
+
+    /// <summary>
+    /// Where the plugin saves the watch's on/off state so it survives a crash or relog:
+    /// &lt;install&gt;\MetaChainWatch\State\&lt;Character&gt;.json.  Written by the plugin only.
+    /// </summary>
+    public static string StateFilePath(string installDirectory, string characterName)
+    {
+        return Path.Combine(Path.Combine(Path.Combine(installDirectory, DirectoryName), StateDirectoryName), ScheduleRules.SafeFileName(characterName) + ".json");
     }
 
     /// <summary>
