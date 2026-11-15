@@ -10,6 +10,12 @@ public enum MetaChainWatchPhase
     /// <summary>Timing the current meta.</summary>
     Timing,
 
+    /// <summary>
+    /// The meta timed out and a Recall was emitted.  Waiting for <see cref="MetaChainWatchState.OnRecallStarted"/> and
+    /// then for a <see cref="MetaChainWatchLocation"/> at the recall spot.  Ends with a Timeout.
+    /// </summary>
+    Recalling,
+
     /// <summary>A Timeout was emitted.  Waiting for the caller to call <see cref="MetaChainWatchState.OnChainStateResult"/>.</summary>
     ResolvingChainState,
 
@@ -21,11 +27,59 @@ public enum MetaChainWatchActionKind
 {
     None,
 
-    /// <summary>The current meta ran past its limit.  Resolve its chain state and call OnChainStateResult.</summary>
+    /// <summary>
+    /// The current meta ran past its limit (try 1) or the gem didn't teleport him (try 2).  Stop VT, clear the nav,
+    /// go to peace mode, then use the gem unless he is already at the recall spot, and call OnRecallStarted.
+    /// </summary>
+    Recall,
+
+    /// <summary>The current meta ran past its limit and the recall (if any) is over.  Resolve its chain state and call OnChainStateResult.</summary>
     Timeout,
 
     /// <summary>Run <see cref="MetaChainWatchAction.Command"/>.</summary>
     RunFallback,
+}
+
+/// <summary>How the recall before a chain state jump ended.</summary>
+public enum MetaChainWatchRecallOutcome
+{
+    /// <summary>No recall: it is turned off in the config.</summary>
+    None,
+
+    /// <summary>The gem took him to the recall spot.</summary>
+    Arrived,
+
+    /// <summary>He was already at the recall spot, so the gem wasn't used.</summary>
+    AlreadyThere,
+
+    /// <summary>The gem isn't in his inventory.</summary>
+    GemMissing,
+
+    /// <summary>No arrival within <see cref="MetaChainWatchState.RecallWait"/> on any of the <see cref="MetaChainWatchState.RecallTries"/> tries.</summary>
+    TimedOut,
+}
+
+/// <summary>What the caller did with a Recall action.</summary>
+public enum MetaChainWatchRecallStart
+{
+    /// <summary>The gem was used.</summary>
+    Used,
+
+    /// <summary>He was already at the recall spot; the gem wasn't used.</summary>
+    AlreadyThere,
+
+    /// <summary>No item with the gem's exact name in inventory.</summary>
+    GemMissing,
+}
+
+/// <summary>Where the character was, read on the game thread.</summary>
+public class MetaChainWatchLocation
+{
+    public int Landcell { get; set; }
+    public bool InPortalSpace { get; set; }
+
+    /// <summary>When it was read.  Only reads after the gem use count.</summary>
+    public DateTime ReadAt { get; set; }
 }
 
 /// <summary>
@@ -43,17 +97,35 @@ public class MetaChainWatchAction
     /// <summary>The meta that timed out.  Null when no meta load has been seen.</summary>
     public string MetaName { get; set; }
 
-    /// <summary>Timeout only.</summary>
+    /// <summary>Timeout and Recall.</summary>
     public TimeSpan Elapsed { get; set; }
 
-    /// <summary>Timeout only.</summary>
+    /// <summary>Timeout and Recall.</summary>
     public TimeSpan Limit { get; set; }
 
-    /// <summary>Timeout only.  True when a per meta override set the limit.</summary>
+    /// <summary>Timeout and Recall.  True when a per meta override set the limit.</summary>
     public bool IsOverride { get; set; }
 
     /// <summary>Timeout only.  The chain state from the meta's override entry, or null to scan the .met file.</summary>
     public string ConfiguredChainState { get; set; }
+
+    /// <summary>Recall only.  The exact inventory name of the gem.</summary>
+    public string RecallGem { get; set; }
+
+    /// <summary>Recall, and Timeout after a recall.  The landblock the gem takes him to.</summary>
+    public int RecallLandblock { get; set; }
+
+    /// <summary>Recall only.  1 for the first try, 2 for the retry.</summary>
+    public int RecallAttempt { get; set; }
+
+    /// <summary>Recall only.  Pass it back to OnRecallStarted and IsRecallCurrent.</summary>
+    public int RecallId { get; set; }
+
+    /// <summary>Timeout only.  How the recall before it ended.</summary>
+    public MetaChainWatchRecallOutcome RecallOutcome { get; set; }
+
+    /// <summary>Timeout only, for <see cref="MetaChainWatchRecallOutcome.Arrived"/>.  Where he landed.</summary>
+    public int? RecallLandcell { get; set; }
 
     /// <summary>RunFallback only.  The command to run.</summary>
     public string Command { get; set; }
@@ -99,6 +171,15 @@ public class MetaChainWatchStatus
 
     /// <summary>When the fallback runs if no meta loads.  Set only in <see cref="MetaChainWatchPhase.AwaitingNextMeta"/>.</summary>
     public DateTime? FallbackDeadline { get; set; }
+
+    /// <summary>Set only in <see cref="MetaChainWatchPhase.Recalling"/>.</summary>
+    public string RecallGem { get; set; }
+
+    /// <summary>Set only in <see cref="MetaChainWatchPhase.Recalling"/>.  1 or 2.</summary>
+    public int RecallAttempt { get; set; }
+
+    /// <summary>Set only in <see cref="MetaChainWatchPhase.Recalling"/>.  When the current try gives up.</summary>
+    public DateTime? RecallDeadline { get; set; }
 }
 
 /// <summary>
@@ -146,14 +227,19 @@ public class ResumeResult
 /// <item>Meta loads are tracked even while off.</item>
 /// <item>Turning on starts timing the current meta from the time it was turned on, not from when it loaded,
 ///       i.e. timing starts at max(LoadedAt, TurnedOnAt).  Turning on again while on only changes the timeout.</item>
-/// <item>Every meta load restarts timing, including a reload of the same meta, and cancels a pending fallback.</item>
+/// <item>Every meta load restarts timing, including a reload of the same meta, and cancels a pending recall or
+///       fallback.</item>
+/// <item>With the recall on (the default), a meta past its limit first gets a Recall: the caller uses the gem and
+///       the watch waits up to <see cref="RecallWait"/> for a location at the recall spot, then tries once more.
+///       Arrival, the gem missing, already being there, or both tries failing all end the recall with a Timeout.</item>
 /// <item>A Timeout is emitted once; ticks then return None until <see cref="OnChainStateResult"/> is called.</item>
 /// <item>After a RunFallback, timing restarts from the fallback time for the current meta, so the timeout can fire
 ///       again later if the fallback gets stuck too.</item>
 /// <item>When no meta load has been seen the watch still times out, with a null meta name.  The caller should
 ///       report no chain state, which leads to the fallback.</item>
 /// <item>A <see cref="Resume"/> carries the saved run time over but not the time the client was down, and never
-///       times out within <see cref="ResumeGrace"/> of resuming, so the game and VT can settle after a login.</item>
+///       times out within <see cref="ResumeGrace"/> of resuming, so the game and VT can settle after a login.  The
+///       phase isn't saved, so a crash mid recall resumes as Timing past its limit and recalls again.</item>
 /// </list>
 /// </para>
 /// </summary>
@@ -162,6 +248,21 @@ public class MetaChainWatchState
     public static readonly TimeSpan NextMetaWait = TimeSpan.FromMinutes(1);
     public static readonly TimeSpan ResumeGrace = TimeSpan.FromMinutes(1);
 
+    /// <summary>How long each recall try waits for him to arrive, from the Recall action (and again from the gem use).</summary>
+    public static readonly TimeSpan RecallWait = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// A try only gives up on a location read after its deadline (a slow portal may land just before it), or once
+    /// this much past the deadline if no reads come at all.
+    /// </summary>
+    public static readonly TimeSpan RecallReadGrace = TimeSpan.FromSeconds(15);
+
+    /// <summary>After a portal space exit during a try, it waits at least this long for a read of where he landed.</summary>
+    public static readonly TimeSpan RecallLandingWait = TimeSpan.FromSeconds(10);
+
+    /// <summary>The first gem use plus one retry.</summary>
+    public const int RecallTries = 2;
+
     /// <summary>A save from the future by more than this (clock change) is treated as invalid.</summary>
     private static readonly TimeSpan ClockSkewAllowance = TimeSpan.FromMinutes(5);
 
@@ -169,6 +270,17 @@ public class MetaChainWatchState
     private DateTime _fallbackDeadline;
     private DateTime? _graceUntil;
     private string _pendingChainState;
+
+    // Recalling
+    private MetaChainWatchAction _timedOut;
+    private int _recallId;
+    private int _recallAttempt;
+    private string _recallGem;
+    private int _recallLandblock;
+    private DateTime? _recallUsedAt;
+    private DateTime _recallDeadline;
+    private MetaChainWatchRecallOutcome? _recallFinished;
+    private bool _inPortalSpace;
 
     public bool IsOn { get; private set; }
     public double MainMinutes { get; private set; }
@@ -210,8 +322,9 @@ public class MetaChainWatchState
     /// Turns the watch back on from a save, e.g. after a crash.  The meta is timed from where it was when saved, so a
     /// meta that keeps crashing the client still times out, but the time the client was down doesn't count.  A save
     /// older than <paramref name="maxAge"/> is ignored.  A phase other than Timing isn't restored: a meta that was
-    /// already past its limit times out again once <see cref="ResumeGrace"/> is over.  Call it before turning on.
-    /// When a meta load was seen before the call, that newer meta is kept and timed from its load.
+    /// already past its limit (recalling or waiting for the next meta) times out again once <see cref="ResumeGrace"/>
+    /// is over, and gets a fresh recall.  Call it before turning on.  When a meta load was seen before the call, that
+    /// newer meta is kept and timed from its load.
     /// </summary>
     public ResumeResult Resume(MetaChainWatchSnapshot saved, DateTime now, TimeSpan maxAge)
     {
@@ -270,11 +383,15 @@ public class MetaChainWatchState
         Phase = MetaChainWatchPhase.Off;
         _pendingChainState = null;
         _graceUntil = null;
+        ClearRecall();
         Revision++;
         return new TurnOffResult { WasOn = wasOn };
     }
 
-    public MetaChainWatchAction Tick(DateTime now, MergedMetaChainWatchConfig merged)
+    /// <summary>
+    /// <paramref name="location"/> is the latest read of where he is (null when none), used only while Recalling.
+    /// </summary>
+    public MetaChainWatchAction Tick(DateTime now, MergedMetaChainWatchConfig merged, MetaChainWatchLocation location = null)
     {
         switch (Phase)
         {
@@ -284,8 +401,7 @@ public class MetaChainWatchState
                 if (elapsed < limit.Limit || (_graceUntil.HasValue && now < _graceUntil.Value))
                     return MetaChainWatchAction.None;
 
-                Phase = MetaChainWatchPhase.ResolvingChainState;
-                return new MetaChainWatchAction
+                var timeout = new MetaChainWatchAction
                 {
                     Kind = MetaChainWatchActionKind.Timeout,
                     MetaName = CurrentMeta,
@@ -293,7 +409,25 @@ public class MetaChainWatchState
                     Limit = limit.Limit,
                     IsOverride = limit.IsOverride,
                     ConfiguredChainState = MetaChainWatchRules.FindTimeout(merged, CurrentMeta)?.ChainState,
+                    RecallOutcome = MetaChainWatchRecallOutcome.None,
                 };
+
+                var recall = merged?.Recall;
+                if (recall == null || !recall.Enabled || string.IsNullOrEmpty(recall.Gem))
+                {
+                    Phase = MetaChainWatchPhase.ResolvingChainState;
+                    return timeout;
+                }
+
+                Phase = MetaChainWatchPhase.Recalling;
+                _timedOut = timeout;
+                _recallGem = recall.Gem;
+                _recallLandblock = recall.Landblock;
+                _recallFinished = null;
+                return StartRecallTry(1, now);
+
+            case MetaChainWatchPhase.Recalling:
+                return TickRecalling(now, location);
 
             case MetaChainWatchPhase.AwaitingNextMeta:
                 if (now < _fallbackDeadline)
@@ -303,6 +437,49 @@ public class MetaChainWatchState
             default:
                 return MetaChainWatchAction.None;
         }
+    }
+
+    /// <summary>
+    /// True while the Recall with this id is the one in progress.  The caller checks it right before using the gem,
+    /// so a recall that a meta load, an off or a newer try replaced never uses one.
+    /// </summary>
+    public bool IsRecallCurrent(int recallId) => Phase == MetaChainWatchPhase.Recalling && recallId == _recallId;
+
+    /// <summary>
+    /// The caller's answer to a Recall.  Used starts the wait for arrival; AlreadyThere and GemMissing end the recall,
+    /// and the next tick emits the Timeout.  Returns false (and does nothing) when the recall isn't current.
+    /// </summary>
+    public bool OnRecallStarted(int recallId, MetaChainWatchRecallStart start, DateTime now)
+    {
+        if (!IsRecallCurrent(recallId))
+            return false;
+
+        switch (start)
+        {
+            case MetaChainWatchRecallStart.Used:
+                _recallUsedAt = now;
+                _recallDeadline = now + RecallWait;
+                break;
+            case MetaChainWatchRecallStart.AlreadyThere:
+                _recallFinished = MetaChainWatchRecallOutcome.AlreadyThere;
+                break;
+            default:
+                _recallFinished = MetaChainWatchRecallOutcome.GemMissing;
+                break;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Portal space entered or left.  A recall try never gives up while he is in portal space, and after he leaves it
+    /// the try waits at least <see cref="RecallLandingWait"/> so a read of where he landed comes in first.
+    /// </summary>
+    public void OnPortalSpace(bool entered, DateTime now)
+    {
+        _inPortalSpace = entered;
+        if (!entered && Phase == MetaChainWatchPhase.Recalling && now + RecallLandingWait > _recallDeadline)
+            _recallDeadline = now + RecallLandingWait;
     }
 
     /// <summary>
@@ -326,6 +503,7 @@ public class MetaChainWatchState
 
     public MetaChainWatchStatus GetStatus(DateTime now)
     {
+        var recalling = Phase == MetaChainWatchPhase.Recalling;
         return new MetaChainWatchStatus
         {
             IsOn = IsOn,
@@ -336,7 +514,78 @@ public class MetaChainWatchState
             SinceLoad = LoadedAt.HasValue ? now - LoadedAt.Value : null,
             Elapsed = IsOn ? now - _timingStart : null,
             FallbackDeadline = Phase == MetaChainWatchPhase.AwaitingNextMeta ? _fallbackDeadline : null,
+            RecallGem = recalling ? _recallGem : null,
+            RecallAttempt = recalling ? _recallAttempt : 0,
+            RecallDeadline = recalling ? _recallDeadline : null,
         };
+    }
+
+    private MetaChainWatchAction TickRecalling(DateTime now, MetaChainWatchLocation location)
+    {
+        if (_recallFinished.HasValue)
+            return FinishRecall(_recallFinished.Value, null);
+
+        // Only a read taken after the gem use, outside portal space, says where the gem took him.
+        var fresh = location != null && _recallUsedAt.HasValue && location.ReadAt >= _recallUsedAt.Value;
+        if (fresh && !location.InPortalSpace && MetaChainWatchRules.IsAtRecallSpot(location.Landcell, _recallLandblock))
+            return FinishRecall(MetaChainWatchRecallOutcome.Arrived, location.Landcell);
+
+        if (_inPortalSpace || now < _recallDeadline)
+            return MetaChainWatchAction.None;
+
+        // Past the deadline.  Judge on a read from after it (so a slow teleport that lands right at the deadline is
+        // seen), and never while that read says he is in portal space, unless the reads stopped coming.
+        var readAfterDeadline = location != null && location.ReadAt >= _recallDeadline;
+        var noReads = now >= _recallDeadline + RecallReadGrace;
+        if (!noReads && (!readAfterDeadline || location.InPortalSpace))
+            return MetaChainWatchAction.None;
+
+        if (_recallAttempt < RecallTries)
+            return StartRecallTry(_recallAttempt + 1, now);
+
+        return FinishRecall(MetaChainWatchRecallOutcome.TimedOut, null);
+    }
+
+    private MetaChainWatchAction StartRecallTry(int attempt, DateTime now)
+    {
+        _recallAttempt = attempt;
+        _recallId++;
+        _recallUsedAt = null;
+        _recallDeadline = now + RecallWait;
+
+        return new MetaChainWatchAction
+        {
+            Kind = MetaChainWatchActionKind.Recall,
+            MetaName = _timedOut.MetaName,
+            Elapsed = _timedOut.Elapsed,
+            Limit = _timedOut.Limit,
+            IsOverride = _timedOut.IsOverride,
+            RecallGem = _recallGem,
+            RecallLandblock = _recallLandblock,
+            RecallAttempt = attempt,
+            RecallId = _recallId,
+        };
+    }
+
+    private MetaChainWatchAction FinishRecall(MetaChainWatchRecallOutcome outcome, int? landcell)
+    {
+        var timeout = _timedOut;
+        timeout.RecallOutcome = outcome;
+        timeout.RecallLandcell = landcell;
+        timeout.RecallLandblock = _recallLandblock;
+        ClearRecall();
+        Phase = MetaChainWatchPhase.ResolvingChainState;
+        return timeout;
+    }
+
+    private void ClearRecall()
+    {
+        // _recallId is never reset, so an old id can't match a later recall.
+        _timedOut = null;
+        _recallAttempt = 0;
+        _recallGem = null;
+        _recallUsedAt = null;
+        _recallFinished = null;
     }
 
     private MetaChainWatchAction Fallback(DateTime now, MergedMetaChainWatchConfig merged, string reason, string chainState)
@@ -357,6 +606,7 @@ public class MetaChainWatchState
         _timingStart = start;
         _pendingChainState = null;
         _graceUntil = null;
+        ClearRecall();
         Phase = MetaChainWatchPhase.Timing;
         Revision++;
     }

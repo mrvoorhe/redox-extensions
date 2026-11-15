@@ -186,6 +186,26 @@ public class MetaTimeoutCliTests
         Assert.That(timeouts.Select(t => t["name"].GetValue<string>()), Is.EqualTo(new[] { "alpha", "Zeta" }));
         Assert.That(timeouts[0]["chainState"].GetValue<string>(), Is.EqualTo("* Chain *"));
         Assert.That(timeouts.Select(t => t["source"].GetValue<string>()), Is.All.EqualTo("global"));
+        Assert.That(json["recall"]["enabled"].GetValue<bool>(), Is.True);
+        Assert.That(json["recall"]["gem"].GetValue<string>(), Is.EqualTo("Halls of Introduction Gem"));
+        Assert.That(json["recall"]["landblock"].GetValue<string>(), Is.EqualTo("0x012F"));
+    }
+
+    [Test]
+    public void SetKeepsAHandWrittenRecall()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(this.GlobalFile));
+        File.WriteAllText(this.GlobalFile, "{ \"recall\": { \"enabled\": false, \"gem\": \"Some Gem\", \"landblock\": \"0x0083\" } }");
+
+        this.Run("metatimeout", "set", "Zeta", "10");
+
+        var (exit, output, error) = this.Run("metatimeout", "list");
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var recall = JsonNode.Parse(output)["recall"];
+        Assert.That(recall["enabled"].GetValue<bool>(), Is.False);
+        Assert.That(recall["gem"].GetValue<string>(), Is.EqualTo("Some Gem"));
+        Assert.That(recall["landblock"].GetValue<string>(), Is.EqualTo("0x0083"));
+        Assert.That(File.ReadAllText(this.GlobalFile), Does.Contain("\"recall\""));
     }
 
     [Test]

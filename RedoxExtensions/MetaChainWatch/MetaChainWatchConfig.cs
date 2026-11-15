@@ -28,6 +28,35 @@ public class MetaChainWatchFileData
 
     /// <summary>Per meta timeout overrides, keyed by meta name (without .met).</summary>
     public Dictionary<string, MetaTimeoutEntry> Timeouts { get; set; } = new Dictionary<string, MetaTimeoutEntry>();
+
+    /// <summary>The recall a timed out meta gets before the chain state jump or the fallback.  Null means not set.</summary>
+    public MetaChainWatchRecallData Recall { get; set; }
+}
+
+/// <summary>
+/// The recall settings in a config file.  Every field is optional; a field that isn't set comes from the global
+/// file, then the defaults (on, Halls of Introduction Gem, landblock 0x012F).
+/// </summary>
+public class MetaChainWatchRecallData
+{
+    /// <summary>False turns the recall off: a timeout goes straight to the chain state jump, as before 2026-11-15.</summary>
+    public bool? Enabled { get; set; }
+
+    /// <summary>The exact inventory name of the gem to use.</summary>
+    public string Gem { get; set; }
+
+    /// <summary>The landblock the gem takes him to, hex with or without 0x (e.g. "0x012F").  It must be a dungeon or indoor landblock.</summary>
+    public string Landblock { get; set; }
+}
+
+/// <summary>
+/// The recall settings after merging, with the defaults filled in.
+/// </summary>
+public class MergedMetaChainWatchRecall
+{
+    public bool Enabled { get; set; } = true;
+    public string Gem { get; set; } = MetaChainWatchRules.DefaultRecallGem;
+    public int Landblock { get; set; } = MetaChainWatchRules.DefaultRecallLandblock;
 }
 
 /// <summary>
@@ -66,6 +95,8 @@ public class MergedMetaChainWatchConfig
     /// <summary>Keyed by normalized meta name, case-insensitive.</summary>
     public Dictionary<string, MergedMetaTimeout> Timeouts { get; set; } =
         new Dictionary<string, MergedMetaTimeout>(StringComparer.OrdinalIgnoreCase);
+
+    public MergedMetaChainWatchRecall Recall { get; set; } = new MergedMetaChainWatchRecall();
 }
 
 /// <summary>
@@ -87,6 +118,15 @@ public static class MetaChainWatchRules
     public const string DefaultFallbackCommand = "/re sm aFarm";
     public const string SourceGlobal = "global";
     public const string SourceCharacter = "character";
+
+    /// <summary>The Halls of Introduction Gem, the name KinokoPublic2.0 and the aKT metas use.</summary>
+    public const string DefaultRecallGem = "Halls of Introduction Gem";
+
+    /// <summary>The Halls of Introduction (the gem lands at 0x012F0126).</summary>
+    public const int DefaultRecallLandblock = 0x012F;
+
+    /// <summary>Dungeon and indoor cells are 0x0100 and up.  A lower cell in a dungeon landblock is outside its walls.</summary>
+    public const int FirstIndoorCell = 0x0100;
 
     /// <summary>The chain state names our metas use, in the order they are looked for.</summary>
     public static readonly string[] DefaultChainStates = { "** Chain **", "* Chain *", "TT-chain", "Chain" };
@@ -134,11 +174,50 @@ public static class MetaChainWatchRules
             ChainStates = CleanChainStates(character?.ChainStates)
                           ?? CleanChainStates(global?.ChainStates)
                           ?? new List<string>(DefaultChainStates),
+            Recall = new MergedMetaChainWatchRecall
+            {
+                Enabled = character?.Recall?.Enabled ?? global?.Recall?.Enabled ?? true,
+                Gem = FirstNonBlank(character?.Recall?.Gem, global?.Recall?.Gem) ?? DefaultRecallGem,
+                Landblock = ParseLandblock(character?.Recall?.Landblock)
+                            ?? ParseLandblock(global?.Recall?.Landblock)
+                            ?? DefaultRecallLandblock,
+            },
         };
 
         AddTimeouts(merged, global, SourceGlobal);
         AddTimeouts(merged, character, SourceCharacter);
         return merged;
+    }
+
+    /// <summary>
+    /// A landblock written as 1 to 4 hex digits, with or without 0x ("0x012F", "12f").  Null when blank or not valid
+    /// (it then counts as not set).
+    /// </summary>
+    public static int? ParseLandblock(string text)
+    {
+        var s = (text ?? string.Empty).Trim();
+        if (s.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            s = s.Substring(2);
+        if (s.Length == 0 || s.Length > 4)
+            return null;
+
+        return int.TryParse(s, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture, out var value)
+            ? (int?)value
+            : null;
+    }
+
+    public static string FormatLandblock(int landblock) => "0x" + landblock.ToString("X4", System.Globalization.CultureInfo.InvariantCulture);
+
+    public static string FormatLandcell(int landcell) => "0x" + landcell.ToString("X8", System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// True when the landcell is an indoor cell of the landblock.  A cell below 0x0100 in a dungeon landblock means
+    /// he fell outside the dungeon's walls (seen in the Halls, 0x012F0025), where nav can't move him, so that doesn't
+    /// count: another teleport gets him out.
+    /// </summary>
+    public static bool IsAtRecallSpot(int landcell, int landblock)
+    {
+        return ((landcell >> 16) & 0xFFFF) == landblock && (landcell & 0xFFFF) >= FirstIndoorCell;
     }
 
     /// <summary>The override for a meta, or null.</summary>

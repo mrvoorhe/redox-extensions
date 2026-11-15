@@ -78,6 +78,12 @@ public partial class Cli
         result["fallbackSource"] = MetaTimeoutStore.FallbackSource(global, characterData);
         result["chainStates"] = new JsonArray(merged.ChainStates.Select(s => (JsonNode)s).ToArray());
         result["chainStatesSource"] = MetaTimeoutStore.ChainStatesSource(global, characterData);
+        result["recall"] = new JsonObject
+        {
+            ["enabled"] = merged.Recall.Enabled,
+            ["gem"] = merged.Recall.Gem,
+            ["landblock"] = MetaChainWatchRules.FormatLandblock(merged.Recall.Landblock),
+        };
         result["timeouts"] = new JsonArray(merged.Timeouts.Values
             .OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
             .Select(t => (JsonNode)TimeoutJson(t.Name, t.Minutes, t.ChainState, t.Source))

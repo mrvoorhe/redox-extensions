@@ -407,6 +407,18 @@ internal static class RedoxExtensionsHandler
         if (status.FallbackDeadline.HasValue)
             chat.WriteLine("  waiting for the next meta, fallback at {0}", status.FallbackDeadline.Value.ToString("HH:mm:ss"));
 
+        if (status.RecallDeadline.HasValue)
+        {
+            chat.WriteLine("  recalling : {0}, try {1} of {2}, gives up at {3}",
+                status.RecallGem,
+                status.RecallAttempt,
+                MetaChainWatch.MetaChainWatchState.RecallTries,
+                status.RecallDeadline.Value.ToString("HH:mm:ss"));
+        }
+
+        chat.WriteLine("  recall : {0}", merged.Recall.Enabled
+            ? merged.Recall.Gem + " -> " + MetaChainWatch.MetaChainWatchRules.FormatLandblock(merged.Recall.Landblock)
+            : "off");
         chat.WriteLine("  fallback : {0}", merged.FallbackCommand);
         chat.WriteLine("  chain states : {0}", string.Join(", ", merged.ChainStates.Select(s => "'" + s + "'").ToArray()));
         chat.WriteLine("  timeouts : {0}", merged.Timeouts.Count == 0 ? "none" : merged.Timeouts.Count.ToString(CultureInfo.InvariantCulture));
@@ -449,7 +461,7 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  recordroute|rr [stop]   - Stops recording and loads the route in VT.");
         chat.WriteLine("  startmeta|sm <name>     -Loads Normal profile, resets VT/fellow state, loads and starts the named meta (exact name, or a unique partial match).");
         chat.WriteLine("  schedule|sched [reload] - Lists this character's scheduled commands (edit them with rectl schedule).");
-        chat.WriteLine("  metachainwatch|mcw on <min> - Watches the VT meta chain: a meta running past <min> (or its shorter override) goes to its chain state, else the fallback runs.");
+        chat.WriteLine("  metachainwatch|mcw on <min> - Watches the VT meta chain: a meta running past <min> (or its shorter override) is recalled with the Halls of Introduction Gem, then goes to its chain state, else the fallback runs.");
         chat.WriteLine("  metachainwatch|mcw off|status|reload - Stops the watch, shows it and the timeout table (edit with rectl metatimeout), or re-reads the config.");
         chat.WriteLine("  switch <name> [command] - Logs out and logs in <name> on this account (via Mag-Filter), then runs [command] on it.");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");

@@ -14,12 +14,32 @@ public class MetaChainWatchTests : TemporaryDirectoryPerTestTestSuite
 {
     private static readonly DateTime T0 = new(2026, 11, 12, 6, 0, 0);
 
+    /// <summary>The recall is off here, so a timeout goes straight to the chain state.  The recall tests use <see cref="RecallConfig"/>.</summary>
     private static MergedMetaChainWatchConfig Config(params (string name, double minutes, string chainState)[] timeouts)
     {
-        var global = new MetaChainWatchFileData { FallbackCommand = "/re sm aFarm" };
+        var global = new MetaChainWatchFileData { FallbackCommand = "/re sm aFarm", Recall = new MetaChainWatchRecallData { Enabled = false } };
         foreach (var t in timeouts)
             global.Timeouts[t.name] = new MetaTimeoutEntry { Minutes = t.minutes, ChainState = t.chainState };
         return MetaChainWatchRules.Merge(global, null);
+    }
+
+    /// <summary>The defaults: recall on, Halls of Introduction Gem, landblock 0x012F.</summary>
+    private static MergedMetaChainWatchConfig RecallConfig() => MetaChainWatchRules.Merge(null, null);
+
+    private const int HallsCell = 0x012F0126;
+    private const int LerRhanCell = 0x00830110;
+
+    private static MetaChainWatchLocation At(int landcell, DateTime readAt, bool inPortalSpace = false) =>
+        new() { Landcell = landcell, ReadAt = readAt, InPortalSpace = inPortalSpace };
+
+    /// <summary>A watch on a 20 min aQD9ELerRhan that has just timed out and been told to recall (try 1).</summary>
+    private static (MetaChainWatchState state, MetaChainWatchAction recall) TimedOutLerRhan(MergedMetaChainWatchConfig config)
+    {
+        var state = new MetaChainWatchState();
+        state.OnMetaLoaded("aQD9ELerRhan", T0);
+        state.TurnOn(20, T0);
+        var recall = state.Tick(T0.AddMinutes(20), config);
+        return (state, recall);
     }
 
     // --- NormalizeName ---
@@ -54,6 +74,49 @@ public class MetaChainWatchTests : TemporaryDirectoryPerTestTestSuite
         Assert.That(merged.FallbackCommand, Is.EqualTo("/re sm aFarm"));
         Assert.That(merged.ChainStates, Is.EqualTo(new[] { "** Chain **", "* Chain *", "TT-chain", "Chain" }));
         Assert.That(merged.Timeouts, Is.Empty);
+        Assert.That(merged.Recall.Enabled, Is.True);
+        Assert.That(merged.Recall.Gem, Is.EqualTo("Halls of Introduction Gem"));
+        Assert.That(merged.Recall.Landblock, Is.EqualTo(0x012F));
+    }
+
+    [Test]
+    public void MergeRecallFieldByField()
+    {
+        var global = new MetaChainWatchFileData { Recall = new MetaChainWatchRecallData { Gem = "Global Gem", Landblock = "0x1234" } };
+        var character = new MetaChainWatchFileData { Recall = new MetaChainWatchRecallData { Enabled = false, Gem = "  " } };
+
+        var both = MetaChainWatchRules.Merge(global, character);
+        Assert.That(both.Recall.Enabled, Is.False);
+        Assert.That(both.Recall.Gem, Is.EqualTo("Global Gem"), "a blank character gem counts as not set");
+        Assert.That(both.Recall.Landblock, Is.EqualTo(0x1234));
+
+        var badLandblock = MetaChainWatchRules.Merge(new MetaChainWatchFileData { Recall = new MetaChainWatchRecallData { Landblock = "0x012F0126" } }, null);
+        Assert.That(badLandblock.Recall.Landblock, Is.EqualTo(0x012F), "an invalid landblock counts as not set");
+        Assert.That(badLandblock.Recall.Enabled, Is.True);
+    }
+
+    [TestCase("0x012F", 0x012F)]
+    [TestCase("012f", 0x012F)]
+    [TestCase(" 0X12F ", 0x012F)]
+    [TestCase("83", 0x0083)]
+    [TestCase("", null)]
+    [TestCase(null, null)]
+    [TestCase("0x", null)]
+    [TestCase("0x012F0126", null)]
+    [TestCase("Halls", null)]
+    public void ParseLandblock(string text, int? expected)
+    {
+        Assert.That(MetaChainWatchRules.ParseLandblock(text), Is.EqualTo(expected));
+    }
+
+    [TestCase(0x012F0126, true)]
+    [TestCase(0x012F0100, true)]
+    [TestCase(0x012F0025, false)] // outside the Halls' walls (Cowhead 11-14): another teleport is wanted
+    [TestCase(0x00830110, false)] // Ler Rhan
+    [TestCase(0x0130012F, false)]
+    public void IsAtRecallSpot(int landcell, bool expected)
+    {
+        Assert.That(MetaChainWatchRules.IsAtRecallSpot(landcell, 0x012F), Is.EqualTo(expected));
     }
 
     [Test]
@@ -267,7 +330,11 @@ public class MetaChainWatchTests : TemporaryDirectoryPerTestTestSuite
     public void ChainStateNotFoundRunsFallbackRightAway()
     {
         var state = new MetaChainWatchState();
-        var config = MetaChainWatchRules.Merge(null, new MetaChainWatchFileData { FallbackCommand = "/vt meta load zzMCW_End" });
+        var config = MetaChainWatchRules.Merge(null, new MetaChainWatchFileData
+        {
+            FallbackCommand = "/vt meta load zzMCW_End",
+            Recall = new MetaChainWatchRecallData { Enabled = false },
+        });
         state.OnMetaLoaded("zzMCW_NoChain", T0);
         state.TurnOn(2, T0);
 
@@ -339,6 +406,222 @@ public class MetaChainWatchTests : TemporaryDirectoryPerTestTestSuite
 
         // Timing was not restarted: the meta has run 30 minutes since the watch was first turned on.
         Assert.That(state.Tick(T0.AddMinutes(30), Config()).Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+    }
+
+    // --- Recall (Halls of Introduction Gem before the chain state jump) ---
+
+    [Test]
+    public void RecallOffGoesStraightToTimeout()
+    {
+        var state = new MetaChainWatchState();
+        state.TurnOn(1, T0);
+        var timeout = state.Tick(T0.AddMinutes(1), Config());
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.None));
+    }
+
+    [Test]
+    public void RecallSucceedsThenChainStateJump()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+
+        Assert.That(recall.Kind, Is.EqualTo(MetaChainWatchActionKind.Recall));
+        Assert.That(recall.MetaName, Is.EqualTo("aQD9ELerRhan"));
+        Assert.That(recall.Elapsed, Is.EqualTo(TimeSpan.FromMinutes(20)));
+        Assert.That(recall.IsOverride, Is.False);
+        Assert.That(recall.RecallGem, Is.EqualTo("Halls of Introduction Gem"));
+        Assert.That(recall.RecallLandblock, Is.EqualTo(0x012F));
+        Assert.That(recall.RecallAttempt, Is.EqualTo(1));
+        Assert.That(state.Phase, Is.EqualTo(MetaChainWatchPhase.Recalling));
+        Assert.That(state.IsRecallCurrent(recall.RecallId), Is.True);
+
+        // Nothing is emitted until the gem has been used and he has arrived.
+        var t = T0.AddMinutes(20);
+        Assert.That(state.Tick(t.AddSeconds(1), config, At(LerRhanCell, t.AddSeconds(1))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        Assert.That(state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(2)), Is.True);
+
+        // A read from before the use doesn't count, even at the Halls.
+        Assert.That(state.Tick(t.AddSeconds(5), config, At(HallsCell, t.AddSeconds(1))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        Assert.That(state.Tick(t.AddSeconds(5), config, At(LerRhanCell, t.AddSeconds(4))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+
+        state.OnPortalSpace(true, t.AddSeconds(5));
+        Assert.That(state.Tick(t.AddSeconds(10), config, At(HallsCell, t.AddSeconds(9), inPortalSpace: true)).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        state.OnPortalSpace(false, t.AddSeconds(12));
+
+        var timeout = state.Tick(t.AddSeconds(15), config, At(HallsCell, t.AddSeconds(13)));
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.Arrived));
+        Assert.That(timeout.RecallLandcell, Is.EqualTo(HallsCell));
+        Assert.That(timeout.MetaName, Is.EqualTo("aQD9ELerRhan"));
+        Assert.That(timeout.Elapsed, Is.EqualTo(TimeSpan.FromMinutes(20)));
+        Assert.That(state.Phase, Is.EqualTo(MetaChainWatchPhase.ResolvingChainState));
+        Assert.That(state.IsRecallCurrent(recall.RecallId), Is.False);
+
+        // Then the hand-off as before.
+        Assert.That(state.OnChainStateResult(true, "* Chain *", t.AddSeconds(16), config).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        Assert.That(state.Phase, Is.EqualTo(MetaChainWatchPhase.AwaitingNextMeta));
+    }
+
+    [Test]
+    public void RecallGemMissingCarriesOnToTheFallback()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+
+        Assert.That(state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.GemMissing, t.AddSeconds(2)), Is.True);
+        var timeout = state.Tick(t.AddSeconds(5), config);
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.GemMissing));
+
+        var fallback = state.OnChainStateResult(false, null, t.AddSeconds(5), config);
+        Assert.That(fallback.Kind, Is.EqualTo(MetaChainWatchActionKind.RunFallback));
+        Assert.That(fallback.Reason, Is.EqualTo(MetaChainWatchAction.ReasonNoChainState));
+    }
+
+    [Test]
+    public void RecallSkipsTheGemWhenAlreadyThere()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+
+        Assert.That(state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.AlreadyThere, t.AddSeconds(2)), Is.True);
+        var timeout = state.Tick(t.AddSeconds(5), config);
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.AlreadyThere));
+    }
+
+    [Test]
+    public void RecallRetriesOnceThenGivesUp()
+    {
+        var config = RecallConfig();
+        var (state, first) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+        state.OnRecallStarted(first.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(2));
+
+        // Deadline is use + 30 s.  A read from before the deadline isn't enough to give up on.
+        Assert.That(state.Tick(t.AddSeconds(33), config, At(LerRhanCell, t.AddSeconds(31))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+
+        var second = state.Tick(t.AddSeconds(38), config, At(LerRhanCell, t.AddSeconds(33)));
+        Assert.That(second.Kind, Is.EqualTo(MetaChainWatchActionKind.Recall));
+        Assert.That(second.RecallAttempt, Is.EqualTo(2));
+        Assert.That(second.RecallId, Is.Not.EqualTo(first.RecallId));
+        Assert.That(state.IsRecallCurrent(first.RecallId), Is.False);
+        Assert.That(state.OnRecallStarted(first.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(39)), Is.False, "a stale try is ignored");
+
+        var status = state.GetStatus(t.AddSeconds(39));
+        Assert.That(status.Phase, Is.EqualTo(MetaChainWatchPhase.Recalling));
+        Assert.That(status.RecallGem, Is.EqualTo("Halls of Introduction Gem"));
+        Assert.That(status.RecallAttempt, Is.EqualTo(2));
+        Assert.That(status.RecallDeadline, Is.EqualTo(t.AddSeconds(38) + MetaChainWatchState.RecallWait));
+
+        state.OnRecallStarted(second.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(40));
+        Assert.That(state.Tick(t.AddSeconds(65), config, At(LerRhanCell, t.AddSeconds(64))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        var timeout = state.Tick(t.AddSeconds(75), config, At(LerRhanCell, t.AddSeconds(71)));
+        Assert.That(timeout.Kind, Is.EqualTo(MetaChainWatchActionKind.Timeout));
+        Assert.That(timeout.RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.TimedOut));
+        Assert.That(timeout.RecallLandblock, Is.EqualTo(0x012F));
+        Assert.That(state.Phase, Is.EqualTo(MetaChainWatchPhase.ResolvingChainState));
+    }
+
+    [Test]
+    public void RecallOutsideTheHallsWallsIsNotAnArrival()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+        state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(2));
+
+        Assert.That(state.Tick(t.AddSeconds(10), config, At(0x012F0025, t.AddSeconds(9))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        Assert.That(state.Tick(t.AddSeconds(37), config, At(0x012F0025, t.AddSeconds(33))).Kind, Is.EqualTo(MetaChainWatchActionKind.Recall));
+    }
+
+    [Test]
+    public void RecallGivesUpWithoutReadsAfterTheGrace()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+
+        // The game thread never answered: no use, no reads.  The try still ends, deadline + read grace after the Recall.
+        var giveUp = t + MetaChainWatchState.RecallWait + MetaChainWatchState.RecallReadGrace;
+        Assert.That(state.Tick(giveUp.AddSeconds(-1), config).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        var second = state.Tick(giveUp, config);
+        Assert.That(second.Kind, Is.EqualTo(MetaChainWatchActionKind.Recall));
+        Assert.That(second.RecallAttempt, Is.EqualTo(2));
+
+        var second2 = giveUp + MetaChainWatchState.RecallWait + MetaChainWatchState.RecallReadGrace;
+        Assert.That(state.Tick(second2, config).RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.TimedOut));
+    }
+
+    [Test]
+    public void RecallNeverGivesUpInPortalSpaceAndWaitsForTheLanding()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+        state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(2));
+        state.OnPortalSpace(true, t.AddSeconds(4));
+
+        // A slow portal: well past deadline + read grace, still nothing while in portal space.
+        Assert.That(state.Tick(t.AddSeconds(90), config, At(LerRhanCell, t.AddSeconds(3))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+
+        // Out of portal space: the try waits RecallLandingWait for a read of where he landed.
+        state.OnPortalSpace(false, t.AddSeconds(95));
+        Assert.That(state.Tick(t.AddSeconds(96), config, At(LerRhanCell, t.AddSeconds(3))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+        Assert.That(state.GetStatus(t.AddSeconds(96)).RecallDeadline, Is.EqualTo(t.AddSeconds(95) + MetaChainWatchState.RecallLandingWait));
+
+        var timeout = state.Tick(t.AddSeconds(101), config, At(HallsCell, t.AddSeconds(100)));
+        Assert.That(timeout.RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.Arrived));
+    }
+
+    [Test]
+    public void MetaLoadOrOffCancelsTheRecall()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+
+        state.OnMetaLoaded("KinokoPublic2.0", t.AddSeconds(1));
+        Assert.That(state.Phase, Is.EqualTo(MetaChainWatchPhase.Timing));
+        Assert.That(state.IsRecallCurrent(recall.RecallId), Is.False);
+        Assert.That(state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(2)), Is.False);
+        Assert.That(state.Tick(t.AddSeconds(40), config, At(HallsCell, t.AddSeconds(39))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+
+        var (state2, recall2) = TimedOutLerRhan(config);
+        state2.TurnOff();
+        Assert.That(state2.IsRecallCurrent(recall2.RecallId), Is.False);
+        Assert.That(state2.Tick(t.AddSeconds(40), config, At(HallsCell, t.AddSeconds(39))).Kind, Is.EqualTo(MetaChainWatchActionKind.None));
+    }
+
+    [Test]
+    public void CrashDuringTheRecallResumesAndRecallsAgain()
+    {
+        var config = RecallConfig();
+        var (state, recall) = TimedOutLerRhan(config);
+        var t = T0.AddMinutes(20);
+        state.OnRecallStarted(recall.RecallId, MetaChainWatchRecallStart.Used, t.AddSeconds(2));
+
+        // Crash mid teleport.  The save holds the run time, not the phase.
+        var saved = state.GetSnapshot(t.AddSeconds(3));
+        Assert.That(saved.ElapsedMinutes, Is.GreaterThan(20));
+
+        var login = t.AddMinutes(5);
+        var after = new MetaChainWatchState();
+        Assert.That(after.Resume(saved, login, MaxAge).Resumed, Is.True);
+        Assert.That(after.Phase, Is.EqualTo(MetaChainWatchPhase.Timing));
+        Assert.That(after.Tick(login.AddSeconds(30), config).Kind, Is.EqualTo(MetaChainWatchActionKind.None), "resume grace");
+
+        var again = after.Tick(login + MetaChainWatchState.ResumeGrace, config);
+        Assert.That(again.Kind, Is.EqualTo(MetaChainWatchActionKind.Recall));
+        Assert.That(again.RecallAttempt, Is.EqualTo(1));
+        Assert.That(again.MetaName, Is.EqualTo("aQD9ELerRhan"));
+
+        // The teleport went through before the crash: he logs in at the Halls, so the gem isn't used again.
+        after.OnRecallStarted(again.RecallId, MetaChainWatchRecallStart.AlreadyThere, login.AddMinutes(1).AddSeconds(2));
+        Assert.That(after.Tick(login.AddMinutes(1).AddSeconds(5), config).RecallOutcome, Is.EqualTo(MetaChainWatchRecallOutcome.AlreadyThere));
     }
 
     // --- Snapshot and resume ---

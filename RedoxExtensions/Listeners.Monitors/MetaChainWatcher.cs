@@ -6,7 +6,9 @@ using System.Threading;
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
 
+using RedoxExtensions.Actions;
 using RedoxExtensions.Continuations;
+using RedoxExtensions.Core.Extensions;
 using RedoxExtensions.Core.Utilities;
 using RedoxExtensions.MetaChainWatch;
 using RedoxExtensions.VirindiInterop;
@@ -24,11 +26,19 @@ namespace RedoxExtensions.Listeners.Monitors;
 /// While on, the watch saves itself to &lt;install&gt;\MetaChainWatch\State\&lt;Character&gt;.json (on every change
 /// and every <see cref="HeartbeatInterval"/>), and the first tick after the plugin starts resumes from it, so a crash
 /// or relog in the middle of a chain doesn't turn the watch off.
+///
+/// Before the chain state jump (or the fallback) a timed out meta is recalled: VT stopped, nav cleared, peace mode,
+/// then the recall gem (Halls of Introduction Gem by default) by its exact inventory name.  While recalling, every
+/// tick reads the landcell on the game thread and the next tick checks it, until he is at the recall spot or the try
+/// gives up.
 /// </summary>
 public class MetaChainWatcher : IDisposable
 {
     private const string Prefix = "[RE] MetaChainWatch : ";
     private const int MillisecondsBeforeChainState = 1000;
+
+    /// <summary>After /vt stop and peace mode, so VT and the combat mode switch are done before the gem use.</summary>
+    private const int MillisecondsBeforeGemUse = 2000;
     private static readonly TimeSpan TickInterval = TimeSpan.FromSeconds(5);
 
     /// <summary>How often the state is saved while on, even when nothing changed, so the run time is kept.</summary>
@@ -52,6 +62,7 @@ public class MetaChainWatcher : IDisposable
     private bool _saveErrorLogged;
     private bool _disposed;
     private volatile bool _inPortalSpace;
+    private MetaChainWatchLocation _lastLocation;
 
     public MetaChainWatcher()
         : this(CommandScheduler.InstallDirectory, REPlugin.Instance.CharacterFilter.Name)
@@ -146,6 +157,7 @@ public class MetaChainWatcher : IDisposable
     {
         MetaChainWatchAction action;
         MergedMetaChainWatchConfig merged;
+        bool recalling;
 
         if (!Monitor.TryEnter(this._lock))
             return;
@@ -161,7 +173,8 @@ public class MetaChainWatcher : IDisposable
             this.ReloadIfChanged();
 
             merged = this._merged;
-            action = this._inPortalSpace ? MetaChainWatchAction.None : this._state.Tick(DateTime.Now, merged);
+            action = this._inPortalSpace ? MetaChainWatchAction.None : this._state.Tick(DateTime.Now, merged, this._lastLocation);
+            recalling = this._state.Phase == MetaChainWatchPhase.Recalling;
 
             if (!this._resumePending)
                 this.SaveIfNeeded(DateTime.Now, force: false);
@@ -178,8 +191,15 @@ public class MetaChainWatcher : IDisposable
 
         try
         {
+            // Where he is, for the next tick's arrival check.
+            if (recalling)
+                this.QueueLocationRead();
+
             switch (action.Kind)
             {
+                case MetaChainWatchActionKind.Recall:
+                    this.HandleRecall(action);
+                    break;
                 case MetaChainWatchActionKind.Timeout:
                     this.HandleTimeout(action, merged);
                     break;
@@ -194,16 +214,145 @@ public class MetaChainWatcher : IDisposable
         }
     }
 
+    /// <summary>
+    /// Runs on the timer thread.  Stops VT, clears the nav and goes to peace mode, then uses the gem
+    /// <see cref="MillisecondsBeforeGemUse"/> later, all on the game thread.
+    /// </summary>
+    private void HandleRecall(MetaChainWatchAction action)
+    {
+        var metaName = DisplayName(action.MetaName);
+        if (action.RecallAttempt <= 1)
+            QueueTimedOutChat(action);
+        else
+            QueueChat(string.Format(
+                "{0}{1} no teleport within {2} s, trying {3} again",
+                Prefix,
+                metaName,
+                (int)MetaChainWatchState.RecallWait.TotalSeconds,
+                action.RecallGem));
+
+        REPlugin.Instance.Dispatch.LegacyGameThread.QueueAction(() =>
+        {
+            lock (this._lock)
+            {
+                if (this._disposed || !this._state.IsRecallCurrent(action.RecallId))
+                    return;
+            }
+
+            VTActions.StopVT();
+            VTActions.ClearNav();
+            SimpleActions.CombatStatePeace();
+            DelayedContinuation.ContinueAfterDelayOnGameThread(_ => this.UseRecallGem(action), MillisecondsBeforeGemUse, null);
+        });
+    }
+
+    /// <summary>
+    /// On the game thread.  Skips the gem when he is already at the recall spot, and finds it by its exact name, never
+    /// a partial match.
+    /// </summary>
+    private void UseRecallGem(MetaChainWatchAction action)
+    {
+        var metaName = DisplayName(action.MetaName);
+        string message;
+
+        lock (this._lock)
+        {
+            if (this._disposed || !this._state.IsRecallCurrent(action.RecallId))
+                return;
+
+            var now = DateTime.Now;
+            var landcell = REPlugin.Instance.Actions.Landcell;
+            if (MetaChainWatchRules.IsAtRecallSpot(landcell, action.RecallLandblock))
+            {
+                this._state.OnRecallStarted(action.RecallId, MetaChainWatchRecallStart.AlreadyThere, now);
+                message = string.Format("{0}{1} already at {2}, not using {3}", Prefix, metaName, MetaChainWatchRules.FormatLandcell(landcell), action.RecallGem);
+            }
+            else
+            {
+                var gem = action.RecallGem;
+                var gems = WorldObjectExtensions.GetMatchInventoryItems(w => string.Equals(w.Name, gem, StringComparison.Ordinal));
+                if (gems.Count == 0)
+                {
+                    this._state.OnRecallStarted(action.RecallId, MetaChainWatchRecallStart.GemMissing, now);
+                    message = string.Format("{0}{1} no '{2}' in inventory, carrying on without the recall", Prefix, metaName, gem);
+                }
+                else
+                {
+                    // TODO: test in game that Decal's UseItem actually fires the gem (it hasn't been tried yet).  If it
+                    // doesn't, or doesn't after /vt stop + peace from combat, switch to the documented `/mt use <gem>`.
+                    REPlugin.Instance.Actions.UseItem(gems[0].Id, 0);
+                    this._state.OnRecallStarted(action.RecallId, MetaChainWatchRecallStart.Used, now);
+                    message = string.Format(
+                        "{0}{1} using {2} (try {3} of {4})",
+                        Prefix,
+                        metaName,
+                        gem,
+                        action.RecallAttempt,
+                        MetaChainWatchState.RecallTries);
+                }
+            }
+        }
+
+        REPlugin.Instance.Chat.WriteLine(message);
+    }
+
+    /// <summary>Reads where he is on the game thread, for the next tick.</summary>
+    private void QueueLocationRead()
+    {
+        REPlugin.Instance.Dispatch.LegacyGameThread.QueueAction(() =>
+        {
+            var location = new MetaChainWatchLocation
+            {
+                Landcell = REPlugin.Instance.Actions.Landcell,
+                InPortalSpace = this._inPortalSpace,
+                ReadAt = DateTime.Now,
+            };
+
+            lock (this._lock)
+            {
+                this._lastLocation = location;
+            }
+        });
+    }
+
+    private static void QueueTimedOutChat(MetaChainWatchAction action)
+    {
+        QueueChat(string.Format(
+            "{0}{1} timed out after {2} min ({3})",
+            Prefix,
+            DisplayName(action.MetaName),
+            FormatMinutes(action.Elapsed.TotalMinutes),
+            action.IsOverride ? "override" : "default"));
+    }
+
     /// <summary>Runs on the timer thread, outside the lock, so the .met read never holds up the game thread.</summary>
     private void HandleTimeout(MetaChainWatchAction action, MergedMetaChainWatchConfig merged)
     {
         var metaName = DisplayName(action.MetaName);
-        QueueChat(string.Format(
-            "{0}{1} timed out after {2} min ({3})",
-            Prefix,
-            metaName,
-            FormatMinutes(action.Elapsed.TotalMinutes),
-            action.IsOverride ? "override" : "default"));
+        switch (action.RecallOutcome)
+        {
+            case MetaChainWatchRecallOutcome.None:
+                // No recall, so the timed out line hasn't been written yet.
+                QueueTimedOutChat(action);
+                break;
+            case MetaChainWatchRecallOutcome.Arrived:
+                QueueChat(string.Format(
+                    "{0}{1} recalled, at {2}",
+                    Prefix,
+                    metaName,
+                    action.RecallLandcell.HasValue ? MetaChainWatchRules.FormatLandcell(action.RecallLandcell.Value) : "the recall spot"));
+                break;
+            case MetaChainWatchRecallOutcome.TimedOut:
+                QueueChat(string.Format(
+                    "{0}{1} recall failed, not in {2} after {3} tries, carrying on",
+                    Prefix,
+                    metaName,
+                    MetaChainWatchRules.FormatLandblock(action.RecallLandblock),
+                    MetaChainWatchState.RecallTries));
+                break;
+
+            // AlreadyThere and GemMissing were written when the gem would have been used.
+        }
 
         var chainState = action.ConfiguredChainState ?? FindChainStateInMetFile(action.MetaName, merged);
 
@@ -397,7 +546,13 @@ public class MetaChainWatcher : IDisposable
 
     private void Decal_ChangePortalMode(object sender, ChangePortalModeEventArgs e)
     {
-        this._inPortalSpace = e.Type == PortalEventType.EnterPortal;
+        var entered = e.Type == PortalEventType.EnterPortal;
+        this._inPortalSpace = entered;
+
+        lock (this._lock)
+        {
+            this._state.OnPortalSpace(entered, DateTime.Now);
+        }
     }
 
     /// <summary>One config file and what was last loaded from it.</summary>
