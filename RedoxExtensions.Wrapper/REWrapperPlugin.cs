@@ -207,6 +207,8 @@ public class REWrapperPlugin : PluginBase, IPluginServices
 
             this._wrappedPlugin = WrapperUtilities.CreateWrappedPluginInstance("RedoxExtensions");
             this._wrappedPlugin.WrappedStartup(this, this._pluginBaseEventsHelper);
+
+            WrapperUtilities.CleanupTmpDllsInBackground();
         });
     }
 

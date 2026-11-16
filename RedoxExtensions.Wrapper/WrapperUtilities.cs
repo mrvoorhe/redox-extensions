@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 
 using Decal.Adapter;
 
@@ -46,35 +47,82 @@ public static class WrapperUtilities
 
     internal static string DllFilePathToPdbFilePath(string dllFilePath) => dllFilePath.Substring(0, dllFilePath.Length - 4) + ".pdb";
 
-    internal static void TryCleanupTmpDlls()
+    /// <summary>
+    /// A copy folder younger than this may belong to a client that is starting up and hasn't loaded its dlls yet.
+    /// </summary>
+    internal static readonly TimeSpan TmpDllMinimumAge = TimeSpan.FromMinutes(10);
+
+    /// <summary>
+    /// Deletes the copy folders that no client is using, on a thread pool thread so startup doesn't wait for it.
+    /// </summary>
+    internal static void CleanupTmpDllsInBackground()
     {
-        var clients = System.Diagnostics.Process.GetProcessesByName("acclient.exe");
-
-        // If there is more than 1 client running, don't even bother trying to clean up.  It would have already tried
-        if (clients.Length > 1)
-        {
-            return;
-        }
-
-        // try/catch => ignore errors because other AC instances could be running (or starting) and using the dlls.
-        // we are just trying to clean up what we can so that there isn't a massive accumulation of files.
-        foreach (var file in Directory.GetFiles(TmpDllDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+        ThreadPool.QueueUserWorkItem(_ =>
         {
             try
             {
-                File.Delete(file);
-
-                // If we don't fail to delete the .dll, then also try to delete the pdb
-                // If we fail to delete the .dll, it's probably because it's in use still, so no sense in
-                // trying to delete the pdb
-                var pdbFile = DllFilePathToPdbFilePath(file);
-                File.Delete(pdbFile);
-
+                CleanupTmpDllFolders(TmpDllDirectory, DateTime.UtcNow, TmpDllMinimumAge);
             }
             catch (Exception)
             {
+                // Best effort.  Whatever is left gets another try at the next startup.
+            }
+        });
+    }
+
+    /// <summary>
+    /// Every load copies the plugin into its own folder under <paramref name="root"/> (see CreateWrappedPluginInstance),
+    /// and a loaded assembly can't be unloaded, so the folders pile up.  Deletes each folder that is at least
+    /// <paramref name="minimumAge"/> old and whose dlls no client has loaded.  A folder in use is left whole: the
+    /// running plugin also reads its settings files from there.  Returns how many folders were deleted.
+    /// </summary>
+    internal static int CleanupTmpDllFolders(string root, DateTime nowUtc, TimeSpan minimumAge)
+    {
+        if (!Directory.Exists(root))
+            return 0;
+
+        var deleted = 0;
+        foreach (var folder in Directory.GetDirectories(root))
+        {
+            try
+            {
+                if (nowUtc - Directory.GetCreationTimeUtc(folder) < minimumAge || AnyDllInUse(folder))
+                    continue;
+
+                Directory.Delete(folder, true);
+                deleted++;
+            }
+            catch (Exception)
+            {
+                // Another client may be loading from or cleaning up the same folder.  Leave it for next time.
             }
         }
+
+        return deleted;
+    }
+
+    private static bool AnyDllInUse(string folder)
+    {
+        foreach (var dll in Directory.GetFiles(folder, "*.dll", SearchOption.AllDirectories))
+        {
+            try
+            {
+                // A loaded assembly is mapped into the client, which stops anyone opening it for writing.
+                using (new FileStream(dll, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                {
+                }
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     internal static IWrappedPlugin CreateWrappedPluginInstance(string assemblyName)
