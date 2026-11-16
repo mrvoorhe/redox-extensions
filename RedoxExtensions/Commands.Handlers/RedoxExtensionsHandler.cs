@@ -145,12 +145,20 @@ internal static class RedoxExtensionsHandler
                 return true;
 
             case "track":
-                REPlugin.Instance.MonitorManager.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
+            {
+                var monitors = REPlugin.Instance.MonitorManager;
+                monitors.Rewards.StartTracking();
+                monitors.Banking.StartTracking(s => REPlugin.Instance.Chat.WriteLine(s));
                 return true;
+            }
 
             case "report":
-                REPlugin.Instance.MonitorManager.Banking.Report(s => REPlugin.Instance.Chat.WriteLine(s));
+            {
+                var monitors = REPlugin.Instance.MonitorManager;
+                System.Action<string> writer = s => REPlugin.Instance.Chat.WriteLine(s);
+                monitors.Banking.Report(writer, () => monitors.Rewards.Report(writer));
                 return true;
+            }
 
             case "clearqueue":
                 // Clears the dispatch pipeline queue

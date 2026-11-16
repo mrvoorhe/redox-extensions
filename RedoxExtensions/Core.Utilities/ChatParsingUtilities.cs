@@ -300,6 +300,63 @@ public static class ChatParsingUtilities
         return true;
     }
 
+    private const string GivesYou = " gives you ";
+
+    /// <summary>
+    /// Parses an item received from an NPC, a creature or a player.
+    /// ex: "Royal Guard gives you 8 Enlightened Coins." -> giver="Royal Guard", count=8, itemName="Enlightened Coins"
+    /// ex: "Gregoria, Gurog Destroyer gives you Aged Legendary Key." -> count=1, itemName="Aged Legendary Key"
+    /// ex: "Hunter gives you 20 Trade Notes (250,000)." -> count=20, itemName="Trade Notes (250,000)"
+    /// Chat (says / tells / quoted text) is rejected so a player can't fake a reward.
+    /// </summary>
+    public static bool TryParseGivesYou(string text, out string giver, out int count, out string itemName)
+    {
+        giver = null;
+        count = 0;
+        itemName = null;
+
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
+        text = text.Trim();
+        if (text.IndexOf('"') >= 0 || text.IndexOf(" says, ", StringComparison.Ordinal) >= 0 ||
+            text.IndexOf(TellsYouString, StringComparison.Ordinal) >= 0 || text.StartsWith("["))
+        {
+            return false;
+        }
+
+        var separatorIndex = text.LastIndexOf(GivesYou, StringComparison.Ordinal);
+        if (separatorIndex <= 0)
+        {
+            return false;
+        }
+
+        var item = text.Substring(separatorIndex + GivesYou.Length).Trim().TrimEnd('.').Trim();
+        if (item.Length == 0)
+        {
+            return false;
+        }
+
+        int parsedCount = 1;
+        var firstSpace = item.IndexOf(' ');
+        if (firstSpace > 0 && char.IsDigit(item[0]))
+        {
+            if (!int.TryParse(item.Substring(0, firstSpace), NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out parsedCount) || parsedCount <= 0)
+            {
+                return false;
+            }
+
+            item = item.Substring(firstSpace + 1).Trim();
+        }
+
+        giver = text.Substring(0, separatorIndex).Trim();
+        count = parsedCount;
+        itemName = item;
+        return true;
+    }
+
     #endregion
 
     #region Fellowship Notification Message Parsing

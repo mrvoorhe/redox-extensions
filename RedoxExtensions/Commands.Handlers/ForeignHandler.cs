@@ -222,6 +222,7 @@ internal static class ForeignHandler
             #region Bank Stats
 
             case "track":
+                REPlugin.Instance.MonitorManager.Rewards.StartTracking();
                 REPlugin.Instance.MonitorManager.Banking.StartTracking(null);
                 break;
 
@@ -230,7 +231,8 @@ internal static class ForeignHandler
                 // account issuing the command) don't spam the fellowship.
                 if (REPlugin.Instance.MonitorManager.Banking.IsTracking)
                 {
-                    REPlugin.Instance.MonitorManager.Banking.Report(s => TellActions.TellFellow(s));
+                    System.Action<string> writer = s => TellActions.TellFellow(s);
+                    REPlugin.Instance.MonitorManager.Banking.Report(writer, () => REPlugin.Instance.MonitorManager.Rewards.Report(writer));
                 }
                 break;
 
