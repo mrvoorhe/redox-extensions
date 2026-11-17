@@ -479,6 +479,106 @@ public class CliTests
     }
 
     [Test]
+    public void CameraPressesTheKeyTheKeymapBindsAndWaitsForTheRelease()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var requests = new List<(string Key, long Hold)>();
+        bridge.Handlers.Register("key", request =>
+        {
+            requests.Add((MiniJson.GetString(request, "key"), MiniJson.GetLong(request, "holdMs").Value));
+            return new Dictionary<string, object> { ["key"] = "NUMPAD4", ["holdMs"] = MiniJson.GetLong(request, "holdMs").Value };
+        });
+
+        var keymap = Path.Combine(this._directory, "test.keymap");
+        File.WriteAllLines(keymap, new[]
+        {
+            "  CameraControls",
+            "  [",
+            "    CameraRotateLeft [ \"\" [ 0 DIK_NUMPAD4 ] ]",
+            "  ]",
+        });
+
+        var started = DateTime.UtcNow;
+        var (exit, output, error) = this.Run("camera", "left", "--hold", "300", "--keymap", keymap);
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(requests, Is.EqualTo(new[] { ("DIK_NUMPAD4", 300L) }));
+        Assert.That(DateTime.UtcNow - started, Is.GreaterThanOrEqualTo(TimeSpan.FromMilliseconds(300)));
+        Assert.That(JsonNode.Parse(output)["action"].GetValue<string>(), Is.EqualTo("CameraRotateLeft"));
+    }
+
+    [Test]
+    public void CameraRotateResetsThenHoldsTheTurnKeyForTheAngle()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var requests = new List<(string Key, long Hold)>();
+        bridge.Handlers.Register("key", request =>
+        {
+            requests.Add((MiniJson.GetString(request, "key"), MiniJson.GetLong(request, "holdMs").Value));
+            return null;
+        });
+
+        var keymap = Path.Combine(this._directory, "test.keymap");
+        File.WriteAllLines(keymap, new[]
+        {
+            "  CameraControls",
+            "  [",
+            "    CameraRotateLeft [ \"\" [ 0 DIK_NUMPAD4 ] ]",
+            "    CameraRotateRight [ \"\" [ 0 DIK_NUMPAD6 ] ]",
+            "    CameraViewDefault [ \"\" [ 0 DIK_NUMPAD0 ] ]",
+            "  ]",
+        });
+
+        var (exit, output, error) = this.Run("camera", "rotate", "-90", "--keymap", keymap);
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var quarter = (long)System.Math.Round(90 * Cli.CameraMsPerDegree);
+        Assert.That(requests, Is.EqualTo(new[] { ("DIK_NUMPAD0", 100L), ("DIK_NUMPAD4", quarter) }));
+        Assert.That(JsonNode.Parse(output)["action"].GetValue<string>(), Is.EqualTo("CameraRotateLeft"));
+    }
+
+    [TestCase("90", "right", true)]
+    [TestCase("-360", "left", true)]
+    [TestCase("0", "right", true)]
+    [TestCase("45", null, false)]
+    [TestCase("370", null, false)]
+    [TestCase("-370", null, false)]
+    [TestCase("ninety", null, false)]
+    public void CameraRotationTakesTenDegreeStepsUpTo360EitherWay(string degrees, string move, bool ok)
+    {
+        Assert.That(Cli.TryCameraRotation(degrees, out var actual, out var hold, out _), Is.EqualTo(ok));
+        Assert.That(actual, Is.EqualTo(move));
+        if (degrees == "-360")
+            Assert.That(hold, Is.EqualTo((int)Cli.CameraFullTurnMs));
+    }
+
+    [Test]
+    public void CameraNeedsAKnownMoveAndABoundKey()
+    {
+        this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var keymap = Path.Combine(this._directory, "empty.keymap");
+        File.WriteAllText(keymap, "");
+
+        Assert.That(this.Run("camera", "sideways", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+
+        var (exit, _, error) = this.Run("camera", "left", "--keymap", keymap);
+        Assert.That(exit, Is.EqualTo(Cli.ExitFailed));
+        Assert.That(error, Does.Contain("CameraRotateLeft"));
+    }
+
+    [Test]
+    public void KeyReportsThePluginsRefusal()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        bridge.Handlers.Register("key", _ => throw new System.ArgumentException("Unknown key 'BOGUS'"));
+
+        var (exit, _, error) = this.Run("key", "BOGUS");
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitFailed));
+        Assert.That(error, Does.Contain("Unknown key 'BOGUS'"));
+    }
+
+    [Test]
     public void BadOptionValueIsUsageError()
     {
         var (exit, _, error) = this.Run("ping", "--pid", "abc");

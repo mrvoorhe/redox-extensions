@@ -46,6 +46,18 @@ public partial class Cli
           move <name-regex> --to <main|pack<N>|container id>
                                        Move matching inventory items into your main pack or a side pack (pack0 is
                                        the first in the inventory window), one at a time, confirming each.  Needs rw.
+          key <name> [--hold <ms>]     Press a key in the client's window (posted to the window, which doesn't need
+                                       focus): a DirectInput name as the keymap writes it, e.g. NUMPAD4 or DIK_LEFT.
+                                       Held --hold ms (default 100, max 5000), and rectl returns once it's let go.
+                                       Needs rw.
+          camera <move> [--hold <ms>] [--keymap <path>]
+                                       Press the key the keymap binds to a camera action: left, right, up, down,
+                                       closer, farther, default, firstperson or lookdown.  Default keymap is
+                                       Documents\Asheron's Call\ACClient.keymap.  Needs rw.
+          camera rotate <degrees> [--keymap <path>]
+                                       Reset to the default view, then turn the camera from it: steps of 10 from
+                                       -360 to 360, positive with CameraRotateRight, negative with CameraRotateLeft.
+                                       Timed, so it lands within about 5 degrees.  Needs rw.
           net [off] [--server <types>] [--client <types>]
                                        Show or set which network messages are journaled as "net" events.  Types
                                        are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
@@ -149,6 +161,8 @@ public partial class Cli
                 "net" => this.Net(instance, parsed),
                 "screenshot" => this.Screenshot(instance, parsed),
                 "move" => this.Move(instance, parsed),
+                "key" => this.Key(instance, parsed),
+                "camera" => this.Camera(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
                 "events" => this.Events(instance, parsed),
                 "wait" => this.Wait(instance, parsed, timeoutMs),
@@ -723,6 +737,8 @@ public partial class Cli
             ["--repeat"] = "repeat",
             ["--grace"] = "grace",
             ["--chain-state"] = "chain-state",
+            ["--hold"] = "hold",
+            ["--keymap"] = "keymap",
         };
 
         private readonly Dictionary<string, string> _options = new();

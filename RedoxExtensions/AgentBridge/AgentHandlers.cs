@@ -18,6 +18,7 @@ internal static class AgentHandlers
     private const string NetCmd = "net";
     private const string MoveCmd = "move";
     private const string CharactersCmd = "characters";
+    private const string KeyCmd = "key";
 
     public static void Register()
     {
@@ -27,6 +28,7 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Register(NetCmd, NetCapture.Configure);
         AgentBridgeService.Handlers.Register(MoveCmd, Move);
         AgentBridgeService.Handlers.Register(CharactersCmd, Characters);
+        AgentBridgeService.Handlers.Register(KeyCmd, Key);
     }
 
     public static void Unregister()
@@ -37,6 +39,28 @@ internal static class AgentHandlers
         AgentBridgeService.Handlers.Unregister(NetCmd);
         AgentBridgeService.Handlers.Unregister(MoveCmd);
         AgentBridgeService.Handlers.Unregister(CharactersCmd);
+        AgentBridgeService.Handlers.Unregister(KeyCmd);
+        KeyInput.ReleaseAll();
+    }
+
+    private const int DefaultKeyHoldMs = 100;
+
+    /// <summary>
+    /// Presses one key in the client's window: key down now, key up after <c>holdMs</c> (default 100, at most 5000).
+    /// Returns once the key down is posted; the key up follows on a timer.  See KeyInput.
+    /// </summary>
+    private static object Key(IDictionary<string, object> request)
+    {
+        RequireWriteMode();
+
+        var name = MiniJson.GetString(request, "key") ?? throw new ArgumentException("key needs a key name, e.g. NUMPAD4");
+        if (!KeyInput.TryParse(name, out var key))
+            throw new ArgumentException($"Unknown key '{name}'.  Use a DirectInput name from the keymap, e.g. NUMPAD4 or DIK_LEFT");
+
+        var holdMs = (int)(MiniJson.GetLong(request, "holdMs") ?? DefaultKeyHoldMs);
+        KeyInput.Press(Decal.Adapter.CoreManager.Current.Decal.Hwnd, key, holdMs);
+
+        return new Dictionary<string, object> { ["key"] = key.Name, ["holdMs"] = holdMs };
     }
 
     /// <summary>

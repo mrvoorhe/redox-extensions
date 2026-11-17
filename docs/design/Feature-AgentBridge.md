@@ -260,6 +260,35 @@ Checked in game on Virmar: nearby doors, a player and a monster with distances a
 paged; equipped bow and arrows show `wielder`; `object` returns the key dump; a bad id or `--near far` gives an error and
 exit code 1.
 
+### Keys and the camera
+
+`rectl key <name> [--hold <ms>]` presses one key in the client.  The plugin's `key` handler (`KeyInput`) posts
+WM_KEYDOWN to the client's window, then WM_KEYUP from a timer after `holdMs` (default 100, max 5000), the same way
+MagTools' `PostMessageTools` sends Space/W/Shift for `/mt send` and its jumps.  The window doesn't need focus.  Key names
+are the DirectInput names the keymap uses (`NUMPAD4`, `DIK_LEFT`; the prefix is optional).  The scan code is the DIK code
+(plus the extended bit for DIK codes 0x80 and up) and the virtual key is the numlock-on one.  Alt keys aren't supported
+(they need WM_SYSKEYDOWN).  The handler answers once the key down is posted; the CLI sleeps out the hold so the next
+command sees the key let go.  Keys still held are let go when the plugin unloads.  Needs `rw` (`RequireWriteMode`).
+
+`rectl camera left|right|up|down|closer|farther|default|firstperson|lookdown [--hold <ms>]` looks up the keymap action
+(`CameraRotateLeft`, `CameraMoveToward`, `CameraViewDefault`, ...) in `Documents\Asheron's Call\ACClient.keymap`
+(`--keymap` overrides), takes the first plain keyboard binding, preferring the `CameraControls` section (the
+`CameraAlternateControls` arrows only work in alternate mode), and presses it.
+
+`rectl camera rotate <degrees>` (steps of 10 from -360 to 360) presses `default`, waits a second, then holds
+CameraRotateRight (positive) or CameraRotateLeft (negative) for `degrees * CameraFullTurnMs / 360`.  A full turn is about
+1125 ms (about 320 degrees a second), measured on Cowhead: from the default view, 562 ms either way shows his face and
+1125 ms comes back round to the default view; 90, -90 and 270 checked by eye.  The same hold lands within about 5
+degrees from one try to the next, in the foreground or the background, so angles are ballpark.  Finding the full turn
+by comparing screenshots with the default view needs a character standing still: in combat the default view follows
+the character's heading, and spell effects swamp the comparison.
+
+* There's no chat command for the camera in the base game, VT, UB or MagTools.  UB's client bindings
+  (`AcClient` in `UtilityBelt.Service.dll`) have `CameraSet::Rotate` and friends, but that assembly is net48 and the
+  plugin is net35, so calling them would mean hard-coding client addresses.  Keys were the simpler route.
+* Checked on Virmar (2026-11-17) while VT farmed: `camera left --hold 1000` swung the view from behind him to his right
+  side while his heading stayed 19.94 degrees; `camera default` put it back.
+
 ## Windows checks
 
 Checked on 2026-11-05 with one client (Virmar):
