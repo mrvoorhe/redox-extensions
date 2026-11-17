@@ -534,7 +534,56 @@ public class CliTests
         Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
         var quarter = (long)System.Math.Round(90 * Cli.CameraMsPerDegree);
         Assert.That(requests, Is.EqualTo(new[] { ("DIK_NUMPAD0", 100L), ("DIK_NUMPAD4", quarter) }));
-        Assert.That(JsonNode.Parse(output)["action"].GetValue<string>(), Is.EqualTo("CameraRotateLeft"));
+        Assert.That(JsonNode.Parse(output)["presses"][0]["action"].GetValue<string>(), Is.EqualTo("CameraRotateLeft"));
+    }
+
+    [Test]
+    public void CameraRotateTiltAndZoomShareOneReset()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var keys = new List<string>();
+        bridge.Handlers.Register("key", request =>
+        {
+            keys.Add(MiniJson.GetString(request, "key"));
+            return null;
+        });
+
+        var keymap = Path.Combine(this._directory, "test.keymap");
+        File.WriteAllLines(keymap, new[]
+        {
+            "  CameraControls",
+            "  [",
+            "    CameraRotateRight [ \"\" [ 0 DIK_NUMPAD6 ] ]",
+            "    CameraRotateUp [ \"\" [ 0 DIK_NUMPAD8 ] ]",
+            "    CameraMoveAway [ \"\" [ 0 DIK_NUMPADPLUS ] ]",
+            "    CameraViewDefault [ \"\" [ 0 DIK_NUMPAD0 ] ]",
+            "  ]",
+        });
+
+        var (exit, output, error) = this.Run("camera", "tilt", "30", "--rotate", "90", "--zoom", "-50", "--keymap", keymap);
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(keys, Is.EqualTo(new[] { "DIK_NUMPAD0", "DIK_NUMPAD6", "DIK_NUMPAD8", "DIK_NUMPADPLUS" }));
+        var json = JsonNode.Parse(output);
+        Assert.That(json["tilt"].GetValue<int>(), Is.EqualTo(30));
+        Assert.That(json["zoom"].GetValue<int>(), Is.EqualTo(-50));
+
+        Assert.That(this.Run("camera", "zoom", "50", "--zoom", "20", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+    }
+
+    [TestCase(Cli.CameraAxis.Tilt, "90", "up", true)]
+    [TestCase(Cli.CameraAxis.Tilt, "-30", "down", true)]
+    [TestCase(Cli.CameraAxis.Tilt, "100", null, false)]
+    [TestCase(Cli.CameraAxis.Zoom, "100", "closer", true)]
+    [TestCase(Cli.CameraAxis.Zoom, "-40", "farther", true)]
+    [TestCase(Cli.CameraAxis.Zoom, "-110", null, false)]
+    [TestCase(Cli.CameraAxis.Zoom, "15", null, false)]
+    public void CameraTiltAndZoomTakeTenSteps(Cli.CameraAxis axis, string value, string move, bool ok)
+    {
+        Assert.That(Cli.TryCameraStep(axis, value, out var actual, out var hold, out _), Is.EqualTo(ok));
+        Assert.That(actual, Is.EqualTo(move));
+        if (axis == Cli.CameraAxis.Zoom && value == "100")
+            Assert.That(hold, Is.EqualTo((int)Cli.CameraZoomRangeMs));
     }
 
     [TestCase("90", "right", true)]

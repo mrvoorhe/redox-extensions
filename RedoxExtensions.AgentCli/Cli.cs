@@ -54,10 +54,12 @@ public partial class Cli
                                        Press the key the keymap binds to a camera action: left, right, up, down,
                                        closer, farther, default, firstperson or lookdown.  Default keymap is
                                        Documents\Asheron's Call\ACClient.keymap.  Needs rw.
-          camera rotate <degrees> [--keymap <path>]
-                                       Reset to the default view, then turn the camera from it: steps of 10 from
-                                       -360 to 360, positive with CameraRotateRight, negative with CameraRotateLeft.
-                                       Timed, so it lands within about 5 degrees.  Needs rw.
+          camera rotate|tilt|zoom <n> [--rotate <n>] [--tilt <n>] [--zoom <n>] [--keymap <path>]
+                                       Reset to the default view, then move the camera from it, all in steps of 10:
+                                       rotate -360..360 degrees (positive right), tilt -90..90 degrees (positive up,
+                                       toward top-down; it stops at about +70 and -85), zoom -100..100 percent of the
+                                       way to the limit (positive in).  Options add the other moves to the same reset,
+                                       e.g. rectl camera rotate 90 --tilt 30 --zoom -50.  Timed, so ballpark.  Needs rw.
           net [off] [--server <types>] [--client <types>]
                                        Show or set which network messages are journaled as "net" events.  Types
                                        are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
@@ -739,6 +741,9 @@ public partial class Cli
             ["--chain-state"] = "chain-state",
             ["--hold"] = "hold",
             ["--keymap"] = "keymap",
+            ["--rotate"] = "rotate",
+            ["--tilt"] = "tilt",
+            ["--zoom"] = "zoom",
         };
 
         private readonly Dictionary<string, string> _options = new();

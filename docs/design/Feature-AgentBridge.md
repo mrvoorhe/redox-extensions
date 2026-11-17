@@ -279,7 +279,16 @@ command sees the key let go.  Keys still held are let go when the plugin unloads
 CameraRotateRight (positive) or CameraRotateLeft (negative) for `degrees * CameraFullTurnMs / 360`.  A full turn is about
 1125 ms (about 320 degrees a second), measured on Cowhead: from the default view, 562 ms either way shows his face and
 1125 ms comes back round to the default view; 90, -90 and 270 checked by eye.  The same hold lands within about 5
-degrees from one try to the next, in the foreground or the background, so angles are ballpark.  Finding the full turn
+degrees from one try to the next, in the foreground or the background, so angles are ballpark.
+
+`rectl camera tilt <degrees>` (-90 to 90, positive raises the camera toward top-down) and `rectl camera zoom <percent>`
+(-100 to 100 of the way to the limit, positive in) work the same way, and `--rotate`, `--tilt` and `--zoom` add the
+other moves after the same reset (`camera rotate 90 --tilt 30 --zoom -50`), applied rotate, then tilt, then zoom.
+Measured on Cowhead by holding from the default view and finding where the view stops changing: up reaches top-down
+in about 210 ms and down reaches its limit (looking up past him at the ceiling) in about 260 ms, so tilt uses the
+turn rate, which puts the limits at about +70 and -85.  Closer (just behind the head) and farther both stop at about
+200 ms (`CameraZoomRangeMs`); that was indoors, where the walls may stop the camera before its real farthest.  Zooming
+in also lowers the camera a little.  Past a limit the camera just stays there.  Finding the full turn
 by comparing screenshots with the default view needs a character standing still: in combat the default view follows
 the character's heading, and spell effects swamp the comparison.
 
