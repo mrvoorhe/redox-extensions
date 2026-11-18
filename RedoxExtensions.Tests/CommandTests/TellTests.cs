@@ -58,24 +58,24 @@ public class TellTests : AbstractForeignCommandTests
     protected override string CreateFromSelfSampleText(string cmdName)
     {
         var formatedCommand = CommandHelpers.CreateForeignCommandText(cmdName);
-        throw new NotImplementedException();
+        return $"You tell Big Ted, \"{formatedCommand}\"\n";
     }
 
     protected override string CreateFromSelfSampleText(string cmdName, params object[] args)
     {
         var formatedCommand = CommandHelpers.CreateForeignCommandText(cmdName, args);
-        throw new NotImplementedException();
+        return $"You tell Big Ted, \"{formatedCommand}\"\n";
     }
 
     protected override string CreateFromOtherSampleText(string sourceName, string cmdName)
     {
         var formatedCommand = CommandHelpers.CreateForeignCommandText(cmdName);
-        throw new NotImplementedException();
+        return $"<Tell:IIDString:0:{sourceName}>{sourceName}<\\Tell> tells you, \"{formatedCommand}\"\n";
     }
 
     protected override string CreateFromOtherSampleText(string sourceName, string cmdName, params object[] args)
     {
         var formatedCommand = CommandHelpers.CreateForeignCommandText(cmdName, args);
-        throw new NotImplementedException();
+        return $"<Tell:IIDString:0:{sourceName}>{sourceName}<\\Tell> tells you, \"{formatedCommand}\"\n";
     }
 }
