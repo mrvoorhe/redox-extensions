@@ -23,6 +23,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\External\Decal\bin\Decal.Interop.Core.DLL</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\External\Newtonsoft\bin\Net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="MagTools">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\MagTools\MagTools.dll</HintPath>

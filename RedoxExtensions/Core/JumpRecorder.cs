@@ -70,7 +70,7 @@ internal class JumpRecorder : IDisposable
             return false;
         }
 
-        int sameCount = 0;
+        int sameCount = 1; // the latest coordinate counts as the first of the run
         for (int i = this._jumpTrajectory.Count - 1; i > 0; i--)
         {
             if (this._jumpTrajectory[i].Z == this._jumpTrajectory[i -1].Z)

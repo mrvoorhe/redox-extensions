@@ -309,7 +309,7 @@ public class CommandHelperTests
 
         var convertedCmdText = CommandHelpers.ConvertToForeignCommandText(rfCommand);
 
-        ClassicAssert.AreEqual("!test", convertedCmdText);
+        ClassicAssert.AreEqual("^test", convertedCmdText);
     }
 
     [Test]
@@ -321,7 +321,7 @@ public class CommandHelperTests
 
         var convertedCmdText = CommandHelpers.ConvertToForeignCommandText(rfCommand, "arg3", "arg4");
 
-        ClassicAssert.AreEqual("!test arg1|arg2|arg3|arg4", convertedCmdText);
+        ClassicAssert.AreEqual("^test arg1|arg2|arg3|arg4", convertedCmdText);
     }
 
     [Test]

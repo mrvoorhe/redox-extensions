@@ -73,7 +73,7 @@ public class JumpRecorderTests
 
         ClassicAssert.AreEqual(initialJumpData, cachedCompleteCallValues[0].JumpData);
 
-        ClassicAssert.AreEqual(4 + JumpRecorder.NumberOfConsecutiveZCoordsSameToSingleLand, cachedCompleteCallValues[0].Trajectory);
+        ClassicAssert.AreEqual(4 + JumpRecorder.NumberOfConsecutiveZCoordsSameToSingleLand, cachedCompleteCallValues[0].Trajectory.Count);
         ClassicAssert.AreEqual(1, cachedCompleteCallValues[0].Trajectory[0].Z);
         ClassicAssert.AreEqual(5, cachedCompleteCallValues[0].Trajectory.Last().Z);
 
