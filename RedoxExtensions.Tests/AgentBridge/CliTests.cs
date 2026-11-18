@@ -636,6 +636,239 @@ public class CliTests
         Assert.That(error, Does.Contain("--pid must be a number"));
     }
 
+    private string MovementKeymap()
+    {
+        var keymap = Path.Combine(this._directory, "test.keymap");
+        File.WriteAllLines(keymap, new[]
+        {
+            "  MovementCommands",
+            "  [",
+            "    MovementJump [ \"\" [ 0 DIK_SPACE ] ]",
+            "    MovementForward [ \"\" [ 0 DIK_W ] ]",
+            "    MovementBackup [ \"\" [ 0 DIK_X ] ]",
+            "    MovementTurnLeft [ \"\" [ 0 DIK_A ] ]",
+            "    MovementTurnRight [ \"\" [ 0 DIK_D ] ]",
+            "    MovementStrafeLeft [ \"\" [ 0 DIK_Z ] ]",
+            "    MovementStrafeLeft [ \"\" [ 0 DIK_A ] 0x00000004 ]",
+            "    MovementStrafeRight [ \"\" [ 0 DIK_C ] ]",
+            "    MovementStop [ \"\" [ 0 DIK_S ] ]",
+            "    MovementRunLock [ \"\" [ 0 DIK_Q ] ]",
+            "  ]",
+        });
+        return keymap;
+    }
+
+    [Test]
+    public void GoHoldsEachMoveForItsOwnTimeAllStartingTogether()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var requests = new List<(string Key, long Hold)>();
+        bridge.Handlers.Register("key", request =>
+        {
+            lock (requests)
+                requests.Add((MiniJson.GetString(request, "key"), MiniJson.GetLong(request, "holdMs") ?? -1));
+            return null;
+        });
+
+        var (exit, output, error) = this.Run("go", "turnright:300", "strafeleft", "stop", "--keymap", this.MovementKeymap());
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(requests, Is.EqualTo(new[] { ("DIK_D", 300L), ("DIK_Z", 1000L), ("DIK_S", 100L) }));
+        Assert.That(JsonNode.Parse(output)["presses"][1]["action"].GetValue<string>(), Is.EqualTo("MovementStrafeLeft"));
+    }
+
+    [Test]
+    public void GoRenewsTheLeaseOfALongHoldSoItEndsOnTime()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var holds = new List<long>();
+        bridge.Handlers.Register("key", request =>
+        {
+            lock (holds)
+                holds.Add(MiniJson.GetLong(request, "holdMs") ?? -1);
+            return null;
+        });
+
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        var (exit, _, error) = this.Run("go", "forward:2500", "--keymap", this.MovementKeymap());
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(clock.ElapsedMilliseconds, Is.GreaterThanOrEqualTo(2500));
+        Assert.That(holds.Count, Is.GreaterThan(2));
+        Assert.That(holds, Has.All.InRange(1L, (long)Cli.MoveLeaseMs));
+    }
+
+    [Test]
+    public void GoNeedsKnownMovesAndBoundKeys()
+    {
+        this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var keymap = this.MovementKeymap();
+
+        Assert.That(this.Run("go", "fly", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("go", "forward:x", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("go", "forward", "forward:200", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("go", "turn", "400", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("go", "face", "360", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("go", "jump", "--meters", "5", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitUsage));
+        Assert.That(this.Run("go", "walk", "--keymap", keymap).Exit, Is.EqualTo(Cli.ExitFailed), "walk is not bound in this keymap");
+    }
+
+    [Test]
+    public void GoFaceTurnsTheShortWayAcrossNorthAndStopsNearTheHeading()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var character = new SimulatedCharacter(heading: 340);
+        character.Register(bridge);
+
+        var (exit, output, error) = this.Run("go", "face", "30", "--keymap", this.MovementKeymap());
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(character.KeysPressed, Does.Not.Contain("DIK_A"), "30 is to the right of 340");
+        Assert.That(Math.Abs(Cli.SignedAngle(character.Heading - 30)), Is.LessThanOrEqualTo(Cli.TurnToleranceDegrees));
+        Assert.That(JsonNode.Parse(output)["turned"].GetValue<double>(), Is.EqualTo(50).Within(Cli.TurnToleranceDegrees));
+        Assert.That(character.Held, Is.Empty);
+    }
+
+    [Test]
+    public void GoTurnTurnsLeftByTheAngle()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var character = new SimulatedCharacter(heading: 10);
+        character.Register(bridge);
+
+        var (exit, _, error) = this.Run("go", "turn", "-90", "--keymap", this.MovementKeymap());
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        Assert.That(Math.Abs(Cli.SignedAngle(character.Heading - 280)), Is.LessThanOrEqualTo(Cli.TurnToleranceDegrees));
+    }
+
+    [Test]
+    public void GoMetersStopsAtTheDistance()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var character = new SimulatedCharacter(heading: 90);
+        character.Register(bridge);
+
+        var (exit, output, error) = this.Run("go", "forward", "--meters", "3", "--keymap", this.MovementKeymap());
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitOk), error);
+        var moved = JsonNode.Parse(output)["moved"].GetValue<double>();
+        Assert.That(moved, Is.EqualTo(3).Within(0.6));
+        Assert.That(character.East, Is.EqualTo(moved).Within(0.01), "heading 90 walks east");
+        Assert.That(character.Held, Is.Empty);
+    }
+
+    [Test]
+    public void GoMetersGivesUpWhenStuckAndLetsGo()
+    {
+        var bridge = this.StartBridge(100, "Alpha", AgentMode.ReadWrite);
+        var character = new SimulatedCharacter(heading: 0) { Blocked = true };
+        character.Register(bridge);
+
+        var (exit, output, error) = this.Run("go", "back", "--meters", "5", "--keymap", this.MovementKeymap());
+
+        Assert.That(exit, Is.EqualTo(Cli.ExitFailed));
+        Assert.That(error, Does.Contain("Stuck"));
+        Assert.That(JsonNode.Parse(output)["stuck"].GetValue<bool>(), Is.True);
+        Assert.That(character.KeysPressed, Does.Contain("DIK_X"));
+        Assert.That(character.Held, Is.Empty);
+    }
+
+    /// <summary>
+    /// A character on the fake bridge that turns 90 degrees a second while a turn key is held and moves 4 m a second
+    /// while a move key is held, keys held the way KeyInput holds them (a lease, renewed by a new press).
+    /// </summary>
+    private sealed class SimulatedCharacter
+    {
+        private const double TurnRate = 0.09;   // degrees a ms
+        private const double Speed = 0.004;     // meters a ms
+
+        private readonly object _lock = new();
+        private readonly System.Diagnostics.Stopwatch _clock = System.Diagnostics.Stopwatch.StartNew();
+        private readonly Dictionary<string, long> _heldUntil = new();
+        private long _updatedAt;
+        private double _heading;
+        private double _x;
+        private double _y;
+
+        public SimulatedCharacter(double heading) => this._heading = heading;
+
+        public bool Blocked { get; set; }
+
+        public List<string> KeysPressed { get; } = new();
+
+        public double Heading { get { lock (this._lock) { this.Update(); return this._heading; } } }
+
+        public double East { get { lock (this._lock) { this.Update(); return this._x; } } }
+
+        public List<string> Held { get { lock (this._lock) { this.Update(); return this._heldUntil.Keys.ToList(); } } }
+
+        public void Register(FakeBridge bridge)
+        {
+            bridge.Handlers.Register("key", request =>
+            {
+                lock (this._lock)
+                {
+                    this.Update();
+                    var key = MiniJson.GetString(request, "key");
+                    if (request.TryGetValue("release", out var release) && release is true)
+                    {
+                        this._heldUntil.Remove(key);
+                        return null;
+                    }
+                    this.KeysPressed.Add(key);
+                    var hold = MiniJson.GetLong(request, "holdMs") ?? 100;
+                    if (hold > 0)
+                        this._heldUntil[key] = this._clock.ElapsedMilliseconds + hold;
+                    return null;
+                }
+            });
+            bridge.Handlers.Register("state", _ =>
+            {
+                lock (this._lock)
+                {
+                    this.Update();
+                    return new Dictionary<string, object>
+                    {
+                        ["location"] = new Dictionary<string, object>
+                        {
+                            ["landcell"] = 0x7F7F0010L,
+                            ["x"] = 100 + this._x,
+                            ["y"] = 100 + this._y,
+                            ["z"] = 0.0,
+                            ["heading"] = this._heading,
+                        },
+                    };
+                }
+            });
+        }
+
+        /// <summary>Moves the character for the time since the last update, each key up to the end of its lease.</summary>
+        private void Update()
+        {
+            var now = this._clock.ElapsedMilliseconds;
+            foreach (var (key, until) in this._heldUntil.ToList())
+            {
+                var ms = Math.Min(now, until) - this._updatedAt;
+                if (ms > 0)
+                {
+                    var rad = this._heading * Math.PI / 180;
+                    var step = this.Blocked ? 0 : Speed * ms;
+                    switch (key)
+                    {
+                        case "DIK_D": this._heading = (this._heading + TurnRate * ms + 360) % 360; break;
+                        case "DIK_A": this._heading = (this._heading - TurnRate * ms + 360) % 360; break;
+                        case "DIK_W": this._x += step * Math.Sin(rad); this._y += step * Math.Cos(rad); break;
+                        case "DIK_X": this._x -= step * Math.Sin(rad); this._y -= step * Math.Cos(rad); break;
+                    }
+                }
+                if (until <= now)
+                    this._heldUntil.Remove(key);
+            }
+            this._updatedAt = now;
+        }
+    }
+
     private (int Exit, string Output, string Error) Run(params string[] args)
     {
         var output = new StringWriter();

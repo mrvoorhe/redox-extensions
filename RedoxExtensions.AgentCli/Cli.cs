@@ -60,6 +60,18 @@ public partial class Cli
                                        toward top-down; it stops at about +70 and -85), zoom -100..100 percent of the
                                        way to the limit (positive in).  Options add the other moves to the same reset,
                                        e.g. rectl camera rotate 90 --tilt 30 --zoom -50.  Timed, so ballpark.  Needs rw.
+          go <move>[:ms] [<move>[:ms] ...] [--hold <ms>] [--keymap <path>]
+                                       Hold the movement keys the keymap binds, all starting together: forward, back,
+                                       turnleft, turnright, strafeleft, straferight, jump (the hold charges it), stop,
+                                       walk or runlock.  Default hold 1000 ms (100 for stop and runlock), e.g.
+                                       rectl go forward:2000 turnright:400 runs an arc.  Keys are held as 1 s leases
+                                       rectl renews, so they let go soon after rectl stops.  Stop VT first.  Needs rw.
+          go turn <degrees> | go face <heading> [--timeout <ms>]
+                                       Turn by -360..360 degrees (positive right) or to a heading (0 north, 90 east),
+                                       watching the heading; ends within 5 degrees.  Needs rw.
+          go forward|back|strafeleft|straferight --meters <m> [--timeout <ms>]
+                                       Hold the key until the character is m meters from where it started.  Exit 1
+                                       with "stuck" if it moves under 0.5 m in 2 s (a wall, a crowd).  Needs rw.
           net [off] [--server <types>] [--client <types>]
                                        Show or set which network messages are journaled as "net" events.  Types
                                        are hex (F7B0 game events, F7B1 game actions) or "all".  Resets on reload.
@@ -165,6 +177,7 @@ public partial class Cli
                 "move" => this.Move(instance, parsed),
                 "key" => this.Key(instance, parsed),
                 "camera" => this.Camera(instance, parsed),
+                "go" => this.Go(instance, parsed),
                 "exec" => this.Exec(instance, parsed, timeoutMs),
                 "events" => this.Events(instance, parsed),
                 "wait" => this.Wait(instance, parsed, timeoutMs),
@@ -744,6 +757,7 @@ public partial class Cli
             ["--rotate"] = "rotate",
             ["--tilt"] = "tilt",
             ["--zoom"] = "zoom",
+            ["--meters"] = "meters",
         };
 
         private readonly Dictionary<string, string> _options = new();

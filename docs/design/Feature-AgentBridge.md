@@ -298,6 +298,38 @@ the character's heading, and spell effects swamp the comparison.
 * Checked on Virmar (2026-11-17) while VT farmed: `camera left --hold 1000` swung the view from behind him to his right
   side while his heading stayed 19.94 degrees; `camera default` put it back.
 
+### Moving the character
+
+`rectl go` drives the movement keys the keymap binds in `MovementCommands`: `forward`, `back`, `turnleft`,
+`turnright`, `strafeleft`, `straferight`, `jump`, `stop`, `walk` (MovementWalkMode) and `runlock`.  Bindings that need
+a metakey are skipped, so with the stock keymap turning is A/D and strafing Z/C.
+
+* `rectl go <move>[:ms] ...` holds each key for its own time, all starting together: `go forward:1200 turnleft:600`
+  runs an arc, `go forward strafeleft --hold 1500` goes diagonally, `go jump:300` charges a jump for 300 ms.  Default
+  hold 1000 ms (100 for `stop` and `runlock`).
+* `rectl go turn <degrees>` (-360..360, positive right) and `rectl go face <heading>` (0 north, 90 east) hold a turn
+  key while polling `state`'s heading every 100 ms, let go early by one poll's worth of turning, then tap to finish
+  within 5 degrees.
+* `rectl go forward|back|strafeleft|straferight --meters <m>` holds the key until the flat distance from the start
+  (landblock x/y, 192 m a landblock) reaches m, letting go one poll early.  It gives up with exit 1 and `"stuck": true`
+  if the character moves under 0.5 m in 2 s (a wall, a crowd), and with `"timeout"` after `--timeout` (30 s).
+
+Keys are held as leases.  rectl presses a key for at most 1 s and presses it again every 400 ms while it wants it held;
+the plugin's `KeyInput.Press` treats a press of a key that's still held as a renewal (no second key down), and the
+`key` command's `"release": true` lets go early.  If rectl dies mid-walk, the character stops within a second.  Ctrl+C
+lets go of the keys first.  Stop VT first (`/vt stop`): VT steers too.  Combat stays as it is, so monsters can block.
+
+Which to use: a nav route for a path VT will run again; `meta-tools/walkto.py` to walk to a nav coordinate; `rectl go`
+for moving by feel, turning, strafing, backing out of a corner, jumping, or nudging a character a few meters.
+
+* Checked on Virmar (2026-11-18) in the Abandoned Mines, window minimized, no monsters within 60 m:
+  * `turnright:500` turned 66 degrees (about 130 degrees a second standing); `forward:1000` ran 11.5 m.
+  * `face 90`, `face 0`, `turn -45` and `turn 180` ended 0.5 to 2.5 degrees from the target.
+  * `forward`, `back`, `strafeleft` and `straferight --meters 5` went 5.42, 5.14, 4.85 and 4.53 m, and
+    `forward --meters 20` went 19.58 m.
+  * `forward:1200 turnleft:600` ran an 11 m arc, turning 75 degrees.  `jump:300` lifted him about 4 m.
+  * Walking into a wall stopped as stuck after 0.45 m.  He stood still afterwards.
+
 ## Windows checks
 
 Checked on 2026-11-05 with one client (Virmar):

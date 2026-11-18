@@ -47,7 +47,8 @@ internal static class AgentHandlers
 
     /// <summary>
     /// Presses one key in the client's window: key down now, key up after <c>holdMs</c> (default 100, at most 5000).
-    /// Returns once the key down is posted; the key up follows on a timer.  See KeyInput.
+    /// Returns once the key down is posted; the key up follows on a timer.  Pressing a key that's still held renews
+    /// its hold (no second key down), and <c>"release": true</c> lets go of a held key now.  See KeyInput.
     /// </summary>
     private static object Key(IDictionary<string, object> request)
     {
@@ -57,8 +58,13 @@ internal static class AgentHandlers
         if (!KeyInput.TryParse(name, out var key))
             throw new ArgumentException($"Unknown key '{name}'.  Use a DirectInput name from the keymap, e.g. NUMPAD4 or DIK_LEFT");
 
+        var hwnd = Decal.Adapter.CoreManager.Current.Decal.Hwnd;
+        // (MiniJson lives in the Wrapper, which needs a client restart to change, so the bool is read here.)
+        if (request.TryGetValue("release", out var release) && release is bool releaseNow && releaseNow)
+            return new Dictionary<string, object> { ["key"] = key.Name, ["released"] = KeyInput.Release(hwnd, key) };
+
         var holdMs = (int)(MiniJson.GetLong(request, "holdMs") ?? DefaultKeyHoldMs);
-        KeyInput.Press(Decal.Adapter.CoreManager.Current.Decal.Hwnd, key, holdMs);
+        KeyInput.Press(hwnd, key, holdMs);
 
         return new Dictionary<string, object> { ["key"] = key.Name, ["holdMs"] = holdMs };
     }

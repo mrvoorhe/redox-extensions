@@ -78,25 +78,69 @@ public static class KeyInput
     }
 
     /// <summary>
+    /// Sends one window message.  Tests swap it out to watch the key downs and ups without a client window.
+    /// </summary>
+    internal static Action<IntPtr, uint, KeyCode, bool> Poster = PostToWindow;
+
+    /// <summary>
     /// Posts the key down now and the key up after <paramref name="holdMs"/> on a timer, so the caller (the game
-    /// thread) never waits.  PostMessage can be called from any thread.
+    /// thread) never waits.  PostMessage can be called from any thread.  Pressing a key that is still held from an
+    /// earlier press doesn't press it again: it moves that key's release to <paramref name="holdMs"/> from now, so
+    /// rectl can hold a key for long by renewing it, and the key still lets go on its own if rectl stops renewing.
     /// </summary>
     public static void Press(IntPtr hwnd, KeyCode key, int holdMs)
     {
         if (holdMs < 0 || holdMs > MaxHoldMs)
             throw new ArgumentException($"Hold time must be 0 to {MaxHoldMs} ms, not {holdMs}");
 
-        Post(hwnd, WmKeyDown, key, up: false);
-        if (holdMs == 0)
+        Pending pending;
+        lock (PendingLock)
         {
-            Post(hwnd, WmKeyUp, key, up: true);
+            pending = PendingReleases.Find(p => p.Hwnd == hwnd && p.Key.Name == key.Name);
+            if (pending != null && holdMs > 0)
+            {
+                pending.Timer.Change(holdMs, Timeout.Infinite);
+                return;
+            }
+        }
+
+        if (pending != null)
+        {
+            Release(pending);
             return;
         }
 
-        var pending = new Pending(hwnd, key);
+        Poster(hwnd, WmKeyDown, key, false);
+        if (holdMs == 0)
+        {
+            Poster(hwnd, WmKeyUp, key, true);
+            return;
+        }
+
+        pending = new Pending(hwnd, key);
         lock (PendingLock)
+        {
             PendingReleases.Add(pending);
-        pending.Timer = new Timer(_ => Release(pending), null, holdMs, Timeout.Infinite);
+            pending.Timer = new Timer(_ => Release(pending), null, holdMs, Timeout.Infinite);
+        }
+    }
+
+    /// <summary>
+    /// Lets go of a key held by <see cref="Press"/> now, before its timer.  Returns false if it wasn't held.
+    /// </summary>
+    public static bool Release(IntPtr hwnd, KeyCode key)
+    {
+        Pending pending;
+        lock (PendingLock)
+            pending = PendingReleases.Find(p => p.Hwnd == hwnd && p.Key.Name == key.Name);
+        return pending != null && Release(pending);
+    }
+
+    /// <summary>Whether a key pressed by <see cref="Press"/> is still held.</summary>
+    public static bool IsHeld(IntPtr hwnd, KeyCode key)
+    {
+        lock (PendingLock)
+            return PendingReleases.Exists(p => p.Hwnd == hwnd && p.Key.Name == key.Name);
     }
 
     /// <summary>Lets go of every key still held.  Called when the plugin unloads so no key stays down.</summary>
@@ -109,19 +153,20 @@ public static class KeyInput
             Release(pending);
     }
 
-    private static void Release(Pending pending)
+    private static bool Release(Pending pending)
     {
         lock (PendingLock)
         {
             if (!PendingReleases.Remove(pending))
-                return;
+                return false;
+            pending.Timer?.Dispose();
         }
 
-        pending.Timer?.Dispose();
-        Post(pending.Hwnd, WmKeyUp, pending.Key, up: true);
+        Poster(pending.Hwnd, WmKeyUp, pending.Key, true);
+        return true;
     }
 
-    private static void Post(IntPtr hwnd, uint message, KeyCode key, bool up)
+    private static void PostToWindow(IntPtr hwnd, uint message, KeyCode key, bool up)
     {
         if (!PostMessage(hwnd, message, (IntPtr)key.VirtualKey, (UIntPtr)key.LParam(up)))
             throw new InvalidOperationException($"PostMessage failed (error {Marshal.GetLastWin32Error()})");

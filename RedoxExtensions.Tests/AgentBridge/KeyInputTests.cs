@@ -126,4 +126,69 @@ public class KeyInputTests
 
         Assert.That(Cli.CameraActions.Values, Is.SubsetOf(stock));
     }
+
+    [Test]
+    public void EveryMoveIsAnActionInTheStockKeymap()
+    {
+        var stock = new HashSet<string>
+        {
+            "MovementJump", "MovementForward", "MovementBackup", "MovementTurnLeft", "MovementTurnRight",
+            "MovementStrafeLeft", "MovementStrafeRight", "MovementWalkMode", "MovementRunLock", "MovementStop",
+        };
+
+        Assert.That(Cli.MoveActions.Values, Is.SubsetOf(stock));
+    }
+
+    [Test]
+    public void PressingAHeldKeyAgainRenewsItsLeaseWithoutASecondKeyDown()
+    {
+        var posted = this.WatchPosts();
+        KeyInput.TryParse("W", out var key);
+
+        KeyInput.Press(new System.IntPtr(1), key, 300);
+        System.Threading.Thread.Sleep(200);
+        KeyInput.Press(new System.IntPtr(1), key, 300);
+        System.Threading.Thread.Sleep(200);
+
+        Assert.That(KeyInput.IsHeld(new System.IntPtr(1), key), Is.True, "the second press moved the release on");
+        Assert.That(posted, Is.EqualTo(new[] { "W down" }));
+
+        System.Threading.Thread.Sleep(250);
+        Assert.That(KeyInput.IsHeld(new System.IntPtr(1), key), Is.False);
+        Assert.That(posted, Is.EqualTo(new[] { "W down", "W up" }));
+    }
+
+    [Test]
+    public void ReleaseLetsGoBeforeTheTimerAndOnlyOnce()
+    {
+        var posted = this.WatchPosts();
+        KeyInput.TryParse("D", out var key);
+
+        KeyInput.Press(new System.IntPtr(1), key, 2000);
+        Assert.That(KeyInput.Release(new System.IntPtr(1), key), Is.True);
+        Assert.That(KeyInput.Release(new System.IntPtr(1), key), Is.False);
+        Assert.That(posted, Is.EqualTo(new[] { "D down", "D up" }));
+    }
+
+    private System.Action<System.IntPtr, uint, KeyCode, bool> _realPoster;
+
+    private List<string> WatchPosts()
+    {
+        var posted = new List<string>();
+        this._realPoster = KeyInput.Poster;
+        KeyInput.Poster = (_, _, key, up) =>
+        {
+            lock (posted)
+                posted.Add(key.Name + (up ? " up" : " down"));
+        };
+        return posted;
+    }
+
+    [TearDown]
+    public void RestorePoster()
+    {
+        KeyInput.ReleaseAll();
+        if (this._realPoster != null)
+            KeyInput.Poster = this._realPoster;
+    }
 }
