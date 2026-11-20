@@ -248,7 +248,10 @@ internal static class AgentHandlers
         };
     }
 
-    private static object State(IDictionary<string, object> request)
+    private static object State(IDictionary<string, object> request) => BuildState();
+
+    /// <summary>Reads Decal objects, so call it on the game thread.</summary>
+    internal static object BuildState()
     {
         var plugin = REPlugin.Instance;
         var character = plugin.CharacterFilter;

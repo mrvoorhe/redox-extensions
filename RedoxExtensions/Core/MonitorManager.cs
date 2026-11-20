@@ -18,6 +18,7 @@ public class MonitorManager : IDisposable
     private RouteRecorder _routeRecorder;
     private CommandScheduler _scheduler;
     private MetaChainWatcher _metaChainWatcher;
+    private SessionRecorder _sessionRecorder;
 
     public MonitorManager(IREEventsFireCallbacks rtEventsFireCallbacks)
     {
@@ -31,6 +32,7 @@ public class MonitorManager : IDisposable
         this._routeRecorder = new RouteRecorder();
         this._scheduler = new CommandScheduler();
         this._metaChainWatcher = new MetaChainWatcher();
+        this._sessionRecorder = new SessionRecorder();
     }
 
     public CopyCatMaster CopyCatMaster => this._copyCatMaster;
@@ -53,6 +55,8 @@ public class MonitorManager : IDisposable
 
     public MetaChainWatcher MetaChainWatcher => this._metaChainWatcher;
 
+    public SessionRecorder SessionRecorder => this._sessionRecorder;
+
     #region IDisposable Members
 
     public void Dispose()
@@ -66,6 +70,7 @@ public class MonitorManager : IDisposable
         this._routeRecorder.Dispose();
         this._scheduler.Dispose();
         this._metaChainWatcher.Dispose();
+        this._sessionRecorder.Dispose();
     }
 
     #endregion

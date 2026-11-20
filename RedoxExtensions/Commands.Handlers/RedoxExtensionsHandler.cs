@@ -140,6 +140,12 @@ internal static class RedoxExtensionsHandler
             case "mcw":
                 ProcessMetaChainWatch(command);
                 return true;
+
+            case "recorder":
+            case "rec":
+                Recording.RecorderCommand.Handle(command.Arguments, REPlugin.Instance.MonitorManager.SessionRecorder, line => REPlugin.Instance.Chat.WriteLine("{0}", line));
+                return true;
+
             case "switch":
                 Actions.CharacterActions.SwitchCharacter(command.Arguments);
                 return true;
@@ -471,6 +477,8 @@ internal static class RedoxExtensionsHandler
         chat.WriteLine("  schedule|sched [reload] - Lists this character's scheduled commands (edit them with rectl schedule).");
         chat.WriteLine("  metachainwatch|mcw on <min> - Watches the VT meta chain: a meta running past <min> (or its shorter override) is recalled with the Halls of Introduction Gem, then goes to its chain state, else the fallback runs.");
         chat.WriteLine("  metachainwatch|mcw off|status|reload - Stops the watch, shows it and the timeout table (edit with rectl metatimeout), or re-reads the config.");
+        chat.WriteLine("  recorder|rec start [timeout] - Records this character's event log to a file for later analysis (timeout like 30s, 5m, 4.5h; default 5h).  A running recording is closed and a new one started.");
+        chat.WriteLine("  recorder|rec stop [delay] - Stops the recording now, or after [delay].  Does nothing when not recording.  recorder|rec status shows it.");
         chat.WriteLine("  switch <name> [command] - Logs out and logs in <name> on this account (via Mag-Filter), then runs [command] on it.");
         chat.WriteLine("  track                   - Starts/resets bank tracking (records a baseline).");
         chat.WriteLine("  report                  - Reports bank balances and rate of increase per hour.");
