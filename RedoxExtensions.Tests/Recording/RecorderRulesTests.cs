@@ -15,7 +15,7 @@ public class RecorderRulesTests
 
     private static RecorderState Session(TimeSpan? stopIn = null) => new()
     {
-        File = @"E:\Rec\2026-11-21\Cowhead.jsonl",
+        File = @"E:\Rec\2026-11-21\Cobble.jsonl",
         StartedAt = T0,
         TimeoutAt = T0.AddHours(5),
         StopAt = stopIn.HasValue ? T0 + stopIn.Value : null,
@@ -137,13 +137,13 @@ public class RecorderRulesTests
         var existing = new HashSet<string>();
         Func<string, bool> exists = p => existing.Contains(Path.GetFileName(p));
 
-        Assert.That(RecorderRules.NextFileName("d", "Cowhead", exists), Is.EqualTo("Cowhead"));
-        existing.Add("Cowhead.jsonl");
-        Assert.That(RecorderRules.NextFileName("d", "Cowhead", exists), Is.EqualTo("Cowhead-2"));
-        existing.Add("Cowhead-2.jsonl");
-        Assert.That(RecorderRules.NextFileName("d", "Cowhead", exists), Is.EqualTo("Cowhead-3"));
-        existing.Remove("Cowhead.jsonl");
-        Assert.That(RecorderRules.NextFileName("d", "Cowhead", exists), Is.EqualTo("Cowhead"));
+        Assert.That(RecorderRules.NextFileName("d", "Cobble", exists), Is.EqualTo("Cobble"));
+        existing.Add("Cobble.jsonl");
+        Assert.That(RecorderRules.NextFileName("d", "Cobble", exists), Is.EqualTo("Cobble-2"));
+        existing.Add("Cobble-2.jsonl");
+        Assert.That(RecorderRules.NextFileName("d", "Cobble", exists), Is.EqualTo("Cobble-3"));
+        existing.Remove("Cobble.jsonl");
+        Assert.That(RecorderRules.NextFileName("d", "Cobble", exists), Is.EqualTo("Cobble"));
     }
 
     [Test]
@@ -153,8 +153,8 @@ public class RecorderRulesTests
         Directory.CreateDirectory(folder);
         try
         {
-            File.WriteAllText(Path.Combine(folder, "Cowhead.jsonl"), "");
-            Assert.That(RecorderRules.NextFileName(folder, "Cowhead"), Is.EqualTo("Cowhead-2"));
+            File.WriteAllText(Path.Combine(folder, "Cobble.jsonl"), "");
+            Assert.That(RecorderRules.NextFileName(folder, "Cobble"), Is.EqualTo("Cobble-2"));
         }
         finally
         {

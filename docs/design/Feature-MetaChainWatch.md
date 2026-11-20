@@ -97,7 +97,7 @@ If no meta load has been seen, the meta shows as `(no meta)` and the timeout goe
 
 ## Recall
 
-Added 2026-11-15 (see the Rockdown incident below).  On a timeout, before the chain state jump, and also before the
+Added 2026-11-15 (see the Rexford incident below).  On a timeout, before the chain state jump, and also before the
 fallback when there is no chain state:
 
 1. On the game thread: `/vt stop`, `VTActions.ClearNav`, and `SetCombatMode(Peace)` through Decal.  VT's own
@@ -116,7 +116,7 @@ fallback when there is no chain state:
 
 **Arrival.**  He is at the recall spot when his landcell is in the recall landblock (`0x012F` for the Halls; the gem
 lands at `0x012F0126`) **and** the cell is `0x0100` or higher.  Dungeon cells start at `0x0100`; a lower cell in a
-dungeon landblock (Cowhead was found at `0x012F0025` on 11-14) means he is outside the walls, where nav can't move
+dungeon landblock (Cobble was found at `0x012F0025` on 11-14) means he is outside the walls, where nav can't move
 him, so that counts as not there and gets another teleport.  The landblock rather than the exact landcell is checked so
 that any indoor Halls cell counts (our metas check the landblock too).  Why not a portal space exit alone: it says a
 teleport happened, not where to (a portal or recall from something else looks the same); the landcell does.  Portal space is used
@@ -157,19 +157,19 @@ Next metas are fine starting from the Halls: KinokoPublic2.0 routes from there (
 `0x012F0126`), aFarm loads the farm meta, which travels by gem or the Town Network, and the chain metas generally
 travel with gems or the Town Network.
 
-Why the nav is cleared (2026-11-13): Virmar's Attributes4.0 timed out with its 6.4 Temple Jumps nav stuck on a
+Why the nav is cleared (2026-11-13): Valdor's Attributes4.0 timed out with its 6.4 Temple Jumps nav stuck on a
 `/vt jump`.  The old handoff (`setmetastate`, `/vt start`) did load the next meta, but VT stayed stuck on the jump
 route and no rule that waits on a condition fired in any meta after it.  The fallback's `/re sm aFarm` stopped VT and
 turned nav off, but the farm meta's `/vt settings loadchar Farm` turned nav back on with the same route loaded.  The
 route was still trying the jump 8 hours later.  Stopping VT and loading an empty nav removes the route itself.
 
-Why the recall was added (2026-11-15, Rockdown): Rockdown's VT Farm profile has OpenDoors on, and he carried Peerless
+Why the recall was added (2026-11-15, Rexford): Rexford's VT Farm profile has OpenDoors on, and he carried Peerless
 Lockpicks.  In aQD9ELerRhan (landblock `0x0083`) VT kept trying to pick the key-only door "Ler Rhan's Chamber"; VT's
 door handling outranks the nav, so the meta's key nav never ran, and he looped between UnlockDoor and Chamber.  At
 07:32 the watch timed the meta out and the hand-off ran (`/vt stop`, nav off, empty nav, `setmetastate '* Chain *'`,
 `/vt start`) and KinokoPublic2.0 loaded.  But he was still next to the door with OpenDoors on, so VT went straight back
 to picking the lock and Kinoko's first nav (a chat node, `/mt use Halls of Introduction Gem`) never ran.  He stood
-there for about 55 minutes until `/vt opt set OpenDoors false` was sent by hand.  Same shape as the Virmar jump: state
+there for about 55 minutes until `/vt opt set OpenDoors false` was sent by hand.  Same shape as the Valdor jump: state
 left over from the stuck meta (here his position next to the door) outlives the hand-off.  The recall moves him
 somewhere clean before the next meta starts.
 
@@ -300,14 +300,14 @@ rectl [-c <Character>] metatimeout fallback <command>|--clear
 
 ## Main timeout: 60 minutes
 
-The request proposed 30.  That is too short: KinokoPublic2.0 has run 48.5 minutes without being stuck (Rockdown
+The request proposed 30.  That is too short: KinokoPublic2.0 has run 48.5 minutes without being stuck (Rexford
 11-10; normal runs are 28.4-48.5).  An override can only shorten the limit, so the main timeout has to cover the
 longest normal meta.  60 gives Kinoko about 1.24x headroom.
 
 ## Seeded timeouts
 
 Source: the `metas` load events in `F:\ac-files\decaldev\MetaAnalysis\<date>\<Char>.analysis.json`, 2026-11-09 to
-11-12 (11-12 Rockdown and Woodford analyzed for this).  A run lasts from its load to the next load.  Known stuck,
+11-12 (11-12 Rexford and Wexley analyzed for this).  A run lasts from its load to the next load.  Known stuck,
 looped and crashed runs are left out.  Starting rule: longest normal run x 1.5, rounded up to the next 5 minutes,
 at least 10; dispatchers 5.  Any result of 60 or more is left to the main timeout.  aKT values must also clear the
 hunt limit plus turn-in overhead.
@@ -316,16 +316,16 @@ hunt limit plus turn-in overhead.
 |---|---|---|---|
 | Daily | 5 | about 2 s | Dispatcher.  No chain state, so a timeout goes to the fallback. |
 | zKillTasks | 5 | 1-2 s | Dispatcher. |
-| zKillTasks`<Char>` (Cowhead, Rockdown, Virmar, Woodford) | 5 each | under 1 s | Dispatchers, loaded by UB `chatbox[]`. |
+| zKillTasks`<Char>` (Cobble, Rexford, Valdor, Wexley) | 5 each | under 1 s | Dispatchers, loaded by UB `chatbox[]`. |
 | zDailyQuests | 5 | about 1 s | Dispatcher. |
-| zDailyQuests`<Char>` (Cowhead, Rockdown, Virmar, Woodford) | 5 each | under 1 s | Dispatchers, loaded by UB `chatbox[]`. |
+| zDailyQuests`<Char>` (Cobble, Rexford, Valdor, Wexley) | 5 each | under 1 s | Dispatchers, loaded by UB `chatbox[]`. |
 | Attributes4.0 | 10 | 4.8 | Normal 4.1-4.8.  Would have saved all 4 stuck runs (2 riddle hangs of 3 h or more, a 133 min Fiun loop, a 96.5 min riddle hang). |
 | aKTHoshino | 35 | 16.2 | 12 min hunt.  The rule gives 25, but a crash-and-resume run (24.3-28.7, still turns in) needs room. |
 | aKTRynthid | 35 | 22.0 | 15 min hunt plus up to 4 min turn-in.  Covers a hunt limit raised to 18-20.  Its goto states can loop, so the watch is useful here. |
 | aKTNeftet | 30 | 16.7 | 15 min hunt, short overhead. |
 | aKTFrozen | 30 | 16.4 | 14 min hunt.  The rule gives 25; 30 leaves room to raise the limit to 18-20 (it times out on almost every run). |
 | aKTTouTou | 30 | 18.6 | 16 min hunt.  Chain state `TT-chain`. |
-| ThreeGeneralsPublic | 20 | 8.4 | Rockdown only, one normal sample.  Gen states wait on spawns. |
+| ThreeGeneralsPublic | 20 | 8.4 | Rexford only, one normal sample.  Gen states wait on spawns. |
 | aQD9ELerRhan | 20 | 9.4 | Kept tight because of the unresolved door problem.  The Chamber wait for Ler Rhan's spawn has no limit of its own. |
 | HowardTheMad | 5 | 3.8 | Normal 3.0-3.8. |
 | LaLaRing | 4 | 2.6 | Its rewards aren't important, so max normal x 1.2 rather than the 10 floor.  It has its own 3 min fight skip. |
@@ -334,8 +334,8 @@ hunt limit plus turn-in overhead.
 
 **Stuck runs found while seeding** (not in any `summary.md`):
 
-* Woodford 11-12, Attributes4.0: 96.5 min, stuck in 6.3 Temple Entrance Riddle (the yarrow give gave 0 items).
-* Rockdown 11-12, ThreeGeneralsPublic: 60.4 min.  Died in AyanGen, and `Died -> ** Chain **` didn't fire.
+* Wexley 11-12, Attributes4.0: 96.5 min, stuck in 6.3 Temple Entrance Riddle (the yarrow give gave 0 items).
+* Rexford 11-12, ThreeGeneralsPublic: 60.4 min.  Died in AyanGen, and `Died -> ** Chain **` didn't fire.
 
 ## Chain meta changes
 
@@ -344,9 +344,9 @@ Made 2026-11-12 after the in-game test passed (originals kept as `Daily.met.bak`
 * `Daily.met`, Default state: `ChatCommand '/re metachainwatch on 60'` at the start of the existing `All{...}`.
 * `aFarm.met`, Default state: `ChatCommand '/re metachainwatch off'` at the start of the existing `All{...}`.
 
-## In-game test (2026-11-12, Woodford)
+## In-game test (2026-11-12, Wexley)
 
-Throwaway `zzMCW_*` metas (`/vt echo`, `/vt meta load` and `/re metachainwatch` only) plus a `Woodford.json` with
+Throwaway `zzMCW_*` metas (`/vt echo`, `/vt meta load` and `/re metachainwatch` only) plus a `Wexley.json` with
 0.5 min overrides and fallback `/vt meta load zzMCW_End`.  All of this was deleted afterwards.
 
 | Case | Result |

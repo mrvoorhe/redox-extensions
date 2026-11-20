@@ -37,12 +37,12 @@ public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
     [Test]
     public void GetFollowNavForCharacter_MultiWord_ExpectingFullMatchMinusSpaces()
     {
-        this.CreateFile("FollowRockdownGuy.nav");
+        this.CreateFile("FollowRexfordGuy.nav");
 
         // Test
-        var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
+        var result = VTUtilities.GetFollowNavForCharacter("Rexford Guy");
 
-        ClassicAssert.AreEqual("FollowRockdownGuy.nav", result);
+        ClassicAssert.AreEqual("FollowRexfordGuy.nav", result);
     }
 
     [Test]
@@ -51,7 +51,7 @@ public class VTUtilitiesTestFileRelated : TemporaryDirectoryPerTestTestSuite
         this.CreateFile("FollowGuy.nav");
 
         // Test
-        var result = VTUtilities.GetFollowNavForCharacter("Rockdown Guy");
+        var result = VTUtilities.GetFollowNavForCharacter("Rexford Guy");
 
         ClassicAssert.AreEqual("FollowGuy.nav", result);
     }

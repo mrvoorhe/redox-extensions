@@ -75,7 +75,7 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
     {
         return new SessionRecorder(
             this._install,
-            "Cowhead",
+            "Cobble",
             this._vtank,
             () => this._now,
             journalId ?? (() => this._journal.Id),
@@ -88,9 +88,9 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
             false);
     }
 
-    private string StatePath => RecorderRules.StatePath(this._install, "Cowhead");
+    private string StatePath => RecorderRules.StatePath(this._install, "Cobble");
 
-    private List<JsonElement> Lines(string name = "Cowhead")
+    private List<JsonElement> Lines(string name = "Cobble")
     {
         return File.ReadAllLines(Path.Combine(this._day, name + ".jsonl")).Select(l => JsonDocument.Parse(l).RootElement.Clone()).ToList();
     }
@@ -131,7 +131,7 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
         var first = this.Lines().Last();
         Assert.That(first.GetProperty("what").GetString(), Is.EqualTo("collector-stopped"));
         Assert.That(Reason(first), Is.EqualTo("restarted"));
-        Assert.That(this.Lines("Cowhead-2").Last().GetProperty("what").GetString(), Is.EqualTo("collector-started"));
+        Assert.That(this.Lines("Cobble-2").Last().GetProperty("what").GetString(), Is.EqualTo("collector-started"));
         Assert.That(File.ReadAllText(Path.Combine(this._day, "metas", "Daily.met")), Is.EqualTo("daily v2"));
         Assert.That(recorder.IsRecording, Is.True);
     }
@@ -299,13 +299,13 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
         recorder.Stop(null);
         recorder.Stop(null);
 
-        var first = Path.Combine(this._day, "Cowhead.jsonl");
-        var second = Path.Combine(this._day, "Cowhead-2.jsonl");
+        var first = Path.Combine(this._day, "Cobble.jsonl");
+        var second = Path.Combine(this._day, "Cobble-2.jsonl");
         Assert.That(this._launcher.Calls.Count, Is.EqualTo(2));
         Assert.That(this._launcher.Calls[0].Program, Is.EqualTo("py"));
-        Assert.That(this._launcher.Calls[0].Args, Is.EqualTo($"{first}|{this._day}|Cowhead|Cowhead|2026-11-20"));
+        Assert.That(this._launcher.Calls[0].Args, Is.EqualTo($"{first}|{this._day}|Cobble|Cobble|2026-11-20"));
         Assert.That(this._launcher.Calls[0].Dir, Is.EqualTo(this._day));
-        Assert.That(this._launcher.Calls[1].Args, Does.StartWith(second + "|").And.Contain("|Cowhead-2|"));
+        Assert.That(this._launcher.Calls[1].Args, Does.StartWith(second + "|").And.Contain("|Cobble-2|"));
         Assert.That(this._launcher.Calls.All(c => c.LastLine.Contains("collector-stopped")), Is.True);
         Assert.That(this._chat, Does.Contain("[RE] Recorder : afterStop started (pid 4242)"));
     }
@@ -344,7 +344,7 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
         Directory.CreateDirectory(Path.GetDirectoryName(this.StatePath));
         RecorderFile.SaveState(this.StatePath, new RecorderState
         {
-            File = Path.Combine(this._day, "Cowhead.jsonl"),
+            File = Path.Combine(this._day, "Cobble.jsonl"),
             StartedAt = T0.AddHours(3),
             TimeoutAt = T0.AddHours(8),
             JournalId = this._journal.Id,
@@ -365,7 +365,7 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
         recorder.Start(TimeSpan.FromHours(1));
 
         Assert.That(this._chat.Count(c => c.Contains("no config file")), Is.EqualTo(2));
-        Assert.That(File.Exists(Path.Combine(this._install, "Recordings", "2026-11-20", "Cowhead-2.jsonl")), Is.True);
+        Assert.That(File.Exists(Path.Combine(this._install, "Recordings", "2026-11-20", "Cobble-2.jsonl")), Is.True);
     }
 
     [Test]
@@ -377,6 +377,6 @@ public class SessionRecorderTests : TemporaryDirectoryPerTestTestSuite
         this._chat.Clear();
         recorder.Status();
 
-        Assert.That(string.Join("\n", this._chat), Does.Contain("Cowhead.jsonl").And.Contain("pending stop : 2026-11-20 07:05:00").And.Contain("journal seq"));
+        Assert.That(string.Join("\n", this._chat), Does.Contain("Cobble.jsonl").And.Contain("pending stop : 2026-11-20 07:05:00").And.Contain("journal seq"));
     }
 }

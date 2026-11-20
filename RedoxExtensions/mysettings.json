@@ -3,19 +3,19 @@
   "DefaultVTWindowProfile": "FullScreen",
   "CharactersGroupedByAccount": [
     [
-      "Cowhead",
+      "Cobble",
     ],
     [
       "Redox",
     ],
     [
-      "Virmar Jr"
+      "Valdor Jr"
     ],
     [
       "Lilly"
     ],
     [
-      "Rockdown Guy"
+      "Rexford Guy"
     ],
     [
       "Bear"
@@ -32,7 +32,7 @@
     "Main": {
       "Default": "Normal",
       "CharacterDefaults": {
-        "Rockdown Guy": "Support",
+        "Rexford Guy": "Support",
         "Lilly": "Support"
       }
     }
@@ -42,27 +42,27 @@
       "RangeDefault": 10,
       "RangeTable": {
         "Redox": 30,
-        "Cowhead": 10,
-        "Rockdown Guy": 50,
+        "Cobble": 10,
+        "Rexford Guy": 50,
         "Lilly": 50,
-        "Virmar Jr": 10
+        "Valdor Jr": 10
       }
     }
   },
   "Mage": [
     "Redox",
     "Lilly",
-    "Rockdown Guy"
+    "Rexford Guy"
   ],
   "AttackMage": [
     "Redox"
   ],
   "SupportMage": [
-    "Rockdown Guy",
+    "Rexford Guy",
     "Lilly"
   ],
   "Support": [
-    "Rockdown Guy",
+    "Rexford Guy",
     "Lilly"
   ],
   "Archer": [
@@ -72,7 +72,7 @@
   "SupportArcher": [
   ],
   "Melee": [
-    "Virmar Jr",
+    "Valdor Jr",
     "Bear"
   ]
 }

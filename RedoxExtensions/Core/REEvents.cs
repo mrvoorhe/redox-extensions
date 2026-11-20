@@ -435,7 +435,7 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
             // Ex: You give Kreap Velvet Baggy Pants.
             //         WorldObject Name will = Baggy Pants
             // Ex: You give Vassari 4 Quills of Infliction
-            // Ex: You give Rockdown Guy 50 Silver Peas.
+            // Ex: You give Rexford Guy 50 Silver Peas.
             if (e.IsYouGive())
             {
                 var worldObj = this._pendingGiveItemCapturedWorldObject;
@@ -460,7 +460,7 @@ public class REEvents : IREEvents, IREEventsFireCallbacks, IDisposable
                 if (stackCount > 1)
                 {
                     // When stack count > 0, what we will be looking at is :
-                    //      targetName = Rockdown Guy 50 S
+                    //      targetName = Rexford Guy 50 S
                     // The single character is left over from the item name being plural in the give message
                     var endingCharsToIgnore = 2 + (stackCount.ToString()).Length;
                     targetName = targetName.Substring(0, targetName.Length - endingCharsToIgnore).Trim();

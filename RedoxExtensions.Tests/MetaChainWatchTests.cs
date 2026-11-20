@@ -111,7 +111,7 @@ public class MetaChainWatchTests : TemporaryDirectoryPerTestTestSuite
 
     [TestCase(0x012F0126, true)]
     [TestCase(0x012F0100, true)]
-    [TestCase(0x012F0025, false)] // outside the Halls' walls (Cowhead 11-14): another teleport is wanted
+    [TestCase(0x012F0025, false)] // outside the Halls' walls (Cobble 11-14): another teleport is wanted
     [TestCase(0x00830110, false)] // Ler Rhan
     [TestCase(0x0130012F, false)]
     public void IsAtRecallSpot(int landcell, bool expected)

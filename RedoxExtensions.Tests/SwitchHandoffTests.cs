@@ -35,7 +35,7 @@ public class SwitchHandoffTests : TemporaryDirectoryPerTestTestSuite
         var handoff = this.Create();
         handoff.Save("Server", "acct", "Bob", "/re help");
 
-        Assert.That(handoff.TryTake("Server", "acct", "Woodford", SwitchHandoff.DefaultMaxAge, out _), Is.False);
+        Assert.That(handoff.TryTake("Server", "acct", "Wexley", SwitchHandoff.DefaultMaxAge, out _), Is.False);
         Assert.That(handoff.TryTake("Server", "acct", "Bob", SwitchHandoff.DefaultMaxAge, out _), Is.True);
     }
 

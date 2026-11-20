@@ -26,7 +26,7 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
     {
         this._now = T0;
         this._warnings.Clear();
-        this._file = Path.Combine(this.TestTemporaryDirectory, "2026-11-20", "Cowhead.jsonl");
+        this._file = Path.Combine(this.TestTemporaryDirectory, "2026-11-20", "Cobble.jsonl");
     }
 
     private EventJournal NewJournal(int capacity = 100, string id = "1000-a")
@@ -38,10 +38,10 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
     {
         var session = new RecorderSession(
             file ?? this._file,
-            "Cowhead",
+            "Cobble",
             () => journal,
             () => this._now,
-            stateProvider ?? (() => new Dictionary<string, object> { ["character"] = new Dictionary<string, object> { ["name"] = "Cowhead" } }),
+            stateProvider ?? (() => new Dictionary<string, object> { ["character"] = new Dictionary<string, object> { ["name"] = "Cobble" } }),
             pid,
             state ?? new RecorderState(),
             utcToLocal: t => DateTime.SpecifyKind(t, DateTimeKind.Unspecified));
@@ -160,7 +160,7 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
         {
             "2026-11-20T07:00:03", "2026-11-20T07:00:33", "2026-11-20T07:01:03", "2026-11-20T07:01:33",
         }));
-        Assert.That(states[0].GetProperty("state").GetProperty("character").GetProperty("name").GetString(), Is.EqualTo("Cowhead"));
+        Assert.That(states[0].GetProperty("state").GetProperty("character").GetProperty("name").GetString(), Is.EqualTo("Cobble"));
         Assert.That(states[0].GetProperty("error").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 
@@ -273,7 +273,7 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
     {
         var blocker = Path.Combine(this.TestTemporaryDirectory, "blocked");
         File.WriteAllText(blocker, "a file where a folder should be");
-        var file = Path.Combine(blocker, "Cowhead.jsonl");
+        var file = Path.Combine(blocker, "Cobble.jsonl");
 
         var journal = this.NewJournal();
         var session = this.NewSession(journal, file: file);
@@ -312,7 +312,7 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
     {
         var blocker = Path.Combine(this.TestTemporaryDirectory, "blocked");
         File.WriteAllText(blocker, "x");
-        var session = this.NewSession(this.NewJournal(), file: Path.Combine(blocker, "Cowhead.jsonl"));
+        var session = this.NewSession(this.NewJournal(), file: Path.Combine(blocker, "Cobble.jsonl"));
         session.Start(T0.AddHours(5));
         Assert.DoesNotThrow(() => session.End("stopped"));
         Assert.That(session.IsEnded, Is.True);
@@ -344,7 +344,7 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
 
     private static Dictionary<string, object> Location(long landcell, double x, double y, double z) => new()
     {
-        ["character"] = new Dictionary<string, object> { ["name"] = "Cowhead", ["id"] = 1342177281L, ["server"] = "Coldeve", ["level"] = 275 },
+        ["character"] = new Dictionary<string, object> { ["name"] = "Cobble", ["id"] = 1342177281L, ["server"] = "Coldeve", ["level"] = 275 },
         ["location"] = new Dictionary<string, object> { ["landcell"] = landcell, ["x"] = x, ["y"] = y, ["z"] = z, ["heading"] = 90.5 },
         ["busyState"] = "Idle",
         ["combatMode"] = "Peace",
@@ -378,7 +378,7 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
 
         this._now = T0.AddMinutes(5);
         var journalB = this.NewJournal(id: "2000-2026-11-20T07:05:00");
-        journalB.Publish("plugin", "[RE] Login complete \"Cowhead\"");
+        journalB.Publish("plugin", "[RE] Login complete \"Cobble\"");
         var second = this.NewSession(journalB, state, pid: 2000, stateProvider: () => location);
         second.Resume(RecorderRules.DecideResume(state, journalB.Id, this._now));
         this._now = T0.AddMinutes(5).AddSeconds(2);

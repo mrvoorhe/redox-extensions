@@ -27,9 +27,9 @@ public class RewardTrackingTests
         Assert.That(actualItem, Is.EqualTo(item));
     }
 
-    [TestCase("Cowhead says, \"Hunter gives you 100 Enlightened Coins.\"")]
-    [TestCase("Cowhead tells you, Hunter gives you 100 Enlightened Coins.")]
-    [TestCase("[Fellowship] Cowhead says to your fellowship, Hunter gives you 100 Enlightened Coins.")]
+    [TestCase("Cobble says, \"Hunter gives you 100 Enlightened Coins.\"")]
+    [TestCase("Cobble tells you, Hunter gives you 100 Enlightened Coins.")]
+    [TestCase("[Fellowship] Cobble says to your fellowship, Hunter gives you 100 Enlightened Coins.")]
     [TestCase("You give Hunter 10 Enlightened Coins.")]
     [TestCase("")]
     [TestCase(null)]

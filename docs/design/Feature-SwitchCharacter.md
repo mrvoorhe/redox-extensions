@@ -18,14 +18,14 @@ Stage the implementation with separate commits when appropriate
 Examples:
 
 ```
-/re switch Woodford
+/re switch Wexley
 /re switch Bob Smith /re startmeta daily
 /re switch wood /vt start
 ```
 
 * `<name>` ignores case and can contain spaces.  The longest run of leading words that is a character name wins, so
   with both `Bob` and `Bob Smith` on the account, `/re switch Bob Smith ...` picks `Bob Smith`.  Otherwise the first
-  word can be a unique prefix (`wood` for `Woodford`).  Everything after the name is the command.
+  word can be a unique prefix (`wood` for `Wexley`).  Everything after the name is the command.
 * An unknown name lists the account's other characters.  An ambiguous prefix lists its matches.
 
 From a terminal, `rectl [-c <name>] characters` shows the account, server, current character and the account's

@@ -51,21 +51,21 @@ public class ChatParsingUtilitiesTests
     [Test]
     public void GetSourceOfChatCanHandleFellowshopMessage()
     {
-        var text = "Cowhead says to your fellowship, \"!come\"";
+        var text = "Cobble says to your fellowship, \"!come\"";
 
         var result = ChatParsingUtilities.GetSourceOfChat(text);
 
-        ClassicAssert.AreEqual("Cowhead", result);
+        ClassicAssert.AreEqual("Cobble", result);
     }
 
     [Test]
     public void GetSourceOfChatCanHandleFellowshopMessage_SpaceInName()
     {
-        var text = "Rockdown Guy says to your fellowship, \"!come\"";
+        var text = "Rexford Guy says to your fellowship, \"!come\"";
 
         var result = ChatParsingUtilities.GetSourceOfChat(text);
 
-        ClassicAssert.AreEqual("Rockdown Guy", result);
+        ClassicAssert.AreEqual("Rexford Guy", result);
     }
 
     [Test]
@@ -206,7 +206,7 @@ public class ChatParsingUtilitiesTests
     [Test]
     public void IsChatTextFromFellowship_PhatACStyle()
     {
-        var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says to your fellowship, \"!come\"", out var fromSelf);
+        var result = ChatParsingUtilities.IsChatTextFromFellowship("Cobble says to your fellowship, \"!come\"", out var fromSelf);
 
         ClassicAssert.IsTrue(result);
         ClassicAssert.IsFalse(fromSelf);
@@ -224,7 +224,7 @@ public class ChatParsingUtilitiesTests
     [Test]
     public void IsChatTestFromFellowship_GeneralChatMessage()
     {
-        var result = ChatParsingUtilities.IsChatTextFromFellowship("Cowhead says, \"hey\"", out var fromSelf);
+        var result = ChatParsingUtilities.IsChatTextFromFellowship("Cobble says, \"hey\"", out var fromSelf);
 
         ClassicAssert.IsFalse(result);
         ClassicAssert.IsFalse(fromSelf);
@@ -273,7 +273,7 @@ public class ChatParsingUtilitiesTests
     [Test]
     public void TryParseBankBalanceLine_ReturnsFalseForNonBankLine()
     {
-        var result = ChatParsingUtilities.TryParseBankBalanceLine("Cowhead says, \"hey\"", out var name, out var amount);
+        var result = ChatParsingUtilities.TryParseBankBalanceLine("Cobble says, \"hey\"", out var name, out var amount);
 
         ClassicAssert.IsFalse(result);
         ClassicAssert.IsNull(name);

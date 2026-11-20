@@ -241,7 +241,7 @@ a side pack.  The plugin's `move` handler sends one move and refuses anything ou
 equipped items and packs.  The CLI confirms each move (up to 15 s) before sending the next and stops at the first
 failure.  Stacks can merge into a stack already in the destination: the moved item disappears, or the server tops up
 the destination stack and leaves the rest behind with a new stack size.  Both count as `merged`, and the CLI re-scans
-and moves what's left (up to 5 passes).  Found on Rockdown, where a 5 s timeout and no merge handling stopped the run
+and moves what's left (up to 5 passes).  Found on Rexford, where a 5 s timeout and no merge handling stopped the run
 about a dozen times while sorting 160 items.  `move` needs `rw`.  The wrapper only checks read access for plugin handlers, so `move` reads the mode from
 the discovery file itself (`RequireWriteMode`).  That check belongs in `AgentRequestProcessor` at the next wrapper
 change.
@@ -252,11 +252,11 @@ change.
 * `--to main` is the main pack and `--to pack<N>` the side pack at slot N (0 = first in the inventory window).  The
   order comes from `Values(LongValueKey.Slot)`, which Decal computes on request, so it's not in `LongKeys` and the
   `object` dump doesn't show it.  `world`/`inventory` report it as `slot` for anything in a container.  Found by
-  decompiling mudsort, whose `/ms set dest pack N` picks the pack with `Slot + 1 == N`; checked on Virmar against the
+  decompiling mudsort, whose `/ms set dest pack N` picks the pack with `Slot + 1 == N`; checked on Valdor against the
   pack the user clicked as pack 0.  (`OpenedContainer` stays 0 for your own packs.)
-* Checked on Virmar: 41 Titan Mana Charges moved into a side pack in 7 seconds.
+* Checked on Valdor: 41 Titan Mana Charges moved into a side pack in 7 seconds.
 
-Checked in game on Virmar: nearby doors, a player and a monster with distances and coordinates; 297 inventory items
+Checked in game on Valdor: nearby doors, a player and a monster with distances and coordinates; 297 inventory items
 paged; equipped bow and arrows show `wielder`; `object` returns the key dump; a bad id or `--near far` gives an error and
 exit code 1.
 
@@ -332,7 +332,7 @@ for moving by feel, turning, strafing, backing out of a corner, jumping, or nudg
 
 ## Windows checks
 
-Checked on 2026-11-05 with one client (Virmar):
+Checked on 2026-11-05 with one client (Valdor):
 
 * Vitals: `CharacterFilter.Health/Stamina/Mana` are current values and `EffectiveVital[...]` are max, as assumed.
 * `Host.Actions.AddChatText` does not raise `ChatBoxMessage`, so RE output is only a `plugin` event, never also `chat`.
@@ -367,12 +367,12 @@ Still open:
   `uTank2.PluginCore.PC.GetExternalInterface()` returning `cExternalInterfaceTrustedRelay` (`GetSetting`,
   `MacroEnabled`, `GetNavProfile`, `GetSettingsProfile`, `NavCurrent`, ...).  Not tried, because it's unknown whether
   VT shows a permission prompt.
-* Memory (see "What's left").  With Virmar and Woodford both enabled, private bytes were 635 and 620 MB, but that can't
+* Memory (see "What's left").  With Valdor and Wexley both enabled, private bytes were 635 and 620 MB, but that can't
   be compared with the bridge-off reading from earlier (different session and uptime), so it doesn't isolate the
   bridge's cost.
 
-Selection rules, checked with Virmar and Woodford both in `rw`: no flag lists both and exits 2, `-c wood` (prefix,
-case-insensitive), `-c Virmar` and `--pid` each pick the right client, and an unknown `-c` lists both and exits 2.
+Selection rules, checked with Valdor and Wexley both in `rw`: no flag lists both and exits 2, `-c wood` (prefix,
+case-insensitive), `-c Valdor` and `--pid` each pick the right client, and an unknown `-c` lists both and exits 2.
 Each client installs its own chat capture (`chatCapture: true` on both).
 
 Removed: `CreateObject` debug logging.  It ignored `DebugLevel`, filled the journal (about 1,300 events in 3 minutes of
@@ -416,7 +416,7 @@ VT's startup messages were captured too, and RE's own output showed up once.
   loopback server with a fake game host.  `ChatTextCaptureTests` patch a fake vtable in unmanaged memory.  The full
   suite has failures that predate this feature (stale tests, `PipelineDispatcherTests`).
 * In game, everything in "Windows checks", "Capturing other plugins' chat output", "Network messages", "Screenshots"
-  and "World and inventory" was checked on 2026-11-05 with Virmar and Woodford.
+  and "World and inventory" was checked on 2026-11-05 with Valdor and Wexley.
 
 ## Handoff notes
 
@@ -432,7 +432,7 @@ Done and checked in game:
 * `net` capture of chosen message types (plugin).
 * `rectl screenshot` (CLI only).
 
-Live state when paused: Virmar (pid 57256) and Woodford (pid 12384) were both in `rw` mode on the current build, net
+Live state when paused: Valdor (pid 57256) and Wexley (pid 12384) were both in `rw` mode on the current build, net
 capture off.  The bridge is per session, so it's off after a client restart until `/re agent on|rw` is run again.
 
 Commits this session, oldest first:

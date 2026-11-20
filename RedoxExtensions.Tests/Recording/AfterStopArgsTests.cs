@@ -11,9 +11,9 @@ public class AfterStopArgsTests
     public void ExpandsAllPlaceholdersIncludingPathsWithSpaces()
     {
         var args = "analyze \"{file}\" --md \"{dir}\\{name}.analysis.md\" --who {char} --day {date}";
-        var result = AfterStopArgs.Expand(args, @"E:\Meta Analysis\2026-11-21\Cowhead-2.jsonl", @"E:\Meta Analysis\2026-11-21", "Cowhead-2", "Cowhead", "2026-11-21");
+        var result = AfterStopArgs.Expand(args, @"E:\Meta Analysis\2026-11-21\Cobble-2.jsonl", @"E:\Meta Analysis\2026-11-21", "Cobble-2", "Cobble", "2026-11-21");
 
-        Assert.That(result, Is.EqualTo("analyze \"E:\\Meta Analysis\\2026-11-21\\Cowhead-2.jsonl\" --md \"E:\\Meta Analysis\\2026-11-21\\Cowhead-2.analysis.md\" --who Cowhead --day 2026-11-21"));
+        Assert.That(result, Is.EqualTo("analyze \"E:\\Meta Analysis\\2026-11-21\\Cobble-2.jsonl\" --md \"E:\\Meta Analysis\\2026-11-21\\Cobble-2.analysis.md\" --who Cobble --day 2026-11-21"));
     }
 
     [Test]

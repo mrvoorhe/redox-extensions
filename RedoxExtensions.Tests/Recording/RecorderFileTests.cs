@@ -11,12 +11,12 @@ namespace RedoxExtensions.Tests.Recording;
 [TestFixture]
 public class RecorderFileTests : TemporaryDirectoryPerTestTestSuite
 {
-    private string StatePath => RecorderRules.StatePath(TestTemporaryDirectory, "Cowhead");
+    private string StatePath => RecorderRules.StatePath(TestTemporaryDirectory, "Cobble");
     private string ConfigPath => RecorderRules.ConfigPath(TestTemporaryDirectory);
 
     private static RecorderState Sample() => new()
     {
-        File = @"E:\Rec\2026-11-21\Cowhead.jsonl",
+        File = @"E:\Rec\2026-11-21\Cobble.jsonl",
         StartedAt = new DateTime(2026, 11, 21, 1, 0, 12),
         TimeoutAt = new DateTime(2026, 11, 21, 6, 0, 12),
         StopAt = new DateTime(2026, 11, 21, 4, 22, 40),
