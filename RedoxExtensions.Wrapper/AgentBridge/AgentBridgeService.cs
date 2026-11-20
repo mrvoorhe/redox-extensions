@@ -15,6 +15,10 @@ public static class AgentBridgeService
 
     public static bool IsEnabled => _journal != null;
 
+    public static EventJournal Journal => _journal;
+
+    public static string JournalId => _journal?.Id;
+
     public static void Publish(string kind, string text, int? color = null)
     {
         _journal?.Publish(kind, text, color);

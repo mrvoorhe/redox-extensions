@@ -30,6 +30,8 @@ public class REWrapperPlugin : PluginBase, IPluginServices
 
     private WrapperCommandListener _wrapperCommandListener;
 
+    private EventLog _eventLog;
+
     private AgentBridgeSession _agentBridgeSession;
 
     #region Internal Static Properties
@@ -149,8 +151,14 @@ public class REWrapperPlugin : PluginBase, IPluginServices
             return;
         }
 
+        if (this._eventLog == null)
+        {
+            this.Debug?.WriteLine("Agent bridge needs the event log, which starts at login");
+            return;
+        }
+
         if (this._agentBridgeSession == null)
-            this._agentBridgeSession = new AgentBridgeSession(this, mode);
+            this._agentBridgeSession = new AgentBridgeSession(this, mode, this._eventLog.Journal);
         else
             this._agentBridgeSession.Mode = mode;
     }
@@ -166,6 +174,21 @@ public class REWrapperPlugin : PluginBase, IPluginServices
         this._agentBridgeSession = null;
     }
 
+    private void StartEventLog()
+    {
+        if (this._eventLog == null)
+            this._eventLog = new EventLog(this);
+    }
+
+    private void StopEventLog()
+    {
+        if (this._eventLog == null)
+            return;
+
+        this._eventLog.Dispose();
+        this._eventLog = null;
+    }
+
     protected override void Shutdown()
     {
         this.InvokeOperationSafely(() =>
@@ -178,6 +201,7 @@ public class REWrapperPlugin : PluginBase, IPluginServices
             this.ServerDispatch -= RTWrapperPlugin_ServerDispatch;
 
             this.StopAgentBridge();
+            this.StopEventLog();
 
             this._wrappedPlugin.WrappedShutdown();
             this._wrappedPlugin = null;
@@ -244,6 +268,7 @@ public class REWrapperPlugin : PluginBase, IPluginServices
             this.Chat.WriteLine("***Closing Down****");
 
         this.StopAgentBridge();
+        this.StopEventLog();
 
         if (this._wrapperCommandListener != null)
         {
@@ -263,6 +288,7 @@ public class REWrapperPlugin : PluginBase, IPluginServices
         //DebugWriter.WriteToStaticLog("In CharacterFilter_LoginComplete");
 
         this.InvokeOperationSafely(this.Initialize);
+        this.InvokeOperationSafely(this.StartEventLog);
 
         //this.DebugWriter.WriteLine("Leaving CharacterFilter_LoginComplete");
     }

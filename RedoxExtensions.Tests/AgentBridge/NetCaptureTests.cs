@@ -27,6 +27,24 @@ public class NetCaptureTests
     }
 
     [Test]
+    public void CapturesNothingWhileLogIsRunningAndNothingSelected()
+    {
+        var journal = new EventJournal(10, "1-test");
+        AgentBridgeService.SetJournal(journal);
+        try
+        {
+            Assert.That(AgentBridgeService.IsEnabled, Is.True);
+            Assert.That(NetCapture.IsCapturing(true, 0xF7B0), Is.False);
+            Assert.That(NetCapture.IsCapturing(false, 0xF7B1), Is.False);
+            Assert.That(journal.GetSince(0, null, 10), Is.Empty);
+        }
+        finally
+        {
+            AgentBridgeService.SetJournal(null);
+        }
+    }
+
+    [Test]
     public void SelectsTypesPerDirection()
     {
         var result = Configure("{\"server\":\"F7B0, 0xf74e\",\"client\":[\"F7B1\"]}");

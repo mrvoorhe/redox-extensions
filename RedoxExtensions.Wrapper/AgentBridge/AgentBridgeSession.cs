@@ -11,6 +11,7 @@ namespace RedoxExtensions.Wrapper.AgentBridge;
 
 /// <summary>
 /// The bridge while it's turned on in game.  Created by '/re agent on', disposed by '/re agent off' or logoff.
+/// It serves the event log's journal but doesn't own it.
 /// </summary>
 internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
 {
@@ -18,7 +19,7 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
 
     private readonly REWrapperPlugin _plugin;
     private readonly AgentPolicy _policy = new();
-    private readonly EventJournal _journal = new(AgentBridgeService.JournalCapacity);
+    private readonly EventJournal _journal;
     private readonly GameThreadQueue _gameThreadQueue = new(GameThreadTimeout);
     private readonly AgentBridgeServer _bridgeServer;
     private readonly string _token = Guid.NewGuid().ToString("N");
@@ -28,8 +29,9 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
     private readonly string _character;
     private readonly string _server;
 
-    public AgentBridgeSession(REWrapperPlugin plugin, AgentMode mode)
+    public AgentBridgeSession(REWrapperPlugin plugin, AgentMode mode, EventJournal journal)
     {
+        this._journal = journal;
         this._plugin = plugin;
         this._policy.Mode = mode;
         this._character = plugin.CoreManager.CharacterFilter.Name;
@@ -50,11 +52,6 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
         }
 
         this._plugin.CoreManager.RenderFrame += this.CoreManager_RenderFrame;
-        this._plugin.CoreManager.ChatBoxMessage += this.CoreManager_ChatBoxMessage;
-
-        AgentBridgeService.SetJournal(this._journal);
-
-        this.StartChatTextCapture();
     }
 
     public AgentMode Mode
@@ -73,11 +70,7 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
 
     public void Dispose()
     {
-        ChatTextCapture.Listener = null;
-        AgentBridgeService.SetJournal(null);
-
         this._plugin.CoreManager.RenderFrame -= this.CoreManager_RenderFrame;
-        this._plugin.CoreManager.ChatBoxMessage -= this.CoreManager_ChatBoxMessage;
 
         this._policy.Mode = AgentMode.Off;
         this._bridgeServer.Dispose();
@@ -120,25 +113,6 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
 
     #endregion
 
-    private void StartChatTextCapture()
-    {
-        try
-        {
-            ChatTextCapture.EnsureInstalled(this._plugin.PluginHost.Actions);
-        }
-        catch (Exception e)
-        {
-            // The bridge still works, it just only sees our own chat output (see REWrapperPlugin.WriteToChat).
-            this._plugin.Error.LogError(e);
-            this._journal.Publish(EventJournal.KindDebug, $"Chat text capture unavailable: {e.Message}");
-            return;
-        }
-
-        var journal = this._journal;
-        ChatTextCapture.Listener = (text, color, target) =>
-            journal.Publish(target == WrapperDebugWriter.DEBUG_CHAT ? EventJournal.KindDebug : EventJournal.KindPlugin, text, color);
-    }
-
     private void WriteDiscovery()
     {
         AgentDiscovery.Write(
@@ -155,15 +129,6 @@ internal class AgentBridgeSession : IAgentBridgeHost, IDisposable
     private void CoreManager_RenderFrame(object sender, EventArgs e)
     {
         this._plugin.InvokeOperationSafely(this._gameThreadQueue.Drain);
-    }
-
-    private void CoreManager_ChatBoxMessage(object sender, ChatTextInterceptEventArgs e)
-    {
-        this._plugin.InvokeOperationSafely(() =>
-        {
-            if (!ChatChannelFilter.IsIgnored(e.Text))
-                this._journal.Publish(EventJournal.KindChat, e.Text?.TrimEnd('\n', '\r'), e.Color);
-        });
     }
 
     #region Decal Chat Dispatch (same approach as RedoxExtensions.Core.DecalProxy, copied from MagTools)

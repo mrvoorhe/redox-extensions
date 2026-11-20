@@ -51,12 +51,15 @@ public class EventJournal
     private readonly JournalEvent[] _buffer;
     private long _nextSeq = 1;
 
-    public EventJournal(int capacity)
+    public EventJournal(int capacity, string id = null)
     {
         if (capacity <= 0)
             throw new ArgumentOutOfRangeException(nameof(capacity));
         this._buffer = new JournalEvent[capacity];
+        this.Id = id;
     }
+
+    public string Id { get; }
 
     public int Capacity => this._buffer.Length;
 
