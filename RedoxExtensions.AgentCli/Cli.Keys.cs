@@ -39,7 +39,7 @@ public partial class Cli
     }
 
     /// <summary>
-    /// How long a camera rotate key takes to turn the camera one degree, measured on Cowhead (2026-11-17): a 562 ms hold
+    /// How long a camera rotate key takes to turn the camera one degree, measured on Cobble (2026-11-17): a 562 ms hold
     /// from the default view shows his face either way (180 degrees) and 1125 ms brings the default view back round
     /// (a full turn), so about 320 degrees a second.  The same hold lands within about 5 degrees from one try to the
     /// next, foreground or background, so this is for ballpark angles.  Tilting is taken to go at the same rate: from
@@ -52,7 +52,7 @@ public partial class Cli
 
     /// <summary>
     /// The hold that takes the camera from the default distance to the closest (just behind the head) or the farthest,
-    /// measured on Cowhead indoors: both took about 200 ms.  Indoors the walls may stop it short of the farthest.
+    /// measured on Cobble indoors: both took about 200 ms.  Indoors the walls may stop it short of the farthest.
     /// </summary>
     public const double CameraZoomRangeMs = 200;
 

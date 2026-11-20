@@ -277,14 +277,14 @@ command sees the key let go.  Keys still held are let go when the plugin unloads
 
 `rectl camera rotate <degrees>` (steps of 10 from -360 to 360) presses `default`, waits a second, then holds
 CameraRotateRight (positive) or CameraRotateLeft (negative) for `degrees * CameraFullTurnMs / 360`.  A full turn is about
-1125 ms (about 320 degrees a second), measured on Cowhead: from the default view, 562 ms either way shows his face and
+1125 ms (about 320 degrees a second), measured on Cobble: from the default view, 562 ms either way shows his face and
 1125 ms comes back round to the default view; 90, -90 and 270 checked by eye.  The same hold lands within about 5
 degrees from one try to the next, in the foreground or the background, so angles are ballpark.
 
 `rectl camera tilt <degrees>` (-90 to 90, positive raises the camera toward top-down) and `rectl camera zoom <percent>`
 (-100 to 100 of the way to the limit, positive in) work the same way, and `--rotate`, `--tilt` and `--zoom` add the
 other moves after the same reset (`camera rotate 90 --tilt 30 --zoom -50`), applied rotate, then tilt, then zoom.
-Measured on Cowhead by holding from the default view and finding where the view stops changing: up reaches top-down
+Measured on Cobble by holding from the default view and finding where the view stops changing: up reaches top-down
 in about 210 ms and down reaches its limit (looking up past him at the ceiling) in about 260 ms, so tilt uses the
 turn rate, which puts the limits at about +70 and -85.  Closer (just behind the head) and farther both stop at about
 200 ms (`CameraZoomRangeMs`); that was indoors, where the walls may stop the camera before its real farthest.  Zooming
@@ -295,7 +295,7 @@ the character's heading, and spell effects swamp the comparison.
 * There's no chat command for the camera in the base game, VT, UB or MagTools.  UB's client bindings
   (`AcClient` in `UtilityBelt.Service.dll`) have `CameraSet::Rotate` and friends, but that assembly is net48 and the
   plugin is net35, so calling them would mean hard-coding client addresses.  Keys were the simpler route.
-* Checked on Virmar (2026-11-17) while VT farmed: `camera left --hold 1000` swung the view from behind him to his right
+* Checked on Valdor (2026-11-17) while VT farmed: `camera left --hold 1000` swung the view from behind him to his right
   side while his heading stayed 19.94 degrees; `camera default` put it back.
 
 ### Moving the character
@@ -322,7 +322,7 @@ lets go of the keys first.  Stop VT first (`/vt stop`): VT steers too.  Combat s
 Which to use: a nav route for a path VT will run again; `meta-tools/walkto.py` to walk to a nav coordinate; `rectl go`
 for moving by feel, turning, strafing, backing out of a corner, jumping, or nudging a character a few meters.
 
-* Checked on Virmar (2026-11-18) in the Abandoned Mines, window minimized, no monsters within 60 m:
+* Checked on Valdor (2026-11-18) in the Abandoned Mines, window minimized, no monsters within 60 m:
   * `turnright:500` turned 66 degrees (about 130 degrees a second standing); `forward:1000` ran 11.5 m.
   * `face 90`, `face 0`, `turn -45` and `turn 180` ended 0.5 to 2.5 degrees from the target.
   * `forward`, `back`, `strafeleft` and `straferight --meters 5` went 5.42, 5.14, 4.85 and 4.53 m, and
