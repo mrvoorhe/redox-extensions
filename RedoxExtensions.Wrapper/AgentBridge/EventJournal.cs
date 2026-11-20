@@ -49,10 +49,12 @@ public class EventJournal
 
     private readonly object _lock = new();
     private readonly JournalEvent[] _buffer;
+    private readonly Func<DateTime> _utcNow;
     private long _nextSeq = 1;
 
-    public EventJournal(int capacity, string id = null)
+    public EventJournal(int capacity, string id = null, Func<DateTime> utcNow = null)
     {
+        this._utcNow = utcNow ?? (() => DateTime.UtcNow);
         if (capacity <= 0)
             throw new ArgumentOutOfRangeException(nameof(capacity));
         this._buffer = new JournalEvent[capacity];
@@ -79,7 +81,7 @@ public class EventJournal
     {
         lock (this._lock)
         {
-            var evt = new JournalEvent(this._nextSeq, DateTime.UtcNow, kind, text ?? string.Empty, color);
+            var evt = new JournalEvent(this._nextSeq, this._utcNow(), kind, text ?? string.Empty, color);
             this._buffer[this._nextSeq % this._buffer.Length] = evt;
             this._nextSeq++;
             Monitor.PulseAll(this._lock);
