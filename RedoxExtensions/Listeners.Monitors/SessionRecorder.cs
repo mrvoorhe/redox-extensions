@@ -40,7 +40,7 @@ public class SessionRecorder : IRecorderControl, IDisposable
     private bool _disposed;
     private DateTime _lastSnapshotAt = DateTime.MinValue;
     private object _snapshot;
-    private string _snapshotError = "no snapshot yet";
+    private string _snapshotError;
 
     public SessionRecorder()
         : this(

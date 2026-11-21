@@ -165,8 +165,9 @@ public sealed class RecorderSession
 
         if (!this._lastStateAt.HasValue || now - this._lastStateAt.Value >= StateInterval)
         {
-            this._lastStateAt = now;
-            this.AddState();
+            // A provider with nothing yet (no game-thread snapshot at the start) is not a record: try again next pump.
+            if (this.AddState())
+                this._lastStateAt = now;
         }
 
         if (now - this._lastPersistAt >= StateInterval)
@@ -211,7 +212,7 @@ public sealed class RecorderSession
         this.AddRecord(record);
     }
 
-    private void AddState()
+    private bool AddState()
     {
         object state = null;
         string error = null;
@@ -224,6 +225,9 @@ public sealed class RecorderSession
             error = ex.Message;
         }
 
+        if (state == null && error == null)
+            return false;
+
         this.AddRecord(new Dictionary<string, object>
         {
             ["kind"] = "state",
@@ -231,6 +235,7 @@ public sealed class RecorderSession
             ["state"] = state,
             ["error"] = error,
         });
+        return true;
     }
 
     private void AddMeta(string what, params KeyValuePair<string, object>[] fields)

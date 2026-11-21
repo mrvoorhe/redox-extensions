@@ -176,6 +176,23 @@ public class RecorderSessionTests : TemporaryDirectoryPerTestTestSuite
         Assert.That(state.GetProperty("error").GetString(), Is.EqualTo("not logged in"));
     }
 
+    [Test]
+    public void StateProviderWithNothingYetWritesNoRecordAndRetriesNextPump()
+    {
+        object snapshot = null;
+        var session = this.NewSession(this.NewJournal(), stateProvider: () => snapshot);
+        session.Start(T0.AddHours(5));
+        session.Pump();
+        this.Advance(3);
+        session.Pump();
+        Assert.That(this.Lines().Count(l => l.GetProperty("kind").GetString() == "state"), Is.EqualTo(0));
+
+        snapshot = new Dictionary<string, object> { ["character"] = "Cobble" };
+        this.Advance(3);
+        session.Pump();
+        Assert.That(this.Lines().Count(l => l.GetProperty("kind").GetString() == "state"), Is.EqualTo(1));
+    }
+
     [TestCase("stopped")]
     [TestCase("timeout")]
     [TestCase("restarted")]
